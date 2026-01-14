@@ -8,7 +8,7 @@
     "dev": "nodemon src/index.js",
     "build": "npx tsc",
     "lint": "eslint src/**/*.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && node copy-prisma.js"
   },
   "keywords": [],
   "author": "",
