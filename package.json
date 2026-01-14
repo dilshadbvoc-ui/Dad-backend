@@ -4,7 +4,7 @@
   "description": "Backend for MERN CRM",
   "main": "dist/index.js",
   "scripts": {
-    "start": "echo 'Current Dir:' && ls -la && echo 'Dist contents:' && ls -R dist || echo 'Dist listing failed' && node dist/index.js",
+    "start": "node dist/index.js",
     "dev": "nodemon src/index.js",
     "build": "npx tsc",
     "lint": "eslint src/**/*.ts",
