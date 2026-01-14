@@ -4,9 +4,9 @@
   "description": "Backend for MERN CRM",
   "main": "dist/index.js",
   "scripts": {
-    "start": "ls -R && node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "start": "echo 'Current Dir:' && ls -la && echo 'Dist contents:' && ls -R dist || echo 'Dist listing failed' && node dist/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "npx tsc",
     "lint": "eslint src/**/*.ts",
     "postinstall": "prisma generate"
   },
