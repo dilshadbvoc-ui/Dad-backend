@@ -8,7 +8,7 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "lint": "eslint src/**/*.ts",
-    "seed": "ts-node src/scripts/seed.ts"
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +31,8 @@
     "multer": "^2.0.2",
     "nodemailer": "^7.0.12",
     "pg": "^8.16.3",
+    "prisma": "^5.22.0",
+    "typescript": "^5.3.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -43,8 +45,6 @@
     "@types/pg": "^8.16.0",
     "eslint": "^8.56.0",
     "nodemon": "^3.0.3",
-    "prisma": "^5.22.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "ts-node": "^10.9.2"
   }
 }

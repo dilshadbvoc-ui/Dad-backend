@@ -146,7 +146,7 @@ model User {
 
   // Relations
   organisationId String?
-  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   // Self-relation for hierarchy
   reportsToId  String?
@@ -253,7 +253,7 @@ model Lead {
 
   // Relations
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   assignedToId String?
   assignedTo   User?   @relation("AssignedTo", fields: [assignedToId], references: [id])
@@ -297,7 +297,7 @@ model Account {
   owner   User?   @relation("AccountOwner", fields: [ownerId], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   parentAccountId String?
   parentAccount   Account?  @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
@@ -349,7 +349,7 @@ model Contact {
   owner   User?   @relation("ContactOwner", fields: [ownerId], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   opportunities Opportunity[]   @relation("OpportunityContacts")
   quotes        Quote[]
@@ -391,7 +391,7 @@ model Opportunity {
   owner   User?   @relation("OpportunityOwner", fields: [ownerId], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   quotes       Quote[]
   tasks        Task[]
@@ -430,7 +430,7 @@ model Product {
   createdBy   User?   @relation("ProductCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   quoteItems QuoteLineItem[]
 }
@@ -482,7 +482,7 @@ model Quote {
   createdBy   User   @relation("QuoteCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   lineItems QuoteLineItem[]
 }
@@ -535,7 +535,7 @@ model Task {
   createdBy   User?   @relation("TaskCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -575,7 +575,7 @@ model Interaction {
   createdBy   User?   @relation("InteractionCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -621,7 +621,7 @@ model CalendarEvent {
   createdBy   User   @relation("EventCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -641,7 +641,7 @@ model EmailList {
   createdBy   User   @relation("EmailListCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -666,7 +666,7 @@ model Campaign {
   createdBy   User?   @relation("CampaignCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -692,7 +692,7 @@ model Workflow {
   createdBy   User?   @relation("WorkflowCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -719,7 +719,7 @@ model WorkflowRule {
   createdBy   User?   @relation("WorkflowRuleCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   isDeleted      Boolean      @default(false)
 
   createdAt DateTime @default(now())
@@ -805,7 +805,7 @@ model License {
   cancelledAt        DateTime?
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   planId String?
   plan   SubscriptionPlan? @relation(fields: [planId], references: [id])
@@ -843,7 +843,7 @@ model AssignmentRule {
   assignTo Json?
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   createdById String?
   createdBy   User?   @relation("RuleCreator", fields: [createdById], references: [id])
@@ -867,7 +867,7 @@ model SalesTarget {
   lastNotifiedDate DateTime?
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   assignedToId String
   assignedTo   User   @relation("TargetAssignee", fields: [assignedToId], references: [id])
@@ -900,7 +900,7 @@ model Goal {
   status String @default("active")
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   assignedToId String
   assignedTo   User   @relation("GoalAssignee", fields: [assignedToId], references: [id])
@@ -941,7 +941,7 @@ model Case {
   createdBy   User?   @relation("CaseCreator", fields: [createdById], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   isDeleted Boolean @default(false)
 
@@ -970,7 +970,7 @@ model CheckIn {
   user   User   @relation(fields: [userId], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   // Polymorphic replacement
   leadId String?
@@ -1011,7 +1011,7 @@ model ApiKey {
 
   // Relations
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   createdById String
   createdBy   User   @relation("ApiKeyCreator", fields: [createdById], references: [id])
@@ -1046,7 +1046,7 @@ model CustomField {
   showInForm Boolean @default(true)
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   createdById String?
   createdBy   User?   @relation("CustomFieldCreator", fields: [createdById], references: [id])
@@ -1080,7 +1080,7 @@ model Territory {
   isActive Boolean @default(true)
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   isDeleted Boolean @default(false)
 
@@ -1108,7 +1108,7 @@ model Webhook {
   lastError       String?
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   createdById String?
   createdBy   User?   @relation("WebhookCreator", fields: [createdById], references: [id])
