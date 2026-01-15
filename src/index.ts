@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { createServer } from 'http';
+import { initSocket } from './socket';
 
 dotenv.config();
 
@@ -47,16 +49,21 @@ import { dataIsolation } from './middleware/dataIsolation';
 import compression from 'compression';
 
 const app = express();
+const httpServer = createServer(app);
 const port = process.env.PORT || 5000;
 
 app.use(compression()); // Enable gzip compression
 app.use(cors({
     origin: ['http://localhost:5173', 'https://dad-frontend-psi.vercel.app'],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Initialize Socket.io
+initSocket(httpServer);
 
 // Debug Middleware: Log all requests
 app.use((req, res, next) => {
@@ -128,7 +135,7 @@ app.use('/api/plans', subscriptionPlanRoutes);
 app.use('/api/licenses', licenseRoutes);
 app.use('/api/super-admin', superAdminRoutes);
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 // Forced restart

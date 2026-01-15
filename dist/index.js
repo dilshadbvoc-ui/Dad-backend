@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const http_1 = require("http");
+const socket_1 = require("./socket");
 dotenv_1.default.config();
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const analyticsRoutes_1 = __importDefault(require("./routes/analyticsRoutes"));
@@ -44,15 +46,19 @@ const callRoutes_1 = __importDefault(require("./routes/callRoutes"));
 const path_1 = __importDefault(require("path"));
 const compression_1 = __importDefault(require("compression"));
 const app = (0, express_1.default)();
+const httpServer = (0, http_1.createServer)(app);
 const port = process.env.PORT || 5000;
 app.use((0, compression_1.default)()); // Enable gzip compression
 app.use((0, cors_1.default)({
     origin: ['http://localhost:5173', 'https://dad-frontend-psi.vercel.app'],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
+// Initialize Socket.io
+(0, socket_1.initSocket)(httpServer);
 // Debug Middleware: Log all requests
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -108,7 +114,7 @@ app.use('/api/api-keys', apiKeyRoutes_1.default);
 app.use('/api/plans', subscriptionPlanRoutes_1.default);
 app.use('/api/licenses', licenseRoutes_1.default);
 app.use('/api/super-admin', superAdminRoutes_1.default);
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 // Forced restart
