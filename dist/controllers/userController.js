@@ -106,6 +106,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json(userWithoutPassword);
     }
     catch (error) {
+        console.error('[getUserById] Error:', error);
         res.status(500).json({ message: error.message });
     }
 });

@@ -163,6 +163,11 @@ export type Territory = $Result.DefaultSelection<Prisma.$TerritoryPayload>
  * 
  */
 export type Webhook = $Result.DefaultSelection<Prisma.$WebhookPayload>
+/**
+ * Model UserLeadQuotaTracker
+ * 
+ */
+export type UserLeadQuotaTracker = $Result.DefaultSelection<Prisma.$UserLeadQuotaTrackerPayload>
 
 /**
  * Enums
@@ -694,6 +699,16 @@ export class PrismaClient<
     * ```
     */
   get webhook(): Prisma.WebhookDelegate<ExtArgs>;
+
+  /**
+   * `prisma.userLeadQuotaTracker`: Exposes CRUD operations for the **UserLeadQuotaTracker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserLeadQuotaTrackers
+    * const userLeadQuotaTrackers = await prisma.userLeadQuotaTracker.findMany()
+    * ```
+    */
+  get userLeadQuotaTracker(): Prisma.UserLeadQuotaTrackerDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1164,7 +1179,8 @@ export namespace Prisma {
     ApiKey: 'ApiKey',
     CustomField: 'CustomField',
     Territory: 'Territory',
-    Webhook: 'Webhook'
+    Webhook: 'Webhook',
+    UserLeadQuotaTracker: 'UserLeadQuotaTracker'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1180,7 +1196,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "organisation" | "user" | "notification" | "lead" | "account" | "contact" | "opportunity" | "product" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "customField" | "territory" | "webhook"
+      modelProps: "organisation" | "user" | "notification" | "lead" | "account" | "contact" | "opportunity" | "product" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3284,6 +3300,76 @@ export namespace Prisma {
           }
         }
       }
+      UserLeadQuotaTracker: {
+        payload: Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>
+        fields: Prisma.UserLeadQuotaTrackerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserLeadQuotaTrackerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserLeadQuotaTrackerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>
+          }
+          findFirst: {
+            args: Prisma.UserLeadQuotaTrackerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserLeadQuotaTrackerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>
+          }
+          findMany: {
+            args: Prisma.UserLeadQuotaTrackerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>[]
+          }
+          create: {
+            args: Prisma.UserLeadQuotaTrackerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>
+          }
+          createMany: {
+            args: Prisma.UserLeadQuotaTrackerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserLeadQuotaTrackerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>[]
+          }
+          delete: {
+            args: Prisma.UserLeadQuotaTrackerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>
+          }
+          update: {
+            args: Prisma.UserLeadQuotaTrackerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserLeadQuotaTrackerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserLeadQuotaTrackerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.UserLeadQuotaTrackerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserLeadQuotaTrackerPayload>
+          }
+          aggregate: {
+            args: Prisma.UserLeadQuotaTrackerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserLeadQuotaTracker>
+          }
+          groupBy: {
+            args: Prisma.UserLeadQuotaTrackerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserLeadQuotaTrackerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserLeadQuotaTrackerCountArgs<ExtArgs>
+            result: $Utils.Optional<UserLeadQuotaTrackerCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3718,6 +3804,7 @@ export namespace Prisma {
     createdCustomFields: number
     managedTerritories: number
     createdWebhooks: number
+    leadQuotaTracking: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3756,6 +3843,7 @@ export namespace Prisma {
     createdCustomFields?: boolean | UserCountOutputTypeCountCreatedCustomFieldsArgs
     managedTerritories?: boolean | UserCountOutputTypeCountManagedTerritoriesArgs
     createdWebhooks?: boolean | UserCountOutputTypeCountCreatedWebhooksArgs
+    leadQuotaTracking?: boolean | UserCountOutputTypeCountLeadQuotaTrackingArgs
   }
 
   // Custom InputTypes
@@ -4012,6 +4100,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCreatedWebhooksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WebhookWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountLeadQuotaTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserLeadQuotaTrackerWhereInput
   }
 
 
@@ -6211,8 +6306,18 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    dailyLeadQuota: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    dailyLeadQuota: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -6227,6 +6332,7 @@ export namespace Prisma {
     isPlaceholder: boolean | null
     isActive: boolean | null
     lastLogin: Date | null
+    dailyLeadQuota: number | null
     createdAt: Date | null
     updatedAt: Date | null
     organisationId: string | null
@@ -6245,6 +6351,7 @@ export namespace Prisma {
     isPlaceholder: boolean | null
     isActive: boolean | null
     lastLogin: Date | null
+    dailyLeadQuota: number | null
     createdAt: Date | null
     updatedAt: Date | null
     organisationId: string | null
@@ -6265,6 +6372,7 @@ export namespace Prisma {
     lastLogin: number
     integrations: number
     notificationPreferences: number
+    dailyLeadQuota: number
     createdAt: number
     updatedAt: number
     organisationId: number
@@ -6273,6 +6381,14 @@ export namespace Prisma {
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    dailyLeadQuota?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    dailyLeadQuota?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -6286,6 +6402,7 @@ export namespace Prisma {
     isPlaceholder?: true
     isActive?: true
     lastLogin?: true
+    dailyLeadQuota?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -6304,6 +6421,7 @@ export namespace Prisma {
     isPlaceholder?: true
     isActive?: true
     lastLogin?: true
+    dailyLeadQuota?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -6324,6 +6442,7 @@ export namespace Prisma {
     lastLogin?: true
     integrations?: true
     notificationPreferences?: true
+    dailyLeadQuota?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -6370,6 +6489,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -6400,6 +6531,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -6418,12 +6551,15 @@ export namespace Prisma {
     lastLogin: Date | null
     integrations: JsonValue | null
     notificationPreferences: JsonValue | null
+    dailyLeadQuota: number | null
     createdAt: Date
     updatedAt: Date
     organisationId: string | null
     reportsToId: string | null
     permissions: string[]
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -6456,6 +6592,7 @@ export namespace Prisma {
     lastLogin?: boolean
     integrations?: boolean
     notificationPreferences?: boolean
+    dailyLeadQuota?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -6498,6 +6635,7 @@ export namespace Prisma {
     createdCustomFields?: boolean | User$createdCustomFieldsArgs<ExtArgs>
     managedTerritories?: boolean | User$managedTerritoriesArgs<ExtArgs>
     createdWebhooks?: boolean | User$createdWebhooksArgs<ExtArgs>
+    leadQuotaTracking?: boolean | User$leadQuotaTrackingArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -6515,6 +6653,7 @@ export namespace Prisma {
     lastLogin?: boolean
     integrations?: boolean
     notificationPreferences?: boolean
+    dailyLeadQuota?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -6538,6 +6677,7 @@ export namespace Prisma {
     lastLogin?: boolean
     integrations?: boolean
     notificationPreferences?: boolean
+    dailyLeadQuota?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -6583,6 +6723,7 @@ export namespace Prisma {
     createdCustomFields?: boolean | User$createdCustomFieldsArgs<ExtArgs>
     managedTerritories?: boolean | User$managedTerritoriesArgs<ExtArgs>
     createdWebhooks?: boolean | User$createdWebhooksArgs<ExtArgs>
+    leadQuotaTracking?: boolean | User$leadQuotaTrackingArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6630,6 +6771,7 @@ export namespace Prisma {
       createdCustomFields: Prisma.$CustomFieldPayload<ExtArgs>[]
       managedTerritories: Prisma.$TerritoryPayload<ExtArgs>[]
       createdWebhooks: Prisma.$WebhookPayload<ExtArgs>[]
+      leadQuotaTracking: Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6645,6 +6787,7 @@ export namespace Prisma {
       lastLogin: Date | null
       integrations: Prisma.JsonValue | null
       notificationPreferences: Prisma.JsonValue | null
+      dailyLeadQuota: number | null
       createdAt: Date
       updatedAt: Date
       organisationId: string | null
@@ -7051,6 +7194,7 @@ export namespace Prisma {
     createdCustomFields<T extends User$createdCustomFieldsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdCustomFieldsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomFieldPayload<ExtArgs>, T, "findMany"> | Null>
     managedTerritories<T extends User$managedTerritoriesArgs<ExtArgs> = {}>(args?: Subset<T, User$managedTerritoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TerritoryPayload<ExtArgs>, T, "findMany"> | Null>
     createdWebhooks<T extends User$createdWebhooksArgs<ExtArgs> = {}>(args?: Subset<T, User$createdWebhooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookPayload<ExtArgs>, T, "findMany"> | Null>
+    leadQuotaTracking<T extends User$leadQuotaTrackingArgs<ExtArgs> = {}>(args?: Subset<T, User$leadQuotaTrackingArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7093,6 +7237,7 @@ export namespace Prisma {
     readonly lastLogin: FieldRef<"User", 'DateTime'>
     readonly integrations: FieldRef<"User", 'Json'>
     readonly notificationPreferences: FieldRef<"User", 'Json'>
+    readonly dailyLeadQuota: FieldRef<"User", 'Int'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly organisationId: FieldRef<"User", 'String'>
@@ -8143,6 +8288,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WebhookScalarFieldEnum | WebhookScalarFieldEnum[]
+  }
+
+  /**
+   * User.leadQuotaTracking
+   */
+  export type User$leadQuotaTrackingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    where?: UserLeadQuotaTrackerWhereInput
+    orderBy?: UserLeadQuotaTrackerOrderByWithRelationInput | UserLeadQuotaTrackerOrderByWithRelationInput[]
+    cursor?: UserLeadQuotaTrackerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserLeadQuotaTrackerScalarFieldEnum | UserLeadQuotaTrackerScalarFieldEnum[]
   }
 
   /**
@@ -40621,6 +40786,985 @@ export namespace Prisma {
 
 
   /**
+   * Model UserLeadQuotaTracker
+   */
+
+  export type AggregateUserLeadQuotaTracker = {
+    _count: UserLeadQuotaTrackerCountAggregateOutputType | null
+    _avg: UserLeadQuotaTrackerAvgAggregateOutputType | null
+    _sum: UserLeadQuotaTrackerSumAggregateOutputType | null
+    _min: UserLeadQuotaTrackerMinAggregateOutputType | null
+    _max: UserLeadQuotaTrackerMaxAggregateOutputType | null
+  }
+
+  export type UserLeadQuotaTrackerAvgAggregateOutputType = {
+    leadCount: number | null
+  }
+
+  export type UserLeadQuotaTrackerSumAggregateOutputType = {
+    leadCount: number | null
+  }
+
+  export type UserLeadQuotaTrackerMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    date: Date | null
+    leadCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserLeadQuotaTrackerMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    date: Date | null
+    leadCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserLeadQuotaTrackerCountAggregateOutputType = {
+    id: number
+    userId: number
+    date: number
+    leadCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserLeadQuotaTrackerAvgAggregateInputType = {
+    leadCount?: true
+  }
+
+  export type UserLeadQuotaTrackerSumAggregateInputType = {
+    leadCount?: true
+  }
+
+  export type UserLeadQuotaTrackerMinAggregateInputType = {
+    id?: true
+    userId?: true
+    date?: true
+    leadCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserLeadQuotaTrackerMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    date?: true
+    leadCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserLeadQuotaTrackerCountAggregateInputType = {
+    id?: true
+    userId?: true
+    date?: true
+    leadCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserLeadQuotaTrackerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLeadQuotaTracker to aggregate.
+     */
+    where?: UserLeadQuotaTrackerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLeadQuotaTrackers to fetch.
+     */
+    orderBy?: UserLeadQuotaTrackerOrderByWithRelationInput | UserLeadQuotaTrackerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserLeadQuotaTrackerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLeadQuotaTrackers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLeadQuotaTrackers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserLeadQuotaTrackers
+    **/
+    _count?: true | UserLeadQuotaTrackerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserLeadQuotaTrackerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserLeadQuotaTrackerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserLeadQuotaTrackerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserLeadQuotaTrackerMaxAggregateInputType
+  }
+
+  export type GetUserLeadQuotaTrackerAggregateType<T extends UserLeadQuotaTrackerAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserLeadQuotaTracker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserLeadQuotaTracker[P]>
+      : GetScalarType<T[P], AggregateUserLeadQuotaTracker[P]>
+  }
+
+
+
+
+  export type UserLeadQuotaTrackerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserLeadQuotaTrackerWhereInput
+    orderBy?: UserLeadQuotaTrackerOrderByWithAggregationInput | UserLeadQuotaTrackerOrderByWithAggregationInput[]
+    by: UserLeadQuotaTrackerScalarFieldEnum[] | UserLeadQuotaTrackerScalarFieldEnum
+    having?: UserLeadQuotaTrackerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserLeadQuotaTrackerCountAggregateInputType | true
+    _avg?: UserLeadQuotaTrackerAvgAggregateInputType
+    _sum?: UserLeadQuotaTrackerSumAggregateInputType
+    _min?: UserLeadQuotaTrackerMinAggregateInputType
+    _max?: UserLeadQuotaTrackerMaxAggregateInputType
+  }
+
+  export type UserLeadQuotaTrackerGroupByOutputType = {
+    id: string
+    userId: string
+    date: Date
+    leadCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: UserLeadQuotaTrackerCountAggregateOutputType | null
+    _avg: UserLeadQuotaTrackerAvgAggregateOutputType | null
+    _sum: UserLeadQuotaTrackerSumAggregateOutputType | null
+    _min: UserLeadQuotaTrackerMinAggregateOutputType | null
+    _max: UserLeadQuotaTrackerMaxAggregateOutputType | null
+  }
+
+  type GetUserLeadQuotaTrackerGroupByPayload<T extends UserLeadQuotaTrackerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserLeadQuotaTrackerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserLeadQuotaTrackerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserLeadQuotaTrackerGroupByOutputType[P]>
+            : GetScalarType<T[P], UserLeadQuotaTrackerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserLeadQuotaTrackerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    leadCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLeadQuotaTracker"]>
+
+  export type UserLeadQuotaTrackerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    leadCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userLeadQuotaTracker"]>
+
+  export type UserLeadQuotaTrackerSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    date?: boolean
+    leadCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserLeadQuotaTrackerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserLeadQuotaTrackerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserLeadQuotaTrackerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserLeadQuotaTracker"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      date: Date
+      leadCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userLeadQuotaTracker"]>
+    composites: {}
+  }
+
+  type UserLeadQuotaTrackerGetPayload<S extends boolean | null | undefined | UserLeadQuotaTrackerDefaultArgs> = $Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload, S>
+
+  type UserLeadQuotaTrackerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<UserLeadQuotaTrackerFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: UserLeadQuotaTrackerCountAggregateInputType | true
+    }
+
+  export interface UserLeadQuotaTrackerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserLeadQuotaTracker'], meta: { name: 'UserLeadQuotaTracker' } }
+    /**
+     * Find zero or one UserLeadQuotaTracker that matches the filter.
+     * @param {UserLeadQuotaTrackerFindUniqueArgs} args - Arguments to find a UserLeadQuotaTracker
+     * @example
+     * // Get one UserLeadQuotaTracker
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserLeadQuotaTrackerFindUniqueArgs>(args: SelectSubset<T, UserLeadQuotaTrackerFindUniqueArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one UserLeadQuotaTracker that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {UserLeadQuotaTrackerFindUniqueOrThrowArgs} args - Arguments to find a UserLeadQuotaTracker
+     * @example
+     * // Get one UserLeadQuotaTracker
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserLeadQuotaTrackerFindUniqueOrThrowArgs>(args: SelectSubset<T, UserLeadQuotaTrackerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first UserLeadQuotaTracker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerFindFirstArgs} args - Arguments to find a UserLeadQuotaTracker
+     * @example
+     * // Get one UserLeadQuotaTracker
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserLeadQuotaTrackerFindFirstArgs>(args?: SelectSubset<T, UserLeadQuotaTrackerFindFirstArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first UserLeadQuotaTracker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerFindFirstOrThrowArgs} args - Arguments to find a UserLeadQuotaTracker
+     * @example
+     * // Get one UserLeadQuotaTracker
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserLeadQuotaTrackerFindFirstOrThrowArgs>(args?: SelectSubset<T, UserLeadQuotaTrackerFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more UserLeadQuotaTrackers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserLeadQuotaTrackers
+     * const userLeadQuotaTrackers = await prisma.userLeadQuotaTracker.findMany()
+     * 
+     * // Get first 10 UserLeadQuotaTrackers
+     * const userLeadQuotaTrackers = await prisma.userLeadQuotaTracker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userLeadQuotaTrackerWithIdOnly = await prisma.userLeadQuotaTracker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserLeadQuotaTrackerFindManyArgs>(args?: SelectSubset<T, UserLeadQuotaTrackerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a UserLeadQuotaTracker.
+     * @param {UserLeadQuotaTrackerCreateArgs} args - Arguments to create a UserLeadQuotaTracker.
+     * @example
+     * // Create one UserLeadQuotaTracker
+     * const UserLeadQuotaTracker = await prisma.userLeadQuotaTracker.create({
+     *   data: {
+     *     // ... data to create a UserLeadQuotaTracker
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserLeadQuotaTrackerCreateArgs>(args: SelectSubset<T, UserLeadQuotaTrackerCreateArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many UserLeadQuotaTrackers.
+     * @param {UserLeadQuotaTrackerCreateManyArgs} args - Arguments to create many UserLeadQuotaTrackers.
+     * @example
+     * // Create many UserLeadQuotaTrackers
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserLeadQuotaTrackerCreateManyArgs>(args?: SelectSubset<T, UserLeadQuotaTrackerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserLeadQuotaTrackers and returns the data saved in the database.
+     * @param {UserLeadQuotaTrackerCreateManyAndReturnArgs} args - Arguments to create many UserLeadQuotaTrackers.
+     * @example
+     * // Create many UserLeadQuotaTrackers
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserLeadQuotaTrackers and only return the `id`
+     * const userLeadQuotaTrackerWithIdOnly = await prisma.userLeadQuotaTracker.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserLeadQuotaTrackerCreateManyAndReturnArgs>(args?: SelectSubset<T, UserLeadQuotaTrackerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a UserLeadQuotaTracker.
+     * @param {UserLeadQuotaTrackerDeleteArgs} args - Arguments to delete one UserLeadQuotaTracker.
+     * @example
+     * // Delete one UserLeadQuotaTracker
+     * const UserLeadQuotaTracker = await prisma.userLeadQuotaTracker.delete({
+     *   where: {
+     *     // ... filter to delete one UserLeadQuotaTracker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserLeadQuotaTrackerDeleteArgs>(args: SelectSubset<T, UserLeadQuotaTrackerDeleteArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one UserLeadQuotaTracker.
+     * @param {UserLeadQuotaTrackerUpdateArgs} args - Arguments to update one UserLeadQuotaTracker.
+     * @example
+     * // Update one UserLeadQuotaTracker
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserLeadQuotaTrackerUpdateArgs>(args: SelectSubset<T, UserLeadQuotaTrackerUpdateArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more UserLeadQuotaTrackers.
+     * @param {UserLeadQuotaTrackerDeleteManyArgs} args - Arguments to filter UserLeadQuotaTrackers to delete.
+     * @example
+     * // Delete a few UserLeadQuotaTrackers
+     * const { count } = await prisma.userLeadQuotaTracker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserLeadQuotaTrackerDeleteManyArgs>(args?: SelectSubset<T, UserLeadQuotaTrackerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLeadQuotaTrackers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserLeadQuotaTrackers
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserLeadQuotaTrackerUpdateManyArgs>(args: SelectSubset<T, UserLeadQuotaTrackerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one UserLeadQuotaTracker.
+     * @param {UserLeadQuotaTrackerUpsertArgs} args - Arguments to update or create a UserLeadQuotaTracker.
+     * @example
+     * // Update or create a UserLeadQuotaTracker
+     * const userLeadQuotaTracker = await prisma.userLeadQuotaTracker.upsert({
+     *   create: {
+     *     // ... data to create a UserLeadQuotaTracker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserLeadQuotaTracker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserLeadQuotaTrackerUpsertArgs>(args: SelectSubset<T, UserLeadQuotaTrackerUpsertArgs<ExtArgs>>): Prisma__UserLeadQuotaTrackerClient<$Result.GetResult<Prisma.$UserLeadQuotaTrackerPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of UserLeadQuotaTrackers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerCountArgs} args - Arguments to filter UserLeadQuotaTrackers to count.
+     * @example
+     * // Count the number of UserLeadQuotaTrackers
+     * const count = await prisma.userLeadQuotaTracker.count({
+     *   where: {
+     *     // ... the filter for the UserLeadQuotaTrackers we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserLeadQuotaTrackerCountArgs>(
+      args?: Subset<T, UserLeadQuotaTrackerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserLeadQuotaTrackerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserLeadQuotaTracker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserLeadQuotaTrackerAggregateArgs>(args: Subset<T, UserLeadQuotaTrackerAggregateArgs>): Prisma.PrismaPromise<GetUserLeadQuotaTrackerAggregateType<T>>
+
+    /**
+     * Group by UserLeadQuotaTracker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserLeadQuotaTrackerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserLeadQuotaTrackerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserLeadQuotaTrackerGroupByArgs['orderBy'] }
+        : { orderBy?: UserLeadQuotaTrackerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserLeadQuotaTrackerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserLeadQuotaTrackerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserLeadQuotaTracker model
+   */
+  readonly fields: UserLeadQuotaTrackerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserLeadQuotaTracker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserLeadQuotaTrackerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserLeadQuotaTracker model
+   */ 
+  interface UserLeadQuotaTrackerFieldRefs {
+    readonly id: FieldRef<"UserLeadQuotaTracker", 'String'>
+    readonly userId: FieldRef<"UserLeadQuotaTracker", 'String'>
+    readonly date: FieldRef<"UserLeadQuotaTracker", 'DateTime'>
+    readonly leadCount: FieldRef<"UserLeadQuotaTracker", 'Int'>
+    readonly createdAt: FieldRef<"UserLeadQuotaTracker", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserLeadQuotaTracker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserLeadQuotaTracker findUnique
+   */
+  export type UserLeadQuotaTrackerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLeadQuotaTracker to fetch.
+     */
+    where: UserLeadQuotaTrackerWhereUniqueInput
+  }
+
+  /**
+   * UserLeadQuotaTracker findUniqueOrThrow
+   */
+  export type UserLeadQuotaTrackerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLeadQuotaTracker to fetch.
+     */
+    where: UserLeadQuotaTrackerWhereUniqueInput
+  }
+
+  /**
+   * UserLeadQuotaTracker findFirst
+   */
+  export type UserLeadQuotaTrackerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLeadQuotaTracker to fetch.
+     */
+    where?: UserLeadQuotaTrackerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLeadQuotaTrackers to fetch.
+     */
+    orderBy?: UserLeadQuotaTrackerOrderByWithRelationInput | UserLeadQuotaTrackerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLeadQuotaTrackers.
+     */
+    cursor?: UserLeadQuotaTrackerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLeadQuotaTrackers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLeadQuotaTrackers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLeadQuotaTrackers.
+     */
+    distinct?: UserLeadQuotaTrackerScalarFieldEnum | UserLeadQuotaTrackerScalarFieldEnum[]
+  }
+
+  /**
+   * UserLeadQuotaTracker findFirstOrThrow
+   */
+  export type UserLeadQuotaTrackerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLeadQuotaTracker to fetch.
+     */
+    where?: UserLeadQuotaTrackerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLeadQuotaTrackers to fetch.
+     */
+    orderBy?: UserLeadQuotaTrackerOrderByWithRelationInput | UserLeadQuotaTrackerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLeadQuotaTrackers.
+     */
+    cursor?: UserLeadQuotaTrackerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLeadQuotaTrackers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLeadQuotaTrackers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLeadQuotaTrackers.
+     */
+    distinct?: UserLeadQuotaTrackerScalarFieldEnum | UserLeadQuotaTrackerScalarFieldEnum[]
+  }
+
+  /**
+   * UserLeadQuotaTracker findMany
+   */
+  export type UserLeadQuotaTrackerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLeadQuotaTrackers to fetch.
+     */
+    where?: UserLeadQuotaTrackerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLeadQuotaTrackers to fetch.
+     */
+    orderBy?: UserLeadQuotaTrackerOrderByWithRelationInput | UserLeadQuotaTrackerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserLeadQuotaTrackers.
+     */
+    cursor?: UserLeadQuotaTrackerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLeadQuotaTrackers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLeadQuotaTrackers.
+     */
+    skip?: number
+    distinct?: UserLeadQuotaTrackerScalarFieldEnum | UserLeadQuotaTrackerScalarFieldEnum[]
+  }
+
+  /**
+   * UserLeadQuotaTracker create
+   */
+  export type UserLeadQuotaTrackerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserLeadQuotaTracker.
+     */
+    data: XOR<UserLeadQuotaTrackerCreateInput, UserLeadQuotaTrackerUncheckedCreateInput>
+  }
+
+  /**
+   * UserLeadQuotaTracker createMany
+   */
+  export type UserLeadQuotaTrackerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserLeadQuotaTrackers.
+     */
+    data: UserLeadQuotaTrackerCreateManyInput | UserLeadQuotaTrackerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserLeadQuotaTracker createManyAndReturn
+   */
+  export type UserLeadQuotaTrackerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many UserLeadQuotaTrackers.
+     */
+    data: UserLeadQuotaTrackerCreateManyInput | UserLeadQuotaTrackerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserLeadQuotaTracker update
+   */
+  export type UserLeadQuotaTrackerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserLeadQuotaTracker.
+     */
+    data: XOR<UserLeadQuotaTrackerUpdateInput, UserLeadQuotaTrackerUncheckedUpdateInput>
+    /**
+     * Choose, which UserLeadQuotaTracker to update.
+     */
+    where: UserLeadQuotaTrackerWhereUniqueInput
+  }
+
+  /**
+   * UserLeadQuotaTracker updateMany
+   */
+  export type UserLeadQuotaTrackerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserLeadQuotaTrackers.
+     */
+    data: XOR<UserLeadQuotaTrackerUpdateManyMutationInput, UserLeadQuotaTrackerUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLeadQuotaTrackers to update
+     */
+    where?: UserLeadQuotaTrackerWhereInput
+  }
+
+  /**
+   * UserLeadQuotaTracker upsert
+   */
+  export type UserLeadQuotaTrackerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserLeadQuotaTracker to update in case it exists.
+     */
+    where: UserLeadQuotaTrackerWhereUniqueInput
+    /**
+     * In case the UserLeadQuotaTracker found by the `where` argument doesn't exist, create a new UserLeadQuotaTracker with this data.
+     */
+    create: XOR<UserLeadQuotaTrackerCreateInput, UserLeadQuotaTrackerUncheckedCreateInput>
+    /**
+     * In case the UserLeadQuotaTracker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserLeadQuotaTrackerUpdateInput, UserLeadQuotaTrackerUncheckedUpdateInput>
+  }
+
+  /**
+   * UserLeadQuotaTracker delete
+   */
+  export type UserLeadQuotaTrackerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+    /**
+     * Filter which UserLeadQuotaTracker to delete.
+     */
+    where: UserLeadQuotaTrackerWhereUniqueInput
+  }
+
+  /**
+   * UserLeadQuotaTracker deleteMany
+   */
+  export type UserLeadQuotaTrackerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLeadQuotaTrackers to delete
+     */
+    where?: UserLeadQuotaTrackerWhereInput
+  }
+
+  /**
+   * UserLeadQuotaTracker without action
+   */
+  export type UserLeadQuotaTrackerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserLeadQuotaTracker
+     */
+    select?: UserLeadQuotaTrackerSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserLeadQuotaTrackerInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -40672,6 +41816,7 @@ export namespace Prisma {
     lastLogin: 'lastLogin',
     integrations: 'integrations',
     notificationPreferences: 'notificationPreferences',
+    dailyLeadQuota: 'dailyLeadQuota',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     organisationId: 'organisationId',
@@ -41313,6 +42458,18 @@ export namespace Prisma {
   export type WebhookScalarFieldEnum = (typeof WebhookScalarFieldEnum)[keyof typeof WebhookScalarFieldEnum]
 
 
+  export const UserLeadQuotaTrackerScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    date: 'date',
+    leadCount: 'leadCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserLeadQuotaTrackerScalarFieldEnum = (typeof UserLeadQuotaTrackerScalarFieldEnum)[keyof typeof UserLeadQuotaTrackerScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -41738,6 +42895,7 @@ export namespace Prisma {
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     integrations?: JsonNullableFilter<"User">
     notificationPreferences?: JsonNullableFilter<"User">
+    dailyLeadQuota?: IntNullableFilter<"User"> | number | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     organisationId?: StringNullableFilter<"User"> | string | null
@@ -41780,6 +42938,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldListRelationFilter
     managedTerritories?: TerritoryListRelationFilter
     createdWebhooks?: WebhookListRelationFilter
+    leadQuotaTracking?: UserLeadQuotaTrackerListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -41796,6 +42955,7 @@ export namespace Prisma {
     lastLogin?: SortOrderInput | SortOrder
     integrations?: SortOrderInput | SortOrder
     notificationPreferences?: SortOrderInput | SortOrder
+    dailyLeadQuota?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrderInput | SortOrder
@@ -41838,6 +42998,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldOrderByRelationAggregateInput
     managedTerritories?: TerritoryOrderByRelationAggregateInput
     createdWebhooks?: WebhookOrderByRelationAggregateInput
+    leadQuotaTracking?: UserLeadQuotaTrackerOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -41857,6 +43018,7 @@ export namespace Prisma {
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     integrations?: JsonNullableFilter<"User">
     notificationPreferences?: JsonNullableFilter<"User">
+    dailyLeadQuota?: IntNullableFilter<"User"> | number | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     organisationId?: StringNullableFilter<"User"> | string | null
@@ -41899,6 +43061,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldListRelationFilter
     managedTerritories?: TerritoryListRelationFilter
     createdWebhooks?: WebhookListRelationFilter
+    leadQuotaTracking?: UserLeadQuotaTrackerListRelationFilter
   }, "id" | "email" | "userId">
 
   export type UserOrderByWithAggregationInput = {
@@ -41915,14 +43078,17 @@ export namespace Prisma {
     lastLogin?: SortOrderInput | SortOrder
     integrations?: SortOrderInput | SortOrder
     notificationPreferences?: SortOrderInput | SortOrder
+    dailyLeadQuota?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrderInput | SortOrder
     reportsToId?: SortOrderInput | SortOrder
     permissions?: SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -41942,6 +43108,7 @@ export namespace Prisma {
     lastLogin?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     integrations?: JsonNullableWithAggregatesFilter<"User">
     notificationPreferences?: JsonNullableWithAggregatesFilter<"User">
+    dailyLeadQuota?: IntNullableWithAggregatesFilter<"User"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     organisationId?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -45414,6 +46581,69 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Webhook"> | Date | string
   }
 
+  export type UserLeadQuotaTrackerWhereInput = {
+    AND?: UserLeadQuotaTrackerWhereInput | UserLeadQuotaTrackerWhereInput[]
+    OR?: UserLeadQuotaTrackerWhereInput[]
+    NOT?: UserLeadQuotaTrackerWhereInput | UserLeadQuotaTrackerWhereInput[]
+    id?: StringFilter<"UserLeadQuotaTracker"> | string
+    userId?: StringFilter<"UserLeadQuotaTracker"> | string
+    date?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    leadCount?: IntFilter<"UserLeadQuotaTracker"> | number
+    createdAt?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    updatedAt?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type UserLeadQuotaTrackerOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    leadCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserLeadQuotaTrackerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_date?: UserLeadQuotaTrackerUserIdDateCompoundUniqueInput
+    AND?: UserLeadQuotaTrackerWhereInput | UserLeadQuotaTrackerWhereInput[]
+    OR?: UserLeadQuotaTrackerWhereInput[]
+    NOT?: UserLeadQuotaTrackerWhereInput | UserLeadQuotaTrackerWhereInput[]
+    userId?: StringFilter<"UserLeadQuotaTracker"> | string
+    date?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    leadCount?: IntFilter<"UserLeadQuotaTracker"> | number
+    createdAt?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    updatedAt?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id" | "userId_date">
+
+  export type UserLeadQuotaTrackerOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    leadCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserLeadQuotaTrackerCountOrderByAggregateInput
+    _avg?: UserLeadQuotaTrackerAvgOrderByAggregateInput
+    _max?: UserLeadQuotaTrackerMaxOrderByAggregateInput
+    _min?: UserLeadQuotaTrackerMinOrderByAggregateInput
+    _sum?: UserLeadQuotaTrackerSumOrderByAggregateInput
+  }
+
+  export type UserLeadQuotaTrackerScalarWhereWithAggregatesInput = {
+    AND?: UserLeadQuotaTrackerScalarWhereWithAggregatesInput | UserLeadQuotaTrackerScalarWhereWithAggregatesInput[]
+    OR?: UserLeadQuotaTrackerScalarWhereWithAggregatesInput[]
+    NOT?: UserLeadQuotaTrackerScalarWhereWithAggregatesInput | UserLeadQuotaTrackerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserLeadQuotaTracker"> | string
+    userId?: StringWithAggregatesFilter<"UserLeadQuotaTracker"> | string
+    date?: DateTimeWithAggregatesFilter<"UserLeadQuotaTracker"> | Date | string
+    leadCount?: IntWithAggregatesFilter<"UserLeadQuotaTracker"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"UserLeadQuotaTracker"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserLeadQuotaTracker"> | Date | string
+  }
+
   export type OrganisationCreateInput = {
     id?: string
     name: string
@@ -45671,6 +46901,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -45711,6 +46942,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -45727,6 +46959,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -45767,6 +47000,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -45783,6 +47017,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -45823,6 +47058,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -45839,6 +47075,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45879,6 +47116,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -45895,6 +47133,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -45916,6 +47155,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -45935,6 +47175,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49822,6 +51063,68 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserLeadQuotaTrackerCreateInput = {
+    id?: string
+    date: Date | string
+    leadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutLeadQuotaTrackingInput
+  }
+
+  export type UserLeadQuotaTrackerUncheckedCreateInput = {
+    id?: string
+    userId: string
+    date: Date | string
+    leadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserLeadQuotaTrackerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutLeadQuotaTrackingNestedInput
+  }
+
+  export type UserLeadQuotaTrackerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLeadQuotaTrackerCreateManyInput = {
+    id?: string
+    userId: string
+    date: Date | string
+    leadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserLeadQuotaTrackerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLeadQuotaTrackerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -50322,6 +51625,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type StringNullableListFilter<$PrismaModel = never> = {
     equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     has?: string | StringFieldRefInput<$PrismaModel> | null
@@ -50358,6 +51672,12 @@ export namespace Prisma {
     none?: NotificationWhereInput
   }
 
+  export type UserLeadQuotaTrackerListRelationFilter = {
+    every?: UserLeadQuotaTrackerWhereInput
+    some?: UserLeadQuotaTrackerWhereInput
+    none?: UserLeadQuotaTrackerWhereInput
+  }
+
   export type DocumentTemplateOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -50367,6 +51687,10 @@ export namespace Prisma {
   }
 
   export type NotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserLeadQuotaTrackerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50384,11 +51708,16 @@ export namespace Prisma {
     lastLogin?: SortOrder
     integrations?: SortOrder
     notificationPreferences?: SortOrder
+    dailyLeadQuota?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
     reportsToId?: SortOrder
     permissions?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    dailyLeadQuota?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -50403,6 +51732,7 @@ export namespace Prisma {
     isPlaceholder?: SortOrder
     isActive?: SortOrder
     lastLogin?: SortOrder
+    dailyLeadQuota?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -50421,10 +51751,15 @@ export namespace Prisma {
     isPlaceholder?: SortOrder
     isActive?: SortOrder
     lastLogin?: SortOrder
+    dailyLeadQuota?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
     reportsToId?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    dailyLeadQuota?: SortOrder
   }
 
   export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -50457,6 +51792,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type UserRelationFilter = {
@@ -50867,17 +52218,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type QuoteLineItemListRelationFilter = {
     every?: QuoteLineItemWhereInput
     some?: QuoteLineItemWhereInput
@@ -50970,22 +52310,6 @@ export namespace Prisma {
     taxRate?: SortOrder
     minQuantity?: SortOrder
     maxQuantity?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type OpportunityNullableRelationFilter = {
@@ -52459,6 +53783,46 @@ export namespace Prisma {
     failureCount?: SortOrder
   }
 
+  export type UserLeadQuotaTrackerUserIdDateCompoundUniqueInput = {
+    userId: string
+    date: Date | string
+  }
+
+  export type UserLeadQuotaTrackerCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    leadCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserLeadQuotaTrackerAvgOrderByAggregateInput = {
+    leadCount?: SortOrder
+  }
+
+  export type UserLeadQuotaTrackerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    leadCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserLeadQuotaTrackerMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    date?: SortOrder
+    leadCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserLeadQuotaTrackerSumOrderByAggregateInput = {
+    leadCount?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<UserCreateWithoutOrganisationInput, UserUncheckedCreateWithoutOrganisationInput> | UserCreateWithoutOrganisationInput[] | UserUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganisationInput | UserCreateOrConnectWithoutOrganisationInput[]
@@ -53748,6 +55112,13 @@ export namespace Prisma {
     connect?: WebhookWhereUniqueInput | WebhookWhereUniqueInput[]
   }
 
+  export type UserLeadQuotaTrackerCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserLeadQuotaTrackerCreateWithoutUserInput, UserLeadQuotaTrackerUncheckedCreateWithoutUserInput> | UserLeadQuotaTrackerCreateWithoutUserInput[] | UserLeadQuotaTrackerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLeadQuotaTrackerCreateOrConnectWithoutUserInput | UserLeadQuotaTrackerCreateOrConnectWithoutUserInput[]
+    createMany?: UserLeadQuotaTrackerCreateManyUserInputEnvelope
+    connect?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutReportsToInput = {
     create?: XOR<UserCreateWithoutReportsToInput, UserUncheckedCreateWithoutReportsToInput> | UserCreateWithoutReportsToInput[] | UserUncheckedCreateWithoutReportsToInput[]
     connectOrCreate?: UserCreateOrConnectWithoutReportsToInput | UserCreateOrConnectWithoutReportsToInput[]
@@ -53993,6 +55364,13 @@ export namespace Prisma {
     connect?: WebhookWhereUniqueInput | WebhookWhereUniqueInput[]
   }
 
+  export type UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserLeadQuotaTrackerCreateWithoutUserInput, UserLeadQuotaTrackerUncheckedCreateWithoutUserInput> | UserLeadQuotaTrackerCreateWithoutUserInput[] | UserLeadQuotaTrackerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLeadQuotaTrackerCreateOrConnectWithoutUserInput | UserLeadQuotaTrackerCreateOrConnectWithoutUserInput[]
+    createMany?: UserLeadQuotaTrackerCreateManyUserInputEnvelope
+    connect?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+  }
+
   export type EnumUserRoleFieldUpdateOperationsInput = {
     set?: $Enums.UserRole
   }
@@ -54003,6 +55381,14 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UserUpdatepermissionsInput = {
@@ -54520,6 +55906,20 @@ export namespace Prisma {
     deleteMany?: WebhookScalarWhereInput | WebhookScalarWhereInput[]
   }
 
+  export type UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserLeadQuotaTrackerCreateWithoutUserInput, UserLeadQuotaTrackerUncheckedCreateWithoutUserInput> | UserLeadQuotaTrackerCreateWithoutUserInput[] | UserLeadQuotaTrackerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLeadQuotaTrackerCreateOrConnectWithoutUserInput | UserLeadQuotaTrackerCreateOrConnectWithoutUserInput[]
+    upsert?: UserLeadQuotaTrackerUpsertWithWhereUniqueWithoutUserInput | UserLeadQuotaTrackerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserLeadQuotaTrackerCreateManyUserInputEnvelope
+    set?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    disconnect?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    delete?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    connect?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    update?: UserLeadQuotaTrackerUpdateWithWhereUniqueWithoutUserInput | UserLeadQuotaTrackerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserLeadQuotaTrackerUpdateManyWithWhereWithoutUserInput | UserLeadQuotaTrackerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserLeadQuotaTrackerScalarWhereInput | UserLeadQuotaTrackerScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutReportsToNestedInput = {
     create?: XOR<UserCreateWithoutReportsToInput, UserUncheckedCreateWithoutReportsToInput> | UserCreateWithoutReportsToInput[] | UserUncheckedCreateWithoutReportsToInput[]
     connectOrCreate?: UserCreateOrConnectWithoutReportsToInput | UserCreateOrConnectWithoutReportsToInput[]
@@ -55008,6 +56408,20 @@ export namespace Prisma {
     update?: WebhookUpdateWithWhereUniqueWithoutCreatedByInput | WebhookUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: WebhookUpdateManyWithWhereWithoutCreatedByInput | WebhookUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: WebhookScalarWhereInput | WebhookScalarWhereInput[]
+  }
+
+  export type UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserLeadQuotaTrackerCreateWithoutUserInput, UserLeadQuotaTrackerUncheckedCreateWithoutUserInput> | UserLeadQuotaTrackerCreateWithoutUserInput[] | UserLeadQuotaTrackerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserLeadQuotaTrackerCreateOrConnectWithoutUserInput | UserLeadQuotaTrackerCreateOrConnectWithoutUserInput[]
+    upsert?: UserLeadQuotaTrackerUpsertWithWhereUniqueWithoutUserInput | UserLeadQuotaTrackerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserLeadQuotaTrackerCreateManyUserInputEnvelope
+    set?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    disconnect?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    delete?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    connect?: UserLeadQuotaTrackerWhereUniqueInput | UserLeadQuotaTrackerWhereUniqueInput[]
+    update?: UserLeadQuotaTrackerUpdateWithWhereUniqueWithoutUserInput | UserLeadQuotaTrackerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserLeadQuotaTrackerUpdateManyWithWhereWithoutUserInput | UserLeadQuotaTrackerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserLeadQuotaTrackerScalarWhereInput | UserLeadQuotaTrackerScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutNotificationsInput = {
@@ -56401,14 +57815,6 @@ export namespace Prisma {
   export type ProductUpdatetagsInput = {
     set?: string[]
     push?: string | string[]
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserUpdateOneWithoutCreatedProductsNestedInput = {
@@ -57871,6 +59277,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedWebhooksInput, UserUpdateWithoutCreatedWebhooksInput>, UserUncheckedUpdateWithoutCreatedWebhooksInput>
   }
 
+  export type UserCreateNestedOneWithoutLeadQuotaTrackingInput = {
+    create?: XOR<UserCreateWithoutLeadQuotaTrackingInput, UserUncheckedCreateWithoutLeadQuotaTrackingInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLeadQuotaTrackingInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutLeadQuotaTrackingNestedInput = {
+    create?: XOR<UserCreateWithoutLeadQuotaTrackingInput, UserUncheckedCreateWithoutLeadQuotaTrackingInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLeadQuotaTrackingInput
+    upsert?: UserUpsertWithoutLeadQuotaTrackingInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutLeadQuotaTrackingInput, UserUpdateWithoutLeadQuotaTrackingInput>, UserUncheckedUpdateWithoutLeadQuotaTrackingInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -58084,6 +59504,33 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumLeadSourceFilter<$PrismaModel = never> = {
     equals?: $Enums.LeadSource | EnumLeadSourceFieldRefInput<$PrismaModel>
     in?: $Enums.LeadSource[] | ListEnumLeadSourceFieldRefInput<$PrismaModel>
@@ -58118,17 +59565,6 @@ export namespace Prisma {
     _max?: NestedEnumLeadStatusFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -58159,22 +59595,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumTaskStatusFilter<$PrismaModel = never> = {
@@ -58259,6 +59679,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -58298,6 +59719,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrganisationInput = {
@@ -58314,6 +59736,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     reportsToId?: string | null
@@ -58353,6 +59776,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrganisationInput = {
@@ -59590,6 +61014,7 @@ export namespace Prisma {
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     integrations?: JsonNullableFilter<"User">
     notificationPreferences?: JsonNullableFilter<"User">
+    dailyLeadQuota?: IntNullableFilter<"User"> | number | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     organisationId?: StringNullableFilter<"User"> | string | null
@@ -60612,6 +62037,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -60651,6 +62077,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSubordinatesInput = {
@@ -60667,6 +62094,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -60706,6 +62134,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSubordinatesInput = {
@@ -60727,6 +62156,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -60766,6 +62196,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReportsToInput = {
@@ -60782,6 +62213,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -60821,6 +62253,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReportsToInput = {
@@ -62555,6 +63988,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserLeadQuotaTrackerCreateWithoutUserInput = {
+    id?: string
+    date: Date | string
+    leadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserLeadQuotaTrackerUncheckedCreateWithoutUserInput = {
+    id?: string
+    date: Date | string
+    leadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserLeadQuotaTrackerCreateOrConnectWithoutUserInput = {
+    where: UserLeadQuotaTrackerWhereUniqueInput
+    create: XOR<UserLeadQuotaTrackerCreateWithoutUserInput, UserLeadQuotaTrackerUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserLeadQuotaTrackerCreateManyUserInputEnvelope = {
+    data: UserLeadQuotaTrackerCreateManyUserInput | UserLeadQuotaTrackerCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganisationUpsertWithoutUsersInput = {
     update: XOR<OrganisationUpdateWithoutUsersInput, OrganisationUncheckedUpdateWithoutUsersInput>
     create: XOR<OrganisationCreateWithoutUsersInput, OrganisationUncheckedCreateWithoutUsersInput>
@@ -62679,6 +64138,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -62718,6 +64178,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSubordinatesInput = {
@@ -62734,6 +64195,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62773,6 +64235,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutReportsToInput = {
@@ -63391,6 +64854,34 @@ export namespace Prisma {
     data: XOR<WebhookUpdateManyMutationInput, WebhookUncheckedUpdateManyWithoutCreatedByInput>
   }
 
+  export type UserLeadQuotaTrackerUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserLeadQuotaTrackerWhereUniqueInput
+    update: XOR<UserLeadQuotaTrackerUpdateWithoutUserInput, UserLeadQuotaTrackerUncheckedUpdateWithoutUserInput>
+    create: XOR<UserLeadQuotaTrackerCreateWithoutUserInput, UserLeadQuotaTrackerUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserLeadQuotaTrackerUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserLeadQuotaTrackerWhereUniqueInput
+    data: XOR<UserLeadQuotaTrackerUpdateWithoutUserInput, UserLeadQuotaTrackerUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserLeadQuotaTrackerUpdateManyWithWhereWithoutUserInput = {
+    where: UserLeadQuotaTrackerScalarWhereInput
+    data: XOR<UserLeadQuotaTrackerUpdateManyMutationInput, UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserLeadQuotaTrackerScalarWhereInput = {
+    AND?: UserLeadQuotaTrackerScalarWhereInput | UserLeadQuotaTrackerScalarWhereInput[]
+    OR?: UserLeadQuotaTrackerScalarWhereInput[]
+    NOT?: UserLeadQuotaTrackerScalarWhereInput | UserLeadQuotaTrackerScalarWhereInput[]
+    id?: StringFilter<"UserLeadQuotaTracker"> | string
+    userId?: StringFilter<"UserLeadQuotaTracker"> | string
+    date?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    leadCount?: IntFilter<"UserLeadQuotaTracker"> | number
+    createdAt?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+    updatedAt?: DateTimeFilter<"UserLeadQuotaTracker"> | Date | string
+  }
+
   export type UserCreateWithoutNotificationsInput = {
     id?: string
     firstName: string
@@ -63405,6 +64896,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -63444,6 +64936,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -63460,6 +64953,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -63499,6 +64993,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -63531,6 +65026,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -63570,6 +65066,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -63586,6 +65083,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63625,6 +65123,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationCreateWithoutLeadsInput = {
@@ -63734,6 +65233,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -63773,6 +65273,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedLeadsInput = {
@@ -63789,6 +65290,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -63828,6 +65330,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedLeadsInput = {
@@ -64198,6 +65701,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -64237,6 +65741,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedLeadsInput = {
@@ -64253,6 +65758,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64292,6 +65798,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TaskUpsertWithWhereUniqueWithoutLeadInput = {
@@ -64388,6 +65895,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -64427,6 +65935,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOwnedAccountsInput = {
@@ -64443,6 +65952,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -64482,6 +65992,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOwnedAccountsInput = {
@@ -65182,6 +66693,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -65221,6 +66733,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOwnedAccountsInput = {
@@ -65237,6 +66750,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65276,6 +66790,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutAccountsInput = {
@@ -65659,6 +67174,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -65698,6 +67214,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOwnedContactsInput = {
@@ -65714,6 +67231,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -65753,6 +67271,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOwnedContactsInput = {
@@ -66351,6 +67870,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -66390,6 +67910,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOwnedContactsInput = {
@@ -66406,6 +67927,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66445,6 +67967,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutContactsInput = {
@@ -66812,6 +68335,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -66851,6 +68375,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
@@ -66867,6 +68392,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -66906,6 +68432,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOwnedOpportunitiesInput = {
@@ -67350,6 +68877,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -67389,6 +68917,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
@@ -67405,6 +68934,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67444,6 +68974,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutOpportunitiesInput = {
@@ -67623,6 +69154,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -67662,6 +69194,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedProductsInput = {
@@ -67678,6 +69211,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -67717,6 +69251,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedProductsInput = {
@@ -67878,6 +69413,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -67917,6 +69453,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedProductsInput = {
@@ -67933,6 +69470,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67972,6 +69510,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutProductsInput = {
@@ -68293,6 +69832,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -68332,6 +69872,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedQuotesInput = {
@@ -68348,6 +69889,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -68387,6 +69929,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedQuotesInput = {
@@ -68408,6 +69951,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -68447,6 +69991,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedQuotesInput = {
@@ -68463,6 +70008,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -68502,6 +70048,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedQuotesInput = {
@@ -68854,6 +70401,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -68893,6 +70441,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedQuotesInput = {
@@ -68909,6 +70458,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68948,6 +70498,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCreatedQuotesInput = {
@@ -68975,6 +70526,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -69014,6 +70566,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedQuotesInput = {
@@ -69030,6 +70583,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69069,6 +70623,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutQuotesInput = {
@@ -69692,6 +71247,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -69731,6 +71287,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -69747,6 +71304,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -69786,6 +71344,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -69807,6 +71366,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -69846,6 +71406,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTasksInput = {
@@ -69862,6 +71423,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -69901,6 +71463,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -70290,6 +71853,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -70329,6 +71893,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -70345,6 +71910,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70384,6 +71950,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCreatedTasksInput = {
@@ -70411,6 +71978,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -70450,6 +72018,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTasksInput = {
@@ -70466,6 +72035,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70505,6 +72075,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutTasksInput = {
@@ -70860,6 +72431,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -70899,6 +72471,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedInteractionsInput = {
@@ -70915,6 +72488,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -70954,6 +72528,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedInteractionsInput = {
@@ -71343,6 +72918,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -71382,6 +72958,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedInteractionsInput = {
@@ -71398,6 +72975,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71437,6 +73015,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutInteractionsInput = {
@@ -71792,6 +73371,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -71831,6 +73411,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedEventsInput = {
@@ -71847,6 +73428,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -71886,6 +73468,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedEventsInput = {
@@ -72275,6 +73858,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -72314,6 +73898,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedEventsInput = {
@@ -72330,6 +73915,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72369,6 +73955,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutEventsInput = {
@@ -72658,6 +74245,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -72697,6 +74285,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedEmailListsInput = {
@@ -72713,6 +74302,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -72752,6 +74342,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedEmailListsInput = {
@@ -72925,6 +74516,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -72964,6 +74556,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedEmailListsInput = {
@@ -72980,6 +74573,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73019,6 +74613,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutEmailListsInput = {
@@ -73165,6 +74760,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -73204,6 +74800,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
@@ -73220,6 +74817,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -73259,6 +74857,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCampaignsInput = {
@@ -73421,6 +75020,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -73460,6 +75060,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
@@ -73476,6 +75077,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73515,6 +75117,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutCampaignsInput = {
@@ -73630,6 +75233,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -73669,6 +75273,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedWorkflowsInput = {
@@ -73685,6 +75290,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -73724,6 +75330,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedWorkflowsInput = {
@@ -73849,6 +75456,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -73888,6 +75496,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedWorkflowsInput = {
@@ -73904,6 +75513,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73943,6 +75553,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutWorkflowsInput = {
@@ -74058,6 +75669,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -74097,6 +75709,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedRulesInput = {
@@ -74113,6 +75726,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -74152,6 +75766,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedRulesInput = {
@@ -74277,6 +75892,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -74316,6 +75932,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedRulesInput = {
@@ -74332,6 +75949,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74371,6 +75989,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutWorkflowRulesInput = {
@@ -74486,6 +76105,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -74525,6 +76145,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedDocTemplatesInput = {
@@ -74541,6 +76162,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -74580,6 +76202,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedDocTemplatesInput = {
@@ -74612,6 +76235,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -74651,6 +76275,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedDocTemplatesInput = {
@@ -74667,6 +76292,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74706,6 +76332,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCreatedSMSTemplatesInput = {
@@ -74722,6 +76349,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -74761,6 +76389,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSMSTemplatesInput = {
@@ -74777,6 +76406,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -74816,6 +76446,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSMSTemplatesInput = {
@@ -74848,6 +76479,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -74887,6 +76519,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSMSTemplatesInput = {
@@ -74903,6 +76536,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -74942,6 +76576,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type LicenseCreateWithoutPlanInput = {
@@ -75150,6 +76785,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -75189,6 +76825,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutActivatedLicensesInput = {
@@ -75205,6 +76842,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -75244,6 +76882,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutActivatedLicensesInput = {
@@ -75265,6 +76904,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -75304,6 +76944,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCancelledLicensesInput = {
@@ -75320,6 +76961,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -75359,6 +77001,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCancelledLicensesInput = {
@@ -75531,6 +77174,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -75570,6 +77214,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutActivatedLicensesInput = {
@@ -75586,6 +77231,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75625,6 +77271,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCancelledLicensesInput = {
@@ -75652,6 +77299,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -75691,6 +77339,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCancelledLicensesInput = {
@@ -75707,6 +77356,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75746,6 +77396,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutManagedAssignmentRulesInput = {
@@ -75762,6 +77413,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -75801,6 +77453,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutManagedAssignmentRulesInput = {
@@ -75817,6 +77470,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -75856,6 +77510,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutManagedAssignmentRulesInput = {
@@ -75877,6 +77532,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -75916,6 +77572,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutLastAssignedAssignmentRulesInput = {
@@ -75932,6 +77589,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -75971,6 +77629,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutLastAssignedAssignmentRulesInput = {
@@ -76085,6 +77744,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -76124,6 +77784,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedAssignmentRulesInput = {
@@ -76140,6 +77801,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -76179,6 +77841,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedAssignmentRulesInput = {
@@ -76211,6 +77874,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -76250,6 +77914,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedAssignmentRulesInput = {
@@ -76266,6 +77931,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76305,6 +77971,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutLastAssignedAssignmentRulesInput = {
@@ -76332,6 +77999,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -76371,6 +78039,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLastAssignedAssignmentRulesInput = {
@@ -76387,6 +78056,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76426,6 +78096,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutAssignmentRulesInput = {
@@ -76552,6 +78223,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -76591,6 +78263,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedAssignmentRulesInput = {
@@ -76607,6 +78280,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76646,6 +78320,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationCreateWithoutSalesTargetsInput = {
@@ -76755,6 +78430,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -76794,6 +78470,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedSalesTargetsInput = {
@@ -76810,6 +78487,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -76849,6 +78527,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedSalesTargetsInput = {
@@ -76870,6 +78549,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -76909,6 +78589,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSalesTargetsInput = {
@@ -76925,6 +78606,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -76964,6 +78646,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSalesTargetsInput = {
@@ -77186,6 +78869,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -77225,6 +78909,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedSalesTargetsInput = {
@@ -77241,6 +78926,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77280,6 +78966,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCreatedSalesTargetsInput = {
@@ -77307,6 +78994,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -77346,6 +79034,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSalesTargetsInput = {
@@ -77362,6 +79051,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77401,6 +79091,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SalesTargetUpsertWithoutChildTargetsInput = {
@@ -77575,6 +79266,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -77614,6 +79306,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedGoalsInput = {
@@ -77630,6 +79323,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -77669,6 +79363,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedGoalsInput = {
@@ -77690,6 +79385,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -77729,6 +79425,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedGoalsInput = {
@@ -77745,6 +79442,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -77784,6 +79482,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedGoalsInput = {
@@ -77915,6 +79614,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -77954,6 +79654,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedGoalsInput = {
@@ -77970,6 +79671,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78009,6 +79711,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCreatedGoalsInput = {
@@ -78036,6 +79739,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -78075,6 +79779,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedGoalsInput = {
@@ -78091,6 +79796,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78130,6 +79836,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ContactCreateWithoutCasesInput = {
@@ -78270,6 +79977,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -78309,6 +80017,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignedCasesInput = {
@@ -78325,6 +80034,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -78364,6 +80074,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignedCasesInput = {
@@ -78385,6 +80096,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -78424,6 +80136,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCasesInput = {
@@ -78440,6 +80153,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -78479,6 +80193,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCasesInput = {
@@ -78740,6 +80455,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -78779,6 +80495,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedCasesInput = {
@@ -78795,6 +80512,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78834,6 +80552,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutCreatedCasesInput = {
@@ -78861,6 +80580,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -78900,6 +80620,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCasesInput = {
@@ -78916,6 +80637,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78955,6 +80677,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutCasesInput = {
@@ -79070,6 +80793,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -79109,6 +80833,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCheckInsInput = {
@@ -79125,6 +80850,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -79164,6 +80890,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCheckInsInput = {
@@ -79480,6 +81207,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -79519,6 +81247,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCheckInsInput = {
@@ -79535,6 +81264,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -79574,6 +81304,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutCheckInsInput = {
@@ -79991,6 +81722,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -80030,6 +81762,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedApiKeysInput = {
@@ -80046,6 +81779,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -80085,6 +81819,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedApiKeysInput = {
@@ -80216,6 +81951,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -80255,6 +81991,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedApiKeysInput = {
@@ -80271,6 +82008,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -80310,6 +82048,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationCreateWithoutCustomFieldsInput = {
@@ -80419,6 +82158,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -80458,6 +82198,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCustomFieldsInput = {
@@ -80474,6 +82215,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -80513,6 +82255,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCustomFieldsInput = {
@@ -80644,6 +82387,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -80683,6 +82427,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCustomFieldsInput = {
@@ -80699,6 +82444,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -80738,6 +82484,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutManagedTerritoriesInput = {
@@ -80754,6 +82501,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -80793,6 +82541,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutManagedTerritoriesInput = {
@@ -80809,6 +82558,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -80848,6 +82598,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutManagedTerritoriesInput = {
@@ -80973,6 +82724,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -81012,6 +82764,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedTerritoriesInput = {
@@ -81028,6 +82781,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -81067,6 +82821,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrganisationUpsertWithoutTerritoriesInput = {
@@ -81275,6 +83030,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     permissions?: UserCreatepermissionsInput | string[]
@@ -81314,6 +83070,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
     createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedWebhooksInput = {
@@ -81330,6 +83087,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -81369,6 +83127,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
     createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedWebhooksInput = {
@@ -81500,6 +83259,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -81539,6 +83299,7 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedWebhooksInput = {
@@ -81555,6 +83316,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -81594,6 +83356,251 @@ export namespace Prisma {
     createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutLeadQuotaTrackingInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: $Enums.UserRole
+    position?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: UserCreatepermissionsInput | string[]
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    reportsTo?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutReportsToInput
+    assignedLeads?: LeadCreateNestedManyWithoutAssignedToInput
+    ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
+    ownedContacts?: ContactCreateNestedManyWithoutOwnerInput
+    ownedOpportunities?: OpportunityCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionCreateNestedManyWithoutCreatedByInput
+    createdEvents?: CalendarEventCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleCreateNestedManyWithoutCreatedByInput
+    managedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutTargetManagerInput
+    lastAssignedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutLastAssignedUserInput
+    activatedLicenses?: LicenseCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseCreateNestedManyWithoutCancelledByInput
+    assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
+    createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
+    notifications?: NotificationCreateNestedManyWithoutRecipientInput
+    assignedGoals?: GoalCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInCreateNestedManyWithoutUserInput
+    createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
+    createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
+    managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
+    createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutLeadQuotaTrackingInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: $Enums.UserRole
+    position?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId?: string | null
+    reportsToId?: string | null
+    permissions?: UserCreatepermissionsInput | string[]
+    subordinates?: UserUncheckedCreateNestedManyWithoutReportsToInput
+    assignedLeads?: LeadUncheckedCreateNestedManyWithoutAssignedToInput
+    ownedAccounts?: AccountUncheckedCreateNestedManyWithoutOwnerInput
+    ownedContacts?: ContactUncheckedCreateNestedManyWithoutOwnerInput
+    ownedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteUncheckedCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionUncheckedCreateNestedManyWithoutCreatedByInput
+    createdEvents?: CalendarEventUncheckedCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListUncheckedCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    managedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutTargetManagerInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutLastAssignedUserInput
+    activatedLicenses?: LicenseUncheckedCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseUncheckedCreateNestedManyWithoutCancelledByInput
+    assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutRecipientInput
+    assignedGoals?: GoalUncheckedCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseUncheckedCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseUncheckedCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutUserInput
+    createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+    createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+    managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
+    createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutLeadQuotaTrackingInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutLeadQuotaTrackingInput, UserUncheckedCreateWithoutLeadQuotaTrackingInput>
+  }
+
+  export type UserUpsertWithoutLeadQuotaTrackingInput = {
+    update: XOR<UserUpdateWithoutLeadQuotaTrackingInput, UserUncheckedUpdateWithoutLeadQuotaTrackingInput>
+    create: XOR<UserCreateWithoutLeadQuotaTrackingInput, UserUncheckedCreateWithoutLeadQuotaTrackingInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutLeadQuotaTrackingInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutLeadQuotaTrackingInput, UserUncheckedUpdateWithoutLeadQuotaTrackingInput>
+  }
+
+  export type UserUpdateWithoutLeadQuotaTrackingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: UserUpdatepermissionsInput | string[]
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    reportsTo?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutReportsToNestedInput
+    assignedLeads?: LeadUpdateManyWithoutAssignedToNestedInput
+    ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
+    ownedContacts?: ContactUpdateManyWithoutOwnerNestedInput
+    ownedOpportunities?: OpportunityUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUpdateManyWithoutCreatedByNestedInput
+    createdEvents?: CalendarEventUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUpdateManyWithoutCreatedByNestedInput
+    managedAssignmentRules?: AssignmentRuleUpdateManyWithoutTargetManagerNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUpdateManyWithoutLastAssignedUserNestedInput
+    activatedLicenses?: LicenseUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUpdateManyWithoutCancelledByNestedInput
+    assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
+    createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
+    notifications?: NotificationUpdateManyWithoutRecipientNestedInput
+    assignedGoals?: GoalUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUpdateManyWithoutUserNestedInput
+    createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
+    createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
+    managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
+    createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutLeadQuotaTrackingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
+    permissions?: UserUpdatepermissionsInput | string[]
+    subordinates?: UserUncheckedUpdateManyWithoutReportsToNestedInput
+    assignedLeads?: LeadUncheckedUpdateManyWithoutAssignedToNestedInput
+    ownedAccounts?: AccountUncheckedUpdateManyWithoutOwnerNestedInput
+    ownedContacts?: ContactUncheckedUpdateManyWithoutOwnerNestedInput
+    ownedOpportunities?: OpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdEvents?: CalendarEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutTargetManagerNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutLastAssignedUserNestedInput
+    activatedLicenses?: LicenseUncheckedUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUncheckedUpdateManyWithoutCancelledByNestedInput
+    assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+    assignedGoals?: GoalUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUncheckedUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutUserNestedInput
+    createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
+    createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyOrganisationInput = {
@@ -81610,6 +83617,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     reportsToId?: string | null
@@ -82078,6 +84086,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -82117,6 +84126,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganisationInput = {
@@ -82133,6 +84143,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -82172,6 +84183,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrganisationInput = {
@@ -82188,6 +84200,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -83618,6 +85631,7 @@ export namespace Prisma {
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
@@ -84280,6 +86294,14 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type UserLeadQuotaTrackerCreateManyUserInput = {
+    id?: string
+    date: Date | string
+    leadCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type UserUpdateWithoutReportsToInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
@@ -84294,6 +86316,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissions?: UserUpdatepermissionsInput | string[]
@@ -84333,6 +86356,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsToInput = {
@@ -84349,6 +86373,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -84388,6 +86413,7 @@ export namespace Prisma {
     createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutReportsToInput = {
@@ -84404,6 +86430,7 @@ export namespace Prisma {
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -86444,6 +88471,30 @@ export namespace Prisma {
     lastError?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLeadQuotaTrackerUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLeadQuotaTrackerUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -89396,6 +91447,10 @@ export namespace Prisma {
      * @deprecated Use WebhookDefaultArgs instead
      */
     export type WebhookArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = WebhookDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use UserLeadQuotaTrackerDefaultArgs instead
+     */
+    export type UserLeadQuotaTrackerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserLeadQuotaTrackerDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

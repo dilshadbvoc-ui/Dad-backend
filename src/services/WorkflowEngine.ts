@@ -90,13 +90,14 @@ export const WorkflowEngine = {
         for (const action of actions) {
             try {
                 switch (action.type) {
-                    case 'send_email':
+                    case 'send_email': {
                         const to = action.config?.to || data.email;
                         const subject = action.config?.subject || 'Notification';
                         const body = action.config?.body || 'Hello'; // Simple replacement
                         console.log(`[WorkflowEngine] Action: Sending Email to ${to}`);
                         await EmailService.sendEmail(to, subject, body);
                         break;
+                    }
                     case 'create_task':
                         console.log(`[WorkflowEngine] Action: Creating Task '${action.config?.subject}'`);
                         // await TaskService.create(...)

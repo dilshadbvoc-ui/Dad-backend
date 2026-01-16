@@ -43,6 +43,9 @@ const notificationRoutes_1 = __importDefault(require("./routes/notificationRoute
 const superAdminRoutes_1 = __importDefault(require("./routes/superAdminRoutes"));
 const salesTargetRoutes_1 = __importDefault(require("./routes/salesTargetRoutes"));
 const callRoutes_1 = __importDefault(require("./routes/callRoutes"));
+const reportRoutes_1 = __importDefault(require("./routes/reportRoutes"));
+const importRoutes_1 = __importDefault(require("./routes/importRoutes"));
+const searchRoutes_1 = __importDefault(require("./routes/searchRoutes"));
 const path_1 = __importDefault(require("path"));
 const compression_1 = __importDefault(require("compression"));
 const app = (0, express_1.default)();
@@ -58,7 +61,8 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
 // Initialize Socket.io
-(0, socket_1.initSocket)(httpServer);
+const io = (0, socket_1.initSocket)(httpServer);
+app.set('io', io);
 // Debug Middleware: Log all requests
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -74,6 +78,9 @@ app.get('/', (req, res) => {
 // Auth & Core
 app.use('/api/auth', authRoutes_1.default);
 app.use('/api/analytics', analyticsRoutes_1.default);
+app.use('/api/reports', reportRoutes_1.default);
+app.use('/api/import', importRoutes_1.default);
+app.use('/api/search', searchRoutes_1.default);
 app.use('/api/profile', profileRoutes_1.default);
 // Sales
 app.use('/api/leads', leadRoutes_1.default);
@@ -114,8 +121,28 @@ app.use('/api/api-keys', apiKeyRoutes_1.default);
 app.use('/api/plans', subscriptionPlanRoutes_1.default);
 app.use('/api/licenses', licenseRoutes_1.default);
 app.use('/api/super-admin', superAdminRoutes_1.default);
+// Debug Routes
+const debugRoutes_1 = __importDefault(require("./routes/debugRoutes"));
+app.use('/api/debug', debugRoutes_1.default);
+// Upload Routes (Call Recordings)
+const uploadRoutes_1 = __importDefault(require("./routes/uploadRoutes"));
+app.use('/api/upload', uploadRoutes_1.default);
+// Meeting Reminder Job
+const meetingReminderService_1 = require("./services/meetingReminderService");
 httpServer.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    // Run meeting reminder check on startup
+    (0, meetingReminderService_1.generateMeetingReminders)().then(count => {
+        console.log(`[Startup] Checked ${count} meetings for reminders`);
+    }).catch(err => {
+        console.error('[Startup] Meeting reminder error:', err);
+    });
+    // Run every hour
+    setInterval(() => {
+        (0, meetingReminderService_1.generateMeetingReminders)().catch(err => {
+            console.error('[Interval] Meeting reminder error:', err);
+        });
+    }, 60 * 60 * 1000); // 1 hour
 });
 // Forced restart
 // restart 

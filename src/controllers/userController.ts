@@ -97,6 +97,7 @@ export const getUserById = async (req: Request, res: Response) => {
         const { password, ...userWithoutPassword } = user;
         res.json(userWithoutPassword);
     } catch (error) {
+        console.error('[getUserById] Error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };

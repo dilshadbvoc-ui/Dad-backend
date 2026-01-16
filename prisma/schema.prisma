@@ -143,6 +143,9 @@ model User {
   integrations            Json?
   notificationPreferences Json?
   
+  // Lead Assignment Quota
+  dailyLeadQuota   Int?    // Max leads per day (null = unlimited)
+  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   
@@ -199,6 +202,7 @@ model User {
   createdCustomFields  CustomField[] @relation("CustomFieldCreator")
   managedTerritories   Territory[]   @relation("TerritoryManager")
   createdWebhooks      Webhook[]     @relation("WebhookCreator")
+  leadQuotaTracking    UserLeadQuotaTracker[]
 
   @@index([organisationId])
   @@index([email])
@@ -1121,4 +1125,21 @@ model Webhook {
   updatedAt     DateTime @updatedAt
 
   @@index([organisationId])
+}
+
+model UserLeadQuotaTracker {
+  id        String   @id @default(uuid())
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  date      DateTime @db.Date
+  leadCount Int      @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
 }

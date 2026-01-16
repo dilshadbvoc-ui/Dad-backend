@@ -52,6 +52,7 @@ const initiateCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.initiateCall = initiateCall;
 const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const file = req.file;
         const { duration, status, notes } = req.body;
@@ -75,8 +76,14 @@ const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         const interaction = yield prisma_1.default.interaction.update({
             where: { id: callId },
-            data: updateData
+            data: updateData,
+            include: { createdBy: true }
         });
+        // Emit socket event for real-time update
+        const io = req.app.get('io');
+        if (io && ((_a = interaction.createdBy) === null || _a === void 0 ? void 0 : _a.id)) {
+            io.to(interaction.createdBy.id).emit('call_completed', { callId });
+        }
         res.json(interaction);
     }
     catch (error) {

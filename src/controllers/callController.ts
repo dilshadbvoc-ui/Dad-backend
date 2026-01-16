@@ -69,8 +69,15 @@ export const completeCall = async (req: Request, res: Response) => {
 
         const interaction = await prisma.interaction.update({
             where: { id: callId },
-            data: updateData
+            data: updateData,
+            include: { createdBy: true }
         });
+
+        // Emit socket event for real-time update
+        const io = req.app.get('io');
+        if (io && interaction.createdBy?.id) {
+            io.to(interaction.createdBy.id).emit('call_completed', { callId });
+        }
 
         res.json(interaction);
     } catch (error) {

@@ -33,9 +33,10 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             if (orgId)
                 where.organisationId = orgId;
         }
-        // 2. Hierarchy Visibility
+        // 2. Hierarchy Visibility - Modified to include self
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            subordinateIds.push(user.id); // Include self
             where.createdById = { in: subordinateIds };
         }
         if (start && end) {
@@ -44,6 +45,7 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 lte: new Date(end)
             };
         }
+        console.log('Calendar query where:', JSON.stringify(where, null, 2));
         const events = yield prisma_1.default.calendarEvent.findMany({
             where,
             include: {
@@ -52,9 +54,11 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             },
             orderBy: { startTime: 'asc' }
         });
+        console.log(`Found ${events.length} events`);
         res.json({ events });
     }
     catch (error) {
+        console.error('getEvents error:', error);
         res.status(500).json({ message: error.message });
     }
 });

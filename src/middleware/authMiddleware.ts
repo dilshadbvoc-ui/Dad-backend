@@ -27,7 +27,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
             }
 
             // Exclude password from the object attached to request
-            const { password, ...userWithoutPassword } = user;
+            const { password: _password, ...userWithoutPassword } = user;
 
             // Attach user to request
             req.user = {
@@ -67,7 +67,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
                 });
 
                 if (user) {
-                    const { password, ...userWithoutPassword } = user;
+                    const { password: _password, ...userWithoutPassword } = user;
                     req.user = {
                         ...userWithoutPassword,
                         isSuperAdmin: user.role === 'super_admin'

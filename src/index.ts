@@ -42,9 +42,12 @@ import notificationRoutes from './routes/notificationRoutes';
 import superAdminRoutes from './routes/superAdminRoutes';
 import salesTargetRoutes from './routes/salesTargetRoutes';
 import callRoutes from './routes/callRoutes';
+import reportRoutes from './routes/reportRoutes';
+import importRoutes from './routes/importRoutes';
+import searchRoutes from './routes/searchRoutes';
 import path from 'path';
 
-import { dataIsolation } from './middleware/dataIsolation';
+// import { dataIsolation } from './middleware/dataIsolation';
 
 import compression from 'compression';
 
@@ -63,7 +66,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Initialize Socket.io
-initSocket(httpServer);
+const io = initSocket(httpServer);
+app.set('io', io);
 
 // Debug Middleware: Log all requests
 app.use((req, res, next) => {
@@ -85,6 +89,9 @@ app.get('/', (req, res) => {
 // Auth & Core
 app.use('/api/auth', authRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/import', importRoutes);
+app.use('/api/search', searchRoutes);
 app.use('/api/profile', profileRoutes);
 
 // Sales
@@ -135,8 +142,34 @@ app.use('/api/plans', subscriptionPlanRoutes);
 app.use('/api/licenses', licenseRoutes);
 app.use('/api/super-admin', superAdminRoutes);
 
+// Debug Routes
+import debugRoutes from './routes/debugRoutes';
+app.use('/api/debug', debugRoutes);
+
+// Upload Routes (Call Recordings)
+import uploadRoutes from './routes/uploadRoutes';
+app.use('/api/upload', uploadRoutes);
+
+// Meeting Reminder Job
+import { generateMeetingReminders } from './services/meetingReminderService';
+
 httpServer.listen(port, () => {
     console.log(`Server running on port ${port}`);
+
+    // Run meeting reminder check on startup
+    generateMeetingReminders().then(count => {
+        console.log(`[Startup] Checked ${count} meetings for reminders`);
+    }).catch(err => {
+        console.error('[Startup] Meeting reminder error:', err);
+    });
+
+    // Run every hour
+    setInterval(() => {
+        generateMeetingReminders().catch(err => {
+            console.error('[Interval] Meeting reminder error:', err);
+        });
+    }, 60 * 60 * 1000); // 1 hour
 });
 // Forced restart
 // restart 
+

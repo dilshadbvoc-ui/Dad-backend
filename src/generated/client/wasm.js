@@ -157,6 +157,7 @@ exports.Prisma.UserScalarFieldEnum = {
   lastLogin: 'lastLogin',
   integrations: 'integrations',
   notificationPreferences: 'notificationPreferences',
+  dailyLeadQuota: 'dailyLeadQuota',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   organisationId: 'organisationId',
@@ -711,6 +712,15 @@ exports.Prisma.WebhookScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UserLeadQuotaTrackerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  leadCount: 'leadCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -820,7 +830,8 @@ exports.Prisma.ModelName = {
   ApiKey: 'ApiKey',
   CustomField: 'CustomField',
   Territory: 'Territory',
-  Webhook: 'Webhook'
+  Webhook: 'Webhook',
+  UserLeadQuotaTracker: 'UserLeadQuotaTracker'
 };
 
 /**
