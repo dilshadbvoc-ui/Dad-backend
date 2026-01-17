@@ -100,13 +100,14 @@ exports.WorkflowEngine = {
             for (const action of actions) {
                 try {
                     switch (action.type) {
-                        case 'send_email':
+                        case 'send_email': {
                             const to = ((_a = action.config) === null || _a === void 0 ? void 0 : _a.to) || data.email;
                             const subject = ((_b = action.config) === null || _b === void 0 ? void 0 : _b.subject) || 'Notification';
                             const body = ((_c = action.config) === null || _c === void 0 ? void 0 : _c.body) || 'Hello'; // Simple replacement
                             console.log(`[WorkflowEngine] Action: Sending Email to ${to}`);
                             yield EmailService_1.EmailService.sendEmail(to, subject, body);
                             break;
+                        }
                         case 'create_task':
                             console.log(`[WorkflowEngine] Action: Creating Task '${(_d = action.config) === null || _d === void 0 ? void 0 : _d.subject}'`);
                             // await TaskService.create(...)

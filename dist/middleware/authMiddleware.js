@@ -43,7 +43,7 @@ const protect = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
                 return;
             }
             // Exclude password from the object attached to request
-            const { password } = user, userWithoutPassword = __rest(user, ["password"]);
+            const { password: _password } = user, userWithoutPassword = __rest(user, ["password"]);
             // Attach user to request
             req.user = Object.assign(Object.assign({}, userWithoutPassword), { isSuperAdmin: user.role === 'super_admin' });
             // console.log(`[AuthMiddleware] Authenticated user: ${user.email}`); 
@@ -72,7 +72,7 @@ const protect = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
                     include: { organisation: true }
                 });
                 if (user) {
-                    const { password } = user, userWithoutPassword = __rest(user, ["password"]);
+                    const { password: _password } = user, userWithoutPassword = __rest(user, ["password"]);
                     req.user = Object.assign(Object.assign({}, userWithoutPassword), { isSuperAdmin: user.role === 'super_admin' });
                     return next();
                 }

@@ -47,6 +47,7 @@ const reportRoutes_1 = __importDefault(require("./routes/reportRoutes"));
 const importRoutes_1 = __importDefault(require("./routes/importRoutes"));
 const searchRoutes_1 = __importDefault(require("./routes/searchRoutes"));
 const path_1 = __importDefault(require("path"));
+// import { dataIsolation } from './middleware/dataIsolation';
 const compression_1 = __importDefault(require("compression"));
 const app = (0, express_1.default)();
 const httpServer = (0, http_1.createServer)(app);
@@ -73,6 +74,7 @@ app.use((req, res, next) => {
 });
 app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 app.get('/', (req, res) => {
+    console.log('Health check ping received');
     res.send('API is running...');
 });
 // Auth & Core

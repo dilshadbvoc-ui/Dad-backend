@@ -47,13 +47,14 @@ exports.DistributionService = {
                         let assignedUserId = null;
                         // 3. Dispatch based on Distribution Type
                         switch (rule.distributionType) {
-                            case 'specific_user':
+                            case 'specific_user': {
                                 // Assign directly if defined
                                 const assignTo = rule.assignTo;
                                 if (assignTo && assignTo.value) {
                                     assignedUserId = assignTo.value;
                                 }
                                 break;
+                            }
                             case 'round_robin_role':
                                 assignedUserId = yield this.executeRoundRobin(rule, organisationId);
                                 break;
