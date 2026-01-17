@@ -85,8 +85,13 @@ app.use((req, res, next) => {
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/', (req, res) => {
-    console.log('Health check ping received');
+    console.log('Health check ping received at /');
     res.send('API is running...');
+});
+
+app.get('/health', (req, res) => {
+    console.log('Health check ping received at /health');
+    res.status(200).send('OK');
 });
 
 
