@@ -147,6 +147,21 @@ app.use('/api/super-admin', superAdminRoutes);
 import debugRoutes from './routes/debugRoutes';
 app.use('/api/debug', debugRoutes);
 
+import fs from 'fs';
+app.get('/debug-files', (req, res) => {
+    try {
+        const currentDir = fs.readdirSync(__dirname);
+        const parentDir = fs.readdirSync(path.join(__dirname, '..'));
+        res.json({
+            current: __dirname,
+            files: currentDir,
+            parentFiles: parentDir
+        });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Upload Routes (Call Recordings)
 import uploadRoutes from './routes/uploadRoutes';
 app.use('/api/upload', uploadRoutes);
