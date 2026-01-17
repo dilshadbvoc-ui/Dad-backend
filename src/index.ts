@@ -55,6 +55,10 @@ const app = express();
 const httpServer = createServer(app);
 const port = process.env.PORT || 5000;
 
+console.log('------------------------------------------------');
+console.log('   STARTING SERVER WITH TS-NODE (NO BUILD)      ');
+console.log('------------------------------------------------');
+
 app.use(compression()); // Enable gzip compression
 app.use(cors({
     origin: ['http://localhost:5173', 'https://dad-frontend-psi.vercel.app'],
