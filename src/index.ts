@@ -84,7 +84,7 @@ import compression from 'compression';
 import { initCronJobs } from './services/cronService';
 import session from 'express-session';
 import passport from 'passport';
-import { setupPassport } from './services/SSOService';
+import { setupPassport } from './services/ssoService';
 
 const app = express();
 const httpServer = createServer(app);
