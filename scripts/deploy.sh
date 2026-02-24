@@ -57,6 +57,7 @@ fi
 
 git fetch origin main
 git reset --hard origin/main
+git clean -fdx
 
 # Always remove node_modules on low disk space servers
 echo "🧹 Removing node_modules to save space before reinstall..."
