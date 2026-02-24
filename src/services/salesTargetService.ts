@@ -1,6 +1,6 @@
 
 import prisma from '../config/prisma';
-import { NotificationService } from './NotificationService';
+import { NotificationService } from './notificationService';
 
 export class SalesTargetService {
     /**

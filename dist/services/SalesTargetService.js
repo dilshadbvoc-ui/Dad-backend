@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SalesTargetService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
-const NotificationService_1 = require("./NotificationService");
+const notificationService_1 = require("./notificationService");
 class SalesTargetService {
     /**
      * Updates the progress of a user's active targets based on won opportunities.
@@ -88,7 +88,7 @@ class SalesTargetService {
                     newStatus = 'completed';
                     // Notify user
                     try {
-                        await NotificationService_1.NotificationService.send(userId, 'Sales Target Achieved! 🎯', `Congratulations! You have achieved your sales target for ${target.period} (${target.metric || 'revenue'}). Great work!`, 'success');
+                        await notificationService_1.NotificationService.send(userId, 'Sales Target Achieved! 🎯', `Congratulations! You have achieved your sales target for ${target.period} (${target.metric || 'revenue'}). Great work!`, 'success');
                     }
                     catch (err) {
                         console.error('[SalesTargetService] Failed to send notification', err);
