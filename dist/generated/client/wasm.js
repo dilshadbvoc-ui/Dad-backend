@@ -177,7 +177,8 @@ exports.Prisma.UserScalarFieldEnum = {
   reportsToId: 'reportsToId',
   permissions: 'permissions',
   dailyLeadQuota: 'dailyLeadQuota',
-  teamId: 'teamId'
+  teamId: 'teamId',
+  branchId: 'branchId'
 };
 
 exports.Prisma.TeamScalarFieldEnum = {
@@ -212,6 +213,9 @@ exports.Prisma.LeadScalarFieldEnum = {
   lastName: 'lastName',
   email: 'email',
   phone: 'phone',
+  phoneCountryCode: 'phoneCountryCode',
+  country: 'country',
+  countryCode: 'countryCode',
   company: 'company',
   jobTitle: 'jobTitle',
   address: 'address',
@@ -239,8 +243,14 @@ exports.Prisma.LeadScalarFieldEnum = {
   userExplanation: 'userExplanation',
   violationTime: 'violationTime',
   nextFollowUp: 'nextFollowUp',
+  isReEnquiry: 'isReEnquiry',
+  reEnquiryCount: 'reEnquiryCount',
+  lastEnquiryDate: 'lastEnquiryDate',
+  originalLeadId: 'originalLeadId',
+  createdById: 'createdById',
   pipelineId: 'pipelineId',
-  potentialValue: 'potentialValue'
+  potentialValue: 'potentialValue',
+  branchId: 'branchId'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -260,7 +270,9 @@ exports.Prisma.AccountScalarFieldEnum = {
   isDeleted: 'isDeleted',
   ownerId: 'ownerId',
   organisationId: 'organisationId',
-  parentAccountId: 'parentAccountId'
+  parentAccountId: 'parentAccountId',
+  leadId: 'leadId',
+  branchId: 'branchId'
 };
 
 exports.Prisma.ContactScalarFieldEnum = {
@@ -284,7 +296,9 @@ exports.Prisma.ContactScalarFieldEnum = {
   updatedAt: 'updatedAt',
   accountId: 'accountId',
   ownerId: 'ownerId',
-  organisationId: 'organisationId'
+  organisationId: 'organisationId',
+  leadId: 'leadId',
+  branchId: 'branchId'
 };
 
 exports.Prisma.OpportunityScalarFieldEnum = {
@@ -306,8 +320,10 @@ exports.Prisma.OpportunityScalarFieldEnum = {
   organisationId: 'organisationId',
   paymentStatus: 'paymentStatus',
   paymentDate: 'paymentDate',
+  leadId: 'leadId',
   pipelineId: 'pipelineId',
-  type: 'type'
+  type: 'type',
+  branchId: 'branchId'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
@@ -418,7 +434,8 @@ exports.Prisma.TaskScalarFieldEnum = {
   organisationId: 'organisationId',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  branchId: 'branchId'
 };
 
 exports.Prisma.InteractionScalarFieldEnum = {
@@ -440,9 +457,11 @@ exports.Prisma.InteractionScalarFieldEnum = {
   opportunityId: 'opportunityId',
   createdById: 'createdById',
   organisationId: 'organisationId',
+  documentId: 'documentId',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  branchId: 'branchId'
 };
 
 exports.Prisma.CalendarEventScalarFieldEnum = {
@@ -591,6 +610,8 @@ exports.Prisma.SubscriptionPlanScalarFieldEnum = {
   features: 'features',
   price: 'price',
   billingType: 'billingType',
+  pricingModel: 'pricingModel',
+  pricePerUser: 'pricePerUser',
   currency: 'currency',
   durationDays: 'durationDays',
   maxUsers: 'maxUsers',
@@ -598,6 +619,7 @@ exports.Prisma.SubscriptionPlanScalarFieldEnum = {
   maxContacts: 'maxContacts',
   maxStorage: 'maxStorage',
   isActive: 'isActive',
+  discount: 'discount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -645,7 +667,11 @@ exports.Prisma.AssignmentRuleScalarFieldEnum = {
   enableRotation: 'enableRotation',
   rotationPool: 'rotationPool',
   rotationType: 'rotationType',
-  timeLimitMinutes: 'timeLimitMinutes'
+  timeLimitMinutes: 'timeLimitMinutes',
+  branchId: 'branchId',
+  companySize: 'companySize',
+  leadScore: 'leadScore',
+  dealValue: 'dealValue'
 };
 
 exports.Prisma.SalesTargetScalarFieldEnum = {
@@ -860,6 +886,7 @@ exports.Prisma.ImportJobScalarFieldEnum = {
   errors: 'errors',
   fileUrl: 'fileUrl',
   mapping: 'mapping',
+  metadata: 'metadata',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
   createdById: 'createdById',
@@ -1009,6 +1036,7 @@ exports.Prisma.DocumentScalarFieldEnum = {
   description: 'description',
   fileKey: 'fileKey',
   fileUrl: 'fileUrl',
+  fileData: 'fileData',
   fileType: 'fileType',
   fileSize: 'fileSize',
   category: 'category',
@@ -1039,6 +1067,78 @@ exports.Prisma.ProductShareScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BranchScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  location: 'location',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  managerId: 'managerId',
+  organisationId: 'organisationId',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemSettingScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  group: 'group',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RoleScalarFieldEnum = {
+  id: 'id',
+  roleKey: 'roleKey',
+  name: 'name',
+  description: 'description',
+  permissions: 'permissions',
+  isSystemRole: 'isSystemRole',
+  organisationId: 'organisationId',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EMIScheduleScalarFieldEnum = {
+  id: 'id',
+  opportunityId: 'opportunityId',
+  totalAmount: 'totalAmount',
+  paidAmount: 'paidAmount',
+  remainingAmount: 'remainingAmount',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  organisationId: 'organisationId'
+};
+
+exports.Prisma.EMIInstallmentScalarFieldEnum = {
+  id: 'id',
+  scheduleId: 'scheduleId',
+  installmentNumber: 'installmentNumber',
+  amount: 'amount',
+  dueDate: 'dueDate',
+  status: 'status',
+  paidDate: 'paidDate',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentRecordScalarFieldEnum = {
+  id: 'id',
+  opportunityId: 'opportunityId',
+  amount: 'amount',
+  paymentDate: 'paymentDate',
+  paymentMethod: 'paymentMethod',
+  paymentType: 'paymentType',
+  installmentId: 'installmentId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  createdById: 'createdById',
+  organisationId: 'organisationId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1064,14 +1164,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.UserRole = exports.$Enums.UserRole = {
-  super_admin: 'super_admin',
-  admin: 'admin',
-  manager: 'manager',
-  sales_rep: 'sales_rep',
-  marketing: 'marketing'
-};
-
 exports.LeadSource = exports.$Enums.LeadSource = {
   website: 'website',
   referral: 'referral',
@@ -1091,7 +1183,8 @@ exports.LeadStatus = exports.$Enums.LeadStatus = {
   nurturing: 'nurturing',
   converted: 'converted',
   lost: 'lost',
-  reborn: 'reborn'
+  reborn: 'reborn',
+  re_enquiry: 're_enquiry'
 };
 
 exports.OpportunityType = exports.$Enums.OpportunityType = {
@@ -1125,9 +1218,33 @@ exports.InteractionDirection = exports.$Enums.InteractionDirection = {
   outbound: 'outbound'
 };
 
+exports.PricingModel = exports.$Enums.PricingModel = {
+  per_user: 'per_user',
+  flat_rate: 'flat_rate'
+};
+
 exports.TargetScope = exports.$Enums.TargetScope = {
   INDIVIDUAL: 'INDIVIDUAL',
   HIERARCHY: 'HIERARCHY'
+};
+
+exports.EMIStatus = exports.$Enums.EMIStatus = {
+  active: 'active',
+  completed: 'completed',
+  cancelled: 'cancelled'
+};
+
+exports.InstallmentStatus = exports.$Enums.InstallmentStatus = {
+  pending: 'pending',
+  paid: 'paid',
+  overdue: 'overdue',
+  cancelled: 'cancelled'
+};
+
+exports.PaymentType = exports.$Enums.PaymentType = {
+  full: 'full',
+  partial: 'partial',
+  installment: 'installment'
 };
 
 exports.Prisma.ModelName = {
@@ -1179,7 +1296,13 @@ exports.Prisma.ModelName = {
   LandingPage: 'LandingPage',
   AuditLog: 'AuditLog',
   Document: 'Document',
-  ProductShare: 'ProductShare'
+  ProductShare: 'ProductShare',
+  Branch: 'Branch',
+  SystemSetting: 'SystemSetting',
+  Role: 'Role',
+  EMISchedule: 'EMISchedule',
+  EMIInstallment: 'EMIInstallment',
+  PaymentRecord: 'PaymentRecord'
 };
 
 /**

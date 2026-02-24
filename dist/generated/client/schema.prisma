@@ -1,7 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
   output        = "../src/generated/client"
-  binaryTargets = ["native", "darwin-arm64"]
+  binaryTargets = ["native", "darwin-arm64", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -73,6 +73,10 @@ model Organisation {
   accountProducts   AccountProduct[]
   documents         Document[]
   productShares     ProductShare[]
+  branches          Branch[]
+  rolePermissions   Role[]
+  emiSchedules      EMISchedule[]
+  paymentRecords    PaymentRecord[]
 }
 
 model User {
@@ -82,7 +86,7 @@ model User {
   email                       String                 @unique
   userId                      String?                @unique
   password                    String
-  role                        UserRole               @default(sales_rep)
+  role                        String                 @default("sales_rep")
   position                    String?
   phone                       String?
   profileImage                String? // URL to profile image
@@ -122,6 +126,7 @@ model User {
   createdInteractions         Interaction[]          @relation("InteractionCreator")
   assignedLeads               Lead[]                 @relation("AssignedTo")
   previousLeads               Lead[]                 @relation("LeadPreviousOwner")
+  createdLeads                Lead[]                 @relation("LeadCreator")
   historyChanger              LeadHistory[]          @relation("HistoryChanger")
   historyNewOwner             LeadHistory[]          @relation("HistoryNewOwner")
   historyOldOwner             LeadHistory[]          @relation("HistoryOldOwner")
@@ -162,11 +167,16 @@ model User {
   createdTeams                Team[]                 @relation("TeamCreator")
   managedTeams                Team[]                 @relation("TeamManager")
   sharedProducts              ProductShare[]
+  branchId                    String?
+  branch                      Branch?                @relation(fields: [branchId], references: [id])
+  managedBranches             Branch[]               @relation("BranchManager")
+  createdPaymentRecords       PaymentRecord[]        @relation("PaymentRecordCreator")
 
   @@index([organisationId])
   @@index([email])
   @@index([role])
   @@index([teamId])
+  @@index([branchId])
 }
 
 model Team {
@@ -205,53 +215,70 @@ model Notification {
 }
 
 model Lead {
-  id                 String            @id @default(uuid())
+  id                 String     @id @default(uuid())
   firstName          String
   lastName           String
   email              String?
   phone              String
+  phoneCountryCode   String? // e.g., "+1", "+91", "+44"
+  country            String? // e.g., "United States", "India", "United Kingdom"
+  countryCode        String? // ISO 3166-1 alpha-2 code, e.g., "US", "IN", "GB"
   company            String?
   jobTitle           String?
   address            Json?
-  source             LeadSource        @default(manual)
+  source             LeadSource @default(manual)
   sourceDetails      Json?
-  leadScore          Int               @default(0)
-  engagementScore    Int               @default(0)
-  qualityScore       Int               @default(0)
-  isHotLead          Boolean           @default(false)
+  leadScore          Int        @default(0)
+  engagementScore    Int        @default(0)
+  qualityScore       Int        @default(0)
+  isHotLead          Boolean    @default(false)
   lastScoredAt       DateTime?
-  status             LeadStatus        @default(new)
+  status             LeadStatus @default(new)
   stage              String?
   customFields       Json?
   activities         Json?
   tags               String[]
-  isDeleted          Boolean           @default(false)
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  isDeleted          Boolean    @default(false)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
   organisationId     String
   assignedToId       String?
   teamId             String?
   managerExplanation String?
   previousOwnerId    String?
-  rotationViolation  Boolean           @default(false)
+  rotationViolation  Boolean    @default(false)
   userExplanation    String?
   violationTime      DateTime?
   nextFollowUp       DateTime?
-  events             CalendarEvent[]
-  checkIns           CheckIn[]
-  interactions       Interaction[]
-  assignedTo         User?             @relation("AssignedTo", fields: [assignedToId], references: [id])
-  organisation       Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  previousOwner      User?             @relation("LeadPreviousOwner", fields: [previousOwnerId], references: [id])
-  history            LeadHistory[]
-  tasks              Task[]
-  emailLists         EmailList[]       @relation("EmailListToLead")
-  whatsAppMessages   WhatsAppMessage[]
-  documents          Document[]
-  pipelineId         String?
-  pipeline           Pipeline?         @relation(fields: [pipelineId], references: [id])
-  potentialValue     Float             @default(0)
-  products           LeadProduct[]
+
+  // Re-enquiry tracking
+  isReEnquiry     Boolean   @default(false)
+  reEnquiryCount  Int       @default(0)
+  lastEnquiryDate DateTime?
+  originalLeadId  String? // Reference to the original lead if this is a duplicate
+
+  events                 CalendarEvent[]
+  checkIns               CheckIn[]
+  interactions           Interaction[]
+  assignedTo             User?             @relation("AssignedTo", fields: [assignedToId], references: [id])
+  organisation           Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  previousOwner          User?             @relation("LeadPreviousOwner", fields: [previousOwnerId], references: [id])
+  createdById            String?
+  createdBy              User?             @relation("LeadCreator", fields: [createdById], references: [id])
+  history                LeadHistory[]
+  tasks                  Task[]
+  emailLists             EmailList[]       @relation("EmailListToLead")
+  whatsAppMessages       WhatsAppMessage[]
+  documents              Document[]
+  pipelineId             String?
+  pipeline               Pipeline?         @relation(fields: [pipelineId], references: [id])
+  potentialValue         Float             @default(0)
+  products               LeadProduct[]
+  convertedAccounts      Account[]         @relation("LeadToAccount")
+  convertedContacts      Contact[]         @relation("LeadToContact")
+  convertedOpportunities Opportunity[]     @relation("LeadToOpportunity")
+  branchId               String?
+  branch                 Branch?           @relation(fields: [branchId], references: [id])
 
   @@unique([phone, organisationId])
   @@index([organisationId])
@@ -260,6 +287,10 @@ model Lead {
   @@index([isDeleted])
   @@index([firstName, lastName])
   @@index([pipelineId])
+  @@index([countryCode])
+  @@index([isReEnquiry])
+  @@index([email])
+  @@index([branchId])
 }
 
 model Account {
@@ -293,10 +324,15 @@ model Account {
   quotes          Quote[]
   tasks           Task[]
   documents       Document[]
+  leadId          String?
+  lead            Lead?            @relation("LeadToAccount", fields: [leadId], references: [id])
   accountProducts AccountProduct[]
+  branchId        String?
+  branch          Branch?          @relation(fields: [branchId], references: [id])
 
   @@index([organisationId])
   @@index([name])
+  @@index([branchId])
 }
 
 model Contact {
@@ -334,10 +370,15 @@ model Contact {
   opportunities    Opportunity[]     @relation("OpportunityContacts")
   whatsAppMessages WhatsAppMessage[]
   documents        Document[]
+  leadId           String?
+  lead             Lead?             @relation("LeadToContact", fields: [leadId], references: [id])
+  branchId         String?
+  branch           Branch?           @relation(fields: [branchId], references: [id])
 
   @@index([organisationId])
   @@index([email])
   @@index([firstName, lastName])
+  @@index([branchId])
 }
 
 model Opportunity {
@@ -368,14 +409,21 @@ model Opportunity {
   tasks          Task[]
   contacts       Contact[]       @relation("OpportunityContacts")
   documents      Document[]
+  leadId         String?
+  lead           Lead?           @relation("LeadToOpportunity", fields: [leadId], references: [id])
   pipelineId     String?
   pipeline       Pipeline?       @relation(fields: [pipelineId], references: [id])
+  emiSchedule    EMISchedule?
+  paymentRecords PaymentRecord[]
   type           OpportunityType @default(NEW_BUSINESS)
+  branchId       String?
+  branch         Branch?         @relation(fields: [branchId], references: [id])
 
   @@index([organisationId])
   @@index([stage])
   @@index([accountId])
   @@index([pipelineId])
+  @@index([branchId])
 }
 
 enum OpportunityType {
@@ -506,11 +554,11 @@ model QuoteLineItem {
 }
 
 model Task {
-  id             String       @id @default(uuid())
+  id             String        @id @default(uuid())
   subject        String
   description    String?
-  status         TaskStatus   @default(not_started)
-  priority       TaskPriority @default(medium)
+  status         TaskStatus    @default(not_started)
+  priority       TaskPriority  @default(medium)
   dueDate        DateTime?
   leadId         String?
   contactId      String?
@@ -518,17 +566,21 @@ model Task {
   opportunityId  String?
   assignedToId   String?
   createdById    String?
-  organisationId String
-  isDeleted      Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  account        Account?     @relation(fields: [accountId], references: [id])
-  assignedTo     User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
-  contact        Contact?     @relation(fields: [contactId], references: [id])
-  createdBy      User?        @relation("TaskCreator", fields: [createdById], references: [id])
-  lead           Lead?        @relation(fields: [leadId], references: [id])
-  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisationId String?
+  isDeleted      Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  account        Account?      @relation(fields: [accountId], references: [id])
+  assignedTo     User?         @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  contact        Contact?      @relation(fields: [contactId], references: [id])
+  createdBy      User?         @relation("TaskCreator", fields: [createdById], references: [id])
+  lead           Lead?         @relation(fields: [leadId], references: [id])
+  opportunity    Opportunity?  @relation(fields: [opportunityId], references: [id])
+  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  branchId       String?
+  branch         Branch?       @relation(fields: [branchId], references: [id])
+
+  @@index([branchId])
 }
 
 model Interaction {
@@ -549,7 +601,9 @@ model Interaction {
   accountId         String?
   opportunityId     String?
   createdById       String?
-  organisationId    String
+  organisationId    String?
+  documentId        String? // Link to Document containing the recording file
+  document          Document?            @relation(fields: [documentId], references: [id])
   isDeleted         Boolean              @default(false)
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt
@@ -558,7 +612,11 @@ model Interaction {
   createdBy         User?                @relation("InteractionCreator", fields: [createdById], references: [id])
   lead              Lead?                @relation(fields: [leadId], references: [id])
   opportunity       Opportunity?         @relation(fields: [opportunityId], references: [id])
-  organisation      Organisation         @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisation      Organisation?        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  branchId          String?
+  branch            Branch?              @relation(fields: [branchId], references: [id])
+
+  @@index([branchId])
 }
 
 model CalendarEvent {
@@ -728,22 +786,30 @@ model SMSTemplate {
 }
 
 model SubscriptionPlan {
-  id           String    @id @default(uuid())
-  name         String    @unique
+  id           String       @id @default(uuid())
+  name         String       @unique
   description  String?
   features     String[]
   price        Float
-  billingType  String    @default("flat_rate")
-  currency     String    @default("INR")
+  billingType  String       @default("flat_rate")
+  pricingModel PricingModel @default(flat_rate)
+  pricePerUser Float? // Used when pricingModel is per_user
+  currency     String       @default("INR")
   durationDays Int
-  maxUsers     Int       @default(1)
-  maxLeads     Int       @default(100)
-  maxContacts  Int       @default(500)
-  maxStorage   Int       @default(1000) // MB
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  maxUsers     Int          @default(1)
+  maxLeads     Int          @default(100)
+  maxContacts  Int          @default(500)
+  maxStorage   Int          @default(1000) // MB
+  isActive     Boolean      @default(true)
+  discount     Float        @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   licenses     License[]
+}
+
+enum PricingModel {
+  per_user
+  flat_rate
 }
 
 model License {
@@ -798,6 +864,13 @@ model AssignmentRule {
   lastAssignedUser   User?        @relation("RuleLastUser", fields: [lastAssignedUserId], references: [id])
   organisation       Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   targetManager      User?        @relation("RuleManager", fields: [targetManagerId], references: [id])
+  branchId           String?
+  branch             Branch?      @relation(fields: [branchId], references: [id])
+  companySize        Int?
+  leadScore          Int?
+  dealValue          Float?
+
+  @@index([branchId])
 }
 
 model SalesTarget {
@@ -1076,13 +1149,7 @@ model LeadHistory {
   @@index([newOwnerId])
 }
 
-enum UserRole {
-  super_admin
-  admin
-  manager
-  sales_rep
-  marketing
-}
+// UserRole enum removed for dynamic roles
 
 enum LeadSource {
   website
@@ -1104,6 +1171,7 @@ enum LeadStatus {
   converted
   lost
   reborn
+  re_enquiry
 }
 
 enum TaskStatus {
@@ -1142,6 +1210,7 @@ model ImportJob {
   errors         Json?
   fileUrl        String?
   mapping        Json?
+  metadata       Json?
   startedAt      DateTime?
   completedAt    DateTime?
   createdById    String
@@ -1351,8 +1420,9 @@ model Document {
   id          String   @id @default(uuid())
   name        String
   description String?
-  fileKey     String // S3/Storage key
-  fileUrl     String // URL or access path
+  fileKey     String // Original filename or identifier
+  fileUrl     String? // Optional: for backward compatibility
+  fileData    Bytes? // Binary file data stored in database
   fileType    String
   fileSize    Int
   category    String?  @default("other")
@@ -1377,7 +1447,8 @@ model Document {
   account   Account? @relation(fields: [accountId], references: [id])
 
   opportunityId String?
-  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
+  opportunity   Opportunity?  @relation(fields: [opportunityId], references: [id])
+  interactions  Interaction[]
 
   @@index([organisationId])
   @@index([leadId])
@@ -1409,4 +1480,140 @@ model ProductShare {
   @@index([slug])
   @@index([organisationId])
   @@index([productId])
+}
+
+model Branch {
+  id             String   @id @default(uuid())
+  name           String
+  location       String?
+  contactEmail   String?
+  contactPhone   String?
+  managerId      String?
+  organisationId String
+  isDeleted      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  manager         User?            @relation("BranchManager", fields: [managerId], references: [id])
+  users           User[]
+  leads           Lead[]
+  contacts        Contact[]
+  opportunities   Opportunity[]
+  accounts        Account[]
+  tasks           Task[]
+  interactions    Interaction[]
+  assignmentRules AssignmentRule[]
+
+  @@index([organisationId])
+}
+
+model SystemSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  group     String   @default("general") // seo, system, etc.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id             String   @id @default(uuid())
+  roleKey        String // internal id like 'sales_rep' or uuid for custom
+  name           String
+  description    String?
+  permissions    String[]
+  isSystemRole   Boolean  @default(false)
+  organisationId String?
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@unique([roleKey, organisationId])
+  @@index([organisationId])
+}
+
+// EMI Payment System Models
+
+model EMISchedule {
+  id              String    @id @default(uuid())
+  opportunityId   String    @unique
+  totalAmount     Float // Remaining amount at time of EMI creation
+  paidAmount      Float     @default(0)
+  remainingAmount Float
+  status          EMIStatus @default(active)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  organisationId  String
+
+  opportunity  Opportunity      @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  organisation Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  installments EMIInstallment[]
+
+  @@index([opportunityId])
+  @@index([status])
+  @@index([organisationId])
+}
+
+enum EMIStatus {
+  active
+  completed
+  cancelled
+}
+
+model EMIInstallment {
+  id                String            @id @default(uuid())
+  scheduleId        String
+  installmentNumber Int
+  amount            Float
+  dueDate           DateTime
+  status            InstallmentStatus @default(pending)
+  paidDate          DateTime?
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  schedule       EMISchedule     @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  paymentRecords PaymentRecord[]
+
+  @@index([scheduleId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+enum InstallmentStatus {
+  pending
+  paid
+  overdue
+  cancelled
+}
+
+model PaymentRecord {
+  id             String      @id @default(uuid())
+  opportunityId  String
+  amount         Float
+  paymentDate    DateTime    @default(now())
+  paymentMethod  String? // cash, card, bank_transfer, etc.
+  paymentType    PaymentType @default(full)
+  installmentId  String?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  createdById    String
+  organisationId String
+
+  opportunity  Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  installment  EMIInstallment? @relation(fields: [installmentId], references: [id])
+  createdBy    User            @relation("PaymentRecordCreator", fields: [createdById], references: [id])
+  organisation Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@index([opportunityId])
+  @@index([installmentId])
+  @@index([organisationId])
+  @@index([paymentDate])
+}
+
+enum PaymentType {
+  full
+  partial
+  installment
 }
