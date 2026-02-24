@@ -72,6 +72,22 @@ rm -f src/services/WhatsAppService.ts
 rm -f src/services/TaskService.ts
 rm -f src/services/NotificationService.ts
 
+# Rename all remaining uppercase service files to lowercase
+echo "🔧 Renaming service files to lowercase..."
+for file in src/services/*Service.ts; do
+  if [ -f "$file" ]; then
+    # Get the base name
+    basename=$(basename "$file")
+    # Convert first letter to lowercase
+    newname=$(echo "$basename" | sed 's/^\(.\)/\L\1/')
+    # Only rename if different
+    if [ "$basename" != "$newname" ]; then
+      mv "$file" "src/services/$newname"
+      echo "  Renamed: $basename -> $newname"
+    fi
+  fi
+done
+
 # Remove package-lock.json to force regeneration with correct versions
 echo "🔄 Regenerating package-lock.json..."
 rm -f package-lock.json
