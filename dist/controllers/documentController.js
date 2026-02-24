@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,7 +10,7 @@ const hierarchyUtils_1 = require("../utils/hierarchyUtils");
  * Get all documents for the organization
  * GET /api/documents
  */
-const getDocuments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDocuments = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -44,7 +35,7 @@ const getDocuments = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 { description: { contains: search, mode: 'insensitive' } }
             ];
         }
-        const documents = yield prisma_1.default.document.findMany({
+        const documents = await prisma_1.default.document.findMany({
             where,
             include: {
                 createdBy: {
@@ -94,18 +85,18 @@ const getDocuments = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.error('[Get Documents] Error:', error);
         res.status(500).json({ message: 'Failed to fetch documents: ' + error.message });
     }
-});
+};
 exports.getDocuments = getDocuments;
 /**
  * Get a single document by ID
  * GET /api/documents/:id
  */
-const getDocumentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDocumentById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { id } = req.params;
-        const document = yield prisma_1.default.document.findFirst({
+        const document = await prisma_1.default.document.findFirst({
             where: {
                 id,
                 organisationId: orgId || user.organisationId,
@@ -135,20 +126,20 @@ const getDocumentById = (req, res) => __awaiter(void 0, void 0, void 0, function
         console.error('[Get Document] Error:', error);
         res.status(500).json({ message: 'Failed to fetch document: ' + error.message });
     }
-});
+};
 exports.getDocumentById = getDocumentById;
 /**
  * Update document metadata
  * PUT /api/documents/:id
  */
-const updateDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateDocument = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { id } = req.params;
         const { name, description, category, tags, leadId, contactId, accountId, opportunityId } = req.body;
         // Check if document exists and belongs to org
-        const existingDoc = yield prisma_1.default.document.findFirst({
+        const existingDoc = await prisma_1.default.document.findFirst({
             where: {
                 id,
                 organisationId: orgId || user.organisationId,
@@ -158,7 +149,7 @@ const updateDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (!existingDoc) {
             return res.status(404).json({ message: 'Document not found' });
         }
-        const document = yield prisma_1.default.document.update({
+        const document = await prisma_1.default.document.update({
             where: { id },
             data: {
                 name: name || existingDoc.name,
@@ -190,19 +181,19 @@ const updateDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.error('[Update Document] Error:', error);
         res.status(500).json({ message: 'Failed to update document: ' + error.message });
     }
-});
+};
 exports.updateDocument = updateDocument;
 /**
  * Delete document (soft delete)
  * DELETE /api/documents/:id
  */
-const deleteDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteDocument = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { id } = req.params;
         // Check if document exists and belongs to org
-        const existingDoc = yield prisma_1.default.document.findFirst({
+        const existingDoc = await prisma_1.default.document.findFirst({
             where: {
                 id,
                 organisationId: orgId || user.organisationId,
@@ -213,7 +204,7 @@ const deleteDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
             return res.status(404).json({ message: 'Document not found' });
         }
         // Soft delete
-        yield prisma_1.default.document.update({
+        await prisma_1.default.document.update({
             where: { id },
             data: { isDeleted: true }
         });
@@ -223,16 +214,16 @@ const deleteDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.error('[Delete Document] Error:', error);
         res.status(500).json({ message: 'Failed to delete document: ' + error.message });
     }
-});
+};
 exports.deleteDocument = deleteDocument;
 /**
  * Download document file from database
  * GET /api/documents/:id/download
  */
-const downloadDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const downloadDocument = async (req, res) => {
     try {
         const { id } = req.params;
-        const document = yield prisma_1.default.document.findFirst({
+        const document = await prisma_1.default.document.findFirst({
             where: {
                 id,
                 isDeleted: false
@@ -261,5 +252,5 @@ const downloadDocument = (req, res) => __awaiter(void 0, void 0, void 0, functio
         console.error('[Download Document] Error:', error);
         res.status(500).json({ message: 'Failed to download document: ' + error.message });
     }
-});
+};
 exports.downloadDocument = downloadDocument;

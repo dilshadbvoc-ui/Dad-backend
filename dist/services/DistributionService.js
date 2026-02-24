@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -57,94 +48,92 @@ exports.DistributionService = {
     /**
      * Assign a lead to a user based on active assignment rules (Round Robin, Top Performer, etc.)
      */
-    assignLead(lead, organisationId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                console.log(`[DistributionService] Attempting to assign lead ${lead.id} (Branch: ${lead.branchId || 'None'})`);
-                // 1. Fetch active rules for this organisation, filtered by branch
-                const rules = yield prisma_1.default.assignmentRule.findMany({
-                    where: {
-                        organisationId: organisationId,
-                        isActive: true,
-                        isDeleted: false,
-                        OR: [
-                            { branchId: lead.branchId }, // Match specific branch
-                            { branchId: null } // OR Global rules
-                        ]
-                    },
-                    orderBy: [
-                        { priority: 'asc' }
+    async assignLead(lead, organisationId) {
+        try {
+            console.log(`[DistributionService] Attempting to assign lead ${lead.id} (Branch: ${lead.branchId || 'None'})`);
+            // 1. Fetch active rules for this organisation, filtered by branch
+            const rules = await prisma_1.default.assignmentRule.findMany({
+                where: {
+                    organisationId: organisationId,
+                    isActive: true,
+                    isDeleted: false,
+                    OR: [
+                        { branchId: lead.branchId }, // Match specific branch
+                        { branchId: null } // OR Global rules
                     ]
-                });
-                if (!rules || rules.length === 0) {
-                    console.log('[DistributionService] No active assignment rules found.');
-                    return null;
-                }
-                // 2. Iterate through rules to find a match
-                for (const rule of rules) {
-                    // strict check: if rule has branchId, it MUST match (already covered by query, but double check)
-                    if (rule.branchId && rule.branchId !== lead.branchId)
-                        continue;
-                    if (this.matchesRule(rule, lead)) {
-                        console.log(`[DistributionService] Matched rule: ${rule.name} (${rule.distributionType})`);
-                        let assignedUserId = null;
-                        // 3. Dispatch based on Distribution Type
-                        switch (rule.distributionType) {
-                            case 'specific_user': {
-                                // Assign directly if defined
-                                const assignTo = rule.assignTo;
-                                if (assignTo && assignTo.value) {
-                                    assignedUserId = assignTo.value;
-                                }
-                                break;
-                            }
-                            case 'round_robin_role':
-                                assignedUserId = yield this.executeRoundRobin(rule, organisationId, lead.branchId);
-                                break;
-                            case 'top_performer':
-                                assignedUserId = yield this.executeTopPerformer(rule, organisationId, lead.branchId);
-                                break;
-                            case 'campaign_users':
-                                // Round-robin among multiple specific users defined in assignTo.users
-                                assignedUserId = yield this.executeCampaignUsers(rule);
-                                break;
-                            default:
-                                console.warn(`[DistributionService] Unsupported distribution type: ${rule.distributionType}`);
-                        }
-                        // 4. If user found, assign and save
-                        if (assignedUserId) {
-                            yield prisma_1.default.lead.update({
-                                where: { id: lead.id },
-                                data: { assignedToId: assignedUserId }
-                            });
-                            // Increment quota tracker
-                            yield this.incrementUserLeadCount(assignedUserId);
-                            // Notify User
-                            this.notifyUser(assignedUserId, lead, organisationId);
-                            console.log(`[DistributionService] Assigned lead to user ${assignedUserId}`);
-                            return assignedUserId;
-                        }
-                        // 5. FALLBACK: If no eligible user found (all at quota), escalate to manager
-                        console.log('[DistributionService] No eligible users found (all at quota). Escalating to manager...');
-                        const managerId = yield this.findManagerForRule(rule);
-                        if (managerId) {
-                            yield prisma_1.default.lead.update({
-                                where: { id: lead.id },
-                                data: { assignedToId: managerId }
-                            });
-                            // Don't increment quota for manager - they'll manually reassign
-                            console.log(`[DistributionService] Escalated to manager ${managerId} for manual assignment`);
-                            return managerId;
-                        }
-                    }
-                }
-                return null; // No rule matched or no user available
-            }
-            catch (error) {
-                console.error('[DistributionService] Error assigning lead:', error);
+                },
+                orderBy: [
+                    { priority: 'asc' }
+                ]
+            });
+            if (!rules || rules.length === 0) {
+                console.log('[DistributionService] No active assignment rules found.');
                 return null;
             }
-        });
+            // 2. Iterate through rules to find a match
+            for (const rule of rules) {
+                // strict check: if rule has branchId, it MUST match (already covered by query, but double check)
+                if (rule.branchId && rule.branchId !== lead.branchId)
+                    continue;
+                if (this.matchesRule(rule, lead)) {
+                    console.log(`[DistributionService] Matched rule: ${rule.name} (${rule.distributionType})`);
+                    let assignedUserId = null;
+                    // 3. Dispatch based on Distribution Type
+                    switch (rule.distributionType) {
+                        case 'specific_user': {
+                            // Assign directly if defined
+                            const assignTo = rule.assignTo;
+                            if (assignTo && assignTo.value) {
+                                assignedUserId = assignTo.value;
+                            }
+                            break;
+                        }
+                        case 'round_robin_role':
+                            assignedUserId = await this.executeRoundRobin(rule, organisationId, lead.branchId);
+                            break;
+                        case 'top_performer':
+                            assignedUserId = await this.executeTopPerformer(rule, organisationId, lead.branchId);
+                            break;
+                        case 'campaign_users':
+                            // Round-robin among multiple specific users defined in assignTo.users
+                            assignedUserId = await this.executeCampaignUsers(rule);
+                            break;
+                        default:
+                            console.warn(`[DistributionService] Unsupported distribution type: ${rule.distributionType}`);
+                    }
+                    // 4. If user found, assign and save
+                    if (assignedUserId) {
+                        await prisma_1.default.lead.update({
+                            where: { id: lead.id },
+                            data: { assignedToId: assignedUserId }
+                        });
+                        // Increment quota tracker
+                        await this.incrementUserLeadCount(assignedUserId);
+                        // Notify User
+                        this.notifyUser(assignedUserId, lead, organisationId);
+                        console.log(`[DistributionService] Assigned lead to user ${assignedUserId}`);
+                        return assignedUserId;
+                    }
+                    // 5. FALLBACK: If no eligible user found (all at quota), escalate to manager
+                    console.log('[DistributionService] No eligible users found (all at quota). Escalating to manager...');
+                    const managerId = await this.findManagerForRule(rule);
+                    if (managerId) {
+                        await prisma_1.default.lead.update({
+                            where: { id: lead.id },
+                            data: { assignedToId: managerId }
+                        });
+                        // Don't increment quota for manager - they'll manually reassign
+                        console.log(`[DistributionService] Escalated to manager ${managerId} for manual assignment`);
+                        return managerId;
+                    }
+                }
+            }
+            return null; // No rule matched or no user available
+        }
+        catch (error) {
+            console.error('[DistributionService] Error assigning lead:', error);
+            return null;
+        }
     },
     /**
      * Check if lead matches the rule criteria
@@ -212,270 +201,256 @@ exports.DistributionService = {
     /**
      * Helper: Get eligible users for a rule (handling scope + quota)
      */
-    getEligibleUsers(rule, organisationId, branchId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const where = {
-                organisationId: organisationId,
-                isActive: true
-            };
-            const targetBranchId = rule.branchId || branchId;
-            if (targetBranchId) {
-                where.branchId = targetBranchId;
+    async getEligibleUsers(rule, organisationId, branchId) {
+        const where = {
+            organisationId: organisationId,
+            isActive: true
+        };
+        const targetBranchId = rule.branchId || branchId;
+        if (targetBranchId) {
+            where.branchId = targetBranchId;
+        }
+        if (rule.targetRole) {
+            where.role = rule.targetRole;
+        }
+        // Handle Scope
+        if (rule.distributionScope === 'direct_subordinates') {
+            if (rule.createdById) {
+                where.reportsToId = rule.createdById;
             }
-            if (rule.targetRole) {
-                where.role = rule.targetRole;
+            else {
+                console.warn('[DistributionService] Rule has direct_subordinates scope but no createdBy user.');
+                return [];
             }
-            // Handle Scope
-            if (rule.distributionScope === 'direct_subordinates') {
-                if (rule.createdById) {
-                    where.reportsToId = rule.createdById;
-                }
-                else {
-                    console.warn('[DistributionService] Rule has direct_subordinates scope but no createdBy user.');
-                    return [];
-                }
-            }
-            const users = yield prisma_1.default.user.findMany({
-                where,
-                include: {
-                    leadQuotaTracking: {
-                        where: {
-                            date: getStartOfToday()
-                        }
-                    }
-                },
-                orderBy: { id: 'asc' }
-            });
-            // Filter out users who have reached their daily quota or are outside working hours
-            return users.filter((user) => {
-                var _a, _b;
-                // 1. Quota Check
-                if (user.dailyLeadQuota) {
-                    const todayCount = ((_b = (_a = user.leadQuotaTracking) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.leadCount) || 0;
-                    if (todayCount >= user.dailyLeadQuota) {
-                        console.log(`[DistributionService] User ${user.id} skipped - quota reached (${todayCount}/${user.dailyLeadQuota})`);
-                        return false;
+        }
+        const users = await prisma_1.default.user.findMany({
+            where,
+            include: {
+                leadQuotaTracking: {
+                    where: {
+                        date: getStartOfToday()
                     }
                 }
-                // 2. Working Hours & Availability Check
-                if (!this.isUserAvailable(user)) {
-                    console.log(`[DistributionService] User ${user.id} skipped - outside working hours or unavailable`);
+            },
+            orderBy: { id: 'asc' }
+        });
+        // Filter out users who have reached their daily quota or are outside working hours
+        return users.filter((user) => {
+            // 1. Quota Check
+            if (user.dailyLeadQuota) {
+                const todayCount = user.leadQuotaTracking?.[0]?.leadCount || 0;
+                if (todayCount >= user.dailyLeadQuota) {
+                    console.log(`[DistributionService] User ${user.id} skipped - quota reached (${todayCount}/${user.dailyLeadQuota})`);
                     return false;
                 }
-                return true;
-            });
+            }
+            // 2. Working Hours & Availability Check
+            if (!this.isUserAvailable(user)) {
+                console.log(`[DistributionService] User ${user.id} skipped - outside working hours or unavailable`);
+                return false;
+            }
+            return true;
         });
     },
     /**
      * Increment user's daily lead count
      */
-    incrementUserLeadCount(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const today = getStartOfToday();
-            yield prisma_1.default.userLeadQuotaTracker.upsert({
-                where: {
-                    userId_date: {
-                        userId,
-                        date: today
-                    }
-                },
-                update: {
-                    leadCount: { increment: 1 }
-                },
-                create: {
+    async incrementUserLeadCount(userId) {
+        const today = getStartOfToday();
+        await prisma_1.default.userLeadQuotaTracker.upsert({
+            where: {
+                userId_date: {
                     userId,
-                    date: today,
-                    leadCount: 1
+                    date: today
                 }
-            });
+            },
+            update: {
+                leadCount: { increment: 1 }
+            },
+            create: {
+                userId,
+                date: today,
+                leadCount: 1
+            }
         });
     },
     /**
      * Find a manager to escalate leads to when all users are at quota.
      * First tries the rule creator's manager, then falls back to any admin.
      */
-    findManagerForRule(rule) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // 1. Try to find the rule creator's manager
-                if (rule.createdById) {
-                    const creator = yield prisma_1.default.user.findUnique({
-                        where: { id: rule.createdById },
-                        select: { reportsToId: true }
-                    });
-                    if (creator === null || creator === void 0 ? void 0 : creator.reportsToId) {
-                        console.log(`[DistributionService] Found manager ${creator.reportsToId} for escalation`);
-                        return creator.reportsToId;
-                    }
-                }
-                // 2. Fallback to target manager if defined on rule
-                if (rule.targetManagerId) {
-                    console.log(`[DistributionService] Using rule target manager ${rule.targetManagerId}`);
-                    return rule.targetManagerId;
-                }
-                // 3. Fallback to any admin in the organisation
-                const admin = yield prisma_1.default.user.findFirst({
-                    where: {
-                        organisationId: rule.organisationId,
-                        role: 'admin',
-                        isActive: true
-                    },
-                    select: { id: true }
+    async findManagerForRule(rule) {
+        try {
+            // 1. Try to find the rule creator's manager
+            if (rule.createdById) {
+                const creator = await prisma_1.default.user.findUnique({
+                    where: { id: rule.createdById },
+                    select: { reportsToId: true }
                 });
-                if (admin) {
-                    console.log(`[DistributionService] Fallback to admin ${admin.id}`);
-                    return admin.id;
+                if (creator?.reportsToId) {
+                    console.log(`[DistributionService] Found manager ${creator.reportsToId} for escalation`);
+                    return creator.reportsToId;
                 }
-                console.warn('[DistributionService] No manager or admin found for escalation');
-                return null;
             }
-            catch (error) {
-                console.error('[DistributionService] Error finding manager:', error);
-                return null;
+            // 2. Fallback to target manager if defined on rule
+            if (rule.targetManagerId) {
+                console.log(`[DistributionService] Using rule target manager ${rule.targetManagerId}`);
+                return rule.targetManagerId;
             }
-        });
+            // 3. Fallback to any admin in the organisation
+            const admin = await prisma_1.default.user.findFirst({
+                where: {
+                    organisationId: rule.organisationId,
+                    role: 'admin',
+                    isActive: true
+                },
+                select: { id: true }
+            });
+            if (admin) {
+                console.log(`[DistributionService] Fallback to admin ${admin.id}`);
+                return admin.id;
+            }
+            console.warn('[DistributionService] No manager or admin found for escalation');
+            return null;
+        }
+        catch (error) {
+            console.error('[DistributionService] Error finding manager:', error);
+            return null;
+        }
     },
     /**
      * Round Robin Logic: Find next user in the role
      */
-    executeRoundRobin(rule, organisationId, branchId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                if (!rule.targetRole)
-                    return null;
-                // Fetch eligible users using helper
-                const users = yield this.getEligibleUsers(rule, organisationId, branchId);
-                if (users.length === 0)
-                    return null;
-                // Find index of last assigned user
-                let nextIndex = 0;
-                if (rule.lastAssignedUserId) {
-                    const lastIndex = users.findIndex((u) => u.id === rule.lastAssignedUserId);
-                    if (lastIndex !== -1) {
-                        nextIndex = (lastIndex + 1) % users.length;
-                    }
-                }
-                const nextUser = users[nextIndex];
-                // Update rule state
-                yield prisma_1.default.assignmentRule.update({
-                    where: { id: rule.id },
-                    data: { lastAssignedUserId: nextUser.id }
-                });
-                return nextUser.id;
-            }
-            catch (e) {
-                console.error('[DistributionService] RR Error:', e);
+    async executeRoundRobin(rule, organisationId, branchId) {
+        try {
+            if (!rule.targetRole)
                 return null;
+            // Fetch eligible users using helper
+            const users = await this.getEligibleUsers(rule, organisationId, branchId);
+            if (users.length === 0)
+                return null;
+            // Find index of last assigned user
+            let nextIndex = 0;
+            if (rule.lastAssignedUserId) {
+                const lastIndex = users.findIndex((u) => u.id === rule.lastAssignedUserId);
+                if (lastIndex !== -1) {
+                    nextIndex = (lastIndex + 1) % users.length;
+                }
             }
-        });
+            const nextUser = users[nextIndex];
+            // Update rule state
+            await prisma_1.default.assignmentRule.update({
+                where: { id: rule.id },
+                data: { lastAssignedUserId: nextUser.id }
+            });
+            return nextUser.id;
+        }
+        catch (e) {
+            console.error('[DistributionService] RR Error:', e);
+            return null;
+        }
     },
     /**
      * Top Performer Logic: Find user with most Sales (Closed Won Opportunities)
      */
-    executeTopPerformer(rule, organisationId, branchId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                if (!rule.targetRole)
-                    return null;
-                // Fetch eligible users
-                const users = yield this.getEligibleUsers(rule, organisationId, branchId);
-                if (users.length === 0)
-                    return null;
-                // 30 Days lookback window
-                const startDate = new Date();
-                startDate.setDate(startDate.getDate() - 30);
-                // Group By Owner and Sum Amount
-                const topPerformer = yield prisma_1.default.opportunity.groupBy({
-                    by: ['ownerId'],
-                    where: {
-                        organisationId: organisationId,
-                        ownerId: { in: users.map(u => u.id) },
-                        stage: 'closed_won',
-                        createdAt: { gte: startDate }
-                    },
-                    _sum: {
-                        amount: true
-                    },
-                    orderBy: {
-                        _sum: {
-                            amount: 'desc'
-                        }
-                    },
-                    take: 1
-                });
-                if (topPerformer.length > 0 && topPerformer[0].ownerId) {
-                    return topPerformer[0].ownerId; // ownerId can be null if not filtered properly, but query has ownerId in list
-                }
-                // Fallback: If no sales data, pick random or first user
-                return users[0].id;
-            }
-            catch (e) {
-                console.error('[DistributionService] Top Performer Error:', e);
+    async executeTopPerformer(rule, organisationId, branchId) {
+        try {
+            if (!rule.targetRole)
                 return null;
+            // Fetch eligible users
+            const users = await this.getEligibleUsers(rule, organisationId, branchId);
+            if (users.length === 0)
+                return null;
+            // 30 Days lookback window
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 30);
+            // Group By Owner and Sum Amount
+            const topPerformer = await prisma_1.default.opportunity.groupBy({
+                by: ['ownerId'],
+                where: {
+                    organisationId: organisationId,
+                    ownerId: { in: users.map(u => u.id) },
+                    stage: 'closed_won',
+                    createdAt: { gte: startDate }
+                },
+                _sum: {
+                    amount: true
+                },
+                orderBy: {
+                    _sum: {
+                        amount: 'desc'
+                    }
+                },
+                take: 1
+            });
+            if (topPerformer.length > 0 && topPerformer[0].ownerId) {
+                return topPerformer[0].ownerId; // ownerId can be null if not filtered properly, but query has ownerId in list
             }
-        });
+            // Fallback: If no sales data, pick random or first user
+            return users[0].id;
+        }
+        catch (e) {
+            console.error('[DistributionService] Top Performer Error:', e);
+            return null;
+        }
     },
     /**
      * Campaign Users: Round-robin among multiple specific users defined for a campaign
      * The assignTo field should be: { users: ["userId1", "userId2", "userId3"] }
      */
-    executeCampaignUsers(rule) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const assignTo = rule.assignTo;
-                if (!assignTo || !assignTo.users || !Array.isArray(assignTo.users) || assignTo.users.length === 0) {
-                    console.warn('[DistributionService] Campaign rule has no users defined');
-                    return null;
-                }
-                const userIds = assignTo.users;
-                const today = getStartOfToday();
-                // Fetch users with their quota info for today
-                const users = yield prisma_1.default.user.findMany({
-                    where: {
-                        id: { in: userIds },
-                        isActive: true
-                    },
-                    include: {
-                        leadQuotaTracking: {
-                            where: { date: today }
-                        }
-                    }
-                });
-                // Filter out users at quota or outside working hours
-                const eligibleUsers = users.filter((user) => {
-                    var _a, _b;
-                    if (user.dailyLeadQuota) {
-                        const todayCount = ((_b = (_a = user.leadQuotaTracking) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.leadCount) || 0;
-                        if (todayCount >= user.dailyLeadQuota)
-                            return false;
-                    }
-                    return this.isUserAvailable(user);
-                });
-                if (eligibleUsers.length === 0) {
-                    console.log('[DistributionService] All campaign users at quota or unavailable');
-                    return null;
-                }
-                // Round-robin among eligible users
-                let nextIndex = 0;
-                if (rule.lastAssignedUserId) {
-                    const lastIndex = eligibleUsers.findIndex((u) => u.id === rule.lastAssignedUserId);
-                    if (lastIndex !== -1) {
-                        nextIndex = (lastIndex + 1) % eligibleUsers.length;
-                    }
-                }
-                const nextUser = eligibleUsers[nextIndex];
-                // Update rule state
-                yield prisma_1.default.assignmentRule.update({
-                    where: { id: rule.id },
-                    data: { lastAssignedUserId: nextUser.id }
-                });
-                return nextUser.id;
-            }
-            catch (e) {
-                console.error('[DistributionService] Campaign Users Error:', e);
+    async executeCampaignUsers(rule) {
+        try {
+            const assignTo = rule.assignTo;
+            if (!assignTo || !assignTo.users || !Array.isArray(assignTo.users) || assignTo.users.length === 0) {
+                console.warn('[DistributionService] Campaign rule has no users defined');
                 return null;
             }
-        });
+            const userIds = assignTo.users;
+            const today = getStartOfToday();
+            // Fetch users with their quota info for today
+            const users = await prisma_1.default.user.findMany({
+                where: {
+                    id: { in: userIds },
+                    isActive: true
+                },
+                include: {
+                    leadQuotaTracking: {
+                        where: { date: today }
+                    }
+                }
+            });
+            // Filter out users at quota or outside working hours
+            const eligibleUsers = users.filter((user) => {
+                if (user.dailyLeadQuota) {
+                    const todayCount = user.leadQuotaTracking?.[0]?.leadCount || 0;
+                    if (todayCount >= user.dailyLeadQuota)
+                        return false;
+                }
+                return this.isUserAvailable(user);
+            });
+            if (eligibleUsers.length === 0) {
+                console.log('[DistributionService] All campaign users at quota or unavailable');
+                return null;
+            }
+            // Round-robin among eligible users
+            let nextIndex = 0;
+            if (rule.lastAssignedUserId) {
+                const lastIndex = eligibleUsers.findIndex((u) => u.id === rule.lastAssignedUserId);
+                if (lastIndex !== -1) {
+                    nextIndex = (lastIndex + 1) % eligibleUsers.length;
+                }
+            }
+            const nextUser = eligibleUsers[nextIndex];
+            // Update rule state
+            await prisma_1.default.assignmentRule.update({
+                where: { id: rule.id },
+                data: { lastAssignedUserId: nextUser.id }
+            });
+            return nextUser.id;
+        }
+        catch (e) {
+            console.error('[DistributionService] Campaign Users Error:', e);
+            return null;
+        }
     },
     /**
      * Check if user is currently within their working hours
@@ -508,27 +483,25 @@ exports.DistributionService = {
     /**
      * Notify user of new lead assignment via WhatsApp
      */
-    notifyUser(userId, lead, organisationId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield prisma_1.default.user.findUnique({
-                    where: { id: userId },
-                    select: { phone: true, firstName: true }
-                });
-                if (!(user === null || user === void 0 ? void 0 : user.phone))
-                    return;
-                // Lazy load WhatsAppService
-                const { WhatsAppService } = yield Promise.resolve().then(() => __importStar(require('./WhatsAppService')));
-                const waClient = yield WhatsAppService.getClientForOrg(organisationId);
-                if (!waClient)
-                    return;
-                const message = `Hi ${user.firstName}, New Lead Assigned!\n\nName: ${lead.firstName} ${lead.lastName}\nCompany: ${lead.company || 'N/A'}\n\nPlease check the CRM for details.`;
-                yield waClient.sendTextMessage(user.phone, message);
-                console.log(`[DistributionService] Notification sent to ${user.phone}`);
-            }
-            catch (error) {
-                console.error('[DistributionService] Failed to notify user:', error);
-            }
-        });
+    async notifyUser(userId, lead, organisationId) {
+        try {
+            const user = await prisma_1.default.user.findUnique({
+                where: { id: userId },
+                select: { phone: true, firstName: true }
+            });
+            if (!user?.phone)
+                return;
+            // Lazy load WhatsAppService
+            const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./WhatsAppService')));
+            const waClient = await WhatsAppService.getClientForOrg(organisationId);
+            if (!waClient)
+                return;
+            const message = `Hi ${user.firstName}, New Lead Assigned!\n\nName: ${lead.firstName} ${lead.lastName}\nCompany: ${lead.company || 'N/A'}\n\nPlease check the CRM for details.`;
+            await waClient.sendTextMessage(user.phone, message);
+            console.log(`[DistributionService] Notification sent to ${user.phone}`);
+        }
+        catch (error) {
+            console.error('[DistributionService] Failed to notify user:', error);
+        }
     }
 };

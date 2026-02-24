@@ -32,26 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -62,9 +42,10 @@ const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const DistributionService_1 = require("../services/DistributionService");
 const WorkflowEngine_1 = require("../services/WorkflowEngine");
 const client_1 = require("../generated/client");
+const roleUtils_1 = require("../utils/roleUtils");
 // Dynamic import used for OpenAI to avoid startup errors if missing
 // GET /api/leads
-const getLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeads = async (req, res) => {
     try {
         console.log('[getLeads] Query Params:', req.query); // DEBUG LOG
         const pageSize = Number(req.query.pageSize) || 10;
@@ -74,7 +55,7 @@ const getLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const andConditions = [];
         console.log('[getLeads] User:', user.id, user.role); // DEBUG LOG
         // 1. Organisation Scoping
-        if (user.role === 'super_admin') {
+        if (user.isSuperAdmin || (0, roleUtils_1.isSuperAdmin)(user)) {
             if (req.query.organisationId)
                 where.organisationId = req.query.organisationId;
         }
@@ -83,21 +64,43 @@ const getLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            // Branch filtering
-            if (user.branchId) {
-                where.branchId = user.branchId;
-            }
         }
         // 2. Hierarchy Visibility
-        if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            // Show leads assigned to user/subordinates OR created by user
-            andConditions.push({
-                OR: [
-                    { assignedToId: { in: [...subordinateIds, user.id] } },
-                    { createdById: user.id }
-                ]
-            });
+        // Only apply hierarchy restrictions for non-admin users
+        if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user) && !(0, roleUtils_1.isAdmin)(user)) {
+            // Get user's role to determine visibility rules
+            // Handle both UUID-based roles (new) and string-based roles (legacy)
+            let roleName = '';
+            // Try to get role from Role table (UUID-based)
+            const userRole = await prisma_1.default.role.findUnique({ where: { id: user.role } });
+            if (userRole) {
+                roleName = userRole.name;
+            }
+            else {
+                // Fallback to legacy string-based role
+                // Normalize: 'sales_rep' -> 'Sales Rep', 'manager' -> 'Manager'
+                roleName = user.role.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            }
+            // Sales Reps: Only see leads assigned to them or created by them
+            if (roleName === 'Sales Rep') {
+                andConditions.push({
+                    OR: [
+                        { assignedToId: user.id }, // Directly assigned to this user
+                        { createdById: user.id } // Created by user
+                    ]
+                });
+            }
+            else {
+                // Managers: Only see leads assigned to them or their direct subordinates
+                const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+                andConditions.push({
+                    OR: [
+                        { assignedToId: user.id }, // Directly assigned to this user
+                        { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } }, // Assigned to subordinates
+                        { createdById: user.id } // Created by user
+                    ]
+                });
+            }
         }
         // Filter: Status
         if (req.query.status && Object.values(client_1.LeadStatus).includes(req.query.status)) {
@@ -128,8 +131,8 @@ const getLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             where.AND = andConditions;
         }
         console.log('[getLeads] Prisma Where:', JSON.stringify(where, null, 2)); // DEBUG LOG
-        const total = yield prisma_1.default.lead.count({ where });
-        const leads = yield prisma_1.default.lead.findMany({
+        const total = await prisma_1.default.lead.count({ where });
+        const leads = await prisma_1.default.lead.findMany({
             where,
             include: {
                 assignedTo: {
@@ -138,7 +141,7 @@ const getLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             },
             skip: (page - 1) * pageSize,
             take: pageSize,
-            orderBy: { createdAt: 'desc' }
+            orderBy: { updatedAt: 'desc' }
         });
         res.json({ leads, page, pages: Math.ceil(total / pageSize), total });
     }
@@ -147,10 +150,10 @@ const getLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Return 500 but include error message for debugging
         res.status(500).json({ message: error.message, stack: process.env.NODE_ENV === 'development' ? error.stack : undefined });
     }
-});
+};
 exports.getLeads = getLeads;
 // POST /api/leads
-const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createLead = async (req, res) => {
     try {
         const { email, phone } = req.body;
         if (!phone)
@@ -164,8 +167,8 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = yield Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
-        const duplicateCheck = yield DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
             const reEnquiryData = {
@@ -177,7 +180,7 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 source: req.body.source,
                 sourceDetails: req.body.sourceDetails
             };
-            const updatedLead = yield DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, reEnquiryData, orgId);
+            const updatedLead = await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, reEnquiryData, orgId);
             return res.status(200).json({
                 message: 'Lead already exists. Marked as re-enquiry and notifications sent.',
                 lead: updatedLead,
@@ -187,7 +190,7 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         // Extract assignedTo before spreading
-        const _a = req.body, { assignedTo, branchId } = _a, restBody = __rest(_a, ["assignedTo", "branchId"]);
+        const { assignedTo, branchId, ...restBody } = req.body;
         const currentUser = req.user;
         // For manual lead creation: creator owns the lead unless explicitly assigned to someone else
         // If assignedTo is provided, use it; otherwise assign to the creator
@@ -195,10 +198,10 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
-            const { GeoLocationService } = yield Promise.resolve().then(() => __importStar(require('../services/GeoLocationService')));
+            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/GeoLocationService')));
             const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress;
             if (ipAddress) {
-                geoData = yield GeoLocationService.detectCountryFromIP(ipAddress);
+                geoData = await GeoLocationService.detectCountryFromIP(ipAddress);
             }
             // Fallback: Try to detect from phone number
             if (!geoData && cleanPhone) {
@@ -207,15 +210,26 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = yield Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
-            yield CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
         // Create
-        const lead = yield prisma_1.default.lead.create({
-            data: Object.assign(Object.assign({}, restBody), { phone: cleanPhone, country: req.body.country || (geoData === null || geoData === void 0 ? void 0 : geoData.country) || undefined, countryCode: req.body.countryCode || (geoData === null || geoData === void 0 ? void 0 : geoData.countryCode) || undefined, phoneCountryCode: req.body.phoneCountryCode || (geoData === null || geoData === void 0 ? void 0 : geoData.phoneCountryCode) || undefined, organisation: { connect: { id: orgId } }, branch: currentUser.branchId ? { connect: { id: currentUser.branchId } } : (branchId ? { connect: { id: branchId } } : undefined), 
+        const lead = await prisma_1.default.lead.create({
+            data: {
+                ...restBody,
+                phone: cleanPhone,
+                country: req.body.country || geoData?.country || undefined,
+                countryCode: req.body.countryCode || geoData?.countryCode || undefined,
+                phoneCountryCode: req.body.phoneCountryCode || geoData?.phoneCountryCode || undefined,
+                organisation: { connect: { id: orgId } },
+                branch: currentUser.branchId ? { connect: { id: currentUser.branchId } } : (branchId ? { connect: { id: branchId } } : undefined),
                 // Assign to creator by default, or to specified user
-                assignedTo: { connect: { id: leadOwnerId } }, source: req.body.source || client_1.LeadSource.manual, status: req.body.status || client_1.LeadStatus.new, potentialValue: req.body.potentialValue ? parseFloat(req.body.potentialValue) : 0, createdBy: { connect: { id: currentUser.id } } // Track creator for visibility
-             })
+                assignedTo: { connect: { id: leadOwnerId } },
+                source: req.body.source || client_1.LeadSource.manual,
+                status: req.body.status || client_1.LeadStatus.new,
+                potentialValue: req.body.potentialValue ? parseFloat(req.body.potentialValue) : 0,
+                createdBy: { connect: { id: currentUser.id } } // Track creator for visibility
+            }
         });
         // 3a. Handle Products if provided (products field is optional)
         if (req.body.products !== undefined && Array.isArray(req.body.products)) {
@@ -228,12 +242,12 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                     if (!item.productId) {
                         continue; // Skip invalid items
                     }
-                    const product = yield prisma_1.default.product.findUnique({ where: { id: item.productId } });
+                    const product = await prisma_1.default.product.findUnique({ where: { id: item.productId } });
                     if (product) {
                         const price = product.basePrice || 0;
                         const quantity = item.quantity || 1;
                         totalValue += price * quantity;
-                        yield prisma_1.default.leadProduct.create({
+                        await prisma_1.default.leadProduct.create({
                             data: {
                                 leadId: lead.id,
                                 productId: item.productId,
@@ -245,7 +259,7 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 }
                 // Update lead with calculated value if products were added
                 if (totalValue > 0) {
-                    yield prisma_1.default.lead.update({
+                    await prisma_1.default.lead.update({
                         where: { id: lead.id },
                         data: { potentialValue: totalValue }
                     });
@@ -255,7 +269,7 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_LEAD',
                 entity: 'Lead',
@@ -271,11 +285,11 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // Enable Distribution only if no explicit assignment was made
         // This allows assignment rules to work for automated leads, but respects manual assignments
         if (!assignedTo) {
-            yield DistributionService_1.DistributionService.assignLead(lead, orgId);
+            await DistributionService_1.DistributionService.assignLead(lead, orgId);
         }
         // Trigger Workflow Engine for lead creation
         try {
-            yield WorkflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId);
+            await WorkflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId);
             Promise.resolve().then(() => __importStar(require('../services/WebhookService'))).then(({ WebhookService }) => {
                 WebhookService.triggerEvent('lead.created', lead, orgId).catch(console.error);
             });
@@ -315,22 +329,53 @@ const createLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.error('createLead Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createLead = createLead;
-const getLeadById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeadById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const where = { id: req.params.id, isDeleted: false };
-        if (user.role !== 'super_admin') {
+        // Organization scoping
+        if (user.isSuperAdmin || (0, roleUtils_1.isSuperAdmin)(user)) {
+            // Super admins can see any lead
+        }
+        else {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId) {
-                where.branchId = user.branchId;
+            // Apply role-based visibility for non-admins
+            if (!(0, roleUtils_1.isAdmin)(user)) {
+                // Get user's role to determine visibility rules
+                // Handle both UUID-based roles (new) and string-based roles (legacy)
+                let roleName = '';
+                const userRole = await prisma_1.default.role.findUnique({ where: { id: user.role } });
+                if (userRole) {
+                    roleName = userRole.name;
+                }
+                else {
+                    // Fallback to legacy string-based role
+                    roleName = user.role.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                }
+                // Sales Reps: Only see leads assigned to them or created by them
+                if (roleName === 'Sales Rep') {
+                    where.OR = [
+                        { assignedToId: user.id },
+                        { createdById: user.id }
+                    ];
+                }
+                else {
+                    // Managers: Only see leads assigned to them or their direct subordinates
+                    const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+                    where.OR = [
+                        { assignedToId: user.id },
+                        { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } },
+                        { createdById: user.id }
+                    ];
+                }
             }
         }
-        const lead = yield prisma_1.default.lead.findFirst({
+        const lead = await prisma_1.default.lead.findFirst({
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
@@ -344,24 +389,23 @@ const getLeadById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getLeadById = getLeadById;
-const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const updateLead = async (req, res) => {
     try {
-        const updates = Object.assign({}, req.body);
+        const updates = { ...req.body };
         const leadId = req.params.id;
         const requester = req.user;
         let historyData = null;
         // Fetch current lead to check for ownership change
-        const currentLead = yield prisma_1.default.lead.findUnique({ where: { id: leadId } });
+        const currentLead = await prisma_1.default.lead.findUnique({ where: { id: leadId } });
         if (!currentLead)
             return res.status(404).json({ message: 'Lead not found' });
         // Hierarchy Check
         if (updates.assignedToId || updates.assignedTo) { // Handle payload differences
             const targetUserId = updates.assignedToId || updates.assignedTo; // Assuming ID string
-            if (requester.role !== 'super_admin' && requester.role !== 'admin') {
-                const allowedIds = yield (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
+            if (!requester.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(requester) && !(0, roleUtils_1.isAdmin)(requester)) {
+                const allowedIds = await (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
                 // If passing an object (legacy), extract ID?? Usually frontend sends ID string for update.
                 // Let's assume ID string.
                 if (typeof targetUserId === 'string' && !allowedIds.includes(targetUserId)) {
@@ -384,7 +428,7 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'LEAD_STATUS_CHANGE',
                 entity: 'Lead',
@@ -396,7 +440,7 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // Track Follow-up Change
         if (updates.nextFollowUp) {
-            yield prisma_1.default.interaction.create({
+            await prisma_1.default.interaction.create({
                 data: {
                     leadId: leadId,
                     type: 'other',
@@ -408,8 +452,8 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         if (updates.customFields) {
-            const { CustomFieldValidationService } = yield Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
-            yield CustomFieldValidationService.validateFields('Lead', currentLead.organisationId, updates.customFields);
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            await CustomFieldValidationService.validateFields('Lead', currentLead.organisationId, updates.customFields);
         }
         const whereObj = { id: leadId };
         if (requester.role !== 'super_admin') {
@@ -421,9 +465,9 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 whereObj.branchId = requester.branchId;
         }
         // Remove products from updates as it's handled separately
-        const { products } = updates, leadUpdates = __rest(updates, ["products"]);
+        const { products, ...leadUpdates } = updates;
         // Update Lead Basic Info
-        const [lead] = yield prisma_1.default.$transaction([
+        const [lead] = await prisma_1.default.$transaction([
             prisma_1.default.lead.update({
                 where: whereObj,
                 data: leadUpdates,
@@ -436,7 +480,7 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (req.body.products !== undefined && Array.isArray(req.body.products)) {
             const productItems = req.body.products;
             // 1. Clear existing products (simplest approach for full replace)
-            yield prisma_1.default.leadProduct.deleteMany({ where: { leadId } });
+            await prisma_1.default.leadProduct.deleteMany({ where: { leadId } });
             // 2. Add new products and calculate value (only if products array is not empty)
             let totalValue = 0;
             if (productItems.length > 0) {
@@ -445,12 +489,12 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                     if (!item.productId) {
                         continue; // Skip invalid items
                     }
-                    const product = yield prisma_1.default.product.findUnique({ where: { id: item.productId } });
+                    const product = await prisma_1.default.product.findUnique({ where: { id: item.productId } });
                     if (product) {
                         const price = product.basePrice || 0;
                         const quantity = item.quantity || 1;
                         totalValue += price * quantity;
-                        yield prisma_1.default.leadProduct.create({
+                        await prisma_1.default.leadProduct.create({
                             data: {
                                 leadId,
                                 productId: item.productId,
@@ -462,7 +506,7 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 }
             }
             // 3. Update Lead Value
-            finalLead = yield prisma_1.default.lead.update({
+            finalLead = await prisma_1.default.lead.update({
                 where: { id: leadId },
                 data: { potentialValue: totalValue },
                 include: {
@@ -472,12 +516,12 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
             // Log History for Value Change
             if (currentLead.potentialValue !== totalValue) {
-                yield prisma_1.default.leadHistory.create({
+                await prisma_1.default.leadHistory.create({
                     data: {
                         leadId,
                         changedById: requester.id,
                         fieldName: 'potentialValue',
-                        oldValue: ((_a = currentLead.potentialValue) === null || _a === void 0 ? void 0 : _a.toString()) || '0',
+                        oldValue: currentLead.potentialValue?.toString() || '0',
                         newValue: totalValue.toString()
                     }
                 });
@@ -485,7 +529,7 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // Audit Log for update
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'UPDATE_LEAD',
                 entity: 'Lead',
@@ -513,9 +557,9 @@ const updateLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.updateLead = updateLead;
-const deleteLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteLead = async (req, res) => {
     try {
         const user = req.user;
         const leadId = req.params.id;
@@ -523,7 +567,7 @@ const deleteLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Not authorized to delete leads' });
         }
-        const lead = yield prisma_1.default.lead.findUnique({ where: { id: leadId } });
+        const lead = await prisma_1.default.lead.findUnique({ where: { id: leadId } });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
         // Org Check
@@ -533,7 +577,7 @@ const deleteLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 return res.status(403).json({ message: 'Not authorized to delete this lead' });
             }
         }
-        yield prisma_1.default.$transaction([
+        await prisma_1.default.$transaction([
             prisma_1.default.lead.update({
                 where: { id: leadId },
                 data: { isDeleted: true }
@@ -554,7 +598,7 @@ const deleteLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         ]);
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'DELETE_LEAD',
                 entity: 'Lead',
@@ -572,10 +616,9 @@ const deleteLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteLead = deleteLead;
-const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const createBulkLeads = async (req, res) => {
     try {
         const leadsData = req.body;
         const user = req.user;
@@ -586,9 +629,9 @@ const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { AssignmentRuleService } = yield Promise.resolve().then(() => __importStar(require('../services/AssignmentRuleService')));
-        const { GeoLocationService } = yield Promise.resolve().then(() => __importStar(require('../services/GeoLocationService')));
-        const { DuplicateLeadService } = yield Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const { AssignmentRuleService } = await Promise.resolve().then(() => __importStar(require('../services/AssignmentRuleService')));
+        const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/GeoLocationService')));
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
@@ -596,15 +639,15 @@ const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
         for (const l of leadsData) {
             try {
                 // Sanitize phone
-                let cleanPhone = ((_a = l.phone) === null || _a === void 0 ? void 0 : _a.toString().replace(/\D/g, '')) || '';
+                let cleanPhone = l.phone?.toString().replace(/\D/g, '') || '';
                 if (cleanPhone.length > 10) {
                     cleanPhone = cleanPhone.slice(-10);
                 }
                 // Check for duplicates
-                const duplicateCheck = yield DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId);
+                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId);
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                     // Handle as re-enquiry
-                    yield DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
+                    await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
                         firstName: l.firstName,
                         lastName: l.lastName || '',
                         email: l.email,
@@ -625,7 +668,7 @@ const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
                 let finalOwnerId = l.assignedTo;
                 // If no owner specified, apply assignment rules
                 if (!finalOwnerId) {
-                    finalOwnerId = (yield AssignmentRuleService.assignLead(l, orgId, l.branchId || user.branchId || undefined)) || undefined;
+                    finalOwnerId = await AssignmentRuleService.assignLead(l, orgId, l.branchId || user.branchId || undefined) || undefined;
                 }
                 const data = {
                     firstName: l.firstName,
@@ -633,9 +676,9 @@ const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
                     phone: cleanPhone,
                     email: l.email,
                     company: l.company,
-                    country: l.country || (geoData === null || geoData === void 0 ? void 0 : geoData.country) || undefined,
-                    countryCode: l.countryCode || (geoData === null || geoData === void 0 ? void 0 : geoData.countryCode) || undefined,
-                    phoneCountryCode: l.phoneCountryCode || (geoData === null || geoData === void 0 ? void 0 : geoData.phoneCountryCode) || undefined,
+                    country: l.country || geoData?.country || undefined,
+                    countryCode: l.countryCode || geoData?.countryCode || undefined,
+                    phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                     organisationId: orgId,
                     assignedToId: finalOwnerId || user.id,
                     branchId: l.branchId || user.branchId, // Support explicit branch or inherit from user
@@ -643,7 +686,7 @@ const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
                     status: l.status || client_1.LeadStatus.new,
                     leadScore: l.leadScore || 0
                 };
-                const lead = yield prisma_1.default.lead.create({ data });
+                const lead = await prisma_1.default.lead.create({ data });
                 // AI Scoring
                 Promise.resolve().then(() => __importStar(require('../services/LeadScoringService'))).then(({ LeadScoringService }) => {
                     LeadScoringService.scoreLead(lead.id).catch(console.error);
@@ -666,19 +709,19 @@ const createBulkLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.createBulkLeads = createBulkLeads;
-const bulkAssignLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkAssignLeads = async (req, res) => {
     try {
         const { leadIds, assignedTo } = req.body;
         const requester = req.user;
         if (requester.role !== 'super_admin' && requester.role !== 'admin') {
-            const allowedIds = yield (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
+            const allowedIds = await (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
             if (!allowedIds.includes(assignedTo)) {
                 return res.status(403).json({ message: 'Forbidden assignment' });
             }
         }
-        const result = yield prisma_1.default.lead.updateMany({
+        const result = await prisma_1.default.lead.updateMany({
             where: { id: { in: leadIds } },
             data: { assignedToId: assignedTo }
         });
@@ -687,9 +730,9 @@ const bulkAssignLeads = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.bulkAssignLeads = bulkAssignLeads;
-const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const convertLead = async (req, res) => {
     try {
         const { id } = req.params;
         const leadId = id;
@@ -698,7 +741,7 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation context' });
-        const lead = yield prisma_1.default.lead.findUnique({
+        const lead = await prisma_1.default.lead.findUnique({
             where: { id: leadId },
             include: {
                 organisation: true,
@@ -727,7 +770,7 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // 0. Limit Check
         const org = lead.organisation;
         if (org.contactLimit > 0) {
-            const contactCount = yield prisma_1.default.contact.count({
+            const contactCount = await prisma_1.default.contact.count({
                 where: { organisationId: orgId, isDeleted: false }
             });
             if (contactCount >= org.contactLimit) {
@@ -738,18 +781,18 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 });
             }
         }
-        const result = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = await prisma_1.default.$transaction(async (tx) => {
             // 1. Handle Account
             let targetAccountId = accountId;
             let account;
             if (targetAccountId) {
-                account = yield tx.account.findUnique({ where: { id: targetAccountId } });
+                account = await tx.account.findUnique({ where: { id: targetAccountId } });
                 if (!account)
                     throw new Error('Target account not found');
             }
             else {
                 // Create new Account
-                account = yield tx.account.create({
+                account = await tx.account.create({
                     data: {
                         name: lead.company || `${lead.firstName} ${lead.lastName}`,
                         organisationId: orgId,
@@ -764,7 +807,7 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 targetAccountId = account.id;
             }
             // 2. Create Contact
-            const contact = yield tx.contact.create({
+            const contact = await tx.contact.create({
                 data: {
                     firstName: lead.firstName,
                     lastName: lead.lastName,
@@ -781,7 +824,7 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
             // 3. Create Opportunity
-            const opportunity = yield tx.opportunity.create({
+            const opportunity = await tx.opportunity.create({
                 data: {
                     name: dealName || `Deal - ${lead.company || lead.lastName}`,
                     amount: opportunityAmount,
@@ -796,14 +839,14 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
             // 4. Migrate Products from Lead to Account
-            const leadProducts = yield tx.leadProduct.findMany({
+            const leadProducts = await tx.leadProduct.findMany({
                 where: { leadId: leadId },
                 include: { product: true }
             });
             if (leadProducts.length > 0) {
                 // Create AccountProduct entries for each LeadProduct
                 for (const leadProduct of leadProducts) {
-                    yield tx.accountProduct.create({
+                    await tx.accountProduct.create({
                         data: {
                             accountId: targetAccountId,
                             productId: leadProduct.productId,
@@ -817,14 +860,14 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             }
             // 5. Update Lead
-            const updatedLead = yield tx.lead.update({
+            const updatedLead = await tx.lead.update({
                 where: { id: leadId },
                 data: {
                     status: client_1.LeadStatus.converted
                 }
             });
             // 6. Migrate Interactions
-            yield tx.interaction.updateMany({
+            await tx.interaction.updateMany({
                 where: { leadId: leadId },
                 data: {
                     contactId: contact.id,
@@ -832,14 +875,14 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
             // 7. Migrate WhatsApp Messages
-            yield tx.whatsAppMessage.updateMany({
+            await tx.whatsAppMessage.updateMany({
                 where: { leadId: leadId },
                 data: {
                     contactId: contact.id
                 }
             });
             // 8. Migrate Tasks
-            yield tx.task.updateMany({
+            await tx.task.updateMany({
                 where: { leadId: leadId },
                 data: {
                     leadId: null, // Unlink from lead
@@ -848,10 +891,10 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
             return { account, contact, opportunity, lead: updatedLead, migratedProducts: leadProducts.length };
-        }));
+        });
         // Audit Log for conversion
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CONVERT_LEAD',
                 entity: 'Lead',
@@ -880,7 +923,7 @@ const convertLead = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.error('Lead conversion error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.convertLead = convertLead;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -893,13 +936,13 @@ const logDebug = (msg) => {
         console.error('Failed to write log', e);
     }
 };
-const getViolations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getViolations = async (req, res) => {
     try {
         logDebug('Entered getViolations');
         const user = req.user;
         const pageSize = Number(req.query.pageSize) || 10;
         const page = Number(req.query.page) || 1;
-        logDebug(`User: ${user === null || user === void 0 ? void 0 : user.id}, Role: ${user === null || user === void 0 ? void 0 : user.role}`);
+        logDebug(`User: ${user?.id}, Role: ${user?.role}`);
         // User sees violations where they were the PREVIOUS owner (the one who failed)
         // OR if they are a manager, seeing violations of their subordinates?
         // Prompt says "user and their managers need to give an explanation".
@@ -915,7 +958,7 @@ const getViolations = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             let subordinateIds = [];
             try {
                 logDebug('Fetching subordinates...');
-                subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+                subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
                 logDebug(`Subordinates found: ${subordinateIds.length}`);
             }
             catch (subError) {
@@ -936,7 +979,7 @@ const getViolations = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             where.OR = orConditions;
         }
         logDebug(`[Leads] Querying Prisma with where: ${JSON.stringify(where)}`);
-        const violations = yield prisma_1.default.lead.findMany({
+        const violations = await prisma_1.default.lead.findMany({
             where,
             include: {
                 previousOwner: { select: { firstName: true, lastName: true } },
@@ -947,7 +990,7 @@ const getViolations = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             orderBy: { violationTime: 'desc' }
         });
         logDebug(`[Leads] Violations found: ${violations.length}`);
-        const total = yield prisma_1.default.lead.count({ where });
+        const total = await prisma_1.default.lead.count({ where });
         res.json({ violations, page, pages: Math.ceil(total / pageSize), total });
     }
     catch (error) {
@@ -955,19 +998,19 @@ const getViolations = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.error('[getViolations] Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getViolations = getViolations;
-const getLeadHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeadHistory = async (req, res) => {
     try {
         const { id } = req.params;
         const user = req.user;
         // Verify access (simple org check)
-        const lead = yield prisma_1.default.lead.findUnique({ where: { id } });
+        const lead = await prisma_1.default.lead.findUnique({ where: { id } });
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!lead || (orgId && lead.organisationId !== orgId && user.role !== 'super_admin')) {
             return res.status(404).json({ message: 'Lead not found' });
         }
-        const history = yield prisma_1.default.leadHistory.findMany({
+        const history = await prisma_1.default.leadHistory.findMany({
             where: { leadId: id },
             include: {
                 oldOwner: { select: { firstName: true, lastName: true } },
@@ -981,13 +1024,13 @@ const getLeadHistory = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getLeadHistory = getLeadHistory;
-const submitExplanation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const submitExplanation = async (req, res) => {
     try {
         const { leadId, explanation, type } = req.body; // type = 'user' | 'manager'
         const user = req.user;
-        const lead = yield prisma_1.default.lead.findUnique({ where: { id: leadId } });
+        const lead = await prisma_1.default.lead.findUnique({ where: { id: leadId } });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
         if (!lead.rotationViolation) {
@@ -995,7 +1038,7 @@ const submitExplanation = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const data = {};
         if (type === 'user') {
-            if (lead.previousOwnerId !== user.id && user.role !== 'admin') {
+            if (lead.previousOwnerId !== user.id && !(0, roleUtils_1.isAdmin)(user) && !user.isSuperAdmin) {
                 return res.status(403).json({ message: 'Only the previous owner can submit a user explanation' });
             }
             data.userExplanation = explanation;
@@ -1004,7 +1047,8 @@ const submitExplanation = (req, res) => __awaiter(void 0, void 0, void 0, functi
             // Check if user is manager of previousOwner
             // Ideally we check hierarchy properly.
             // For MVP, if user is admin or has subordinates including previousOwner
-            if (user.role === 'sales_rep') {
+            const userRole = await prisma_1.default.role.findUnique({ where: { id: user.role } });
+            if (userRole && userRole.name === 'Sales Rep') {
                 return res.status(403).json({ message: 'Sales reps cannot submit manager explanations' });
             }
             data.managerExplanation = explanation;
@@ -1012,7 +1056,7 @@ const submitExplanation = (req, res) => __awaiter(void 0, void 0, void 0, functi
         else {
             return res.status(400).json({ message: 'Invalid explanation type' });
         }
-        const updatedLead = yield prisma_1.default.lead.update({
+        const updatedLead = await prisma_1.default.lead.update({
             where: { id: leadId },
             data
         });
@@ -1021,9 +1065,9 @@ const submitExplanation = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.submitExplanation = submitExplanation;
-const getPendingFollowUpsCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getPendingFollowUpsCount = async (req, res) => {
     try {
         const user = req.user;
         const now = new Date();
@@ -1040,28 +1084,28 @@ const getPendingFollowUpsCount = (req, res) => __awaiter(void 0, void 0, void 0,
         }
         // Daily Briefing is personal
         where.assignedToId = user.id;
-        const count = yield prisma_1.default.lead.count({ where });
+        const count = await prisma_1.default.lead.count({ where });
         res.json({ count });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getPendingFollowUpsCount = getPendingFollowUpsCount;
-const generateAIResponse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const generateAIResponse = async (req, res) => {
     try {
         const { id } = req.params;
         const { context } = req.body; // e.g. "Draft an intro email"
-        const lead = yield prisma_1.default.lead.findUnique({ where: { id } });
+        const lead = await prisma_1.default.lead.findUnique({ where: { id } });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
         // Lazy load OpenAI
-        const { OpenAI } = yield Promise.resolve().then(() => __importStar(require('openai')));
+        const { OpenAI } = await Promise.resolve().then(() => __importStar(require('openai')));
         if (!process.env.OPENAI_API_KEY) {
             return res.json({ draft: `[Mock AI Draft]\n\nHi ${lead.firstName},\n\nI noticed you work at ${lead.company}. We'd love to chat.\n\nBest,\n[Your Name]` });
         }
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-        const completion = yield openai.chat.completions.create({
+        const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
                 { role: "system", content: "You are a helpful sales assistant. Draft a short, professional email." },
@@ -1073,16 +1117,16 @@ const generateAIResponse = (req, res) => __awaiter(void 0, void 0, void 0, funct
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.generateAIResponse = generateAIResponse;
 // GET /api/leads/re-enquiries - Get all re-enquiry leads
-const getReEnquiryLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getReEnquiryLeads = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { DuplicateLeadService } = yield Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
-        const reEnquiryLeads = yield DuplicateLeadService.getReEnquiryLeads(orgId);
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
         res.json({
             leads: reEnquiryLeads,
             count: reEnquiryLeads.length
@@ -1092,16 +1136,16 @@ const getReEnquiryLeads = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.error('getReEnquiryLeads Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getReEnquiryLeads = getReEnquiryLeads;
 // GET /api/leads/duplicates - Find all duplicate leads
-const getDuplicateLeads = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDuplicateLeads = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { DuplicateLeadService } = yield Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
-        const duplicates = yield DuplicateLeadService.findDuplicates(orgId);
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const duplicates = await DuplicateLeadService.findDuplicates(orgId);
         res.json({
             duplicates,
             count: duplicates.length
@@ -1111,5 +1155,5 @@ const getDuplicateLeads = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.error('getDuplicateLeads Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getDuplicateLeads = getDuplicateLeads;

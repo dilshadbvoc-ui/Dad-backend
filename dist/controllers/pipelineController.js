@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -21,13 +12,13 @@ const validateStages = (stages) => {
         return false;
     return stages.every(s => s.id && s.name); // Basic check
 };
-const getPipelines = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getPipelines = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(403).json({ message: 'No organisation context' });
-        const pipelines = yield prisma_1.default.pipeline.findMany({
+        const pipelines = await prisma_1.default.pipeline.findMany({
             where: {
                 organisationId: orgId,
                 isDeleted: false
@@ -44,9 +35,9 @@ const getPipelines = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getPipelines = getPipelines;
-const createPipeline = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createPipeline = async (req, res) => {
     try {
         const { name, description, stages, isDefault } = req.body;
         const user = req.user;
@@ -66,15 +57,15 @@ const createPipeline = (req, res) => __awaiter(void 0, void 0, void 0, function*
             { id: 'lost', name: 'Lost', color: '#ef4444' }
         ];
         // Transaction to handle default flag unset
-        const pipeline = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const pipeline = await prisma_1.default.$transaction(async (tx) => {
             if (isDefault) {
                 // Unset other defaults
-                yield tx.pipeline.updateMany({
+                await tx.pipeline.updateMany({
                     where: { organisationId: orgId, isDefault: true },
                     data: { isDefault: false }
                 });
             }
-            return yield tx.pipeline.create({
+            return await tx.pipeline.create({
                 data: {
                     name,
                     description,
@@ -84,35 +75,35 @@ const createPipeline = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     createdById: user.id
                 }
             });
-        }));
+        });
         res.status(201).json(pipeline);
     }
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createPipeline = createPipeline;
-const updatePipeline = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePipeline = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, stages, isDefault, isActive } = req.body;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const current = yield prisma_1.default.pipeline.findUnique({ where: { id } });
+        const current = await prisma_1.default.pipeline.findUnique({ where: { id } });
         if (!current || current.organisationId !== orgId) {
             return res.status(404).json({ message: 'Pipeline not found' });
         }
         if (stages && !validateStages(stages)) {
             return res.status(400).json({ message: 'Invalid stages format' });
         }
-        const updated = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const updated = await prisma_1.default.$transaction(async (tx) => {
             if (isDefault && !current.isDefault) {
-                yield tx.pipeline.updateMany({
+                await tx.pipeline.updateMany({
                     where: { organisationId: orgId, isDefault: true },
                     data: { isDefault: false }
                 });
             }
-            return yield tx.pipeline.update({
+            return await tx.pipeline.update({
                 where: { id },
                 data: {
                     name,
@@ -122,20 +113,20 @@ const updatePipeline = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     isActive
                 }
             });
-        }));
+        });
         res.json(updated);
     }
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.updatePipeline = updatePipeline;
-const deletePipeline = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deletePipeline = async (req, res) => {
     try {
         const { id } = req.params;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const current = yield prisma_1.default.pipeline.findUnique({
+        const current = await prisma_1.default.pipeline.findUnique({
             where: { id },
             include: { _count: { select: { leads: true, opportunities: true } } }
         });
@@ -150,7 +141,7 @@ const deletePipeline = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 message: 'Cannot delete pipeline with associated leads or opportunities. Please migrate them first.'
             });
         }
-        yield prisma_1.default.pipeline.update({
+        await prisma_1.default.pipeline.update({
             where: { id },
             data: { isDeleted: true }
         });
@@ -159,5 +150,5 @@ const deletePipeline = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deletePipeline = deletePipeline;

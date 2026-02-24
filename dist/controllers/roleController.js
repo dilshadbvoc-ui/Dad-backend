@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upsertGlobalRole = exports.getGlobalRoles = exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoles = exports.initializeGlobalRoles = void 0;
 const client_1 = require("../generated/client");
@@ -59,15 +50,18 @@ const SYSTEM_ROLES = [
 /**
  * Seed initial system roles if they don't exist in the database (global templates)
  */
-const initializeGlobalRoles = () => __awaiter(void 0, void 0, void 0, function* () {
+const initializeGlobalRoles = async () => {
     try {
         for (const sr of SYSTEM_ROLES) {
-            const existing = yield prisma.role.findFirst({
+            const existing = await prisma.role.findFirst({
                 where: { roleKey: sr.roleKey, organisationId: null }
             });
             if (!existing) {
-                yield prisma.role.create({
-                    data: Object.assign(Object.assign({}, sr), { organisationId: null })
+                await prisma.role.create({
+                    data: {
+                        ...sr,
+                        organisationId: null
+                    }
                 });
                 console.log(`[RoleController] Seeded global role: ${sr.roleKey}`);
             }
@@ -76,21 +70,21 @@ const initializeGlobalRoles = () => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         console.error('[RoleController] Failed to initialize global roles:', error);
     }
-});
+};
 exports.initializeGlobalRoles = initializeGlobalRoles;
-const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getRoles = async (req, res) => {
     try {
         const currentUser = req.user;
         const organisationId = currentUser.organisationId;
         // Fetch custom roles for the organisation
-        const customRoles = yield prisma.role.findMany({
+        const customRoles = await prisma.role.findMany({
             where: {
                 organisationId,
                 isSystemRole: false
             }
         });
         // Fetch overrides for system roles
-        const systemRoleOverrides = yield prisma.role.findMany({
+        const systemRoleOverrides = await prisma.role.findMany({
             where: {
                 organisationId,
                 isSystemRole: true
@@ -101,7 +95,7 @@ const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return acc;
         }, {});
         // Fetch user count per role
-        const userCounts = yield prisma.user.groupBy({
+        const userCounts = await prisma.user.groupBy({
             by: ['role'],
             where: {
                 organisationId,
@@ -116,7 +110,7 @@ const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return acc;
         }, {});
         // Fetch Global System Roles (Templates)
-        const globalRoles = yield prisma.role.findMany({
+        const globalRoles = await prisma.role.findMany({
             where: {
                 organisationId: null,
                 isSystemRole: true
@@ -126,16 +120,19 @@ const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let roles = globalRoles.map(gr => {
             const override = overridesMap[gr.roleKey];
             return {
-                id: (override === null || override === void 0 ? void 0 : override.id) || gr.id,
+                id: override?.id || gr.id,
                 roleKey: gr.roleKey,
                 name: gr.name,
-                description: (override === null || override === void 0 ? void 0 : override.description) || gr.description,
-                permissions: (override === null || override === void 0 ? void 0 : override.permissions) || gr.permissions,
+                description: override?.description || gr.description,
+                permissions: override?.permissions || gr.permissions,
                 isSystemRole: true,
                 userCount: userCountMap[gr.roleKey] || 0
             };
         });
-        const customRolesWithCount = customRoles.map((cr) => (Object.assign(Object.assign({}, cr), { userCount: userCountMap[cr.roleKey] || 0 })));
+        const customRolesWithCount = customRoles.map((cr) => ({
+            ...cr,
+            userCount: userCountMap[cr.roleKey] || 0
+        }));
         roles = [...roles, ...customRolesWithCount];
         // Filter out super_admin for non-super_admins
         if (currentUser.role !== 'super_admin') {
@@ -146,9 +143,9 @@ const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getRoles = getRoles;
-const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createRole = async (req, res) => {
     try {
         const { name, description, permissions } = req.body;
         const currentUser = req.user;
@@ -156,7 +153,7 @@ const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!name) {
             return res.status(400).json({ message: 'Role name is required' });
         }
-        const role = yield prisma.role.create({
+        const role = await prisma.role.create({
             data: {
                 roleKey: `custom_${Date.now()}`,
                 name,
@@ -171,16 +168,16 @@ const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.createRole = createRole;
-const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateRole = async (req, res) => {
     try {
         const id = req.params.id; // This could be roleKey OR UUID
         const { name, description, permissions } = req.body;
         const currentUser = req.user;
         const organisationId = currentUser.organisationId;
         // Find existing role in DB or check if it's a known system role
-        const dbRole = yield prisma.role.findFirst({
+        const dbRole = await prisma.role.findFirst({
             where: {
                 OR: [
                     { id: id },
@@ -190,7 +187,7 @@ const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         if (dbRole) {
             // Update existing record
-            const updated = yield prisma.role.update({
+            const updated = await prisma.role.update({
                 where: { id: dbRole.id },
                 data: {
                     name,
@@ -202,13 +199,13 @@ const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         else {
             // If it's a system role without a DB record yet, creating override
-            const globalRole = yield prisma.role.findFirst({
+            const globalRole = await prisma.role.findFirst({
                 where: { roleKey: id, organisationId: null }
             });
             if (!globalRole) {
                 return res.status(404).json({ message: 'Role not found' });
             }
-            const override = yield prisma.role.create({
+            const override = await prisma.role.create({
                 data: {
                     roleKey: globalRole.roleKey,
                     name: name || globalRole.name,
@@ -224,14 +221,14 @@ const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateRole = updateRole;
-const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteRole = async (req, res) => {
     try {
         const id = req.params.id;
         const currentUser = req.user;
         const organisationId = currentUser.organisationId;
-        const role = yield prisma.role.findFirst({
+        const role = await prisma.role.findFirst({
             where: { id, organisationId }
         });
         if (!role) {
@@ -241,13 +238,13 @@ const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(400).json({ message: 'System roles cannot be deleted' });
         }
         // Check if users are assigned to this role
-        const userCount = yield prisma.user.count({
+        const userCount = await prisma.user.count({
             where: { role: role.roleKey, organisationId }
         });
         if (userCount > 0) {
             return res.status(400).json({ message: 'Cannot delete role that is assigned to users' });
         }
-        yield prisma.role.delete({
+        await prisma.role.delete({
             where: { id }
         });
         res.json({ message: 'Role deleted successfully' });
@@ -255,15 +252,15 @@ const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteRole = deleteRole;
 // --- Super Admin Endpoints ---
 /**
  * Get all global roles (Templates)
  */
-const getGlobalRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getGlobalRoles = async (req, res) => {
     try {
-        const roles = yield prisma.role.findMany({
+        const roles = await prisma.role.findMany({
             where: { organisationId: null }
         });
         res.json({ roles });
@@ -271,18 +268,18 @@ const getGlobalRoles = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getGlobalRoles = getGlobalRoles;
 /**
  * Create or Update a Global Role
  * Note: Prisma doesn't support null in compound unique where clauses,
  * so we use findFirst + create/update instead of upsert.
  */
-const upsertGlobalRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const upsertGlobalRole = async (req, res) => {
     try {
         const { roleKey, name, description, permissions, isSystemRole } = req.body;
         // Find existing global role (organisationId IS NULL)
-        const existingRole = yield prisma.role.findFirst({
+        const existingRole = await prisma.role.findFirst({
             where: {
                 roleKey,
                 organisationId: null
@@ -290,24 +287,24 @@ const upsertGlobalRole = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
         let role;
         if (existingRole) {
-            role = yield prisma.role.update({
+            role = await prisma.role.update({
                 where: { id: existingRole.id },
                 data: {
                     name,
                     description,
                     permissions,
-                    isSystemRole: isSystemRole !== null && isSystemRole !== void 0 ? isSystemRole : true
+                    isSystemRole: isSystemRole ?? true
                 }
             });
         }
         else {
-            role = yield prisma.role.create({
+            role = await prisma.role.create({
                 data: {
                     roleKey,
                     name,
                     description,
                     permissions,
-                    isSystemRole: isSystemRole !== null && isSystemRole !== void 0 ? isSystemRole : true,
+                    isSystemRole: isSystemRole ?? true,
                     organisationId: null
                 }
             });
@@ -317,5 +314,5 @@ const upsertGlobalRole = (req, res) => __awaiter(void 0, void 0, void 0, functio
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.upsertGlobalRole = upsertGlobalRole;

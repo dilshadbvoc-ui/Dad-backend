@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,7 +10,7 @@ const auditLogger_1 = require("../utils/auditLogger");
 // Transform to include polymorphic details if needed (Event usually maps to one)
 // But schema has separate fields.
 // Mongoose populates 'lead' 'contact'.
-const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getEvents = async (req, res) => {
     try {
         const { start, end } = req.query;
         const user = req.user;
@@ -37,7 +28,7 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // 2. Hierarchy Visibility - Modified to include self
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             subordinateIds.push(user.id); // Include self
             where.createdById = { in: subordinateIds };
         }
@@ -48,7 +39,7 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             };
         }
         console.log('Calendar query where:', JSON.stringify(where, null, 2));
-        const events = yield prisma_1.default.calendarEvent.findMany({
+        const events = await prisma_1.default.calendarEvent.findMany({
             where,
             include: {
                 lead: { select: { firstName: true, lastName: true } },
@@ -63,9 +54,9 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('getEvents error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getEvents = getEvents;
-const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createEvent = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -87,10 +78,10 @@ const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (req.body.contact)
             data.contact = { connect: { id: req.body.contact } };
         // Support others if needed (Account/Opp)
-        const event = yield prisma_1.default.calendarEvent.create({
+        const event = await prisma_1.default.calendarEvent.create({
             data
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_EVENT',
@@ -103,15 +94,15 @@ const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createEvent = createEvent;
-const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getEventById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        const event = yield prisma_1.default.calendarEvent.findFirst({
+        const event = await prisma_1.default.calendarEvent.findFirst({
             where: {
                 id: req.params.id,
                 organisationId: orgId,
@@ -126,7 +117,7 @@ const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(404).json({ message: 'Event not found' });
         // Hierarchy check
         if (user.role !== 'super_admin' && user.role !== 'admin' && event.createdById !== user.id) {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             if (!subordinateIds.includes(event.createdById)) {
                 return res.status(403).json({ message: 'Not authorized to view this event' });
             }
@@ -136,22 +127,22 @@ const getEventById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getEventById = getEventById;
-const deleteEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteEvent = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        yield prisma_1.default.calendarEvent.update({
+        await prisma_1.default.calendarEvent.update({
             where: {
                 id: req.params.id,
                 organisationId: orgId
             },
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'DELETE_EVENT',
@@ -163,5 +154,5 @@ const deleteEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteEvent = deleteEvent;

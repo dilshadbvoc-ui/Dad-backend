@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -50,7 +41,7 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const prisma_1 = require("../config/prisma");
 const initCronJobs = () => {
     // Run every day at midnight (00:00)
-    node_cron_1.default.schedule('0 0 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule('0 0 * * *', async () => {
         console.log('[Cron] Running daily lead rollover...');
         try {
             const today = new Date();
@@ -58,7 +49,7 @@ const initCronJobs = () => {
             const yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
             // Find leads with nextFollowUp < Today AND status != converted
-            const overdueLeads = yield prisma_1.prisma.lead.findMany({
+            const overdueLeads = await prisma_1.prisma.lead.findMany({
                 where: {
                     status: { not: 'converted' },
                     nextFollowUp: {
@@ -69,7 +60,7 @@ const initCronJobs = () => {
             console.log(`[Cron] Found ${overdueLeads.length} leads with overdue follow-ups.`);
             if (overdueLeads.length > 0) {
                 // Bulk update to set nextFollowUp to Today
-                const updateResult = yield prisma_1.prisma.lead.updateMany({
+                const updateResult = await prisma_1.prisma.lead.updateMany({
                     where: {
                         status: { not: 'converted' },
                         nextFollowUp: {
@@ -88,43 +79,43 @@ const initCronJobs = () => {
         }
         console.log('[Cron] Running daily license expiry check...');
         try {
-            const { LicenseEnforcementService } = yield Promise.resolve().then(() => __importStar(require('./LicenseEnforcementService')));
-            yield LicenseEnforcementService.enforceExpiry();
+            const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('./LicenseEnforcementService')));
+            await LicenseEnforcementService.enforceExpiry();
         }
         catch (error) {
             console.error('[Cron] Error running license expiry check:', error);
         }
-    }));
+    });
     console.log('[Cron] Daily lead rollover job scheduled.');
     // Run every day at 08:00 AM (Daily Task Reminders)
-    node_cron_1.default.schedule('0 8 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule('0 8 * * *', async () => {
         console.log('[Cron] Running daily task reminders...');
         try {
-            const { TaskReminderService } = yield Promise.resolve().then(() => __importStar(require('./TaskReminderService')));
-            yield TaskReminderService.sendDailyReminders();
+            const { TaskReminderService } = await Promise.resolve().then(() => __importStar(require('./TaskReminderService')));
+            await TaskReminderService.sendDailyReminders();
         }
         catch (error) {
             console.error('[Cron] Error running task reminders:', error);
         }
-    }));
+    });
     // Run every hour for Meeting Reminders
-    node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule('0 * * * *', async () => {
         console.log('[Cron] Running meeting reminders check...');
         try {
-            const { generateMeetingReminders } = yield Promise.resolve().then(() => __importStar(require('./meetingReminderService')));
-            yield generateMeetingReminders();
+            const { generateMeetingReminders } = await Promise.resolve().then(() => __importStar(require('./meetingReminderService')));
+            await generateMeetingReminders();
         }
         catch (error) {
             console.error('[Cron] Error running meeting reminders:', error);
         }
-    }));
+    });
     // Run every day at 09:00 AM
-    node_cron_1.default.schedule('0 9 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule('0 9 * * *', async () => {
         console.log('[Cron] Running daily organisation reports...');
         try {
-            const { ReportingService } = yield Promise.resolve().then(() => __importStar(require('./ReportingService')));
-            const { WhatsAppService } = yield Promise.resolve().then(() => __importStar(require('./WhatsAppService')));
-            const organisations = yield prisma_1.prisma.organisation.findMany({
+            const { ReportingService } = await Promise.resolve().then(() => __importStar(require('./ReportingService')));
+            const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./WhatsAppService')));
+            const organisations = await prisma_1.prisma.organisation.findMany({
                 where: { status: 'active' },
                 include: {
                     users: {
@@ -134,18 +125,18 @@ const initCronJobs = () => {
             });
             for (const org of organisations) {
                 try {
-                    const stats = yield ReportingService.getDailyStats(org.id);
+                    const stats = await ReportingService.getDailyStats(org.id);
                     const report = ReportingService.formatWhatsAppReport(stats, org.name);
                     // Find primary recipient
                     // 1. Admin with phone
                     // 2. Org contactPhone
                     const adminWithPhone = org.users.find(u => u.phone);
-                    const targetPhone = (adminWithPhone === null || adminWithPhone === void 0 ? void 0 : adminWithPhone.phone) || org.contactPhone;
+                    const targetPhone = adminWithPhone?.phone || org.contactPhone;
                     if (targetPhone) {
-                        const waClient = yield WhatsAppService.getClientForOrg(org.id);
+                        const waClient = await WhatsAppService.getClientForOrg(org.id);
                         if (waClient) {
                             console.log(`[Cron] Sending daily report to ${org.name} (${targetPhone})`);
-                            yield waClient.sendTextMessage(targetPhone, report);
+                            await waClient.sendTextMessage(targetPhone, report);
                         }
                         else {
                             console.warn(`[Cron] WhatsApp not connected for ${org.name}, skipping report.`);
@@ -163,13 +154,13 @@ const initCronJobs = () => {
         catch (error) {
             console.error('[Cron] Error running daily reports:', error);
         }
-    }));
+    });
     console.log('[Cron] Daily organisation reports scheduled.');
     // Run every minute for Workflow Queue
-    node_cron_1.default.schedule('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule('* * * * *', async () => {
         try {
             const now = new Date();
-            const pendingItems = yield prisma_1.prisma.workflowQueue.findMany({
+            const pendingItems = await prisma_1.prisma.workflowQueue.findMany({
                 where: {
                     status: 'pending',
                     executeAt: { lte: now }
@@ -179,28 +170,28 @@ const initCronJobs = () => {
             if (pendingItems.length > 0) {
                 console.log(`[Cron] Found ${pendingItems.length} pending workflow items ready to execute.`);
                 // Dynamically import to avoid circular dependency issues if any
-                const { WorkflowEngine } = yield Promise.resolve().then(() => __importStar(require('./WorkflowEngine')));
+                const { WorkflowEngine } = await Promise.resolve().then(() => __importStar(require('./WorkflowEngine')));
                 for (const item of pendingItems) {
                     // Fire and forget or sequential?
                     // Sequential to simplify load, or promise.all
-                    yield WorkflowEngine.resumeWorkflow(item.id);
+                    await WorkflowEngine.resumeWorkflow(item.id);
                 }
             }
         }
         catch (error) {
             console.error('[Cron] Error processing workflow queue:', error);
         }
-    }));
+    });
     console.log('[Cron] Workflow Queue processor scheduled.');
     // Run every day at 01:00 AM (Data Retention & Cleanup)
-    node_cron_1.default.schedule('0 1 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    node_cron_1.default.schedule('0 1 * * *', async () => {
         console.log('[Cron] Running daily cleanup tasks...');
         try {
             const now = new Date();
             // 1. Audit Log Retention (90 Days)
             const ninetyDaysAgo = new Date(now);
             ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-            const deletedLogs = yield prisma_1.prisma.auditLog.deleteMany({
+            const deletedLogs = await prisma_1.prisma.auditLog.deleteMany({
                 where: { createdAt: { lt: ninetyDaysAgo } }
             });
             if (deletedLogs.count > 0) {
@@ -209,7 +200,7 @@ const initCronJobs = () => {
             // 2. Read Notification Retention (30 Days)
             const thirtyDaysAgo = new Date(now);
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            const deletedNotifications = yield prisma_1.prisma.notification.deleteMany({
+            const deletedNotifications = await prisma_1.prisma.notification.deleteMany({
                 where: {
                     isRead: true,
                     updatedAt: { lt: thirtyDaysAgo }
@@ -222,7 +213,7 @@ const initCronJobs = () => {
         catch (error) {
             console.error('[Cron] Error during daily cleanup:', error);
         }
-    }));
+    });
     console.log('[Cron] Daily cleanup job scheduled.');
 };
 exports.initCronJobs = initCronJobs;

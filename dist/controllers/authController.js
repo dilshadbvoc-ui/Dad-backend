@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -56,7 +47,7 @@ const EmailService_1 = require("../services/EmailService");
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
-const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const authUser = async (req, res) => {
     const { email, password } = req.body;
     console.log('Login attempt for:', email);
     if (!email || !password) {
@@ -65,7 +56,7 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     try {
-        const user = yield prisma_1.default.user.findFirst({
+        const user = await prisma_1.default.user.findFirst({
             where: {
                 OR: [
                     { email: { equals: email, mode: 'insensitive' } },
@@ -76,10 +67,10 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 organisation: true
             }
         });
-        if (user && (yield bcryptjs_1.default.compare(password, user.password))) {
+        if (user && (await bcryptjs_1.default.compare(password, user.password))) {
             console.log(`Login SUCCESS for: ${email}`);
             // Check if user manages any branch
-            const branchManaged = yield prisma_1.default.branch.findFirst({
+            const branchManaged = await prisma_1.default.branch.findFirst({
                 where: { managerId: user.id, isDeleted: false }
             });
             const isBranchManager = !!branchManaged;
@@ -122,16 +113,15 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.error("Login Error Details:", error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.authUser = authUser;
 // @desc    Register a new user & organisation
 // @route   POST /api/auth/register
 // @access  Public
-const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+const registerUser = async (req, res) => {
     const { firstName, lastName, email, password, companyName } = req.body;
     try {
-        const userExists = yield prisma_1.default.user.findUnique({
+        const userExists = await prisma_1.default.user.findUnique({
             where: { email }
         });
         if (userExists) {
@@ -143,7 +133,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return;
         }
         // Enhanced password validation
-        const { PasswordValidator } = yield Promise.resolve().then(() => __importStar(require('../utils/passwordValidator')));
+        const { PasswordValidator } = await Promise.resolve().then(() => __importStar(require('../utils/passwordValidator')));
         const passwordValidation = PasswordValidator.validate(password, [email, firstName, lastName]);
         if (!passwordValidation.isValid) {
             res.status(400).json({
@@ -154,13 +144,13 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return;
         }
         // Find default plan (e.g., 'Starter' or 'Trial')
-        const defaultPlan = yield prisma_1.default.subscriptionPlan.findFirst({
+        const defaultPlan = await prisma_1.default.subscriptionPlan.findFirst({
             where: { name: 'Starter' } // Ensure 'Starter' exists in seed
         });
         const slug = companyName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-' + Math.random().toString(36).substr(2, 4);
         // Transaction to ensure atomicity
-        const result = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
-            const org = yield tx.organisation.create({
+        const result = await prisma_1.default.$transaction(async (tx) => {
+            const org = await tx.organisation.create({
                 data: {
                     name: companyName,
                     slug,
@@ -168,7 +158,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     status: 'active',
                     subscription: {
                         status: 'trialing',
-                        planId: defaultPlan === null || defaultPlan === void 0 ? void 0 : defaultPlan.id,
+                        planId: defaultPlan?.id,
                         startDate: new Date(),
                         trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14-day trial
                         autoRenew: false
@@ -180,10 +170,10 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const prefix = companyName.slice(0, 3).toUpperCase();
             const generatedUserId = `${prefix}001`;
             // Hash password
-            const salt = yield bcryptjs_1.default.genSalt(10);
-            const hashedPassword = yield bcryptjs_1.default.hash(password, salt);
+            const salt = await bcryptjs_1.default.genSalt(10);
+            const hashedPassword = await bcryptjs_1.default.hash(password, salt);
             // 2. Create Admin User
-            const user = yield tx.user.create({
+            const user = await tx.user.create({
                 data: {
                     firstName,
                     lastName,
@@ -196,12 +186,12 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 }
             });
             // 3. Link Creator to Org
-            yield tx.organisation.update({
+            await tx.organisation.update({
                 where: { id: org.id },
                 data: { createdBy: user.id }
             });
             return { user, org };
-        }));
+        });
         const { user, org } = result;
         if (user) {
             // Audit Log
@@ -232,7 +222,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         // Unique constraint P2002
         if (error.code === 'P2002') {
-            if ((_b = (_a = error.meta) === null || _a === void 0 ? void 0 : _a.target) === null || _b === void 0 ? void 0 : _b.includes('slug')) {
+            if (error.meta?.target?.includes('slug')) {
                 res.status(400).json({ message: 'Company name/slug already exists, please try a variation.' });
             }
             else {
@@ -243,17 +233,17 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(500).json({ message: error.message });
         }
     }
-});
+};
 exports.registerUser = registerUser;
 /**
  * @desc    Forgot Password - Send Reset Email
  * @route   POST /api/auth/forgot-password
  * @access  Public
  */
-const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
-        const user = yield prisma_1.default.user.findUnique({ where: { email } });
+        const user = await prisma_1.default.user.findUnique({ where: { email } });
         if (!user) {
             // Security: Don't reveal user existence
             res.status(200).json({ message: 'If that email exists, a reset link has been sent.' });
@@ -268,7 +258,7 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
             .digest('hex');
         // Expire in 10 minutes
         const resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
-        yield prisma_1.default.user.update({
+        await prisma_1.default.user.update({
             where: { id: user.id },
             data: {
                 resetPasswordToken,
@@ -282,7 +272,7 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
             <a href="${resetUrl}" clicktracking=off>${resetUrl}</a>
             <p>This link expires in 10 minutes.</p>
         `;
-        const sent = yield EmailService_1.EmailService.sendEmail(user.email, 'Password Reset Request', message);
+        const sent = await EmailService_1.EmailService.sendEmail(user.email, 'Password Reset Request', message);
         if (sent) {
             // Log security event
             (0, auditLogger_1.logAudit)({
@@ -297,7 +287,7 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         else {
             // Revert on failure
-            yield prisma_1.default.user.update({
+            await prisma_1.default.user.update({
                 where: { id: user.id },
                 data: {
                     resetPasswordToken: null,
@@ -311,14 +301,14 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.error('Forgot Password Error:', error);
         res.status(500).json({ message: 'Server Error' });
     }
-});
+};
 exports.forgotPassword = forgotPassword;
 /**
  * @desc    Reset Password
  * @route   PUT /api/auth/reset-password/:resetToken
  * @access  Public
  */
-const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const resetPassword = async (req, res) => {
     const { resetToken } = req.params;
     const { password } = req.body;
     if (!password) {
@@ -331,7 +321,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             .createHash('sha256')
             .update(resetToken)
             .digest('hex');
-        const user = yield prisma_1.default.user.findFirst({
+        const user = await prisma_1.default.user.findFirst({
             where: {
                 resetPasswordToken,
                 resetPasswordExpire: { gt: new Date() }
@@ -342,12 +332,12 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return;
         }
         // CRITICAL: Monitor super admin password changes
-        const { monitorSuperAdminPasswordChange } = yield Promise.resolve().then(() => __importStar(require('../middleware/superAdminProtection')));
-        yield monitorSuperAdminPasswordChange(user.id, user.id, req.ip);
+        const { monitorSuperAdminPasswordChange } = await Promise.resolve().then(() => __importStar(require('../middleware/superAdminProtection')));
+        await monitorSuperAdminPasswordChange(user.id, user.id, req.ip);
         // Set new password
-        const salt = yield bcryptjs_1.default.genSalt(10);
-        const hashedPassword = yield bcryptjs_1.default.hash(password, salt);
-        yield prisma_1.default.user.update({
+        const salt = await bcryptjs_1.default.genSalt(10);
+        const hashedPassword = await bcryptjs_1.default.hash(password, salt);
+        await prisma_1.default.user.update({
             where: { id: user.id },
             data: {
                 password: hashedPassword,
@@ -370,14 +360,14 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.error('Reset Password Error:', error);
         res.status(500).json({ message: 'Server Error' });
     }
-});
+};
 exports.resetPassword = resetPassword;
 /**
  * @desc    Get current user profile (session refresh)
  * @route   GET /api/auth/me
  * @access  Private
  */
-const getMe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMe = async (req, res) => {
     try {
         const user = req.user;
         if (!user) {
@@ -399,5 +389,5 @@ const getMe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMe = getMe;

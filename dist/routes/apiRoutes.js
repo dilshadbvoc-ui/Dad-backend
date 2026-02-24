@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -56,7 +47,7 @@ const router = express_1.default.Router();
  * @route POST /api/v1/leads
  * @desc Create a lead via public API
  */
-router.post('/leads', apiKeyMiddleware_1.verifyApiKey, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/leads', apiKeyMiddleware_1.verifyApiKey, async (req, res) => {
     try {
         const { firstName, lastName, email, phone, company, message, source } = req.body;
         const user = req.user;
@@ -66,15 +57,15 @@ router.post('/leads', apiKeyMiddleware_1.verifyApiKey, (req, res) => __awaiter(v
             return res.status(400).json({ message: 'Email or Phone is required' });
         }
         // Sanitize
-        let cleanPhone = phone === null || phone === void 0 ? void 0 : phone.toString().replace(/\D/g, '');
+        let cleanPhone = phone?.toString().replace(/\D/g, '');
         if (cleanPhone && cleanPhone.length > 10)
             cleanPhone = cleanPhone.slice(-10);
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = yield Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
-        const duplicateCheck = yield DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
-            yield DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
+            await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
                 firstName: firstName || 'Unknown',
                 lastName: lastName || '',
                 email,
@@ -90,7 +81,7 @@ router.post('/leads', apiKeyMiddleware_1.verifyApiKey, (req, res) => __awaiter(v
                 matchedBy: duplicateCheck.matchedBy
             });
         }
-        const lead = yield prisma_1.default.lead.create({
+        const lead = await prisma_1.default.lead.create({
             data: {
                 firstName: firstName || 'Unknown',
                 lastName: lastName || '',
@@ -118,18 +109,18 @@ router.post('/leads', apiKeyMiddleware_1.verifyApiKey, (req, res) => __awaiter(v
         console.error('Public API Create Lead Error:', error);
         res.status(500).json({ message: 'Server Error' });
     }
-}));
+});
 /**
  * @route GET /api/v1/leads
  * @desc List leads for the organisation (ReadOnly)
  */
-router.get('/leads', apiKeyMiddleware_1.verifyApiKey, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/leads', apiKeyMiddleware_1.verifyApiKey, async (req, res) => {
     try {
         const user = req.user;
         const orgId = user.organisationId;
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 20;
-        const leads = yield prisma_1.default.lead.findMany({
+        const leads = await prisma_1.default.lead.findMany({
             where: { organisationId: orgId },
             take: limit,
             skip: (page - 1) * limit,
@@ -147,8 +138,8 @@ router.get('/leads', apiKeyMiddleware_1.verifyApiKey, (req, res) => __awaiter(vo
         });
         res.json({ data: leads, page, limit });
     }
-    catch (_a) {
+    catch {
         res.status(500).json({ message: 'Server Error' });
     }
-}));
+});
 exports.default = router;

@@ -273,6 +273,21 @@ export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayloa
  * 
  */
 export type Role = $Result.DefaultSelection<Prisma.$RolePayload>
+/**
+ * Model EMISchedule
+ * 
+ */
+export type EMISchedule = $Result.DefaultSelection<Prisma.$EMISchedulePayload>
+/**
+ * Model EMIInstallment
+ * 
+ */
+export type EMIInstallment = $Result.DefaultSelection<Prisma.$EMIInstallmentPayload>
+/**
+ * Model PaymentRecord
+ * 
+ */
+export type PaymentRecord = $Result.DefaultSelection<Prisma.$PaymentRecordPayload>
 
 /**
  * Enums
@@ -368,6 +383,34 @@ export const TargetScope: {
 
 export type TargetScope = (typeof TargetScope)[keyof typeof TargetScope]
 
+
+export const EMIStatus: {
+  active: 'active',
+  completed: 'completed',
+  cancelled: 'cancelled'
+};
+
+export type EMIStatus = (typeof EMIStatus)[keyof typeof EMIStatus]
+
+
+export const InstallmentStatus: {
+  pending: 'pending',
+  paid: 'paid',
+  overdue: 'overdue',
+  cancelled: 'cancelled'
+};
+
+export type InstallmentStatus = (typeof InstallmentStatus)[keyof typeof InstallmentStatus]
+
+
+export const PaymentType: {
+  full: 'full',
+  partial: 'partial',
+  installment: 'installment'
+};
+
+export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]
+
 }
 
 export type LeadSource = $Enums.LeadSource
@@ -405,6 +448,18 @@ export const PricingModel: typeof $Enums.PricingModel
 export type TargetScope = $Enums.TargetScope
 
 export const TargetScope: typeof $Enums.TargetScope
+
+export type EMIStatus = $Enums.EMIStatus
+
+export const EMIStatus: typeof $Enums.EMIStatus
+
+export type InstallmentStatus = $Enums.InstallmentStatus
+
+export const InstallmentStatus: typeof $Enums.InstallmentStatus
+
+export type PaymentType = $Enums.PaymentType
+
+export const PaymentType: typeof $Enums.PaymentType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1048,6 +1103,36 @@ export class PrismaClient<
     * ```
     */
   get role(): Prisma.RoleDelegate<ExtArgs>;
+
+  /**
+   * `prisma.eMISchedule`: Exposes CRUD operations for the **EMISchedule** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EMISchedules
+    * const eMISchedules = await prisma.eMISchedule.findMany()
+    * ```
+    */
+  get eMISchedule(): Prisma.EMIScheduleDelegate<ExtArgs>;
+
+  /**
+   * `prisma.eMIInstallment`: Exposes CRUD operations for the **EMIInstallment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EMIInstallments
+    * const eMIInstallments = await prisma.eMIInstallment.findMany()
+    * ```
+    */
+  get eMIInstallment(): Prisma.EMIInstallmentDelegate<ExtArgs>;
+
+  /**
+   * `prisma.paymentRecord`: Exposes CRUD operations for the **PaymentRecord** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentRecords
+    * const paymentRecords = await prisma.paymentRecord.findMany()
+    * ```
+    */
+  get paymentRecord(): Prisma.PaymentRecordDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1540,7 +1625,10 @@ export namespace Prisma {
     ProductShare: 'ProductShare',
     Branch: 'Branch',
     SystemSetting: 'SystemSetting',
-    Role: 'Role'
+    Role: 'Role',
+    EMISchedule: 'EMISchedule',
+    EMIInstallment: 'EMIInstallment',
+    PaymentRecord: 'PaymentRecord'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1556,7 +1644,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role"
+      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -5200,6 +5288,216 @@ export namespace Prisma {
           }
         }
       }
+      EMISchedule: {
+        payload: Prisma.$EMISchedulePayload<ExtArgs>
+        fields: Prisma.EMIScheduleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EMIScheduleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EMIScheduleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>
+          }
+          findFirst: {
+            args: Prisma.EMIScheduleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EMIScheduleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>
+          }
+          findMany: {
+            args: Prisma.EMIScheduleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>[]
+          }
+          create: {
+            args: Prisma.EMIScheduleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>
+          }
+          createMany: {
+            args: Prisma.EMIScheduleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EMIScheduleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>[]
+          }
+          delete: {
+            args: Prisma.EMIScheduleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>
+          }
+          update: {
+            args: Prisma.EMIScheduleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>
+          }
+          deleteMany: {
+            args: Prisma.EMIScheduleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EMIScheduleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.EMIScheduleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMISchedulePayload>
+          }
+          aggregate: {
+            args: Prisma.EMIScheduleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEMISchedule>
+          }
+          groupBy: {
+            args: Prisma.EMIScheduleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EMIScheduleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EMIScheduleCountArgs<ExtArgs>
+            result: $Utils.Optional<EMIScheduleCountAggregateOutputType> | number
+          }
+        }
+      }
+      EMIInstallment: {
+        payload: Prisma.$EMIInstallmentPayload<ExtArgs>
+        fields: Prisma.EMIInstallmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EMIInstallmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EMIInstallmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>
+          }
+          findFirst: {
+            args: Prisma.EMIInstallmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EMIInstallmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>
+          }
+          findMany: {
+            args: Prisma.EMIInstallmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>[]
+          }
+          create: {
+            args: Prisma.EMIInstallmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>
+          }
+          createMany: {
+            args: Prisma.EMIInstallmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EMIInstallmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>[]
+          }
+          delete: {
+            args: Prisma.EMIInstallmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>
+          }
+          update: {
+            args: Prisma.EMIInstallmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.EMIInstallmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EMIInstallmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.EMIInstallmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EMIInstallmentPayload>
+          }
+          aggregate: {
+            args: Prisma.EMIInstallmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEMIInstallment>
+          }
+          groupBy: {
+            args: Prisma.EMIInstallmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EMIInstallmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EMIInstallmentCountArgs<ExtArgs>
+            result: $Utils.Optional<EMIInstallmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      PaymentRecord: {
+        payload: Prisma.$PaymentRecordPayload<ExtArgs>
+        fields: Prisma.PaymentRecordFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentRecordFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentRecordFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentRecordFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentRecordFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentRecordFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentRecordCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentRecordCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentRecordCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentRecordDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          update: {
+            args: Prisma.PaymentRecordUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentRecordDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentRecordUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.PaymentRecordUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentRecordPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentRecordAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentRecord>
+          }
+          groupBy: {
+            args: Prisma.PaymentRecordGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentRecordGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentRecordCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentRecordCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -5401,6 +5699,8 @@ export namespace Prisma {
     productShares: number
     branches: number
     rolePermissions: number
+    emiSchedules: number
+    paymentRecords: number
   }
 
   export type OrganisationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5444,6 +5744,8 @@ export namespace Prisma {
     productShares?: boolean | OrganisationCountOutputTypeCountProductSharesArgs
     branches?: boolean | OrganisationCountOutputTypeCountBranchesArgs
     rolePermissions?: boolean | OrganisationCountOutputTypeCountRolePermissionsArgs
+    emiSchedules?: boolean | OrganisationCountOutputTypeCountEmiSchedulesArgs
+    paymentRecords?: boolean | OrganisationCountOutputTypeCountPaymentRecordsArgs
   }
 
   // Custom InputTypes
@@ -5737,6 +6039,20 @@ export namespace Prisma {
     where?: RoleWhereInput
   }
 
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountEmiSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EMIScheduleWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -5800,6 +6116,7 @@ export namespace Prisma {
     managedTeams: number
     sharedProducts: number
     managedBranches: number
+    createdPaymentRecords: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5860,6 +6177,7 @@ export namespace Prisma {
     managedTeams?: boolean | UserCountOutputTypeCountManagedTeamsArgs
     sharedProducts?: boolean | UserCountOutputTypeCountSharedProductsArgs
     managedBranches?: boolean | UserCountOutputTypeCountManagedBranchesArgs
+    createdPaymentRecords?: boolean | UserCountOutputTypeCountCreatedPaymentRecordsArgs
   }
 
   // Custom InputTypes
@@ -6270,6 +6588,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountManagedBranchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BranchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
   }
 
 
@@ -6687,6 +7012,7 @@ export namespace Prisma {
     tasks: number
     contacts: number
     documents: number
+    paymentRecords: number
   }
 
   export type OpportunityCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6696,6 +7022,7 @@ export namespace Prisma {
     tasks?: boolean | OpportunityCountOutputTypeCountTasksArgs
     contacts?: boolean | OpportunityCountOutputTypeCountContactsArgs
     documents?: boolean | OpportunityCountOutputTypeCountDocumentsArgs
+    paymentRecords?: boolean | OpportunityCountOutputTypeCountPaymentRecordsArgs
   }
 
   // Custom InputTypes
@@ -6749,6 +7076,13 @@ export namespace Prisma {
    */
   export type OpportunityCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentWhereInput
+  }
+
+  /**
+   * OpportunityCountOutputType without action
+   */
+  export type OpportunityCountOutputTypeCountPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
   }
 
 
@@ -7189,6 +7523,68 @@ export namespace Prisma {
 
 
   /**
+   * Count Type EMIScheduleCountOutputType
+   */
+
+  export type EMIScheduleCountOutputType = {
+    installments: number
+  }
+
+  export type EMIScheduleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    installments?: boolean | EMIScheduleCountOutputTypeCountInstallmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * EMIScheduleCountOutputType without action
+   */
+  export type EMIScheduleCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIScheduleCountOutputType
+     */
+    select?: EMIScheduleCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * EMIScheduleCountOutputType without action
+   */
+  export type EMIScheduleCountOutputTypeCountInstallmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EMIInstallmentWhereInput
+  }
+
+
+  /**
+   * Count Type EMIInstallmentCountOutputType
+   */
+
+  export type EMIInstallmentCountOutputType = {
+    paymentRecords: number
+  }
+
+  export type EMIInstallmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    paymentRecords?: boolean | EMIInstallmentCountOutputTypeCountPaymentRecordsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * EMIInstallmentCountOutputType without action
+   */
+  export type EMIInstallmentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallmentCountOutputType
+     */
+    select?: EMIInstallmentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * EMIInstallmentCountOutputType without action
+   */
+  export type EMIInstallmentCountOutputTypeCountPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -7575,6 +7971,8 @@ export namespace Prisma {
     productShares?: boolean | Organisation$productSharesArgs<ExtArgs>
     branches?: boolean | Organisation$branchesArgs<ExtArgs>
     rolePermissions?: boolean | Organisation$rolePermissionsArgs<ExtArgs>
+    emiSchedules?: boolean | Organisation$emiSchedulesArgs<ExtArgs>
+    paymentRecords?: boolean | Organisation$paymentRecordsArgs<ExtArgs>
     _count?: boolean | OrganisationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organisation"]>
 
@@ -7674,6 +8072,8 @@ export namespace Prisma {
     productShares?: boolean | Organisation$productSharesArgs<ExtArgs>
     branches?: boolean | Organisation$branchesArgs<ExtArgs>
     rolePermissions?: boolean | Organisation$rolePermissionsArgs<ExtArgs>
+    emiSchedules?: boolean | Organisation$emiSchedulesArgs<ExtArgs>
+    paymentRecords?: boolean | Organisation$paymentRecordsArgs<ExtArgs>
     _count?: boolean | OrganisationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganisationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -7722,6 +8122,8 @@ export namespace Prisma {
       productShares: Prisma.$ProductSharePayload<ExtArgs>[]
       branches: Prisma.$BranchPayload<ExtArgs>[]
       rolePermissions: Prisma.$RolePayload<ExtArgs>[]
+      emiSchedules: Prisma.$EMISchedulePayload<ExtArgs>[]
+      paymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8153,6 +8555,8 @@ export namespace Prisma {
     productShares<T extends Organisation$productSharesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$productSharesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductSharePayload<ExtArgs>, T, "findMany"> | Null>
     branches<T extends Organisation$branchesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findMany"> | Null>
     rolePermissions<T extends Organisation$rolePermissionsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$rolePermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany"> | Null>
+    emiSchedules<T extends Organisation$emiSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$emiSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findMany"> | Null>
+    paymentRecords<T extends Organisation$paymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$paymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9335,6 +9739,46 @@ export namespace Prisma {
   }
 
   /**
+   * Organisation.emiSchedules
+   */
+  export type Organisation$emiSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    where?: EMIScheduleWhereInput
+    orderBy?: EMIScheduleOrderByWithRelationInput | EMIScheduleOrderByWithRelationInput[]
+    cursor?: EMIScheduleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EMIScheduleScalarFieldEnum | EMIScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.paymentRecords
+   */
+  export type Organisation$paymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
    * Organisation without action
    */
   export type OrganisationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9784,6 +10228,7 @@ export namespace Prisma {
     sharedProducts?: boolean | User$sharedProductsArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     managedBranches?: boolean | User$managedBranchesArgs<ExtArgs>
+    createdPaymentRecords?: boolean | User$createdPaymentRecordsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -9917,6 +10362,7 @@ export namespace Prisma {
     sharedProducts?: boolean | User$sharedProductsArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     managedBranches?: boolean | User$managedBranchesArgs<ExtArgs>
+    createdPaymentRecords?: boolean | User$createdPaymentRecordsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9990,6 +10436,7 @@ export namespace Prisma {
       sharedProducts: Prisma.$ProductSharePayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
       managedBranches: Prisma.$BranchPayload<ExtArgs>[]
+      createdPaymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10446,6 +10893,7 @@ export namespace Prisma {
     sharedProducts<T extends User$sharedProductsArgs<ExtArgs> = {}>(args?: Subset<T, User$sharedProductsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductSharePayload<ExtArgs>, T, "findMany"> | Null>
     branch<T extends User$branchArgs<ExtArgs> = {}>(args?: Subset<T, User$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     managedBranches<T extends User$managedBranchesArgs<ExtArgs> = {}>(args?: Subset<T, User$managedBranchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findMany"> | Null>
+    createdPaymentRecords<T extends User$createdPaymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdPaymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12019,6 +12467,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BranchScalarFieldEnum | BranchScalarFieldEnum[]
+  }
+
+  /**
+   * User.createdPaymentRecords
+   */
+  export type User$createdPaymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
   }
 
   /**
@@ -19182,6 +19650,8 @@ export namespace Prisma {
     documents?: boolean | Opportunity$documentsArgs<ExtArgs>
     lead?: boolean | Opportunity$leadArgs<ExtArgs>
     pipeline?: boolean | Opportunity$pipelineArgs<ExtArgs>
+    emiSchedule?: boolean | Opportunity$emiScheduleArgs<ExtArgs>
+    paymentRecords?: boolean | Opportunity$paymentRecordsArgs<ExtArgs>
     branch?: boolean | Opportunity$branchArgs<ExtArgs>
     _count?: boolean | OpportunityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["opportunity"]>
@@ -19254,6 +19724,8 @@ export namespace Prisma {
     documents?: boolean | Opportunity$documentsArgs<ExtArgs>
     lead?: boolean | Opportunity$leadArgs<ExtArgs>
     pipeline?: boolean | Opportunity$pipelineArgs<ExtArgs>
+    emiSchedule?: boolean | Opportunity$emiScheduleArgs<ExtArgs>
+    paymentRecords?: boolean | Opportunity$paymentRecordsArgs<ExtArgs>
     branch?: boolean | Opportunity$branchArgs<ExtArgs>
     _count?: boolean | OpportunityCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -19280,6 +19752,8 @@ export namespace Prisma {
       documents: Prisma.$DocumentPayload<ExtArgs>[]
       lead: Prisma.$LeadPayload<ExtArgs> | null
       pipeline: Prisma.$PipelinePayload<ExtArgs> | null
+      emiSchedule: Prisma.$EMISchedulePayload<ExtArgs> | null
+      paymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -19680,6 +20154,8 @@ export namespace Prisma {
     documents<T extends Opportunity$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany"> | Null>
     lead<T extends Opportunity$leadArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$leadArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     pipeline<T extends Opportunity$pipelineArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$pipelineArgs<ExtArgs>>): Prisma__PipelineClient<$Result.GetResult<Prisma.$PipelinePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    emiSchedule<T extends Opportunity$emiScheduleArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$emiScheduleArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    paymentRecords<T extends Opportunity$paymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$paymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany"> | Null>
     branch<T extends Opportunity$branchArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -20212,6 +20688,41 @@ export namespace Prisma {
      */
     include?: PipelineInclude<ExtArgs> | null
     where?: PipelineWhereInput
+  }
+
+  /**
+   * Opportunity.emiSchedule
+   */
+  export type Opportunity$emiScheduleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    where?: EMIScheduleWhereInput
+  }
+
+  /**
+   * Opportunity.paymentRecords
+   */
+  export type Opportunity$paymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
   }
 
   /**
@@ -69343,6 +69854,3190 @@ export namespace Prisma {
 
 
   /**
+   * Model EMISchedule
+   */
+
+  export type AggregateEMISchedule = {
+    _count: EMIScheduleCountAggregateOutputType | null
+    _avg: EMIScheduleAvgAggregateOutputType | null
+    _sum: EMIScheduleSumAggregateOutputType | null
+    _min: EMIScheduleMinAggregateOutputType | null
+    _max: EMIScheduleMaxAggregateOutputType | null
+  }
+
+  export type EMIScheduleAvgAggregateOutputType = {
+    totalAmount: number | null
+    paidAmount: number | null
+    remainingAmount: number | null
+  }
+
+  export type EMIScheduleSumAggregateOutputType = {
+    totalAmount: number | null
+    paidAmount: number | null
+    remainingAmount: number | null
+  }
+
+  export type EMIScheduleMinAggregateOutputType = {
+    id: string | null
+    opportunityId: string | null
+    totalAmount: number | null
+    paidAmount: number | null
+    remainingAmount: number | null
+    status: $Enums.EMIStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    organisationId: string | null
+  }
+
+  export type EMIScheduleMaxAggregateOutputType = {
+    id: string | null
+    opportunityId: string | null
+    totalAmount: number | null
+    paidAmount: number | null
+    remainingAmount: number | null
+    status: $Enums.EMIStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    organisationId: string | null
+  }
+
+  export type EMIScheduleCountAggregateOutputType = {
+    id: number
+    opportunityId: number
+    totalAmount: number
+    paidAmount: number
+    remainingAmount: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    organisationId: number
+    _all: number
+  }
+
+
+  export type EMIScheduleAvgAggregateInputType = {
+    totalAmount?: true
+    paidAmount?: true
+    remainingAmount?: true
+  }
+
+  export type EMIScheduleSumAggregateInputType = {
+    totalAmount?: true
+    paidAmount?: true
+    remainingAmount?: true
+  }
+
+  export type EMIScheduleMinAggregateInputType = {
+    id?: true
+    opportunityId?: true
+    totalAmount?: true
+    paidAmount?: true
+    remainingAmount?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    organisationId?: true
+  }
+
+  export type EMIScheduleMaxAggregateInputType = {
+    id?: true
+    opportunityId?: true
+    totalAmount?: true
+    paidAmount?: true
+    remainingAmount?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    organisationId?: true
+  }
+
+  export type EMIScheduleCountAggregateInputType = {
+    id?: true
+    opportunityId?: true
+    totalAmount?: true
+    paidAmount?: true
+    remainingAmount?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    organisationId?: true
+    _all?: true
+  }
+
+  export type EMIScheduleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EMISchedule to aggregate.
+     */
+    where?: EMIScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMISchedules to fetch.
+     */
+    orderBy?: EMIScheduleOrderByWithRelationInput | EMIScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EMIScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMISchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMISchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EMISchedules
+    **/
+    _count?: true | EMIScheduleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EMIScheduleAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EMIScheduleSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EMIScheduleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EMIScheduleMaxAggregateInputType
+  }
+
+  export type GetEMIScheduleAggregateType<T extends EMIScheduleAggregateArgs> = {
+        [P in keyof T & keyof AggregateEMISchedule]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEMISchedule[P]>
+      : GetScalarType<T[P], AggregateEMISchedule[P]>
+  }
+
+
+
+
+  export type EMIScheduleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EMIScheduleWhereInput
+    orderBy?: EMIScheduleOrderByWithAggregationInput | EMIScheduleOrderByWithAggregationInput[]
+    by: EMIScheduleScalarFieldEnum[] | EMIScheduleScalarFieldEnum
+    having?: EMIScheduleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EMIScheduleCountAggregateInputType | true
+    _avg?: EMIScheduleAvgAggregateInputType
+    _sum?: EMIScheduleSumAggregateInputType
+    _min?: EMIScheduleMinAggregateInputType
+    _max?: EMIScheduleMaxAggregateInputType
+  }
+
+  export type EMIScheduleGroupByOutputType = {
+    id: string
+    opportunityId: string
+    totalAmount: number
+    paidAmount: number
+    remainingAmount: number
+    status: $Enums.EMIStatus
+    createdAt: Date
+    updatedAt: Date
+    organisationId: string
+    _count: EMIScheduleCountAggregateOutputType | null
+    _avg: EMIScheduleAvgAggregateOutputType | null
+    _sum: EMIScheduleSumAggregateOutputType | null
+    _min: EMIScheduleMinAggregateOutputType | null
+    _max: EMIScheduleMaxAggregateOutputType | null
+  }
+
+  type GetEMIScheduleGroupByPayload<T extends EMIScheduleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EMIScheduleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EMIScheduleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EMIScheduleGroupByOutputType[P]>
+            : GetScalarType<T[P], EMIScheduleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EMIScheduleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityId?: boolean
+    totalAmount?: boolean
+    paidAmount?: boolean
+    remainingAmount?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisationId?: boolean
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    installments?: boolean | EMISchedule$installmentsArgs<ExtArgs>
+    _count?: boolean | EMIScheduleCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eMISchedule"]>
+
+  export type EMIScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityId?: boolean
+    totalAmount?: boolean
+    paidAmount?: boolean
+    remainingAmount?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisationId?: boolean
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eMISchedule"]>
+
+  export type EMIScheduleSelectScalar = {
+    id?: boolean
+    opportunityId?: boolean
+    totalAmount?: boolean
+    paidAmount?: boolean
+    remainingAmount?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisationId?: boolean
+  }
+
+  export type EMIScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    installments?: boolean | EMISchedule$installmentsArgs<ExtArgs>
+    _count?: boolean | EMIScheduleCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type EMIScheduleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+
+  export type $EMISchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EMISchedule"
+    objects: {
+      opportunity: Prisma.$OpportunityPayload<ExtArgs>
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+      installments: Prisma.$EMIInstallmentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      opportunityId: string
+      totalAmount: number
+      paidAmount: number
+      remainingAmount: number
+      status: $Enums.EMIStatus
+      createdAt: Date
+      updatedAt: Date
+      organisationId: string
+    }, ExtArgs["result"]["eMISchedule"]>
+    composites: {}
+  }
+
+  type EMIScheduleGetPayload<S extends boolean | null | undefined | EMIScheduleDefaultArgs> = $Result.GetResult<Prisma.$EMISchedulePayload, S>
+
+  type EMIScheduleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<EMIScheduleFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: EMIScheduleCountAggregateInputType | true
+    }
+
+  export interface EMIScheduleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EMISchedule'], meta: { name: 'EMISchedule' } }
+    /**
+     * Find zero or one EMISchedule that matches the filter.
+     * @param {EMIScheduleFindUniqueArgs} args - Arguments to find a EMISchedule
+     * @example
+     * // Get one EMISchedule
+     * const eMISchedule = await prisma.eMISchedule.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EMIScheduleFindUniqueArgs>(args: SelectSubset<T, EMIScheduleFindUniqueArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one EMISchedule that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {EMIScheduleFindUniqueOrThrowArgs} args - Arguments to find a EMISchedule
+     * @example
+     * // Get one EMISchedule
+     * const eMISchedule = await prisma.eMISchedule.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EMIScheduleFindUniqueOrThrowArgs>(args: SelectSubset<T, EMIScheduleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first EMISchedule that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleFindFirstArgs} args - Arguments to find a EMISchedule
+     * @example
+     * // Get one EMISchedule
+     * const eMISchedule = await prisma.eMISchedule.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EMIScheduleFindFirstArgs>(args?: SelectSubset<T, EMIScheduleFindFirstArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first EMISchedule that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleFindFirstOrThrowArgs} args - Arguments to find a EMISchedule
+     * @example
+     * // Get one EMISchedule
+     * const eMISchedule = await prisma.eMISchedule.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EMIScheduleFindFirstOrThrowArgs>(args?: SelectSubset<T, EMIScheduleFindFirstOrThrowArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more EMISchedules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EMISchedules
+     * const eMISchedules = await prisma.eMISchedule.findMany()
+     * 
+     * // Get first 10 EMISchedules
+     * const eMISchedules = await prisma.eMISchedule.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const eMIScheduleWithIdOnly = await prisma.eMISchedule.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EMIScheduleFindManyArgs>(args?: SelectSubset<T, EMIScheduleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a EMISchedule.
+     * @param {EMIScheduleCreateArgs} args - Arguments to create a EMISchedule.
+     * @example
+     * // Create one EMISchedule
+     * const EMISchedule = await prisma.eMISchedule.create({
+     *   data: {
+     *     // ... data to create a EMISchedule
+     *   }
+     * })
+     * 
+     */
+    create<T extends EMIScheduleCreateArgs>(args: SelectSubset<T, EMIScheduleCreateArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many EMISchedules.
+     * @param {EMIScheduleCreateManyArgs} args - Arguments to create many EMISchedules.
+     * @example
+     * // Create many EMISchedules
+     * const eMISchedule = await prisma.eMISchedule.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EMIScheduleCreateManyArgs>(args?: SelectSubset<T, EMIScheduleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EMISchedules and returns the data saved in the database.
+     * @param {EMIScheduleCreateManyAndReturnArgs} args - Arguments to create many EMISchedules.
+     * @example
+     * // Create many EMISchedules
+     * const eMISchedule = await prisma.eMISchedule.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EMISchedules and only return the `id`
+     * const eMIScheduleWithIdOnly = await prisma.eMISchedule.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EMIScheduleCreateManyAndReturnArgs>(args?: SelectSubset<T, EMIScheduleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a EMISchedule.
+     * @param {EMIScheduleDeleteArgs} args - Arguments to delete one EMISchedule.
+     * @example
+     * // Delete one EMISchedule
+     * const EMISchedule = await prisma.eMISchedule.delete({
+     *   where: {
+     *     // ... filter to delete one EMISchedule
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EMIScheduleDeleteArgs>(args: SelectSubset<T, EMIScheduleDeleteArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one EMISchedule.
+     * @param {EMIScheduleUpdateArgs} args - Arguments to update one EMISchedule.
+     * @example
+     * // Update one EMISchedule
+     * const eMISchedule = await prisma.eMISchedule.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EMIScheduleUpdateArgs>(args: SelectSubset<T, EMIScheduleUpdateArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more EMISchedules.
+     * @param {EMIScheduleDeleteManyArgs} args - Arguments to filter EMISchedules to delete.
+     * @example
+     * // Delete a few EMISchedules
+     * const { count } = await prisma.eMISchedule.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EMIScheduleDeleteManyArgs>(args?: SelectSubset<T, EMIScheduleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EMISchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EMISchedules
+     * const eMISchedule = await prisma.eMISchedule.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EMIScheduleUpdateManyArgs>(args: SelectSubset<T, EMIScheduleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one EMISchedule.
+     * @param {EMIScheduleUpsertArgs} args - Arguments to update or create a EMISchedule.
+     * @example
+     * // Update or create a EMISchedule
+     * const eMISchedule = await prisma.eMISchedule.upsert({
+     *   create: {
+     *     // ... data to create a EMISchedule
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EMISchedule we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EMIScheduleUpsertArgs>(args: SelectSubset<T, EMIScheduleUpsertArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of EMISchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleCountArgs} args - Arguments to filter EMISchedules to count.
+     * @example
+     * // Count the number of EMISchedules
+     * const count = await prisma.eMISchedule.count({
+     *   where: {
+     *     // ... the filter for the EMISchedules we want to count
+     *   }
+     * })
+    **/
+    count<T extends EMIScheduleCountArgs>(
+      args?: Subset<T, EMIScheduleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EMIScheduleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EMISchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EMIScheduleAggregateArgs>(args: Subset<T, EMIScheduleAggregateArgs>): Prisma.PrismaPromise<GetEMIScheduleAggregateType<T>>
+
+    /**
+     * Group by EMISchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIScheduleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EMIScheduleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EMIScheduleGroupByArgs['orderBy'] }
+        : { orderBy?: EMIScheduleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EMIScheduleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEMIScheduleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EMISchedule model
+   */
+  readonly fields: EMIScheduleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EMISchedule.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EMIScheduleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    opportunity<T extends OpportunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OpportunityDefaultArgs<ExtArgs>>): Prisma__OpportunityClient<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    installments<T extends EMISchedule$installmentsArgs<ExtArgs> = {}>(args?: Subset<T, EMISchedule$installmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EMISchedule model
+   */ 
+  interface EMIScheduleFieldRefs {
+    readonly id: FieldRef<"EMISchedule", 'String'>
+    readonly opportunityId: FieldRef<"EMISchedule", 'String'>
+    readonly totalAmount: FieldRef<"EMISchedule", 'Float'>
+    readonly paidAmount: FieldRef<"EMISchedule", 'Float'>
+    readonly remainingAmount: FieldRef<"EMISchedule", 'Float'>
+    readonly status: FieldRef<"EMISchedule", 'EMIStatus'>
+    readonly createdAt: FieldRef<"EMISchedule", 'DateTime'>
+    readonly updatedAt: FieldRef<"EMISchedule", 'DateTime'>
+    readonly organisationId: FieldRef<"EMISchedule", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EMISchedule findUnique
+   */
+  export type EMIScheduleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which EMISchedule to fetch.
+     */
+    where: EMIScheduleWhereUniqueInput
+  }
+
+  /**
+   * EMISchedule findUniqueOrThrow
+   */
+  export type EMIScheduleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which EMISchedule to fetch.
+     */
+    where: EMIScheduleWhereUniqueInput
+  }
+
+  /**
+   * EMISchedule findFirst
+   */
+  export type EMIScheduleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which EMISchedule to fetch.
+     */
+    where?: EMIScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMISchedules to fetch.
+     */
+    orderBy?: EMIScheduleOrderByWithRelationInput | EMIScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EMISchedules.
+     */
+    cursor?: EMIScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMISchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMISchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EMISchedules.
+     */
+    distinct?: EMIScheduleScalarFieldEnum | EMIScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * EMISchedule findFirstOrThrow
+   */
+  export type EMIScheduleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which EMISchedule to fetch.
+     */
+    where?: EMIScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMISchedules to fetch.
+     */
+    orderBy?: EMIScheduleOrderByWithRelationInput | EMIScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EMISchedules.
+     */
+    cursor?: EMIScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMISchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMISchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EMISchedules.
+     */
+    distinct?: EMIScheduleScalarFieldEnum | EMIScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * EMISchedule findMany
+   */
+  export type EMIScheduleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which EMISchedules to fetch.
+     */
+    where?: EMIScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMISchedules to fetch.
+     */
+    orderBy?: EMIScheduleOrderByWithRelationInput | EMIScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EMISchedules.
+     */
+    cursor?: EMIScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMISchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMISchedules.
+     */
+    skip?: number
+    distinct?: EMIScheduleScalarFieldEnum | EMIScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * EMISchedule create
+   */
+  export type EMIScheduleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EMISchedule.
+     */
+    data: XOR<EMIScheduleCreateInput, EMIScheduleUncheckedCreateInput>
+  }
+
+  /**
+   * EMISchedule createMany
+   */
+  export type EMIScheduleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EMISchedules.
+     */
+    data: EMIScheduleCreateManyInput | EMIScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EMISchedule createManyAndReturn
+   */
+  export type EMIScheduleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many EMISchedules.
+     */
+    data: EMIScheduleCreateManyInput | EMIScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EMISchedule update
+   */
+  export type EMIScheduleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EMISchedule.
+     */
+    data: XOR<EMIScheduleUpdateInput, EMIScheduleUncheckedUpdateInput>
+    /**
+     * Choose, which EMISchedule to update.
+     */
+    where: EMIScheduleWhereUniqueInput
+  }
+
+  /**
+   * EMISchedule updateMany
+   */
+  export type EMIScheduleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EMISchedules.
+     */
+    data: XOR<EMIScheduleUpdateManyMutationInput, EMIScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which EMISchedules to update
+     */
+    where?: EMIScheduleWhereInput
+  }
+
+  /**
+   * EMISchedule upsert
+   */
+  export type EMIScheduleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EMISchedule to update in case it exists.
+     */
+    where: EMIScheduleWhereUniqueInput
+    /**
+     * In case the EMISchedule found by the `where` argument doesn't exist, create a new EMISchedule with this data.
+     */
+    create: XOR<EMIScheduleCreateInput, EMIScheduleUncheckedCreateInput>
+    /**
+     * In case the EMISchedule was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EMIScheduleUpdateInput, EMIScheduleUncheckedUpdateInput>
+  }
+
+  /**
+   * EMISchedule delete
+   */
+  export type EMIScheduleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+    /**
+     * Filter which EMISchedule to delete.
+     */
+    where: EMIScheduleWhereUniqueInput
+  }
+
+  /**
+   * EMISchedule deleteMany
+   */
+  export type EMIScheduleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EMISchedules to delete
+     */
+    where?: EMIScheduleWhereInput
+  }
+
+  /**
+   * EMISchedule.installments
+   */
+  export type EMISchedule$installmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    where?: EMIInstallmentWhereInput
+    orderBy?: EMIInstallmentOrderByWithRelationInput | EMIInstallmentOrderByWithRelationInput[]
+    cursor?: EMIInstallmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EMIInstallmentScalarFieldEnum | EMIInstallmentScalarFieldEnum[]
+  }
+
+  /**
+   * EMISchedule without action
+   */
+  export type EMIScheduleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMISchedule
+     */
+    select?: EMIScheduleSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIScheduleInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EMIInstallment
+   */
+
+  export type AggregateEMIInstallment = {
+    _count: EMIInstallmentCountAggregateOutputType | null
+    _avg: EMIInstallmentAvgAggregateOutputType | null
+    _sum: EMIInstallmentSumAggregateOutputType | null
+    _min: EMIInstallmentMinAggregateOutputType | null
+    _max: EMIInstallmentMaxAggregateOutputType | null
+  }
+
+  export type EMIInstallmentAvgAggregateOutputType = {
+    installmentNumber: number | null
+    amount: number | null
+  }
+
+  export type EMIInstallmentSumAggregateOutputType = {
+    installmentNumber: number | null
+    amount: number | null
+  }
+
+  export type EMIInstallmentMinAggregateOutputType = {
+    id: string | null
+    scheduleId: string | null
+    installmentNumber: number | null
+    amount: number | null
+    dueDate: Date | null
+    status: $Enums.InstallmentStatus | null
+    paidDate: Date | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EMIInstallmentMaxAggregateOutputType = {
+    id: string | null
+    scheduleId: string | null
+    installmentNumber: number | null
+    amount: number | null
+    dueDate: Date | null
+    status: $Enums.InstallmentStatus | null
+    paidDate: Date | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EMIInstallmentCountAggregateOutputType = {
+    id: number
+    scheduleId: number
+    installmentNumber: number
+    amount: number
+    dueDate: number
+    status: number
+    paidDate: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EMIInstallmentAvgAggregateInputType = {
+    installmentNumber?: true
+    amount?: true
+  }
+
+  export type EMIInstallmentSumAggregateInputType = {
+    installmentNumber?: true
+    amount?: true
+  }
+
+  export type EMIInstallmentMinAggregateInputType = {
+    id?: true
+    scheduleId?: true
+    installmentNumber?: true
+    amount?: true
+    dueDate?: true
+    status?: true
+    paidDate?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EMIInstallmentMaxAggregateInputType = {
+    id?: true
+    scheduleId?: true
+    installmentNumber?: true
+    amount?: true
+    dueDate?: true
+    status?: true
+    paidDate?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EMIInstallmentCountAggregateInputType = {
+    id?: true
+    scheduleId?: true
+    installmentNumber?: true
+    amount?: true
+    dueDate?: true
+    status?: true
+    paidDate?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EMIInstallmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EMIInstallment to aggregate.
+     */
+    where?: EMIInstallmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMIInstallments to fetch.
+     */
+    orderBy?: EMIInstallmentOrderByWithRelationInput | EMIInstallmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EMIInstallmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMIInstallments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMIInstallments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EMIInstallments
+    **/
+    _count?: true | EMIInstallmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EMIInstallmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EMIInstallmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EMIInstallmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EMIInstallmentMaxAggregateInputType
+  }
+
+  export type GetEMIInstallmentAggregateType<T extends EMIInstallmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateEMIInstallment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEMIInstallment[P]>
+      : GetScalarType<T[P], AggregateEMIInstallment[P]>
+  }
+
+
+
+
+  export type EMIInstallmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EMIInstallmentWhereInput
+    orderBy?: EMIInstallmentOrderByWithAggregationInput | EMIInstallmentOrderByWithAggregationInput[]
+    by: EMIInstallmentScalarFieldEnum[] | EMIInstallmentScalarFieldEnum
+    having?: EMIInstallmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EMIInstallmentCountAggregateInputType | true
+    _avg?: EMIInstallmentAvgAggregateInputType
+    _sum?: EMIInstallmentSumAggregateInputType
+    _min?: EMIInstallmentMinAggregateInputType
+    _max?: EMIInstallmentMaxAggregateInputType
+  }
+
+  export type EMIInstallmentGroupByOutputType = {
+    id: string
+    scheduleId: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date
+    status: $Enums.InstallmentStatus
+    paidDate: Date | null
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EMIInstallmentCountAggregateOutputType | null
+    _avg: EMIInstallmentAvgAggregateOutputType | null
+    _sum: EMIInstallmentSumAggregateOutputType | null
+    _min: EMIInstallmentMinAggregateOutputType | null
+    _max: EMIInstallmentMaxAggregateOutputType | null
+  }
+
+  type GetEMIInstallmentGroupByPayload<T extends EMIInstallmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EMIInstallmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EMIInstallmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EMIInstallmentGroupByOutputType[P]>
+            : GetScalarType<T[P], EMIInstallmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EMIInstallmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scheduleId?: boolean
+    installmentNumber?: boolean
+    amount?: boolean
+    dueDate?: boolean
+    status?: boolean
+    paidDate?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    schedule?: boolean | EMIScheduleDefaultArgs<ExtArgs>
+    paymentRecords?: boolean | EMIInstallment$paymentRecordsArgs<ExtArgs>
+    _count?: boolean | EMIInstallmentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eMIInstallment"]>
+
+  export type EMIInstallmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scheduleId?: boolean
+    installmentNumber?: boolean
+    amount?: boolean
+    dueDate?: boolean
+    status?: boolean
+    paidDate?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    schedule?: boolean | EMIScheduleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eMIInstallment"]>
+
+  export type EMIInstallmentSelectScalar = {
+    id?: boolean
+    scheduleId?: boolean
+    installmentNumber?: boolean
+    amount?: boolean
+    dueDate?: boolean
+    status?: boolean
+    paidDate?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EMIInstallmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    schedule?: boolean | EMIScheduleDefaultArgs<ExtArgs>
+    paymentRecords?: boolean | EMIInstallment$paymentRecordsArgs<ExtArgs>
+    _count?: boolean | EMIInstallmentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type EMIInstallmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    schedule?: boolean | EMIScheduleDefaultArgs<ExtArgs>
+  }
+
+  export type $EMIInstallmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EMIInstallment"
+    objects: {
+      schedule: Prisma.$EMISchedulePayload<ExtArgs>
+      paymentRecords: Prisma.$PaymentRecordPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      scheduleId: string
+      installmentNumber: number
+      amount: number
+      dueDate: Date
+      status: $Enums.InstallmentStatus
+      paidDate: Date | null
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["eMIInstallment"]>
+    composites: {}
+  }
+
+  type EMIInstallmentGetPayload<S extends boolean | null | undefined | EMIInstallmentDefaultArgs> = $Result.GetResult<Prisma.$EMIInstallmentPayload, S>
+
+  type EMIInstallmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<EMIInstallmentFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: EMIInstallmentCountAggregateInputType | true
+    }
+
+  export interface EMIInstallmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EMIInstallment'], meta: { name: 'EMIInstallment' } }
+    /**
+     * Find zero or one EMIInstallment that matches the filter.
+     * @param {EMIInstallmentFindUniqueArgs} args - Arguments to find a EMIInstallment
+     * @example
+     * // Get one EMIInstallment
+     * const eMIInstallment = await prisma.eMIInstallment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EMIInstallmentFindUniqueArgs>(args: SelectSubset<T, EMIInstallmentFindUniqueArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one EMIInstallment that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {EMIInstallmentFindUniqueOrThrowArgs} args - Arguments to find a EMIInstallment
+     * @example
+     * // Get one EMIInstallment
+     * const eMIInstallment = await prisma.eMIInstallment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EMIInstallmentFindUniqueOrThrowArgs>(args: SelectSubset<T, EMIInstallmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first EMIInstallment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentFindFirstArgs} args - Arguments to find a EMIInstallment
+     * @example
+     * // Get one EMIInstallment
+     * const eMIInstallment = await prisma.eMIInstallment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EMIInstallmentFindFirstArgs>(args?: SelectSubset<T, EMIInstallmentFindFirstArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first EMIInstallment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentFindFirstOrThrowArgs} args - Arguments to find a EMIInstallment
+     * @example
+     * // Get one EMIInstallment
+     * const eMIInstallment = await prisma.eMIInstallment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EMIInstallmentFindFirstOrThrowArgs>(args?: SelectSubset<T, EMIInstallmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more EMIInstallments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EMIInstallments
+     * const eMIInstallments = await prisma.eMIInstallment.findMany()
+     * 
+     * // Get first 10 EMIInstallments
+     * const eMIInstallments = await prisma.eMIInstallment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const eMIInstallmentWithIdOnly = await prisma.eMIInstallment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EMIInstallmentFindManyArgs>(args?: SelectSubset<T, EMIInstallmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a EMIInstallment.
+     * @param {EMIInstallmentCreateArgs} args - Arguments to create a EMIInstallment.
+     * @example
+     * // Create one EMIInstallment
+     * const EMIInstallment = await prisma.eMIInstallment.create({
+     *   data: {
+     *     // ... data to create a EMIInstallment
+     *   }
+     * })
+     * 
+     */
+    create<T extends EMIInstallmentCreateArgs>(args: SelectSubset<T, EMIInstallmentCreateArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many EMIInstallments.
+     * @param {EMIInstallmentCreateManyArgs} args - Arguments to create many EMIInstallments.
+     * @example
+     * // Create many EMIInstallments
+     * const eMIInstallment = await prisma.eMIInstallment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EMIInstallmentCreateManyArgs>(args?: SelectSubset<T, EMIInstallmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EMIInstallments and returns the data saved in the database.
+     * @param {EMIInstallmentCreateManyAndReturnArgs} args - Arguments to create many EMIInstallments.
+     * @example
+     * // Create many EMIInstallments
+     * const eMIInstallment = await prisma.eMIInstallment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EMIInstallments and only return the `id`
+     * const eMIInstallmentWithIdOnly = await prisma.eMIInstallment.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EMIInstallmentCreateManyAndReturnArgs>(args?: SelectSubset<T, EMIInstallmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a EMIInstallment.
+     * @param {EMIInstallmentDeleteArgs} args - Arguments to delete one EMIInstallment.
+     * @example
+     * // Delete one EMIInstallment
+     * const EMIInstallment = await prisma.eMIInstallment.delete({
+     *   where: {
+     *     // ... filter to delete one EMIInstallment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EMIInstallmentDeleteArgs>(args: SelectSubset<T, EMIInstallmentDeleteArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one EMIInstallment.
+     * @param {EMIInstallmentUpdateArgs} args - Arguments to update one EMIInstallment.
+     * @example
+     * // Update one EMIInstallment
+     * const eMIInstallment = await prisma.eMIInstallment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EMIInstallmentUpdateArgs>(args: SelectSubset<T, EMIInstallmentUpdateArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more EMIInstallments.
+     * @param {EMIInstallmentDeleteManyArgs} args - Arguments to filter EMIInstallments to delete.
+     * @example
+     * // Delete a few EMIInstallments
+     * const { count } = await prisma.eMIInstallment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EMIInstallmentDeleteManyArgs>(args?: SelectSubset<T, EMIInstallmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EMIInstallments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EMIInstallments
+     * const eMIInstallment = await prisma.eMIInstallment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EMIInstallmentUpdateManyArgs>(args: SelectSubset<T, EMIInstallmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one EMIInstallment.
+     * @param {EMIInstallmentUpsertArgs} args - Arguments to update or create a EMIInstallment.
+     * @example
+     * // Update or create a EMIInstallment
+     * const eMIInstallment = await prisma.eMIInstallment.upsert({
+     *   create: {
+     *     // ... data to create a EMIInstallment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EMIInstallment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EMIInstallmentUpsertArgs>(args: SelectSubset<T, EMIInstallmentUpsertArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of EMIInstallments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentCountArgs} args - Arguments to filter EMIInstallments to count.
+     * @example
+     * // Count the number of EMIInstallments
+     * const count = await prisma.eMIInstallment.count({
+     *   where: {
+     *     // ... the filter for the EMIInstallments we want to count
+     *   }
+     * })
+    **/
+    count<T extends EMIInstallmentCountArgs>(
+      args?: Subset<T, EMIInstallmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EMIInstallmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EMIInstallment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EMIInstallmentAggregateArgs>(args: Subset<T, EMIInstallmentAggregateArgs>): Prisma.PrismaPromise<GetEMIInstallmentAggregateType<T>>
+
+    /**
+     * Group by EMIInstallment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EMIInstallmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EMIInstallmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EMIInstallmentGroupByArgs['orderBy'] }
+        : { orderBy?: EMIInstallmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EMIInstallmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEMIInstallmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EMIInstallment model
+   */
+  readonly fields: EMIInstallmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EMIInstallment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EMIInstallmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    schedule<T extends EMIScheduleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EMIScheduleDefaultArgs<ExtArgs>>): Prisma__EMIScheduleClient<$Result.GetResult<Prisma.$EMISchedulePayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    paymentRecords<T extends EMIInstallment$paymentRecordsArgs<ExtArgs> = {}>(args?: Subset<T, EMIInstallment$paymentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany"> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EMIInstallment model
+   */ 
+  interface EMIInstallmentFieldRefs {
+    readonly id: FieldRef<"EMIInstallment", 'String'>
+    readonly scheduleId: FieldRef<"EMIInstallment", 'String'>
+    readonly installmentNumber: FieldRef<"EMIInstallment", 'Int'>
+    readonly amount: FieldRef<"EMIInstallment", 'Float'>
+    readonly dueDate: FieldRef<"EMIInstallment", 'DateTime'>
+    readonly status: FieldRef<"EMIInstallment", 'InstallmentStatus'>
+    readonly paidDate: FieldRef<"EMIInstallment", 'DateTime'>
+    readonly notes: FieldRef<"EMIInstallment", 'String'>
+    readonly createdAt: FieldRef<"EMIInstallment", 'DateTime'>
+    readonly updatedAt: FieldRef<"EMIInstallment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EMIInstallment findUnique
+   */
+  export type EMIInstallmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EMIInstallment to fetch.
+     */
+    where: EMIInstallmentWhereUniqueInput
+  }
+
+  /**
+   * EMIInstallment findUniqueOrThrow
+   */
+  export type EMIInstallmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EMIInstallment to fetch.
+     */
+    where: EMIInstallmentWhereUniqueInput
+  }
+
+  /**
+   * EMIInstallment findFirst
+   */
+  export type EMIInstallmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EMIInstallment to fetch.
+     */
+    where?: EMIInstallmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMIInstallments to fetch.
+     */
+    orderBy?: EMIInstallmentOrderByWithRelationInput | EMIInstallmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EMIInstallments.
+     */
+    cursor?: EMIInstallmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMIInstallments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMIInstallments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EMIInstallments.
+     */
+    distinct?: EMIInstallmentScalarFieldEnum | EMIInstallmentScalarFieldEnum[]
+  }
+
+  /**
+   * EMIInstallment findFirstOrThrow
+   */
+  export type EMIInstallmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EMIInstallment to fetch.
+     */
+    where?: EMIInstallmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMIInstallments to fetch.
+     */
+    orderBy?: EMIInstallmentOrderByWithRelationInput | EMIInstallmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EMIInstallments.
+     */
+    cursor?: EMIInstallmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMIInstallments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMIInstallments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EMIInstallments.
+     */
+    distinct?: EMIInstallmentScalarFieldEnum | EMIInstallmentScalarFieldEnum[]
+  }
+
+  /**
+   * EMIInstallment findMany
+   */
+  export type EMIInstallmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * Filter, which EMIInstallments to fetch.
+     */
+    where?: EMIInstallmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EMIInstallments to fetch.
+     */
+    orderBy?: EMIInstallmentOrderByWithRelationInput | EMIInstallmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EMIInstallments.
+     */
+    cursor?: EMIInstallmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EMIInstallments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EMIInstallments.
+     */
+    skip?: number
+    distinct?: EMIInstallmentScalarFieldEnum | EMIInstallmentScalarFieldEnum[]
+  }
+
+  /**
+   * EMIInstallment create
+   */
+  export type EMIInstallmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EMIInstallment.
+     */
+    data: XOR<EMIInstallmentCreateInput, EMIInstallmentUncheckedCreateInput>
+  }
+
+  /**
+   * EMIInstallment createMany
+   */
+  export type EMIInstallmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EMIInstallments.
+     */
+    data: EMIInstallmentCreateManyInput | EMIInstallmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EMIInstallment createManyAndReturn
+   */
+  export type EMIInstallmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many EMIInstallments.
+     */
+    data: EMIInstallmentCreateManyInput | EMIInstallmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EMIInstallment update
+   */
+  export type EMIInstallmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EMIInstallment.
+     */
+    data: XOR<EMIInstallmentUpdateInput, EMIInstallmentUncheckedUpdateInput>
+    /**
+     * Choose, which EMIInstallment to update.
+     */
+    where: EMIInstallmentWhereUniqueInput
+  }
+
+  /**
+   * EMIInstallment updateMany
+   */
+  export type EMIInstallmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EMIInstallments.
+     */
+    data: XOR<EMIInstallmentUpdateManyMutationInput, EMIInstallmentUncheckedUpdateManyInput>
+    /**
+     * Filter which EMIInstallments to update
+     */
+    where?: EMIInstallmentWhereInput
+  }
+
+  /**
+   * EMIInstallment upsert
+   */
+  export type EMIInstallmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EMIInstallment to update in case it exists.
+     */
+    where: EMIInstallmentWhereUniqueInput
+    /**
+     * In case the EMIInstallment found by the `where` argument doesn't exist, create a new EMIInstallment with this data.
+     */
+    create: XOR<EMIInstallmentCreateInput, EMIInstallmentUncheckedCreateInput>
+    /**
+     * In case the EMIInstallment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EMIInstallmentUpdateInput, EMIInstallmentUncheckedUpdateInput>
+  }
+
+  /**
+   * EMIInstallment delete
+   */
+  export type EMIInstallmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    /**
+     * Filter which EMIInstallment to delete.
+     */
+    where: EMIInstallmentWhereUniqueInput
+  }
+
+  /**
+   * EMIInstallment deleteMany
+   */
+  export type EMIInstallmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EMIInstallments to delete
+     */
+    where?: EMIInstallmentWhereInput
+  }
+
+  /**
+   * EMIInstallment.paymentRecords
+   */
+  export type EMIInstallment$paymentRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    cursor?: PaymentRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * EMIInstallment without action
+   */
+  export type EMIInstallmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PaymentRecord
+   */
+
+  export type AggregatePaymentRecord = {
+    _count: PaymentRecordCountAggregateOutputType | null
+    _avg: PaymentRecordAvgAggregateOutputType | null
+    _sum: PaymentRecordSumAggregateOutputType | null
+    _min: PaymentRecordMinAggregateOutputType | null
+    _max: PaymentRecordMaxAggregateOutputType | null
+  }
+
+  export type PaymentRecordAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type PaymentRecordSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type PaymentRecordMinAggregateOutputType = {
+    id: string | null
+    opportunityId: string | null
+    amount: number | null
+    paymentDate: Date | null
+    paymentMethod: string | null
+    paymentType: $Enums.PaymentType | null
+    installmentId: string | null
+    notes: string | null
+    createdAt: Date | null
+    createdById: string | null
+    organisationId: string | null
+  }
+
+  export type PaymentRecordMaxAggregateOutputType = {
+    id: string | null
+    opportunityId: string | null
+    amount: number | null
+    paymentDate: Date | null
+    paymentMethod: string | null
+    paymentType: $Enums.PaymentType | null
+    installmentId: string | null
+    notes: string | null
+    createdAt: Date | null
+    createdById: string | null
+    organisationId: string | null
+  }
+
+  export type PaymentRecordCountAggregateOutputType = {
+    id: number
+    opportunityId: number
+    amount: number
+    paymentDate: number
+    paymentMethod: number
+    paymentType: number
+    installmentId: number
+    notes: number
+    createdAt: number
+    createdById: number
+    organisationId: number
+    _all: number
+  }
+
+
+  export type PaymentRecordAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type PaymentRecordSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type PaymentRecordMinAggregateInputType = {
+    id?: true
+    opportunityId?: true
+    amount?: true
+    paymentDate?: true
+    paymentMethod?: true
+    paymentType?: true
+    installmentId?: true
+    notes?: true
+    createdAt?: true
+    createdById?: true
+    organisationId?: true
+  }
+
+  export type PaymentRecordMaxAggregateInputType = {
+    id?: true
+    opportunityId?: true
+    amount?: true
+    paymentDate?: true
+    paymentMethod?: true
+    paymentType?: true
+    installmentId?: true
+    notes?: true
+    createdAt?: true
+    createdById?: true
+    organisationId?: true
+  }
+
+  export type PaymentRecordCountAggregateInputType = {
+    id?: true
+    opportunityId?: true
+    amount?: true
+    paymentDate?: true
+    paymentMethod?: true
+    paymentType?: true
+    installmentId?: true
+    notes?: true
+    createdAt?: true
+    createdById?: true
+    organisationId?: true
+    _all?: true
+  }
+
+  export type PaymentRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentRecord to aggregate.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentRecords
+    **/
+    _count?: true | PaymentRecordCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentRecordAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentRecordSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentRecordMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentRecordMaxAggregateInputType
+  }
+
+  export type GetPaymentRecordAggregateType<T extends PaymentRecordAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentRecord]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentRecord[P]>
+      : GetScalarType<T[P], AggregatePaymentRecord[P]>
+  }
+
+
+
+
+  export type PaymentRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentRecordWhereInput
+    orderBy?: PaymentRecordOrderByWithAggregationInput | PaymentRecordOrderByWithAggregationInput[]
+    by: PaymentRecordScalarFieldEnum[] | PaymentRecordScalarFieldEnum
+    having?: PaymentRecordScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentRecordCountAggregateInputType | true
+    _avg?: PaymentRecordAvgAggregateInputType
+    _sum?: PaymentRecordSumAggregateInputType
+    _min?: PaymentRecordMinAggregateInputType
+    _max?: PaymentRecordMaxAggregateInputType
+  }
+
+  export type PaymentRecordGroupByOutputType = {
+    id: string
+    opportunityId: string
+    amount: number
+    paymentDate: Date
+    paymentMethod: string | null
+    paymentType: $Enums.PaymentType
+    installmentId: string | null
+    notes: string | null
+    createdAt: Date
+    createdById: string
+    organisationId: string
+    _count: PaymentRecordCountAggregateOutputType | null
+    _avg: PaymentRecordAvgAggregateOutputType | null
+    _sum: PaymentRecordSumAggregateOutputType | null
+    _min: PaymentRecordMinAggregateOutputType | null
+    _max: PaymentRecordMaxAggregateOutputType | null
+  }
+
+  type GetPaymentRecordGroupByPayload<T extends PaymentRecordGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentRecordGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentRecordGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentRecordGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentRecordGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityId?: boolean
+    amount?: boolean
+    paymentDate?: boolean
+    paymentMethod?: boolean
+    paymentType?: boolean
+    installmentId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    createdById?: boolean
+    organisationId?: boolean
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    installment?: boolean | PaymentRecord$installmentArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentRecord"]>
+
+  export type PaymentRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityId?: boolean
+    amount?: boolean
+    paymentDate?: boolean
+    paymentMethod?: boolean
+    paymentType?: boolean
+    installmentId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    createdById?: boolean
+    organisationId?: boolean
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    installment?: boolean | PaymentRecord$installmentArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentRecord"]>
+
+  export type PaymentRecordSelectScalar = {
+    id?: boolean
+    opportunityId?: boolean
+    amount?: boolean
+    paymentDate?: boolean
+    paymentMethod?: boolean
+    paymentType?: boolean
+    installmentId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    createdById?: boolean
+    organisationId?: boolean
+  }
+
+  export type PaymentRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    installment?: boolean | PaymentRecord$installmentArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+  export type PaymentRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    opportunity?: boolean | OpportunityDefaultArgs<ExtArgs>
+    installment?: boolean | PaymentRecord$installmentArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+
+  export type $PaymentRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentRecord"
+    objects: {
+      opportunity: Prisma.$OpportunityPayload<ExtArgs>
+      installment: Prisma.$EMIInstallmentPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs>
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      opportunityId: string
+      amount: number
+      paymentDate: Date
+      paymentMethod: string | null
+      paymentType: $Enums.PaymentType
+      installmentId: string | null
+      notes: string | null
+      createdAt: Date
+      createdById: string
+      organisationId: string
+    }, ExtArgs["result"]["paymentRecord"]>
+    composites: {}
+  }
+
+  type PaymentRecordGetPayload<S extends boolean | null | undefined | PaymentRecordDefaultArgs> = $Result.GetResult<Prisma.$PaymentRecordPayload, S>
+
+  type PaymentRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PaymentRecordFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: PaymentRecordCountAggregateInputType | true
+    }
+
+  export interface PaymentRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentRecord'], meta: { name: 'PaymentRecord' } }
+    /**
+     * Find zero or one PaymentRecord that matches the filter.
+     * @param {PaymentRecordFindUniqueArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentRecordFindUniqueArgs>(args: SelectSubset<T, PaymentRecordFindUniqueArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one PaymentRecord that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {PaymentRecordFindUniqueOrThrowArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first PaymentRecord that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordFindFirstArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentRecordFindFirstArgs>(args?: SelectSubset<T, PaymentRecordFindFirstArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first PaymentRecord that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordFindFirstOrThrowArgs} args - Arguments to find a PaymentRecord
+     * @example
+     * // Get one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more PaymentRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentRecords
+     * const paymentRecords = await prisma.paymentRecord.findMany()
+     * 
+     * // Get first 10 PaymentRecords
+     * const paymentRecords = await prisma.paymentRecord.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentRecordWithIdOnly = await prisma.paymentRecord.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentRecordFindManyArgs>(args?: SelectSubset<T, PaymentRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a PaymentRecord.
+     * @param {PaymentRecordCreateArgs} args - Arguments to create a PaymentRecord.
+     * @example
+     * // Create one PaymentRecord
+     * const PaymentRecord = await prisma.paymentRecord.create({
+     *   data: {
+     *     // ... data to create a PaymentRecord
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentRecordCreateArgs>(args: SelectSubset<T, PaymentRecordCreateArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many PaymentRecords.
+     * @param {PaymentRecordCreateManyArgs} args - Arguments to create many PaymentRecords.
+     * @example
+     * // Create many PaymentRecords
+     * const paymentRecord = await prisma.paymentRecord.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentRecordCreateManyArgs>(args?: SelectSubset<T, PaymentRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentRecords and returns the data saved in the database.
+     * @param {PaymentRecordCreateManyAndReturnArgs} args - Arguments to create many PaymentRecords.
+     * @example
+     * // Create many PaymentRecords
+     * const paymentRecord = await prisma.paymentRecord.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentRecords and only return the `id`
+     * const paymentRecordWithIdOnly = await prisma.paymentRecord.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a PaymentRecord.
+     * @param {PaymentRecordDeleteArgs} args - Arguments to delete one PaymentRecord.
+     * @example
+     * // Delete one PaymentRecord
+     * const PaymentRecord = await prisma.paymentRecord.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentRecord
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentRecordDeleteArgs>(args: SelectSubset<T, PaymentRecordDeleteArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one PaymentRecord.
+     * @param {PaymentRecordUpdateArgs} args - Arguments to update one PaymentRecord.
+     * @example
+     * // Update one PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentRecordUpdateArgs>(args: SelectSubset<T, PaymentRecordUpdateArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more PaymentRecords.
+     * @param {PaymentRecordDeleteManyArgs} args - Arguments to filter PaymentRecords to delete.
+     * @example
+     * // Delete a few PaymentRecords
+     * const { count } = await prisma.paymentRecord.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentRecordDeleteManyArgs>(args?: SelectSubset<T, PaymentRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentRecords
+     * const paymentRecord = await prisma.paymentRecord.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentRecordUpdateManyArgs>(args: SelectSubset<T, PaymentRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one PaymentRecord.
+     * @param {PaymentRecordUpsertArgs} args - Arguments to update or create a PaymentRecord.
+     * @example
+     * // Update or create a PaymentRecord
+     * const paymentRecord = await prisma.paymentRecord.upsert({
+     *   create: {
+     *     // ... data to create a PaymentRecord
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentRecord we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentRecordUpsertArgs>(args: SelectSubset<T, PaymentRecordUpsertArgs<ExtArgs>>): Prisma__PaymentRecordClient<$Result.GetResult<Prisma.$PaymentRecordPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of PaymentRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordCountArgs} args - Arguments to filter PaymentRecords to count.
+     * @example
+     * // Count the number of PaymentRecords
+     * const count = await prisma.paymentRecord.count({
+     *   where: {
+     *     // ... the filter for the PaymentRecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentRecordCountArgs>(
+      args?: Subset<T, PaymentRecordCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentRecordCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentRecordAggregateArgs>(args: Subset<T, PaymentRecordAggregateArgs>): Prisma.PrismaPromise<GetPaymentRecordAggregateType<T>>
+
+    /**
+     * Group by PaymentRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentRecordGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentRecordGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentRecordGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentRecordGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentRecord model
+   */
+  readonly fields: PaymentRecordFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentRecord.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    opportunity<T extends OpportunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OpportunityDefaultArgs<ExtArgs>>): Prisma__OpportunityClient<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    installment<T extends PaymentRecord$installmentArgs<ExtArgs> = {}>(args?: Subset<T, PaymentRecord$installmentArgs<ExtArgs>>): Prisma__EMIInstallmentClient<$Result.GetResult<Prisma.$EMIInstallmentPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentRecord model
+   */ 
+  interface PaymentRecordFieldRefs {
+    readonly id: FieldRef<"PaymentRecord", 'String'>
+    readonly opportunityId: FieldRef<"PaymentRecord", 'String'>
+    readonly amount: FieldRef<"PaymentRecord", 'Float'>
+    readonly paymentDate: FieldRef<"PaymentRecord", 'DateTime'>
+    readonly paymentMethod: FieldRef<"PaymentRecord", 'String'>
+    readonly paymentType: FieldRef<"PaymentRecord", 'PaymentType'>
+    readonly installmentId: FieldRef<"PaymentRecord", 'String'>
+    readonly notes: FieldRef<"PaymentRecord", 'String'>
+    readonly createdAt: FieldRef<"PaymentRecord", 'DateTime'>
+    readonly createdById: FieldRef<"PaymentRecord", 'String'>
+    readonly organisationId: FieldRef<"PaymentRecord", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentRecord findUnique
+   */
+  export type PaymentRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord findUniqueOrThrow
+   */
+  export type PaymentRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord findFirst
+   */
+  export type PaymentRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentRecords.
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentRecords.
+     */
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentRecord findFirstOrThrow
+   */
+  export type PaymentRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecord to fetch.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentRecords.
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentRecords.
+     */
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentRecord findMany
+   */
+  export type PaymentRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentRecords to fetch.
+     */
+    where?: PaymentRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentRecords to fetch.
+     */
+    orderBy?: PaymentRecordOrderByWithRelationInput | PaymentRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentRecords.
+     */
+    cursor?: PaymentRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentRecords.
+     */
+    skip?: number
+    distinct?: PaymentRecordScalarFieldEnum | PaymentRecordScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentRecord create
+   */
+  export type PaymentRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentRecord.
+     */
+    data: XOR<PaymentRecordCreateInput, PaymentRecordUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentRecord createMany
+   */
+  export type PaymentRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentRecords.
+     */
+    data: PaymentRecordCreateManyInput | PaymentRecordCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentRecord createManyAndReturn
+   */
+  export type PaymentRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many PaymentRecords.
+     */
+    data: PaymentRecordCreateManyInput | PaymentRecordCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentRecord update
+   */
+  export type PaymentRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentRecord.
+     */
+    data: XOR<PaymentRecordUpdateInput, PaymentRecordUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentRecord to update.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord updateMany
+   */
+  export type PaymentRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentRecords.
+     */
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentRecords to update
+     */
+    where?: PaymentRecordWhereInput
+  }
+
+  /**
+   * PaymentRecord upsert
+   */
+  export type PaymentRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentRecord to update in case it exists.
+     */
+    where: PaymentRecordWhereUniqueInput
+    /**
+     * In case the PaymentRecord found by the `where` argument doesn't exist, create a new PaymentRecord with this data.
+     */
+    create: XOR<PaymentRecordCreateInput, PaymentRecordUncheckedCreateInput>
+    /**
+     * In case the PaymentRecord was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentRecordUpdateInput, PaymentRecordUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentRecord delete
+   */
+  export type PaymentRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+    /**
+     * Filter which PaymentRecord to delete.
+     */
+    where: PaymentRecordWhereUniqueInput
+  }
+
+  /**
+   * PaymentRecord deleteMany
+   */
+  export type PaymentRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentRecords to delete
+     */
+    where?: PaymentRecordWhereInput
+  }
+
+  /**
+   * PaymentRecord.installment
+   */
+  export type PaymentRecord$installmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EMIInstallment
+     */
+    select?: EMIInstallmentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EMIInstallmentInclude<ExtArgs> | null
+    where?: EMIInstallmentWhereInput
+  }
+
+  /**
+   * PaymentRecord without action
+   */
+  export type PaymentRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentRecord
+     */
+    select?: PaymentRecordSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentRecordInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -70490,6 +74185,54 @@ export namespace Prisma {
   export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
 
 
+  export const EMIScheduleScalarFieldEnum: {
+    id: 'id',
+    opportunityId: 'opportunityId',
+    totalAmount: 'totalAmount',
+    paidAmount: 'paidAmount',
+    remainingAmount: 'remainingAmount',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    organisationId: 'organisationId'
+  };
+
+  export type EMIScheduleScalarFieldEnum = (typeof EMIScheduleScalarFieldEnum)[keyof typeof EMIScheduleScalarFieldEnum]
+
+
+  export const EMIInstallmentScalarFieldEnum: {
+    id: 'id',
+    scheduleId: 'scheduleId',
+    installmentNumber: 'installmentNumber',
+    amount: 'amount',
+    dueDate: 'dueDate',
+    status: 'status',
+    paidDate: 'paidDate',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EMIInstallmentScalarFieldEnum = (typeof EMIInstallmentScalarFieldEnum)[keyof typeof EMIInstallmentScalarFieldEnum]
+
+
+  export const PaymentRecordScalarFieldEnum: {
+    id: 'id',
+    opportunityId: 'opportunityId',
+    amount: 'amount',
+    paymentDate: 'paymentDate',
+    paymentMethod: 'paymentMethod',
+    paymentType: 'paymentType',
+    installmentId: 'installmentId',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    createdById: 'createdById',
+    organisationId: 'organisationId'
+  };
+
+  export type PaymentRecordScalarFieldEnum = (typeof PaymentRecordScalarFieldEnum)[keyof typeof PaymentRecordScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -70744,6 +74487,48 @@ export namespace Prisma {
    */
   export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
+
+
+  /**
+   * Reference to a field of type 'EMIStatus'
+   */
+  export type EnumEMIStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EMIStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EMIStatus[]'
+   */
+  export type ListEnumEMIStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EMIStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'InstallmentStatus'
+   */
+  export type EnumInstallmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstallmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'InstallmentStatus[]'
+   */
+  export type ListEnumInstallmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstallmentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentType'
+   */
+  export type EnumPaymentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentType[]'
+   */
+  export type ListEnumPaymentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -70818,6 +74603,8 @@ export namespace Prisma {
     productShares?: ProductShareListRelationFilter
     branches?: BranchListRelationFilter
     rolePermissions?: RoleListRelationFilter
+    emiSchedules?: EMIScheduleListRelationFilter
+    paymentRecords?: PaymentRecordListRelationFilter
   }
 
   export type OrganisationOrderByWithRelationInput = {
@@ -70886,6 +74673,8 @@ export namespace Prisma {
     productShares?: ProductShareOrderByRelationAggregateInput
     branches?: BranchOrderByRelationAggregateInput
     rolePermissions?: RoleOrderByRelationAggregateInput
+    emiSchedules?: EMIScheduleOrderByRelationAggregateInput
+    paymentRecords?: PaymentRecordOrderByRelationAggregateInput
   }
 
   export type OrganisationWhereUniqueInput = Prisma.AtLeast<{
@@ -70957,6 +74746,8 @@ export namespace Prisma {
     productShares?: ProductShareListRelationFilter
     branches?: BranchListRelationFilter
     rolePermissions?: RoleListRelationFilter
+    emiSchedules?: EMIScheduleListRelationFilter
+    paymentRecords?: PaymentRecordListRelationFilter
   }, "id" | "slug" | "domain">
 
   export type OrganisationOrderByWithAggregationInput = {
@@ -71115,6 +74906,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
     managedBranches?: BranchListRelationFilter
+    createdPaymentRecords?: PaymentRecordListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -71208,6 +75000,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
     managedBranches?: BranchOrderByRelationAggregateInput
+    createdPaymentRecords?: PaymentRecordOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -71304,6 +75097,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
     managedBranches?: BranchListRelationFilter
+    createdPaymentRecords?: PaymentRecordListRelationFilter
   }, "id" | "email" | "userId">
 
   export type UserOrderByWithAggregationInput = {
@@ -72245,6 +76039,8 @@ export namespace Prisma {
     documents?: DocumentListRelationFilter
     lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
     pipeline?: XOR<PipelineNullableRelationFilter, PipelineWhereInput> | null
+    emiSchedule?: XOR<EMIScheduleNullableRelationFilter, EMIScheduleWhereInput> | null
+    paymentRecords?: PaymentRecordListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
   }
 
@@ -72282,6 +76078,8 @@ export namespace Prisma {
     documents?: DocumentOrderByRelationAggregateInput
     lead?: LeadOrderByWithRelationInput
     pipeline?: PipelineOrderByWithRelationInput
+    emiSchedule?: EMIScheduleOrderByWithRelationInput
+    paymentRecords?: PaymentRecordOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
   }
 
@@ -72322,6 +76120,8 @@ export namespace Prisma {
     documents?: DocumentListRelationFilter
     lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
     pipeline?: XOR<PipelineNullableRelationFilter, PipelineWhereInput> | null
+    emiSchedule?: XOR<EMIScheduleNullableRelationFilter, EMIScheduleWhereInput> | null
+    paymentRecords?: PaymentRecordListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
   }, "id">
 
@@ -77290,6 +81090,270 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Role"> | Date | string
   }
 
+  export type EMIScheduleWhereInput = {
+    AND?: EMIScheduleWhereInput | EMIScheduleWhereInput[]
+    OR?: EMIScheduleWhereInput[]
+    NOT?: EMIScheduleWhereInput | EMIScheduleWhereInput[]
+    id?: StringFilter<"EMISchedule"> | string
+    opportunityId?: StringFilter<"EMISchedule"> | string
+    totalAmount?: FloatFilter<"EMISchedule"> | number
+    paidAmount?: FloatFilter<"EMISchedule"> | number
+    remainingAmount?: FloatFilter<"EMISchedule"> | number
+    status?: EnumEMIStatusFilter<"EMISchedule"> | $Enums.EMIStatus
+    createdAt?: DateTimeFilter<"EMISchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"EMISchedule"> | Date | string
+    organisationId?: StringFilter<"EMISchedule"> | string
+    opportunity?: XOR<OpportunityRelationFilter, OpportunityWhereInput>
+    organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
+    installments?: EMIInstallmentListRelationFilter
+  }
+
+  export type EMIScheduleOrderByWithRelationInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisationId?: SortOrder
+    opportunity?: OpportunityOrderByWithRelationInput
+    organisation?: OrganisationOrderByWithRelationInput
+    installments?: EMIInstallmentOrderByRelationAggregateInput
+  }
+
+  export type EMIScheduleWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    opportunityId?: string
+    AND?: EMIScheduleWhereInput | EMIScheduleWhereInput[]
+    OR?: EMIScheduleWhereInput[]
+    NOT?: EMIScheduleWhereInput | EMIScheduleWhereInput[]
+    totalAmount?: FloatFilter<"EMISchedule"> | number
+    paidAmount?: FloatFilter<"EMISchedule"> | number
+    remainingAmount?: FloatFilter<"EMISchedule"> | number
+    status?: EnumEMIStatusFilter<"EMISchedule"> | $Enums.EMIStatus
+    createdAt?: DateTimeFilter<"EMISchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"EMISchedule"> | Date | string
+    organisationId?: StringFilter<"EMISchedule"> | string
+    opportunity?: XOR<OpportunityRelationFilter, OpportunityWhereInput>
+    organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
+    installments?: EMIInstallmentListRelationFilter
+  }, "id" | "opportunityId">
+
+  export type EMIScheduleOrderByWithAggregationInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisationId?: SortOrder
+    _count?: EMIScheduleCountOrderByAggregateInput
+    _avg?: EMIScheduleAvgOrderByAggregateInput
+    _max?: EMIScheduleMaxOrderByAggregateInput
+    _min?: EMIScheduleMinOrderByAggregateInput
+    _sum?: EMIScheduleSumOrderByAggregateInput
+  }
+
+  export type EMIScheduleScalarWhereWithAggregatesInput = {
+    AND?: EMIScheduleScalarWhereWithAggregatesInput | EMIScheduleScalarWhereWithAggregatesInput[]
+    OR?: EMIScheduleScalarWhereWithAggregatesInput[]
+    NOT?: EMIScheduleScalarWhereWithAggregatesInput | EMIScheduleScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EMISchedule"> | string
+    opportunityId?: StringWithAggregatesFilter<"EMISchedule"> | string
+    totalAmount?: FloatWithAggregatesFilter<"EMISchedule"> | number
+    paidAmount?: FloatWithAggregatesFilter<"EMISchedule"> | number
+    remainingAmount?: FloatWithAggregatesFilter<"EMISchedule"> | number
+    status?: EnumEMIStatusWithAggregatesFilter<"EMISchedule"> | $Enums.EMIStatus
+    createdAt?: DateTimeWithAggregatesFilter<"EMISchedule"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EMISchedule"> | Date | string
+    organisationId?: StringWithAggregatesFilter<"EMISchedule"> | string
+  }
+
+  export type EMIInstallmentWhereInput = {
+    AND?: EMIInstallmentWhereInput | EMIInstallmentWhereInput[]
+    OR?: EMIInstallmentWhereInput[]
+    NOT?: EMIInstallmentWhereInput | EMIInstallmentWhereInput[]
+    id?: StringFilter<"EMIInstallment"> | string
+    scheduleId?: StringFilter<"EMIInstallment"> | string
+    installmentNumber?: IntFilter<"EMIInstallment"> | number
+    amount?: FloatFilter<"EMIInstallment"> | number
+    dueDate?: DateTimeFilter<"EMIInstallment"> | Date | string
+    status?: EnumInstallmentStatusFilter<"EMIInstallment"> | $Enums.InstallmentStatus
+    paidDate?: DateTimeNullableFilter<"EMIInstallment"> | Date | string | null
+    notes?: StringNullableFilter<"EMIInstallment"> | string | null
+    createdAt?: DateTimeFilter<"EMIInstallment"> | Date | string
+    updatedAt?: DateTimeFilter<"EMIInstallment"> | Date | string
+    schedule?: XOR<EMIScheduleRelationFilter, EMIScheduleWhereInput>
+    paymentRecords?: PaymentRecordListRelationFilter
+  }
+
+  export type EMIInstallmentOrderByWithRelationInput = {
+    id?: SortOrder
+    scheduleId?: SortOrder
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    paidDate?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    schedule?: EMIScheduleOrderByWithRelationInput
+    paymentRecords?: PaymentRecordOrderByRelationAggregateInput
+  }
+
+  export type EMIInstallmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EMIInstallmentWhereInput | EMIInstallmentWhereInput[]
+    OR?: EMIInstallmentWhereInput[]
+    NOT?: EMIInstallmentWhereInput | EMIInstallmentWhereInput[]
+    scheduleId?: StringFilter<"EMIInstallment"> | string
+    installmentNumber?: IntFilter<"EMIInstallment"> | number
+    amount?: FloatFilter<"EMIInstallment"> | number
+    dueDate?: DateTimeFilter<"EMIInstallment"> | Date | string
+    status?: EnumInstallmentStatusFilter<"EMIInstallment"> | $Enums.InstallmentStatus
+    paidDate?: DateTimeNullableFilter<"EMIInstallment"> | Date | string | null
+    notes?: StringNullableFilter<"EMIInstallment"> | string | null
+    createdAt?: DateTimeFilter<"EMIInstallment"> | Date | string
+    updatedAt?: DateTimeFilter<"EMIInstallment"> | Date | string
+    schedule?: XOR<EMIScheduleRelationFilter, EMIScheduleWhereInput>
+    paymentRecords?: PaymentRecordListRelationFilter
+  }, "id">
+
+  export type EMIInstallmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    scheduleId?: SortOrder
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    paidDate?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EMIInstallmentCountOrderByAggregateInput
+    _avg?: EMIInstallmentAvgOrderByAggregateInput
+    _max?: EMIInstallmentMaxOrderByAggregateInput
+    _min?: EMIInstallmentMinOrderByAggregateInput
+    _sum?: EMIInstallmentSumOrderByAggregateInput
+  }
+
+  export type EMIInstallmentScalarWhereWithAggregatesInput = {
+    AND?: EMIInstallmentScalarWhereWithAggregatesInput | EMIInstallmentScalarWhereWithAggregatesInput[]
+    OR?: EMIInstallmentScalarWhereWithAggregatesInput[]
+    NOT?: EMIInstallmentScalarWhereWithAggregatesInput | EMIInstallmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EMIInstallment"> | string
+    scheduleId?: StringWithAggregatesFilter<"EMIInstallment"> | string
+    installmentNumber?: IntWithAggregatesFilter<"EMIInstallment"> | number
+    amount?: FloatWithAggregatesFilter<"EMIInstallment"> | number
+    dueDate?: DateTimeWithAggregatesFilter<"EMIInstallment"> | Date | string
+    status?: EnumInstallmentStatusWithAggregatesFilter<"EMIInstallment"> | $Enums.InstallmentStatus
+    paidDate?: DateTimeNullableWithAggregatesFilter<"EMIInstallment"> | Date | string | null
+    notes?: StringNullableWithAggregatesFilter<"EMIInstallment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EMIInstallment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EMIInstallment"> | Date | string
+  }
+
+  export type PaymentRecordWhereInput = {
+    AND?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    OR?: PaymentRecordWhereInput[]
+    NOT?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    id?: StringFilter<"PaymentRecord"> | string
+    opportunityId?: StringFilter<"PaymentRecord"> | string
+    amount?: FloatFilter<"PaymentRecord"> | number
+    paymentDate?: DateTimeFilter<"PaymentRecord"> | Date | string
+    paymentMethod?: StringNullableFilter<"PaymentRecord"> | string | null
+    paymentType?: EnumPaymentTypeFilter<"PaymentRecord"> | $Enums.PaymentType
+    installmentId?: StringNullableFilter<"PaymentRecord"> | string | null
+    notes?: StringNullableFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+    createdById?: StringFilter<"PaymentRecord"> | string
+    organisationId?: StringFilter<"PaymentRecord"> | string
+    opportunity?: XOR<OpportunityRelationFilter, OpportunityWhereInput>
+    installment?: XOR<EMIInstallmentNullableRelationFilter, EMIInstallmentWhereInput> | null
+    createdBy?: XOR<UserRelationFilter, UserWhereInput>
+    organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
+  }
+
+  export type PaymentRecordOrderByWithRelationInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    amount?: SortOrder
+    paymentDate?: SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
+    paymentType?: SortOrder
+    installmentId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+    opportunity?: OpportunityOrderByWithRelationInput
+    installment?: EMIInstallmentOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+    organisation?: OrganisationOrderByWithRelationInput
+  }
+
+  export type PaymentRecordWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    OR?: PaymentRecordWhereInput[]
+    NOT?: PaymentRecordWhereInput | PaymentRecordWhereInput[]
+    opportunityId?: StringFilter<"PaymentRecord"> | string
+    amount?: FloatFilter<"PaymentRecord"> | number
+    paymentDate?: DateTimeFilter<"PaymentRecord"> | Date | string
+    paymentMethod?: StringNullableFilter<"PaymentRecord"> | string | null
+    paymentType?: EnumPaymentTypeFilter<"PaymentRecord"> | $Enums.PaymentType
+    installmentId?: StringNullableFilter<"PaymentRecord"> | string | null
+    notes?: StringNullableFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+    createdById?: StringFilter<"PaymentRecord"> | string
+    organisationId?: StringFilter<"PaymentRecord"> | string
+    opportunity?: XOR<OpportunityRelationFilter, OpportunityWhereInput>
+    installment?: XOR<EMIInstallmentNullableRelationFilter, EMIInstallmentWhereInput> | null
+    createdBy?: XOR<UserRelationFilter, UserWhereInput>
+    organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
+  }, "id">
+
+  export type PaymentRecordOrderByWithAggregationInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    amount?: SortOrder
+    paymentDate?: SortOrder
+    paymentMethod?: SortOrderInput | SortOrder
+    paymentType?: SortOrder
+    installmentId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+    _count?: PaymentRecordCountOrderByAggregateInput
+    _avg?: PaymentRecordAvgOrderByAggregateInput
+    _max?: PaymentRecordMaxOrderByAggregateInput
+    _min?: PaymentRecordMinOrderByAggregateInput
+    _sum?: PaymentRecordSumOrderByAggregateInput
+  }
+
+  export type PaymentRecordScalarWhereWithAggregatesInput = {
+    AND?: PaymentRecordScalarWhereWithAggregatesInput | PaymentRecordScalarWhereWithAggregatesInput[]
+    OR?: PaymentRecordScalarWhereWithAggregatesInput[]
+    NOT?: PaymentRecordScalarWhereWithAggregatesInput | PaymentRecordScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    opportunityId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    amount?: FloatWithAggregatesFilter<"PaymentRecord"> | number
+    paymentDate?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
+    paymentMethod?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    paymentType?: EnumPaymentTypeWithAggregatesFilter<"PaymentRecord"> | $Enums.PaymentType
+    installmentId?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
+    createdById?: StringWithAggregatesFilter<"PaymentRecord"> | string
+    organisationId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+  }
+
   export type OrganisationCreateInput = {
     id?: string
     name: string
@@ -77356,6 +81420,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateInput = {
@@ -77424,6 +81490,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUpdateInput = {
@@ -77492,6 +81560,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateInput = {
@@ -77560,6 +81630,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateManyInput = {
@@ -77730,6 +81802,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -77819,6 +81892,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -77908,6 +81982,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -77997,6 +82072,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -79079,6 +83155,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -79111,6 +83189,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityUpdateInput = {
@@ -79141,6 +83221,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -79173,6 +83255,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityCreateManyInput = {
@@ -84631,6 +88715,280 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EMIScheduleCreateInput = {
+    id?: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutEmiScheduleInput
+    organisation: OrganisationCreateNestedOneWithoutEmiSchedulesInput
+    installments?: EMIInstallmentCreateNestedManyWithoutScheduleInput
+  }
+
+  export type EMIScheduleUncheckedCreateInput = {
+    id?: string
+    opportunityId: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId: string
+    installments?: EMIInstallmentUncheckedCreateNestedManyWithoutScheduleInput
+  }
+
+  export type EMIScheduleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutEmiScheduleNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutEmiSchedulesNestedInput
+    installments?: EMIInstallmentUpdateManyWithoutScheduleNestedInput
+  }
+
+  export type EMIScheduleUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    installments?: EMIInstallmentUncheckedUpdateManyWithoutScheduleNestedInput
+  }
+
+  export type EMIScheduleCreateManyInput = {
+    id?: string
+    opportunityId: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId: string
+  }
+
+  export type EMIScheduleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EMIScheduleUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type EMIInstallmentCreateInput = {
+    id?: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    schedule: EMIScheduleCreateNestedOneWithoutInstallmentsInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInstallmentInput
+  }
+
+  export type EMIInstallmentUncheckedCreateInput = {
+    id?: string
+    scheduleId: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInstallmentInput
+  }
+
+  export type EMIInstallmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    schedule?: EMIScheduleUpdateOneRequiredWithoutInstallmentsNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutInstallmentNestedInput
+  }
+
+  export type EMIInstallmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scheduleId?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInstallmentNestedInput
+  }
+
+  export type EMIInstallmentCreateManyInput = {
+    id?: string
+    scheduleId: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EMIInstallmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EMIInstallmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scheduleId?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordCreateInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutPaymentRecordsInput
+    installment?: EMIInstallmentCreateNestedOneWithoutPaymentRecordsInput
+    createdBy: UserCreateNestedOneWithoutCreatedPaymentRecordsInput
+    organisation: OrganisationCreateNestedOneWithoutPaymentRecordsInput
+  }
+
+  export type PaymentRecordUncheckedCreateInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+    organisationId: string
+  }
+
+  export type PaymentRecordUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    installment?: EMIInstallmentUpdateOneWithoutPaymentRecordsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedPaymentRecordsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutPaymentRecordsNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentRecordCreateManyInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+    organisationId: string
+  }
+
+  export type PaymentRecordUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -84955,6 +89313,18 @@ export namespace Prisma {
     none?: RoleWhereInput
   }
 
+  export type EMIScheduleListRelationFilter = {
+    every?: EMIScheduleWhereInput
+    some?: EMIScheduleWhereInput
+    none?: EMIScheduleWhereInput
+  }
+
+  export type PaymentRecordListRelationFilter = {
+    every?: PaymentRecordWhereInput
+    some?: PaymentRecordWhereInput
+    none?: PaymentRecordWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -85117,6 +89487,14 @@ export namespace Prisma {
   }
 
   export type RoleOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EMIScheduleOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PaymentRecordOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -86036,6 +90414,11 @@ export namespace Prisma {
   export type AccountRelationFilter = {
     is?: AccountWhereInput
     isNot?: AccountWhereInput
+  }
+
+  export type EMIScheduleNullableRelationFilter = {
+    is?: EMIScheduleWhereInput | null
+    isNot?: EMIScheduleWhereInput | null
   }
 
   export type OpportunityCountOrderByAggregateInput = {
@@ -88860,6 +93243,229 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumEMIStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EMIStatus | EnumEMIStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEMIStatusFilter<$PrismaModel> | $Enums.EMIStatus
+  }
+
+  export type OpportunityRelationFilter = {
+    is?: OpportunityWhereInput
+    isNot?: OpportunityWhereInput
+  }
+
+  export type EMIInstallmentListRelationFilter = {
+    every?: EMIInstallmentWhereInput
+    some?: EMIInstallmentWhereInput
+    none?: EMIInstallmentWhereInput
+  }
+
+  export type EMIInstallmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EMIScheduleCountOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisationId?: SortOrder
+  }
+
+  export type EMIScheduleAvgOrderByAggregateInput = {
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+  }
+
+  export type EMIScheduleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisationId?: SortOrder
+  }
+
+  export type EMIScheduleMinOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisationId?: SortOrder
+  }
+
+  export type EMIScheduleSumOrderByAggregateInput = {
+    totalAmount?: SortOrder
+    paidAmount?: SortOrder
+    remainingAmount?: SortOrder
+  }
+
+  export type EnumEMIStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EMIStatus | EnumEMIStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEMIStatusWithAggregatesFilter<$PrismaModel> | $Enums.EMIStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEMIStatusFilter<$PrismaModel>
+    _max?: NestedEnumEMIStatusFilter<$PrismaModel>
+  }
+
+  export type EnumInstallmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstallmentStatus | EnumInstallmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstallmentStatusFilter<$PrismaModel> | $Enums.InstallmentStatus
+  }
+
+  export type EMIScheduleRelationFilter = {
+    is?: EMIScheduleWhereInput
+    isNot?: EMIScheduleWhereInput
+  }
+
+  export type EMIInstallmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    scheduleId?: SortOrder
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    paidDate?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EMIInstallmentAvgOrderByAggregateInput = {
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type EMIInstallmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    scheduleId?: SortOrder
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    paidDate?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EMIInstallmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    scheduleId?: SortOrder
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    paidDate?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EMIInstallmentSumOrderByAggregateInput = {
+    installmentNumber?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type EnumInstallmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstallmentStatus | EnumInstallmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstallmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.InstallmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInstallmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumInstallmentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeFilter<$PrismaModel> | $Enums.PaymentType
+  }
+
+  export type EMIInstallmentNullableRelationFilter = {
+    is?: EMIInstallmentWhereInput | null
+    isNot?: EMIInstallmentWhereInput | null
+  }
+
+  export type PaymentRecordCountOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    amount?: SortOrder
+    paymentDate?: SortOrder
+    paymentMethod?: SortOrder
+    paymentType?: SortOrder
+    installmentId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+  }
+
+  export type PaymentRecordAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type PaymentRecordMaxOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    amount?: SortOrder
+    paymentDate?: SortOrder
+    paymentMethod?: SortOrder
+    paymentType?: SortOrder
+    installmentId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+  }
+
+  export type PaymentRecordMinOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityId?: SortOrder
+    amount?: SortOrder
+    paymentDate?: SortOrder
+    paymentMethod?: SortOrder
+    paymentType?: SortOrder
+    installmentId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+  }
+
+  export type PaymentRecordSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumPaymentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentTypeFilter<$PrismaModel>
+  }
+
   export type AccountCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<AccountCreateWithoutOrganisationInput, AccountUncheckedCreateWithoutOrganisationInput> | AccountCreateWithoutOrganisationInput[] | AccountUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutOrganisationInput | AccountCreateOrConnectWithoutOrganisationInput[]
@@ -89146,6 +93752,20 @@ export namespace Prisma {
     connect?: RoleWhereUniqueInput | RoleWhereUniqueInput[]
   }
 
+  export type EMIScheduleCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<EMIScheduleCreateWithoutOrganisationInput, EMIScheduleUncheckedCreateWithoutOrganisationInput> | EMIScheduleCreateWithoutOrganisationInput[] | EMIScheduleUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOrganisationInput | EMIScheduleCreateOrConnectWithoutOrganisationInput[]
+    createMany?: EMIScheduleCreateManyOrganisationInputEnvelope
+    connect?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+  }
+
+  export type PaymentRecordCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<PaymentRecordCreateWithoutOrganisationInput, PaymentRecordUncheckedCreateWithoutOrganisationInput> | PaymentRecordCreateWithoutOrganisationInput[] | PaymentRecordUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOrganisationInput | PaymentRecordCreateOrConnectWithoutOrganisationInput[]
+    createMany?: PaymentRecordCreateManyOrganisationInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<AccountCreateWithoutOrganisationInput, AccountUncheckedCreateWithoutOrganisationInput> | AccountCreateWithoutOrganisationInput[] | AccountUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutOrganisationInput | AccountCreateOrConnectWithoutOrganisationInput[]
@@ -89430,6 +94050,20 @@ export namespace Prisma {
     connectOrCreate?: RoleCreateOrConnectWithoutOrganisationInput | RoleCreateOrConnectWithoutOrganisationInput[]
     createMany?: RoleCreateManyOrganisationInputEnvelope
     connect?: RoleWhereUniqueInput | RoleWhereUniqueInput[]
+  }
+
+  export type EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<EMIScheduleCreateWithoutOrganisationInput, EMIScheduleUncheckedCreateWithoutOrganisationInput> | EMIScheduleCreateWithoutOrganisationInput[] | EMIScheduleUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOrganisationInput | EMIScheduleCreateOrConnectWithoutOrganisationInput[]
+    createMany?: EMIScheduleCreateManyOrganisationInputEnvelope
+    connect?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+  }
+
+  export type PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<PaymentRecordCreateWithoutOrganisationInput, PaymentRecordUncheckedCreateWithoutOrganisationInput> | PaymentRecordCreateWithoutOrganisationInput[] | PaymentRecordUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOrganisationInput | PaymentRecordCreateOrConnectWithoutOrganisationInput[]
+    createMany?: PaymentRecordCreateManyOrganisationInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -90026,6 +94660,34 @@ export namespace Prisma {
     deleteMany?: RoleScalarWhereInput | RoleScalarWhereInput[]
   }
 
+  export type EMIScheduleUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<EMIScheduleCreateWithoutOrganisationInput, EMIScheduleUncheckedCreateWithoutOrganisationInput> | EMIScheduleCreateWithoutOrganisationInput[] | EMIScheduleUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOrganisationInput | EMIScheduleCreateOrConnectWithoutOrganisationInput[]
+    upsert?: EMIScheduleUpsertWithWhereUniqueWithoutOrganisationInput | EMIScheduleUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: EMIScheduleCreateManyOrganisationInputEnvelope
+    set?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    disconnect?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    delete?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    connect?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    update?: EMIScheduleUpdateWithWhereUniqueWithoutOrganisationInput | EMIScheduleUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: EMIScheduleUpdateManyWithWhereWithoutOrganisationInput | EMIScheduleUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: EMIScheduleScalarWhereInput | EMIScheduleScalarWhereInput[]
+  }
+
+  export type PaymentRecordUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutOrganisationInput, PaymentRecordUncheckedCreateWithoutOrganisationInput> | PaymentRecordCreateWithoutOrganisationInput[] | PaymentRecordUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOrganisationInput | PaymentRecordCreateOrConnectWithoutOrganisationInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutOrganisationInput | PaymentRecordUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: PaymentRecordCreateManyOrganisationInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutOrganisationInput | PaymentRecordUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutOrganisationInput | PaymentRecordUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutOrganisationNestedInput = {
     create?: XOR<AccountCreateWithoutOrganisationInput, AccountUncheckedCreateWithoutOrganisationInput> | AccountCreateWithoutOrganisationInput[] | AccountUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutOrganisationInput | AccountCreateOrConnectWithoutOrganisationInput[]
@@ -90596,6 +95258,34 @@ export namespace Prisma {
     deleteMany?: RoleScalarWhereInput | RoleScalarWhereInput[]
   }
 
+  export type EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<EMIScheduleCreateWithoutOrganisationInput, EMIScheduleUncheckedCreateWithoutOrganisationInput> | EMIScheduleCreateWithoutOrganisationInput[] | EMIScheduleUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOrganisationInput | EMIScheduleCreateOrConnectWithoutOrganisationInput[]
+    upsert?: EMIScheduleUpsertWithWhereUniqueWithoutOrganisationInput | EMIScheduleUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: EMIScheduleCreateManyOrganisationInputEnvelope
+    set?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    disconnect?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    delete?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    connect?: EMIScheduleWhereUniqueInput | EMIScheduleWhereUniqueInput[]
+    update?: EMIScheduleUpdateWithWhereUniqueWithoutOrganisationInput | EMIScheduleUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: EMIScheduleUpdateManyWithWhereWithoutOrganisationInput | EMIScheduleUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: EMIScheduleScalarWhereInput | EMIScheduleScalarWhereInput[]
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutOrganisationInput, PaymentRecordUncheckedCreateWithoutOrganisationInput> | PaymentRecordCreateWithoutOrganisationInput[] | PaymentRecordUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOrganisationInput | PaymentRecordCreateOrConnectWithoutOrganisationInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutOrganisationInput | PaymentRecordUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: PaymentRecordCreateManyOrganisationInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutOrganisationInput | PaymentRecordUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutOrganisationInput | PaymentRecordUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
   export type UserCreatepermissionsInput = {
     set: string[]
   }
@@ -91023,6 +95713,13 @@ export namespace Prisma {
     connect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
   }
 
+  export type PaymentRecordCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<PaymentRecordCreateWithoutCreatedByInput, PaymentRecordUncheckedCreateWithoutCreatedByInput> | PaymentRecordCreateWithoutCreatedByInput[] | PaymentRecordUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutCreatedByInput | PaymentRecordCreateOrConnectWithoutCreatedByInput[]
+    createMany?: PaymentRecordCreateManyCreatedByInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutOwnerInput = {
     create?: XOR<AccountCreateWithoutOwnerInput, AccountUncheckedCreateWithoutOwnerInput> | AccountCreateWithoutOwnerInput[] | AccountUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutOwnerInput | AccountCreateOrConnectWithoutOwnerInput[]
@@ -91420,6 +96117,13 @@ export namespace Prisma {
     connectOrCreate?: BranchCreateOrConnectWithoutManagerInput | BranchCreateOrConnectWithoutManagerInput[]
     createMany?: BranchCreateManyManagerInputEnvelope
     connect?: BranchWhereUniqueInput | BranchWhereUniqueInput[]
+  }
+
+  export type PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<PaymentRecordCreateWithoutCreatedByInput, PaymentRecordUncheckedCreateWithoutCreatedByInput> | PaymentRecordCreateWithoutCreatedByInput[] | PaymentRecordUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutCreatedByInput | PaymentRecordCreateOrConnectWithoutCreatedByInput[]
+    createMany?: PaymentRecordCreateManyCreatedByInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -92277,6 +96981,20 @@ export namespace Prisma {
     deleteMany?: BranchScalarWhereInput | BranchScalarWhereInput[]
   }
 
+  export type PaymentRecordUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutCreatedByInput, PaymentRecordUncheckedCreateWithoutCreatedByInput> | PaymentRecordCreateWithoutCreatedByInput[] | PaymentRecordUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutCreatedByInput | PaymentRecordCreateOrConnectWithoutCreatedByInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutCreatedByInput | PaymentRecordUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: PaymentRecordCreateManyCreatedByInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutCreatedByInput | PaymentRecordUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutCreatedByInput | PaymentRecordUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutOwnerNestedInput = {
     create?: XOR<AccountCreateWithoutOwnerInput, AccountUncheckedCreateWithoutOwnerInput> | AccountCreateWithoutOwnerInput[] | AccountUncheckedCreateWithoutOwnerInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutOwnerInput | AccountCreateOrConnectWithoutOwnerInput[]
@@ -93073,6 +97791,20 @@ export namespace Prisma {
     update?: BranchUpdateWithWhereUniqueWithoutManagerInput | BranchUpdateWithWhereUniqueWithoutManagerInput[]
     updateMany?: BranchUpdateManyWithWhereWithoutManagerInput | BranchUpdateManyWithWhereWithoutManagerInput[]
     deleteMany?: BranchScalarWhereInput | BranchScalarWhereInput[]
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutCreatedByInput, PaymentRecordUncheckedCreateWithoutCreatedByInput> | PaymentRecordCreateWithoutCreatedByInput[] | PaymentRecordUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutCreatedByInput | PaymentRecordCreateOrConnectWithoutCreatedByInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutCreatedByInput | PaymentRecordUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: PaymentRecordCreateManyCreatedByInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutCreatedByInput | PaymentRecordUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutCreatedByInput | PaymentRecordUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
   export type UserCreateNestedManyWithoutTeamInput = {
@@ -94967,6 +99699,19 @@ export namespace Prisma {
     connect?: PipelineWhereUniqueInput
   }
 
+  export type EMIScheduleCreateNestedOneWithoutOpportunityInput = {
+    create?: XOR<EMIScheduleCreateWithoutOpportunityInput, EMIScheduleUncheckedCreateWithoutOpportunityInput>
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOpportunityInput
+    connect?: EMIScheduleWhereUniqueInput
+  }
+
+  export type PaymentRecordCreateNestedManyWithoutOpportunityInput = {
+    create?: XOR<PaymentRecordCreateWithoutOpportunityInput, PaymentRecordUncheckedCreateWithoutOpportunityInput> | PaymentRecordCreateWithoutOpportunityInput[] | PaymentRecordUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOpportunityInput | PaymentRecordCreateOrConnectWithoutOpportunityInput[]
+    createMany?: PaymentRecordCreateManyOpportunityInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
   export type BranchCreateNestedOneWithoutOpportunitiesInput = {
     create?: XOR<BranchCreateWithoutOpportunitiesInput, BranchUncheckedCreateWithoutOpportunitiesInput>
     connectOrCreate?: BranchCreateOrConnectWithoutOpportunitiesInput
@@ -95012,6 +99757,19 @@ export namespace Prisma {
     connectOrCreate?: DocumentCreateOrConnectWithoutOpportunityInput | DocumentCreateOrConnectWithoutOpportunityInput[]
     createMany?: DocumentCreateManyOpportunityInputEnvelope
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput = {
+    create?: XOR<EMIScheduleCreateWithoutOpportunityInput, EMIScheduleUncheckedCreateWithoutOpportunityInput>
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOpportunityInput
+    connect?: EMIScheduleWhereUniqueInput
+  }
+
+  export type PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput = {
+    create?: XOR<PaymentRecordCreateWithoutOpportunityInput, PaymentRecordUncheckedCreateWithoutOpportunityInput> | PaymentRecordCreateWithoutOpportunityInput[] | PaymentRecordUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOpportunityInput | PaymentRecordCreateOrConnectWithoutOpportunityInput[]
+    createMany?: PaymentRecordCreateManyOpportunityInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
   }
 
   export type OpportunityUpdatetagsInput = {
@@ -95152,6 +99910,30 @@ export namespace Prisma {
     update?: XOR<XOR<PipelineUpdateToOneWithWhereWithoutOpportunitiesInput, PipelineUpdateWithoutOpportunitiesInput>, PipelineUncheckedUpdateWithoutOpportunitiesInput>
   }
 
+  export type EMIScheduleUpdateOneWithoutOpportunityNestedInput = {
+    create?: XOR<EMIScheduleCreateWithoutOpportunityInput, EMIScheduleUncheckedCreateWithoutOpportunityInput>
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOpportunityInput
+    upsert?: EMIScheduleUpsertWithoutOpportunityInput
+    disconnect?: EMIScheduleWhereInput | boolean
+    delete?: EMIScheduleWhereInput | boolean
+    connect?: EMIScheduleWhereUniqueInput
+    update?: XOR<XOR<EMIScheduleUpdateToOneWithWhereWithoutOpportunityInput, EMIScheduleUpdateWithoutOpportunityInput>, EMIScheduleUncheckedUpdateWithoutOpportunityInput>
+  }
+
+  export type PaymentRecordUpdateManyWithoutOpportunityNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutOpportunityInput, PaymentRecordUncheckedCreateWithoutOpportunityInput> | PaymentRecordCreateWithoutOpportunityInput[] | PaymentRecordUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOpportunityInput | PaymentRecordCreateOrConnectWithoutOpportunityInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutOpportunityInput | PaymentRecordUpsertWithWhereUniqueWithoutOpportunityInput[]
+    createMany?: PaymentRecordCreateManyOpportunityInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutOpportunityInput | PaymentRecordUpdateWithWhereUniqueWithoutOpportunityInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutOpportunityInput | PaymentRecordUpdateManyWithWhereWithoutOpportunityInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
   export type BranchUpdateOneWithoutOpportunitiesNestedInput = {
     create?: XOR<BranchCreateWithoutOpportunitiesInput, BranchUncheckedCreateWithoutOpportunitiesInput>
     connectOrCreate?: BranchCreateOrConnectWithoutOpportunitiesInput
@@ -95243,6 +100025,30 @@ export namespace Prisma {
     update?: DocumentUpdateWithWhereUniqueWithoutOpportunityInput | DocumentUpdateWithWhereUniqueWithoutOpportunityInput[]
     updateMany?: DocumentUpdateManyWithWhereWithoutOpportunityInput | DocumentUpdateManyWithWhereWithoutOpportunityInput[]
     deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput = {
+    create?: XOR<EMIScheduleCreateWithoutOpportunityInput, EMIScheduleUncheckedCreateWithoutOpportunityInput>
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutOpportunityInput
+    upsert?: EMIScheduleUpsertWithoutOpportunityInput
+    disconnect?: EMIScheduleWhereInput | boolean
+    delete?: EMIScheduleWhereInput | boolean
+    connect?: EMIScheduleWhereUniqueInput
+    update?: XOR<XOR<EMIScheduleUpdateToOneWithWhereWithoutOpportunityInput, EMIScheduleUpdateWithoutOpportunityInput>, EMIScheduleUncheckedUpdateWithoutOpportunityInput>
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutOpportunityInput, PaymentRecordUncheckedCreateWithoutOpportunityInput> | PaymentRecordCreateWithoutOpportunityInput[] | PaymentRecordUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutOpportunityInput | PaymentRecordCreateOrConnectWithoutOpportunityInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutOpportunityInput | PaymentRecordUpsertWithWhereUniqueWithoutOpportunityInput[]
+    createMany?: PaymentRecordCreateManyOpportunityInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutOpportunityInput | PaymentRecordUpdateWithWhereUniqueWithoutOpportunityInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutOpportunityInput | PaymentRecordUpdateManyWithWhereWithoutOpportunityInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
   }
 
   export type ProductCreatetagsInput = {
@@ -98311,6 +103117,202 @@ export namespace Prisma {
     update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutRolePermissionsInput, OrganisationUpdateWithoutRolePermissionsInput>, OrganisationUncheckedUpdateWithoutRolePermissionsInput>
   }
 
+  export type OpportunityCreateNestedOneWithoutEmiScheduleInput = {
+    create?: XOR<OpportunityCreateWithoutEmiScheduleInput, OpportunityUncheckedCreateWithoutEmiScheduleInput>
+    connectOrCreate?: OpportunityCreateOrConnectWithoutEmiScheduleInput
+    connect?: OpportunityWhereUniqueInput
+  }
+
+  export type OrganisationCreateNestedOneWithoutEmiSchedulesInput = {
+    create?: XOR<OrganisationCreateWithoutEmiSchedulesInput, OrganisationUncheckedCreateWithoutEmiSchedulesInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutEmiSchedulesInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type EMIInstallmentCreateNestedManyWithoutScheduleInput = {
+    create?: XOR<EMIInstallmentCreateWithoutScheduleInput, EMIInstallmentUncheckedCreateWithoutScheduleInput> | EMIInstallmentCreateWithoutScheduleInput[] | EMIInstallmentUncheckedCreateWithoutScheduleInput[]
+    connectOrCreate?: EMIInstallmentCreateOrConnectWithoutScheduleInput | EMIInstallmentCreateOrConnectWithoutScheduleInput[]
+    createMany?: EMIInstallmentCreateManyScheduleInputEnvelope
+    connect?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+  }
+
+  export type EMIInstallmentUncheckedCreateNestedManyWithoutScheduleInput = {
+    create?: XOR<EMIInstallmentCreateWithoutScheduleInput, EMIInstallmentUncheckedCreateWithoutScheduleInput> | EMIInstallmentCreateWithoutScheduleInput[] | EMIInstallmentUncheckedCreateWithoutScheduleInput[]
+    connectOrCreate?: EMIInstallmentCreateOrConnectWithoutScheduleInput | EMIInstallmentCreateOrConnectWithoutScheduleInput[]
+    createMany?: EMIInstallmentCreateManyScheduleInputEnvelope
+    connect?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+  }
+
+  export type EnumEMIStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EMIStatus
+  }
+
+  export type OpportunityUpdateOneRequiredWithoutEmiScheduleNestedInput = {
+    create?: XOR<OpportunityCreateWithoutEmiScheduleInput, OpportunityUncheckedCreateWithoutEmiScheduleInput>
+    connectOrCreate?: OpportunityCreateOrConnectWithoutEmiScheduleInput
+    upsert?: OpportunityUpsertWithoutEmiScheduleInput
+    connect?: OpportunityWhereUniqueInput
+    update?: XOR<XOR<OpportunityUpdateToOneWithWhereWithoutEmiScheduleInput, OpportunityUpdateWithoutEmiScheduleInput>, OpportunityUncheckedUpdateWithoutEmiScheduleInput>
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutEmiSchedulesNestedInput = {
+    create?: XOR<OrganisationCreateWithoutEmiSchedulesInput, OrganisationUncheckedCreateWithoutEmiSchedulesInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutEmiSchedulesInput
+    upsert?: OrganisationUpsertWithoutEmiSchedulesInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutEmiSchedulesInput, OrganisationUpdateWithoutEmiSchedulesInput>, OrganisationUncheckedUpdateWithoutEmiSchedulesInput>
+  }
+
+  export type EMIInstallmentUpdateManyWithoutScheduleNestedInput = {
+    create?: XOR<EMIInstallmentCreateWithoutScheduleInput, EMIInstallmentUncheckedCreateWithoutScheduleInput> | EMIInstallmentCreateWithoutScheduleInput[] | EMIInstallmentUncheckedCreateWithoutScheduleInput[]
+    connectOrCreate?: EMIInstallmentCreateOrConnectWithoutScheduleInput | EMIInstallmentCreateOrConnectWithoutScheduleInput[]
+    upsert?: EMIInstallmentUpsertWithWhereUniqueWithoutScheduleInput | EMIInstallmentUpsertWithWhereUniqueWithoutScheduleInput[]
+    createMany?: EMIInstallmentCreateManyScheduleInputEnvelope
+    set?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    disconnect?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    delete?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    connect?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    update?: EMIInstallmentUpdateWithWhereUniqueWithoutScheduleInput | EMIInstallmentUpdateWithWhereUniqueWithoutScheduleInput[]
+    updateMany?: EMIInstallmentUpdateManyWithWhereWithoutScheduleInput | EMIInstallmentUpdateManyWithWhereWithoutScheduleInput[]
+    deleteMany?: EMIInstallmentScalarWhereInput | EMIInstallmentScalarWhereInput[]
+  }
+
+  export type EMIInstallmentUncheckedUpdateManyWithoutScheduleNestedInput = {
+    create?: XOR<EMIInstallmentCreateWithoutScheduleInput, EMIInstallmentUncheckedCreateWithoutScheduleInput> | EMIInstallmentCreateWithoutScheduleInput[] | EMIInstallmentUncheckedCreateWithoutScheduleInput[]
+    connectOrCreate?: EMIInstallmentCreateOrConnectWithoutScheduleInput | EMIInstallmentCreateOrConnectWithoutScheduleInput[]
+    upsert?: EMIInstallmentUpsertWithWhereUniqueWithoutScheduleInput | EMIInstallmentUpsertWithWhereUniqueWithoutScheduleInput[]
+    createMany?: EMIInstallmentCreateManyScheduleInputEnvelope
+    set?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    disconnect?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    delete?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    connect?: EMIInstallmentWhereUniqueInput | EMIInstallmentWhereUniqueInput[]
+    update?: EMIInstallmentUpdateWithWhereUniqueWithoutScheduleInput | EMIInstallmentUpdateWithWhereUniqueWithoutScheduleInput[]
+    updateMany?: EMIInstallmentUpdateManyWithWhereWithoutScheduleInput | EMIInstallmentUpdateManyWithWhereWithoutScheduleInput[]
+    deleteMany?: EMIInstallmentScalarWhereInput | EMIInstallmentScalarWhereInput[]
+  }
+
+  export type EMIScheduleCreateNestedOneWithoutInstallmentsInput = {
+    create?: XOR<EMIScheduleCreateWithoutInstallmentsInput, EMIScheduleUncheckedCreateWithoutInstallmentsInput>
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutInstallmentsInput
+    connect?: EMIScheduleWhereUniqueInput
+  }
+
+  export type PaymentRecordCreateNestedManyWithoutInstallmentInput = {
+    create?: XOR<PaymentRecordCreateWithoutInstallmentInput, PaymentRecordUncheckedCreateWithoutInstallmentInput> | PaymentRecordCreateWithoutInstallmentInput[] | PaymentRecordUncheckedCreateWithoutInstallmentInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInstallmentInput | PaymentRecordCreateOrConnectWithoutInstallmentInput[]
+    createMany?: PaymentRecordCreateManyInstallmentInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
+  export type PaymentRecordUncheckedCreateNestedManyWithoutInstallmentInput = {
+    create?: XOR<PaymentRecordCreateWithoutInstallmentInput, PaymentRecordUncheckedCreateWithoutInstallmentInput> | PaymentRecordCreateWithoutInstallmentInput[] | PaymentRecordUncheckedCreateWithoutInstallmentInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInstallmentInput | PaymentRecordCreateOrConnectWithoutInstallmentInput[]
+    createMany?: PaymentRecordCreateManyInstallmentInputEnvelope
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+  }
+
+  export type EnumInstallmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.InstallmentStatus
+  }
+
+  export type EMIScheduleUpdateOneRequiredWithoutInstallmentsNestedInput = {
+    create?: XOR<EMIScheduleCreateWithoutInstallmentsInput, EMIScheduleUncheckedCreateWithoutInstallmentsInput>
+    connectOrCreate?: EMIScheduleCreateOrConnectWithoutInstallmentsInput
+    upsert?: EMIScheduleUpsertWithoutInstallmentsInput
+    connect?: EMIScheduleWhereUniqueInput
+    update?: XOR<XOR<EMIScheduleUpdateToOneWithWhereWithoutInstallmentsInput, EMIScheduleUpdateWithoutInstallmentsInput>, EMIScheduleUncheckedUpdateWithoutInstallmentsInput>
+  }
+
+  export type PaymentRecordUpdateManyWithoutInstallmentNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutInstallmentInput, PaymentRecordUncheckedCreateWithoutInstallmentInput> | PaymentRecordCreateWithoutInstallmentInput[] | PaymentRecordUncheckedCreateWithoutInstallmentInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInstallmentInput | PaymentRecordCreateOrConnectWithoutInstallmentInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutInstallmentInput | PaymentRecordUpsertWithWhereUniqueWithoutInstallmentInput[]
+    createMany?: PaymentRecordCreateManyInstallmentInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutInstallmentInput | PaymentRecordUpdateWithWhereUniqueWithoutInstallmentInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutInstallmentInput | PaymentRecordUpdateManyWithWhereWithoutInstallmentInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutInstallmentNestedInput = {
+    create?: XOR<PaymentRecordCreateWithoutInstallmentInput, PaymentRecordUncheckedCreateWithoutInstallmentInput> | PaymentRecordCreateWithoutInstallmentInput[] | PaymentRecordUncheckedCreateWithoutInstallmentInput[]
+    connectOrCreate?: PaymentRecordCreateOrConnectWithoutInstallmentInput | PaymentRecordCreateOrConnectWithoutInstallmentInput[]
+    upsert?: PaymentRecordUpsertWithWhereUniqueWithoutInstallmentInput | PaymentRecordUpsertWithWhereUniqueWithoutInstallmentInput[]
+    createMany?: PaymentRecordCreateManyInstallmentInputEnvelope
+    set?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    disconnect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    delete?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
+    update?: PaymentRecordUpdateWithWhereUniqueWithoutInstallmentInput | PaymentRecordUpdateWithWhereUniqueWithoutInstallmentInput[]
+    updateMany?: PaymentRecordUpdateManyWithWhereWithoutInstallmentInput | PaymentRecordUpdateManyWithWhereWithoutInstallmentInput[]
+    deleteMany?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+  }
+
+  export type OpportunityCreateNestedOneWithoutPaymentRecordsInput = {
+    create?: XOR<OpportunityCreateWithoutPaymentRecordsInput, OpportunityUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: OpportunityCreateOrConnectWithoutPaymentRecordsInput
+    connect?: OpportunityWhereUniqueInput
+  }
+
+  export type EMIInstallmentCreateNestedOneWithoutPaymentRecordsInput = {
+    create?: XOR<EMIInstallmentCreateWithoutPaymentRecordsInput, EMIInstallmentUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: EMIInstallmentCreateOrConnectWithoutPaymentRecordsInput
+    connect?: EMIInstallmentWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedPaymentRecordsInput = {
+    create?: XOR<UserCreateWithoutCreatedPaymentRecordsInput, UserUncheckedCreateWithoutCreatedPaymentRecordsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedPaymentRecordsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type OrganisationCreateNestedOneWithoutPaymentRecordsInput = {
+    create?: XOR<OrganisationCreateWithoutPaymentRecordsInput, OrganisationUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutPaymentRecordsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type EnumPaymentTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentType
+  }
+
+  export type OpportunityUpdateOneRequiredWithoutPaymentRecordsNestedInput = {
+    create?: XOR<OpportunityCreateWithoutPaymentRecordsInput, OpportunityUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: OpportunityCreateOrConnectWithoutPaymentRecordsInput
+    upsert?: OpportunityUpsertWithoutPaymentRecordsInput
+    connect?: OpportunityWhereUniqueInput
+    update?: XOR<XOR<OpportunityUpdateToOneWithWhereWithoutPaymentRecordsInput, OpportunityUpdateWithoutPaymentRecordsInput>, OpportunityUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type EMIInstallmentUpdateOneWithoutPaymentRecordsNestedInput = {
+    create?: XOR<EMIInstallmentCreateWithoutPaymentRecordsInput, EMIInstallmentUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: EMIInstallmentCreateOrConnectWithoutPaymentRecordsInput
+    upsert?: EMIInstallmentUpsertWithoutPaymentRecordsInput
+    disconnect?: EMIInstallmentWhereInput | boolean
+    delete?: EMIInstallmentWhereInput | boolean
+    connect?: EMIInstallmentWhereUniqueInput
+    update?: XOR<XOR<EMIInstallmentUpdateToOneWithWhereWithoutPaymentRecordsInput, EMIInstallmentUpdateWithoutPaymentRecordsInput>, EMIInstallmentUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCreatedPaymentRecordsNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedPaymentRecordsInput, UserUncheckedCreateWithoutCreatedPaymentRecordsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedPaymentRecordsInput
+    upsert?: UserUpsertWithoutCreatedPaymentRecordsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedPaymentRecordsInput, UserUpdateWithoutCreatedPaymentRecordsInput>, UserUncheckedUpdateWithoutCreatedPaymentRecordsInput>
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutPaymentRecordsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutPaymentRecordsInput, OrganisationUncheckedCreateWithoutPaymentRecordsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutPaymentRecordsInput
+    upsert?: OrganisationUpsertWithoutPaymentRecordsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutPaymentRecordsInput, OrganisationUpdateWithoutPaymentRecordsInput>, OrganisationUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -98751,6 +103753,57 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBytesNullableFilter<$PrismaModel>
     _max?: NestedBytesNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEMIStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EMIStatus | EnumEMIStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEMIStatusFilter<$PrismaModel> | $Enums.EMIStatus
+  }
+
+  export type NestedEnumEMIStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EMIStatus | EnumEMIStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EMIStatus[] | ListEnumEMIStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEMIStatusWithAggregatesFilter<$PrismaModel> | $Enums.EMIStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEMIStatusFilter<$PrismaModel>
+    _max?: NestedEnumEMIStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumInstallmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstallmentStatus | EnumInstallmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstallmentStatusFilter<$PrismaModel> | $Enums.InstallmentStatus
+  }
+
+  export type NestedEnumInstallmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstallmentStatus | EnumInstallmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstallmentStatus[] | ListEnumInstallmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstallmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.InstallmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInstallmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumInstallmentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeFilter<$PrismaModel> | $Enums.PaymentType
+  }
+
+  export type NestedEnumPaymentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentType[] | ListEnumPaymentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentTypeFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutOrganisationInput = {
@@ -99647,6 +104700,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -99678,6 +104733,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutOrganisationInput = {
@@ -100064,6 +105121,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganisationInput = {
@@ -100152,6 +105210,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganisationInput = {
@@ -100959,6 +106018,76 @@ export namespace Prisma {
 
   export type RoleCreateManyOrganisationInputEnvelope = {
     data: RoleCreateManyOrganisationInput | RoleCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EMIScheduleCreateWithoutOrganisationInput = {
+    id?: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutEmiScheduleInput
+    installments?: EMIInstallmentCreateNestedManyWithoutScheduleInput
+  }
+
+  export type EMIScheduleUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    opportunityId: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    installments?: EMIInstallmentUncheckedCreateNestedManyWithoutScheduleInput
+  }
+
+  export type EMIScheduleCreateOrConnectWithoutOrganisationInput = {
+    where: EMIScheduleWhereUniqueInput
+    create: XOR<EMIScheduleCreateWithoutOrganisationInput, EMIScheduleUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type EMIScheduleCreateManyOrganisationInputEnvelope = {
+    data: EMIScheduleCreateManyOrganisationInput | EMIScheduleCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentRecordCreateWithoutOrganisationInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutPaymentRecordsInput
+    installment?: EMIInstallmentCreateNestedOneWithoutPaymentRecordsInput
+    createdBy: UserCreateNestedOneWithoutCreatedPaymentRecordsInput
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutOrganisationInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutOrganisationInput, PaymentRecordUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type PaymentRecordCreateManyOrganisationInputEnvelope = {
+    data: PaymentRecordCreateManyOrganisationInput | PaymentRecordCreateManyOrganisationInput[]
     skipDuplicates?: boolean
   }
 
@@ -102569,6 +107698,70 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Role"> | Date | string
   }
 
+  export type EMIScheduleUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: EMIScheduleWhereUniqueInput
+    update: XOR<EMIScheduleUpdateWithoutOrganisationInput, EMIScheduleUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<EMIScheduleCreateWithoutOrganisationInput, EMIScheduleUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type EMIScheduleUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: EMIScheduleWhereUniqueInput
+    data: XOR<EMIScheduleUpdateWithoutOrganisationInput, EMIScheduleUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type EMIScheduleUpdateManyWithWhereWithoutOrganisationInput = {
+    where: EMIScheduleScalarWhereInput
+    data: XOR<EMIScheduleUpdateManyMutationInput, EMIScheduleUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type EMIScheduleScalarWhereInput = {
+    AND?: EMIScheduleScalarWhereInput | EMIScheduleScalarWhereInput[]
+    OR?: EMIScheduleScalarWhereInput[]
+    NOT?: EMIScheduleScalarWhereInput | EMIScheduleScalarWhereInput[]
+    id?: StringFilter<"EMISchedule"> | string
+    opportunityId?: StringFilter<"EMISchedule"> | string
+    totalAmount?: FloatFilter<"EMISchedule"> | number
+    paidAmount?: FloatFilter<"EMISchedule"> | number
+    remainingAmount?: FloatFilter<"EMISchedule"> | number
+    status?: EnumEMIStatusFilter<"EMISchedule"> | $Enums.EMIStatus
+    createdAt?: DateTimeFilter<"EMISchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"EMISchedule"> | Date | string
+    organisationId?: StringFilter<"EMISchedule"> | string
+  }
+
+  export type PaymentRecordUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutOrganisationInput, PaymentRecordUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<PaymentRecordCreateWithoutOrganisationInput, PaymentRecordUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutOrganisationInput, PaymentRecordUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutOrganisationInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type PaymentRecordScalarWhereInput = {
+    AND?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+    OR?: PaymentRecordScalarWhereInput[]
+    NOT?: PaymentRecordScalarWhereInput | PaymentRecordScalarWhereInput[]
+    id?: StringFilter<"PaymentRecord"> | string
+    opportunityId?: StringFilter<"PaymentRecord"> | string
+    amount?: FloatFilter<"PaymentRecord"> | number
+    paymentDate?: DateTimeFilter<"PaymentRecord"> | Date | string
+    paymentMethod?: StringNullableFilter<"PaymentRecord"> | string | null
+    paymentType?: EnumPaymentTypeFilter<"PaymentRecord"> | $Enums.PaymentType
+    installmentId?: StringNullableFilter<"PaymentRecord"> | string | null
+    notes?: StringNullableFilter<"PaymentRecord"> | string | null
+    createdAt?: DateTimeFilter<"PaymentRecord"> | Date | string
+    createdById?: StringFilter<"PaymentRecord"> | string
+    organisationId?: StringFilter<"PaymentRecord"> | string
+  }
+
   export type AccountCreateWithoutOwnerInput = {
     id?: string
     name: string
@@ -104138,6 +109331,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -104169,6 +109364,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutOwnerInput = {
@@ -104752,6 +109949,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutUsersInput = {
@@ -104819,6 +110018,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutUsersInput = {
@@ -104912,6 +110113,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSubordinatesInput = {
@@ -105000,6 +110202,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSubordinatesInput = {
@@ -105093,6 +110296,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutReportsToInput = {
@@ -105181,6 +110385,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutReportsToInput = {
@@ -106097,6 +111302,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PaymentRecordCreateWithoutCreatedByInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutPaymentRecordsInput
+    installment?: EMIInstallmentCreateNestedOneWithoutPaymentRecordsInput
+    organisation: OrganisationCreateNestedOneWithoutPaymentRecordsInput
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    organisationId: string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutCreatedByInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutCreatedByInput, PaymentRecordUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type PaymentRecordCreateManyCreatedByInputEnvelope = {
+    data: PaymentRecordCreateManyCreatedByInput | PaymentRecordCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithWhereUniqueWithoutOwnerInput = {
     where: AccountWhereUniqueInput
     update: XOR<AccountUpdateWithoutOwnerInput, AccountUncheckedUpdateWithoutOwnerInput>
@@ -106822,6 +112063,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutUsersInput = {
@@ -106889,6 +112132,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutSubordinatesInput = {
@@ -106988,6 +112233,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSubordinatesInput = {
@@ -107076,6 +112322,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutReportsToInput = {
@@ -107524,6 +112771,22 @@ export namespace Prisma {
     data: XOR<BranchUpdateManyMutationInput, BranchUncheckedUpdateManyWithoutManagerInput>
   }
 
+  export type PaymentRecordUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutCreatedByInput, PaymentRecordUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<PaymentRecordCreateWithoutCreatedByInput, PaymentRecordUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutCreatedByInput, PaymentRecordUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutCreatedByInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
   export type UserCreateWithoutTeamInput = {
     id?: string
     firstName: string
@@ -107610,6 +112873,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutTeamInput = {
@@ -107698,6 +112962,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutTeamInput = {
@@ -107796,6 +113061,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutManagedTeamsInput = {
@@ -107884,6 +113150,7 @@ export namespace Prisma {
     createdTeams?: TeamUncheckedCreateNestedManyWithoutCreatedByInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutManagedTeamsInput = {
@@ -107977,6 +113244,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTeamsInput = {
@@ -108065,6 +113333,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTeamsInput = {
@@ -108137,6 +113406,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutTeamsInput = {
@@ -108204,6 +113475,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutTeamsInput = {
@@ -108382,6 +113655,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedTeamsInput = {
@@ -108470,6 +113744,7 @@ export namespace Prisma {
     createdTeams?: TeamUncheckedUpdateManyWithoutCreatedByNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutCreatedTeamsInput = {
@@ -108569,6 +113844,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTeamsInput = {
@@ -108657,6 +113933,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutTeamsInput = {
@@ -108735,6 +114012,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutTeamsInput = {
@@ -108802,6 +114081,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type SalesTargetUpsertWithWhereUniqueWithoutTeamInput = {
@@ -108906,6 +114187,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -108994,6 +114276,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -109098,6 +114381,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -109186,6 +114470,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CalendarEventCreateWithoutLeadInput = {
@@ -109440,6 +114725,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignedLeadsInput = {
@@ -109528,6 +114814,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignedLeadsInput = {
@@ -109600,6 +114887,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutLeadsInput = {
@@ -109667,6 +114956,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutLeadsInput = {
@@ -109760,6 +115051,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPreviousLeadsInput = {
@@ -109848,6 +115140,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPreviousLeadsInput = {
@@ -109941,6 +115234,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedLeadsInput = {
@@ -110029,6 +115323,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedLeadsInput = {
@@ -110501,6 +115796,8 @@ export namespace Prisma {
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -110532,6 +115829,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutLeadInput = {
@@ -110734,6 +116033,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedLeadsInput = {
@@ -110822,6 +116122,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutLeadsInput = {
@@ -110900,6 +116201,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutLeadsInput = {
@@ -110967,6 +116270,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutPreviousLeadsInput = {
@@ -111066,6 +116371,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPreviousLeadsInput = {
@@ -111154,6 +116460,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutCreatedLeadsInput = {
@@ -111253,6 +116560,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedLeadsInput = {
@@ -111341,6 +116649,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadHistoryUpsertWithWhereUniqueWithoutLeadInput = {
@@ -111655,6 +116964,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutAccountsInput = {
@@ -111722,6 +117033,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutAccountsInput = {
@@ -111815,6 +117128,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutOwnedAccountsInput = {
@@ -111903,6 +117217,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutOwnedAccountsInput = {
@@ -112374,6 +117689,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -112405,6 +117722,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutAccountInput = {
@@ -112867,6 +118186,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutAccountsInput = {
@@ -112934,6 +118255,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutOwnedAccountsInput = {
@@ -113033,6 +118356,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOwnedAccountsInput = {
@@ -113121,6 +118445,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AccountUpsertWithoutChildAccountsInput = {
@@ -113838,6 +119163,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutContactsInput = {
@@ -113905,6 +119232,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutContactsInput = {
@@ -113998,6 +119327,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutOwnedContactsInput = {
@@ -114086,6 +119416,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutOwnedContactsInput = {
@@ -114331,6 +119662,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -114362,6 +119695,8 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutContactsInput = {
@@ -114844,6 +120179,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutContactsInput = {
@@ -114911,6 +120248,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutOwnedContactsInput = {
@@ -115010,6 +120349,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOwnedContactsInput = {
@@ -115098,6 +120438,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type InteractionUpsertWithWhereUniqueWithoutContactInput = {
@@ -115646,6 +120987,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutOpportunitiesInput = {
@@ -115713,6 +121056,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutOpportunitiesInput = {
@@ -115806,6 +121151,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
@@ -115894,6 +121240,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutOwnedOpportunitiesInput = {
@@ -116304,6 +121651,71 @@ export namespace Prisma {
     create: XOR<PipelineCreateWithoutOpportunitiesInput, PipelineUncheckedCreateWithoutOpportunitiesInput>
   }
 
+  export type EMIScheduleCreateWithoutOpportunityInput = {
+    id?: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutEmiSchedulesInput
+    installments?: EMIInstallmentCreateNestedManyWithoutScheduleInput
+  }
+
+  export type EMIScheduleUncheckedCreateWithoutOpportunityInput = {
+    id?: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId: string
+    installments?: EMIInstallmentUncheckedCreateNestedManyWithoutScheduleInput
+  }
+
+  export type EMIScheduleCreateOrConnectWithoutOpportunityInput = {
+    where: EMIScheduleWhereUniqueInput
+    create: XOR<EMIScheduleCreateWithoutOpportunityInput, EMIScheduleUncheckedCreateWithoutOpportunityInput>
+  }
+
+  export type PaymentRecordCreateWithoutOpportunityInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    installment?: EMIInstallmentCreateNestedOneWithoutPaymentRecordsInput
+    createdBy: UserCreateNestedOneWithoutCreatedPaymentRecordsInput
+    organisation: OrganisationCreateNestedOneWithoutPaymentRecordsInput
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutOpportunityInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+    organisationId: string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutOpportunityInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutOpportunityInput, PaymentRecordUncheckedCreateWithoutOpportunityInput>
+  }
+
+  export type PaymentRecordCreateManyOpportunityInputEnvelope = {
+    data: PaymentRecordCreateManyOpportunityInput | PaymentRecordCreateManyOpportunityInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchCreateWithoutOpportunitiesInput = {
     id?: string
     name: string
@@ -116532,6 +121944,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutOpportunitiesInput = {
@@ -116599,6 +122013,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutOwnedOpportunitiesInput = {
@@ -116698,6 +122114,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
@@ -116786,6 +122203,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type QuoteUpsertWithWhereUniqueWithoutOpportunityInput = {
@@ -117018,6 +122436,57 @@ export namespace Prisma {
     leads?: LeadUncheckedUpdateManyWithoutPipelineNestedInput
   }
 
+  export type EMIScheduleUpsertWithoutOpportunityInput = {
+    update: XOR<EMIScheduleUpdateWithoutOpportunityInput, EMIScheduleUncheckedUpdateWithoutOpportunityInput>
+    create: XOR<EMIScheduleCreateWithoutOpportunityInput, EMIScheduleUncheckedCreateWithoutOpportunityInput>
+    where?: EMIScheduleWhereInput
+  }
+
+  export type EMIScheduleUpdateToOneWithWhereWithoutOpportunityInput = {
+    where?: EMIScheduleWhereInput
+    data: XOR<EMIScheduleUpdateWithoutOpportunityInput, EMIScheduleUncheckedUpdateWithoutOpportunityInput>
+  }
+
+  export type EMIScheduleUpdateWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutEmiSchedulesNestedInput
+    installments?: EMIInstallmentUpdateManyWithoutScheduleNestedInput
+  }
+
+  export type EMIScheduleUncheckedUpdateWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    installments?: EMIInstallmentUncheckedUpdateManyWithoutScheduleNestedInput
+  }
+
+  export type PaymentRecordUpsertWithWhereUniqueWithoutOpportunityInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutOpportunityInput, PaymentRecordUncheckedUpdateWithoutOpportunityInput>
+    create: XOR<PaymentRecordCreateWithoutOpportunityInput, PaymentRecordUncheckedCreateWithoutOpportunityInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutOpportunityInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutOpportunityInput, PaymentRecordUncheckedUpdateWithoutOpportunityInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutOpportunityInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutOpportunityInput>
+  }
+
   export type BranchUpsertWithoutOpportunitiesInput = {
     update: XOR<BranchUpdateWithoutOpportunitiesInput, BranchUncheckedUpdateWithoutOpportunitiesInput>
     create: XOR<BranchCreateWithoutOpportunitiesInput, BranchUncheckedCreateWithoutOpportunitiesInput>
@@ -117155,6 +122624,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedProductsInput = {
@@ -117243,6 +122713,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedProductsInput = {
@@ -117315,6 +122786,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutProductsInput = {
@@ -117382,6 +122855,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutProductsInput = {
@@ -117678,6 +123153,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedProductsInput = {
@@ -117766,6 +123242,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutProductsInput = {
@@ -117844,6 +123321,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutProductsInput = {
@@ -117911,6 +123390,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type QuoteLineItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -118583,6 +124064,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutAccountProductsInput = {
@@ -118650,6 +124133,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutAccountProductsInput = {
@@ -118877,6 +124362,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutAccountProductsInput = {
@@ -118944,6 +124431,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type AccountCreateWithoutQuotesInput = {
@@ -119101,6 +124590,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignedQuotesInput = {
@@ -119189,6 +124679,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignedQuotesInput = {
@@ -119357,6 +124848,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedQuotesInput = {
@@ -119445,6 +124937,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedQuotesInput = {
@@ -119479,6 +124972,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -119510,6 +125005,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutQuotesInput = {
@@ -119582,6 +125079,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutQuotesInput = {
@@ -119649,6 +125148,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutQuotesInput = {
@@ -119864,6 +125365,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedQuotesInput = {
@@ -119952,6 +125454,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ContactUpsertWithoutQuotesInput = {
@@ -120132,6 +125635,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedQuotesInput = {
@@ -120220,6 +125724,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OpportunityUpsertWithoutQuotesInput = {
@@ -120260,6 +125765,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -120291,6 +125798,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OrganisationUpsertWithoutQuotesInput = {
@@ -120369,6 +125878,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutQuotesInput = {
@@ -120436,6 +125947,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type QuoteLineItemUpsertWithWhereUniqueWithoutQuoteInput = {
@@ -120881,6 +126394,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -120969,6 +126483,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -121137,6 +126652,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTasksInput = {
@@ -121225,6 +126741,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTasksInput = {
@@ -121378,6 +126895,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -121409,6 +126928,8 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutTasksInput = {
@@ -121481,6 +127002,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutTasksInput = {
@@ -121548,6 +127071,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutTasksInput = {
@@ -121772,6 +127297,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -121860,6 +127386,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ContactUpsertWithoutTasksInput = {
@@ -122040,6 +127567,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTasksInput = {
@@ -122128,6 +127656,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadUpsertWithoutTasksInput = {
@@ -122293,6 +127822,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -122324,6 +127855,8 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OrganisationUpsertWithoutTasksInput = {
@@ -122402,6 +127935,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutTasksInput = {
@@ -122469,6 +128004,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type BranchUpsertWithoutTasksInput = {
@@ -122801,6 +128338,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedInteractionsInput = {
@@ -122889,6 +128427,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedInteractionsInput = {
@@ -123042,6 +128581,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -123073,6 +128614,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutInteractionsInput = {
@@ -123145,6 +128688,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutInteractionsInput = {
@@ -123212,6 +128757,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutInteractionsInput = {
@@ -123572,6 +129119,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedInteractionsInput = {
@@ -123660,6 +129208,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadUpsertWithoutInteractionsInput = {
@@ -123825,6 +129374,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -123856,6 +129407,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OrganisationUpsertWithoutInteractionsInput = {
@@ -123934,6 +129487,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutInteractionsInput = {
@@ -124001,6 +129556,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type BranchUpsertWithoutInteractionsInput = {
@@ -124284,6 +129841,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedEventsInput = {
@@ -124372,6 +129930,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedEventsInput = {
@@ -124525,6 +130084,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -124556,6 +130117,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutEventsInput = {
@@ -124628,6 +130191,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutEventsInput = {
@@ -124695,6 +130260,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutEventsInput = {
@@ -124955,6 +130522,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedEventsInput = {
@@ -125043,6 +130611,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadUpsertWithoutEventsInput = {
@@ -125208,6 +130777,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -125239,6 +130810,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OrganisationUpsertWithoutEventsInput = {
@@ -125317,6 +130890,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutEventsInput = {
@@ -125384,6 +130959,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type CampaignCreateWithoutEmailListInput = {
@@ -125516,6 +131093,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedEmailListsInput = {
@@ -125604,6 +131182,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedEmailListsInput = {
@@ -125676,6 +131255,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutEmailListsInput = {
@@ -125743,6 +131324,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutEmailListsInput = {
@@ -126057,6 +131640,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedEmailListsInput = {
@@ -126145,6 +131729,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutEmailListsInput = {
@@ -126223,6 +131808,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutEmailListsInput = {
@@ -126290,6 +131877,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type ContactUpsertWithWhereUniqueWithoutEmailListsInput = {
@@ -126410,6 +131999,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
@@ -126498,6 +132088,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCampaignsInput = {
@@ -126601,6 +132192,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutCampaignsInput = {
@@ -126668,6 +132261,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutCampaignsInput = {
@@ -126772,6 +132367,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
@@ -126860,6 +132456,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type EmailListUpsertWithoutCampaignsInput = {
@@ -126975,6 +132572,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutCampaignsInput = {
@@ -127042,6 +132641,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutCreatedWorkflowsInput = {
@@ -127130,6 +132731,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedWorkflowsInput = {
@@ -127218,6 +132820,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedWorkflowsInput = {
@@ -127290,6 +132893,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutWorkflowsInput = {
@@ -127357,6 +132962,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutWorkflowsInput = {
@@ -127491,6 +133098,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedWorkflowsInput = {
@@ -127579,6 +133187,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutWorkflowsInput = {
@@ -127657,6 +133266,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutWorkflowsInput = {
@@ -127724,6 +133335,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type WorkflowQueueUpsertWithWhereUniqueWithoutWorkflowInput = {
@@ -127848,6 +133461,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutQueueItemsInput = {
@@ -127915,6 +133530,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutQueueItemsInput = {
@@ -128045,6 +133662,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutQueueItemsInput = {
@@ -128112,6 +133731,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutCreatedRulesInput = {
@@ -128200,6 +133821,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedRulesInput = {
@@ -128288,6 +133910,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedRulesInput = {
@@ -128360,6 +133983,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutWorkflowRulesInput = {
@@ -128427,6 +134052,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutWorkflowRulesInput = {
@@ -128531,6 +134158,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedRulesInput = {
@@ -128619,6 +134247,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutWorkflowRulesInput = {
@@ -128697,6 +134326,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutWorkflowRulesInput = {
@@ -128764,6 +134395,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutCreatedDocTemplatesInput = {
@@ -128852,6 +134485,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedDocTemplatesInput = {
@@ -128940,6 +134574,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedDocTemplatesInput = {
@@ -129044,6 +134679,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedDocTemplatesInput = {
@@ -129132,6 +134768,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutCreatedSMSTemplatesInput = {
@@ -129220,6 +134857,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSMSTemplatesInput = {
@@ -129308,6 +134946,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSMSTemplatesInput = {
@@ -129412,6 +135051,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSMSTemplatesInput = {
@@ -129500,6 +135140,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LicenseCreateWithoutPlanInput = {
@@ -129652,6 +135293,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutActivatedLicensesInput = {
@@ -129740,6 +135382,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutActivatedLicensesInput = {
@@ -129833,6 +135476,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCancelledLicensesInput = {
@@ -129921,6 +135565,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCancelledLicensesInput = {
@@ -129993,6 +135638,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutLicensesInput = {
@@ -130060,6 +135707,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutLicensesInput = {
@@ -130211,6 +135860,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutActivatedLicensesInput = {
@@ -130299,6 +135949,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutCancelledLicensesInput = {
@@ -130398,6 +136049,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCancelledLicensesInput = {
@@ -130486,6 +136138,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutLicensesInput = {
@@ -130564,6 +136217,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutLicensesInput = {
@@ -130631,6 +136286,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type SubscriptionPlanUpsertWithoutLicensesInput = {
@@ -130772,6 +136429,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedAssignmentRulesInput = {
@@ -130860,6 +136518,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedAssignmentRulesInput = {
@@ -130953,6 +136612,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutLastAssignedAssignmentRulesInput = {
@@ -131041,6 +136701,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutLastAssignedAssignmentRulesInput = {
@@ -131113,6 +136774,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutAssignmentRulesInput = {
@@ -131180,6 +136843,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutAssignmentRulesInput = {
@@ -131273,6 +136938,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutManagedAssignmentRulesInput = {
@@ -131361,6 +137027,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutManagedAssignmentRulesInput = {
@@ -131510,6 +137177,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedAssignmentRulesInput = {
@@ -131598,6 +137266,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutLastAssignedAssignmentRulesInput = {
@@ -131697,6 +137366,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLastAssignedAssignmentRulesInput = {
@@ -131785,6 +137455,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutAssignmentRulesInput = {
@@ -131863,6 +137534,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutAssignmentRulesInput = {
@@ -131930,6 +137603,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutManagedAssignmentRulesInput = {
@@ -132029,6 +137704,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedAssignmentRulesInput = {
@@ -132117,6 +137793,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type BranchUpsertWithoutAssignmentRulesInput = {
@@ -132256,6 +137933,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignedSalesTargetsInput = {
@@ -132344,6 +138022,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignedSalesTargetsInput = {
@@ -132437,6 +138116,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSalesTargetsInput = {
@@ -132525,6 +138205,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSalesTargetsInput = {
@@ -132628,6 +138309,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutSalesTargetsInput = {
@@ -132695,6 +138378,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutSalesTargetsInput = {
@@ -132973,6 +138658,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedSalesTargetsInput = {
@@ -133061,6 +138747,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutCreatedSalesTargetsInput = {
@@ -133160,6 +138847,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSalesTargetsInput = {
@@ -133248,6 +138936,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TeamUpsertWithoutSalesTargetsInput = {
@@ -133363,6 +139052,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutSalesTargetsInput = {
@@ -133430,6 +139121,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type SalesTargetUpsertWithoutChildTargetsInput = {
@@ -133662,6 +139355,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignedGoalsInput = {
@@ -133750,6 +139444,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignedGoalsInput = {
@@ -133843,6 +139538,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedGoalsInput = {
@@ -133931,6 +139627,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedGoalsInput = {
@@ -134003,6 +139700,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutGoalsInput = {
@@ -134070,6 +139769,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutGoalsInput = {
@@ -134174,6 +139875,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedGoalsInput = {
@@ -134262,6 +139964,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutCreatedGoalsInput = {
@@ -134361,6 +140064,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedGoalsInput = {
@@ -134449,6 +140153,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutGoalsInput = {
@@ -134527,6 +140232,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutGoalsInput = {
@@ -134594,6 +140301,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type AccountCreateWithoutCasesInput = {
@@ -134751,6 +140460,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignedCasesInput = {
@@ -134839,6 +140549,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignedCasesInput = {
@@ -135007,6 +140718,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCasesInput = {
@@ -135095,6 +140807,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCasesInput = {
@@ -135167,6 +140880,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutCasesInput = {
@@ -135234,6 +140949,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutCasesInput = {
@@ -135413,6 +141130,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignedCasesInput = {
@@ -135501,6 +141219,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ContactUpsertWithoutCasesInput = {
@@ -135681,6 +141400,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCasesInput = {
@@ -135769,6 +141489,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutCasesInput = {
@@ -135847,6 +141568,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutCasesInput = {
@@ -135914,6 +141637,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type AccountCreateWithoutCheckInsInput = {
@@ -136244,6 +141969,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutCheckInsInput = {
@@ -136311,6 +142038,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutCheckInsInput = {
@@ -136404,6 +142133,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCheckInsInput = {
@@ -136492,6 +142222,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCheckInsInput = {
@@ -136856,6 +142587,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutCheckInsInput = {
@@ -136923,6 +142656,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCheckInsInput = {
@@ -137022,6 +142757,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCheckInsInput = {
@@ -137110,6 +142846,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutCreatedApiKeysInput = {
@@ -137198,6 +142935,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedApiKeysInput = {
@@ -137286,6 +143024,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedApiKeysInput = {
@@ -137358,6 +143097,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutApiKeysInput = {
@@ -137425,6 +143166,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutApiKeysInput = {
@@ -137529,6 +143272,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedApiKeysInput = {
@@ -137617,6 +143361,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutApiKeysInput = {
@@ -137695,6 +143440,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutApiKeysInput = {
@@ -137762,6 +143509,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutSearchHistoryInput = {
@@ -137850,6 +143599,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSearchHistoryInput = {
@@ -137938,6 +143688,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSearchHistoryInput = {
@@ -138042,6 +143793,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSearchHistoryInput = {
@@ -138130,6 +143882,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutCreatedCustomFieldsInput = {
@@ -138218,6 +143971,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCustomFieldsInput = {
@@ -138306,6 +144060,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCustomFieldsInput = {
@@ -138378,6 +144133,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutCustomFieldsInput = {
@@ -138445,6 +144202,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutCustomFieldsInput = {
@@ -138549,6 +144308,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCustomFieldsInput = {
@@ -138637,6 +144397,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutCustomFieldsInput = {
@@ -138715,6 +144476,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutCustomFieldsInput = {
@@ -138782,6 +144545,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutManagedTerritoriesInput = {
@@ -138870,6 +144635,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutManagedTerritoriesInput = {
@@ -138958,6 +144724,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutManagedTerritoriesInput = {
@@ -139030,6 +144797,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutTerritoriesInput = {
@@ -139097,6 +144866,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutTerritoriesInput = {
@@ -139201,6 +144972,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedTerritoriesInput = {
@@ -139289,6 +145061,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutTerritoriesInput = {
@@ -139367,6 +145140,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutTerritoriesInput = {
@@ -139434,6 +145209,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutCreatedWebhooksInput = {
@@ -139522,6 +145299,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedWebhooksInput = {
@@ -139610,6 +145388,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedWebhooksInput = {
@@ -139682,6 +145461,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutWebhooksInput = {
@@ -139749,6 +145530,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutWebhooksInput = {
@@ -139853,6 +145636,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedWebhooksInput = {
@@ -139941,6 +145725,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutWebhooksInput = {
@@ -140019,6 +145804,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutWebhooksInput = {
@@ -140086,6 +145873,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutLeadQuotaTrackingInput = {
@@ -140174,6 +145963,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutLeadQuotaTrackingInput = {
@@ -140262,6 +146052,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutLeadQuotaTrackingInput = {
@@ -140366,6 +146157,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeadQuotaTrackingInput = {
@@ -140454,6 +146246,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationCreateWithoutCallSettingsInput = {
@@ -140521,6 +146314,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutCallSettingsInput = {
@@ -140588,6 +146383,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutCallSettingsInput = {
@@ -140671,6 +146468,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutCallSettingsInput = {
@@ -140738,6 +146537,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateWithoutHistoryChangerInput = {
@@ -140826,6 +146627,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutHistoryChangerInput = {
@@ -140914,6 +146716,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutHistoryChangerInput = {
@@ -141126,6 +146929,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutHistoryNewOwnerInput = {
@@ -141214,6 +147018,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutHistoryNewOwnerInput = {
@@ -141307,6 +147112,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutHistoryOldOwnerInput = {
@@ -141395,6 +147201,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutHistoryOldOwnerInput = {
@@ -141499,6 +147306,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHistoryChangerInput = {
@@ -141587,6 +147395,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadUpsertWithoutHistoryInput = {
@@ -141811,6 +147620,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHistoryNewOwnerInput = {
@@ -141899,6 +147709,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutHistoryOldOwnerInput = {
@@ -141998,6 +147809,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHistoryOldOwnerInput = {
@@ -142086,6 +147898,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutCreatedImportJobsInput = {
@@ -142174,6 +147987,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedImportJobsInput = {
@@ -142262,6 +148076,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedImportJobsInput = {
@@ -142334,6 +148149,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutImportJobsInput = {
@@ -142401,6 +148218,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutImportJobsInput = {
@@ -142505,6 +148324,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedImportJobsInput = {
@@ -142593,6 +148413,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutImportJobsInput = {
@@ -142671,6 +148492,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutImportJobsInput = {
@@ -142738,6 +148561,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateWithoutPipelinesInput = {
@@ -142805,6 +148630,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutPipelinesInput = {
@@ -142872,6 +148699,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutPipelinesInput = {
@@ -142965,6 +148794,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedPipelinesInput = {
@@ -143053,6 +148883,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedPipelinesInput = {
@@ -143211,6 +149042,8 @@ export namespace Prisma {
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -143242,6 +149075,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutPipelineInput = {
@@ -143330,6 +149165,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutPipelinesInput = {
@@ -143397,6 +149234,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedPipelinesInput = {
@@ -143496,6 +149335,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedPipelinesInput = {
@@ -143584,6 +149424,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadUpsertWithWhereUniqueWithoutPipelineInput = {
@@ -143683,6 +149524,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutWebFormsInput = {
@@ -143750,6 +149593,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutWebFormsInput = {
@@ -143843,6 +149688,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedWebFormsInput = {
@@ -143931,6 +149777,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedWebFormsInput = {
@@ -144014,6 +149861,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutWebFormsInput = {
@@ -144081,6 +149930,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedWebFormsInput = {
@@ -144180,6 +150031,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedWebFormsInput = {
@@ -144268,6 +150120,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationCreateWithoutSmsCampaignsInput = {
@@ -144335,6 +150188,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutSmsCampaignsInput = {
@@ -144402,6 +150257,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutSmsCampaignsInput = {
@@ -144495,6 +150352,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSMSCampaignsInput = {
@@ -144583,6 +150441,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSMSCampaignsInput = {
@@ -144666,6 +150525,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutSmsCampaignsInput = {
@@ -144733,6 +150594,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedSMSCampaignsInput = {
@@ -144832,6 +150695,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSMSCampaignsInput = {
@@ -144920,6 +150784,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationCreateWithoutWhatsAppCampaignsInput = {
@@ -144987,6 +150852,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutWhatsAppCampaignsInput = {
@@ -145054,6 +150921,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutWhatsAppCampaignsInput = {
@@ -145147,6 +151016,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedWhatsAppCampaignsInput = {
@@ -145235,6 +151105,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedWhatsAppCampaignsInput = {
@@ -145376,6 +151247,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutWhatsAppCampaignsInput = {
@@ -145443,6 +151316,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedWhatsAppCampaignsInput = {
@@ -145542,6 +151417,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedWhatsAppCampaignsInput = {
@@ -145630,6 +151506,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type WhatsAppMessageUpsertWithWhereUniqueWithoutCampaignInput = {
@@ -145713,6 +151590,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutWhatsAppMessagesInput = {
@@ -145780,6 +151659,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutWhatsAppMessagesInput = {
@@ -146067,6 +151948,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutWhatsAppMessagesInput = {
@@ -146155,6 +152037,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutWhatsAppMessagesInput = {
@@ -146281,6 +152164,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutWhatsAppMessagesInput = {
@@ -146348,6 +152233,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type LeadUpsertWithoutWhatsAppMessagesInput = {
@@ -146653,6 +152540,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWhatsAppMessagesInput = {
@@ -146741,6 +152629,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type WhatsAppCampaignUpsertWithoutMessagesInput = {
@@ -146878,6 +152767,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCommissionsInput = {
@@ -146966,6 +152856,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCommissionsInput = {
@@ -147038,6 +152929,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutCommissionsInput = {
@@ -147105,6 +152998,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutCommissionsInput = {
@@ -147198,6 +153093,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedCommissionsInput = {
@@ -147286,6 +153182,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedCommissionsInput = {
@@ -147390,6 +153287,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommissionsInput = {
@@ -147478,6 +153376,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutCommissionsInput = {
@@ -147556,6 +153455,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutCommissionsInput = {
@@ -147623,6 +153524,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedCommissionsInput = {
@@ -147722,6 +153625,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedCommissionsInput = {
@@ -147810,6 +153714,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationCreateWithoutLandingPagesInput = {
@@ -147877,6 +153782,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutLandingPagesInput = {
@@ -147944,6 +153851,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutLandingPagesInput = {
@@ -148037,6 +153946,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedLandingPagesInput = {
@@ -148125,6 +154035,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedLandingPagesInput = {
@@ -148208,6 +154119,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutLandingPagesInput = {
@@ -148275,6 +154188,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedLandingPagesInput = {
@@ -148374,6 +154289,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedLandingPagesInput = {
@@ -148462,6 +154378,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationCreateWithoutAuditLogsInput = {
@@ -148529,6 +154446,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutAuditLogsInput = {
@@ -148596,6 +154515,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutAuditLogsInput = {
@@ -148689,6 +154610,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -148777,6 +154699,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -148860,6 +154783,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutAuditLogsInput = {
@@ -148927,6 +154852,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutAuditLogsInput = {
@@ -149026,6 +154953,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -149114,6 +155042,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationCreateWithoutDocumentsInput = {
@@ -149181,6 +155110,8 @@ export namespace Prisma {
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutDocumentsInput = {
@@ -149248,6 +155179,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutDocumentsInput = {
@@ -149341,6 +155274,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedDocumentsInput = {
@@ -149429,6 +155363,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedDocumentsInput = {
@@ -149726,6 +155661,8 @@ export namespace Prisma {
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
     branch?: BranchCreateNestedOneWithoutOpportunitiesInput
   }
 
@@ -149757,6 +155694,8 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutDocumentsInput = {
@@ -149900,6 +155839,8 @@ export namespace Prisma {
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutDocumentsInput = {
@@ -149967,6 +155908,8 @@ export namespace Prisma {
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutCreatedDocumentsInput = {
@@ -150066,6 +156009,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedDocumentsInput = {
@@ -150154,6 +156098,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type LeadUpsertWithoutDocumentsInput = {
@@ -150475,6 +156420,8 @@ export namespace Prisma {
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -150506,6 +156453,8 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type InteractionUpsertWithWhereUniqueWithoutDocumentInput = {
@@ -150673,6 +156622,7 @@ export namespace Prisma {
     managedTeams?: TeamCreateNestedManyWithoutManagerInput
     branch?: BranchCreateNestedOneWithoutUsersInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSharedProductsInput = {
@@ -150761,6 +156711,7 @@ export namespace Prisma {
     createdTeams?: TeamUncheckedCreateNestedManyWithoutCreatedByInput
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSharedProductsInput = {
@@ -150833,6 +156784,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutProductSharesInput = {
@@ -150900,6 +156853,8 @@ export namespace Prisma {
     documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutProductSharesInput = {
@@ -151073,6 +157028,7 @@ export namespace Prisma {
     managedTeams?: TeamUpdateManyWithoutManagerNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSharedProductsInput = {
@@ -151161,6 +157117,7 @@ export namespace Prisma {
     createdTeams?: TeamUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type OrganisationUpsertWithoutProductSharesInput = {
@@ -151239,6 +157196,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutProductSharesInput = {
@@ -151306,6 +157265,8 @@ export namespace Prisma {
     documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateWithoutBranchesInput = {
@@ -151373,6 +157334,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOrganisationInput
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutBranchesInput = {
@@ -151440,6 +157403,8 @@ export namespace Prisma {
     documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutBranchesInput = {
@@ -151533,6 +157498,7 @@ export namespace Prisma {
     managedTeams?: TeamCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutManagedBranchesInput = {
@@ -151621,6 +157587,7 @@ export namespace Prisma {
     createdTeams?: TeamUncheckedCreateNestedManyWithoutCreatedByInput
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutManagedBranchesInput = {
@@ -151714,6 +157681,7 @@ export namespace Prisma {
     managedTeams?: TeamCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutBranchInput = {
@@ -151802,6 +157770,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
     sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
     managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutBranchInput = {
@@ -152046,6 +158015,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityUncheckedCreateWithoutBranchInput = {
@@ -152076,6 +158047,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
   }
 
   export type OpportunityCreateOrConnectWithoutBranchInput = {
@@ -152414,6 +158387,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOrganisationNestedInput
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutBranchesInput = {
@@ -152481,6 +158456,8 @@ export namespace Prisma {
     documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutManagedBranchesInput = {
@@ -152580,6 +158557,7 @@ export namespace Prisma {
     managedTeams?: TeamUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagedBranchesInput = {
@@ -152668,6 +158646,7 @@ export namespace Prisma {
     createdTeams?: TeamUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutBranchInput = {
@@ -152863,6 +158842,8 @@ export namespace Prisma {
     documents?: DocumentCreateNestedManyWithoutOrganisationInput
     productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
     branches?: BranchCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutRolePermissionsInput = {
@@ -152930,6 +158911,8 @@ export namespace Prisma {
     documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
     productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
     branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutRolePermissionsInput = {
@@ -153013,6 +158996,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOrganisationNestedInput
     productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutRolePermissionsInput = {
@@ -153080,6 +159065,1504 @@ export namespace Prisma {
     documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
     productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
     branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OpportunityCreateWithoutEmiScheduleInput = {
+    id?: string
+    name: string
+    amount: number
+    stage?: string
+    probability?: number
+    closeDate?: Date | string | null
+    leadSource?: string | null
+    description?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paymentStatus?: string
+    paymentDate?: Date | string | null
+    type?: $Enums.OpportunityType
+    events?: CalendarEventCreateNestedManyWithoutOpportunityInput
+    interactions?: InteractionCreateNestedManyWithoutOpportunityInput
+    account: AccountCreateNestedOneWithoutOpportunitiesInput
+    organisation: OrganisationCreateNestedOneWithoutOpportunitiesInput
+    owner?: UserCreateNestedOneWithoutOwnedOpportunitiesInput
+    quotes?: QuoteCreateNestedManyWithoutOpportunityInput
+    tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
+    documents?: DocumentCreateNestedManyWithoutOpportunityInput
+    lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
+    pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
+    branch?: BranchCreateNestedOneWithoutOpportunitiesInput
+  }
+
+  export type OpportunityUncheckedCreateWithoutEmiScheduleInput = {
+    id?: string
+    name: string
+    amount: number
+    stage?: string
+    probability?: number
+    closeDate?: Date | string | null
+    leadSource?: string | null
+    description?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accountId: string
+    ownerId?: string | null
+    organisationId: string
+    paymentStatus?: string
+    paymentDate?: Date | string | null
+    leadId?: string | null
+    pipelineId?: string | null
+    type?: $Enums.OpportunityType
+    branchId?: string | null
+    events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
+  }
+
+  export type OpportunityCreateOrConnectWithoutEmiScheduleInput = {
+    where: OpportunityWhereUniqueInput
+    create: XOR<OpportunityCreateWithoutEmiScheduleInput, OpportunityUncheckedCreateWithoutEmiScheduleInput>
+  }
+
+  export type OrganisationCreateWithoutEmiSchedulesInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    logo?: string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    status?: string
+    userLimit?: number
+    contactLimit?: number
+    storageLimit?: number
+    currency?: string
+    userIdCounter?: number
+    apiKey?: string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    createdBy?: string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountCreateNestedManyWithoutOrganisationInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
+    assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
+    events?: CalendarEventCreateNestedManyWithoutOrganisationInput
+    callSettings?: CallSettingsCreateNestedOneWithoutOrganisationInput
+    campaigns?: CampaignCreateNestedManyWithoutOrganisationInput
+    cases?: CaseCreateNestedManyWithoutOrganisationInput
+    checkIns?: CheckInCreateNestedManyWithoutOrganisationInput
+    contacts?: ContactCreateNestedManyWithoutOrganisationInput
+    customFields?: CustomFieldCreateNestedManyWithoutOrganisationInput
+    emailLists?: EmailListCreateNestedManyWithoutOrganisationInput
+    goals?: GoalCreateNestedManyWithoutOrganisationInput
+    interactions?: InteractionCreateNestedManyWithoutOrganisationInput
+    leads?: LeadCreateNestedManyWithoutOrganisationInput
+    licenses?: LicenseCreateNestedManyWithoutOrganisationInput
+    opportunities?: OpportunityCreateNestedManyWithoutOrganisationInput
+    products?: ProductCreateNestedManyWithoutOrganisationInput
+    quotes?: QuoteCreateNestedManyWithoutOrganisationInput
+    salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
+    tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    territories?: TerritoryCreateNestedManyWithoutOrganisationInput
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
+    workflows?: WorkflowCreateNestedManyWithoutOrganisationInput
+    workflowRules?: WorkflowRuleCreateNestedManyWithoutOrganisationInput
+    importJobs?: ImportJobCreateNestedManyWithoutOrganisationInput
+    pipelines?: PipelineCreateNestedManyWithoutOrganisationInput
+    webForms?: WebFormCreateNestedManyWithoutOrganisationInput
+    smsCampaigns?: SMSCampaignCreateNestedManyWithoutOrganisationInput
+    whatsAppCampaigns?: WhatsAppCampaignCreateNestedManyWithoutOrganisationInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutOrganisationInput
+    commissions?: CommissionCreateNestedManyWithoutOrganisationInput
+    landingPages?: LandingPageCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    queueItems?: WorkflowQueueCreateNestedManyWithoutOrganisationInput
+    teams?: TeamCreateNestedManyWithoutOrganisationInput
+    accountProducts?: AccountProductCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
+    branches?: BranchCreateNestedManyWithoutOrganisationInput
+    rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutEmiSchedulesInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    logo?: string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    status?: string
+    userLimit?: number
+    contactLimit?: number
+    storageLimit?: number
+    currency?: string
+    userIdCounter?: number
+    apiKey?: string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    createdBy?: string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
+    assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
+    events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
+    callSettings?: CallSettingsUncheckedCreateNestedOneWithoutOrganisationInput
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    cases?: CaseUncheckedCreateNestedManyWithoutOrganisationInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutOrganisationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganisationInput
+    customFields?: CustomFieldUncheckedCreateNestedManyWithoutOrganisationInput
+    emailLists?: EmailListUncheckedCreateNestedManyWithoutOrganisationInput
+    goals?: GoalUncheckedCreateNestedManyWithoutOrganisationInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutOrganisationInput
+    leads?: LeadUncheckedCreateNestedManyWithoutOrganisationInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutOrganisationInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutOrganisationInput
+    products?: ProductUncheckedCreateNestedManyWithoutOrganisationInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
+    salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
+    workflows?: WorkflowUncheckedCreateNestedManyWithoutOrganisationInput
+    workflowRules?: WorkflowRuleUncheckedCreateNestedManyWithoutOrganisationInput
+    importJobs?: ImportJobUncheckedCreateNestedManyWithoutOrganisationInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutOrganisationInput
+    webForms?: WebFormUncheckedCreateNestedManyWithoutOrganisationInput
+    smsCampaigns?: SMSCampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    whatsAppCampaigns?: WhatsAppCampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutOrganisationInput
+    commissions?: CommissionUncheckedCreateNestedManyWithoutOrganisationInput
+    landingPages?: LandingPageUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    queueItems?: WorkflowQueueUncheckedCreateNestedManyWithoutOrganisationInput
+    teams?: TeamUncheckedCreateNestedManyWithoutOrganisationInput
+    accountProducts?: AccountProductUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
+    branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
+    rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutEmiSchedulesInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutEmiSchedulesInput, OrganisationUncheckedCreateWithoutEmiSchedulesInput>
+  }
+
+  export type EMIInstallmentCreateWithoutScheduleInput = {
+    id?: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutInstallmentInput
+  }
+
+  export type EMIInstallmentUncheckedCreateWithoutScheduleInput = {
+    id?: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutInstallmentInput
+  }
+
+  export type EMIInstallmentCreateOrConnectWithoutScheduleInput = {
+    where: EMIInstallmentWhereUniqueInput
+    create: XOR<EMIInstallmentCreateWithoutScheduleInput, EMIInstallmentUncheckedCreateWithoutScheduleInput>
+  }
+
+  export type EMIInstallmentCreateManyScheduleInputEnvelope = {
+    data: EMIInstallmentCreateManyScheduleInput | EMIInstallmentCreateManyScheduleInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OpportunityUpsertWithoutEmiScheduleInput = {
+    update: XOR<OpportunityUpdateWithoutEmiScheduleInput, OpportunityUncheckedUpdateWithoutEmiScheduleInput>
+    create: XOR<OpportunityCreateWithoutEmiScheduleInput, OpportunityUncheckedCreateWithoutEmiScheduleInput>
+    where?: OpportunityWhereInput
+  }
+
+  export type OpportunityUpdateToOneWithWhereWithoutEmiScheduleInput = {
+    where?: OpportunityWhereInput
+    data: XOR<OpportunityUpdateWithoutEmiScheduleInput, OpportunityUncheckedUpdateWithoutEmiScheduleInput>
+  }
+
+  export type OpportunityUpdateWithoutEmiScheduleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    stage?: StringFieldUpdateOperationsInput | string
+    probability?: FloatFieldUpdateOperationsInput | number
+    closeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
+    events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
+    interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
+    account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutOpportunitiesNestedInput
+    owner?: UserUpdateOneWithoutOwnedOpportunitiesNestedInput
+    quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
+    tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
+    documents?: DocumentUpdateManyWithoutOpportunityNestedInput
+    lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
+    pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
+    branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
+  }
+
+  export type OpportunityUncheckedUpdateWithoutEmiScheduleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    stage?: StringFieldUpdateOperationsInput | string
+    probability?: FloatFieldUpdateOperationsInput | number
+    closeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
+  }
+
+  export type OrganisationUpsertWithoutEmiSchedulesInput = {
+    update: XOR<OrganisationUpdateWithoutEmiSchedulesInput, OrganisationUncheckedUpdateWithoutEmiSchedulesInput>
+    create: XOR<OrganisationCreateWithoutEmiSchedulesInput, OrganisationUncheckedCreateWithoutEmiSchedulesInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutEmiSchedulesInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutEmiSchedulesInput, OrganisationUncheckedUpdateWithoutEmiSchedulesInput>
+  }
+
+  export type OrganisationUpdateWithoutEmiSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    userLimit?: IntFieldUpdateOperationsInput | number
+    contactLimit?: IntFieldUpdateOperationsInput | number
+    storageLimit?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    userIdCounter?: IntFieldUpdateOperationsInput | number
+    apiKey?: NullableStringFieldUpdateOperationsInput | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUpdateManyWithoutOrganisationNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
+    assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
+    events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
+    callSettings?: CallSettingsUpdateOneWithoutOrganisationNestedInput
+    campaigns?: CampaignUpdateManyWithoutOrganisationNestedInput
+    cases?: CaseUpdateManyWithoutOrganisationNestedInput
+    checkIns?: CheckInUpdateManyWithoutOrganisationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganisationNestedInput
+    customFields?: CustomFieldUpdateManyWithoutOrganisationNestedInput
+    emailLists?: EmailListUpdateManyWithoutOrganisationNestedInput
+    goals?: GoalUpdateManyWithoutOrganisationNestedInput
+    interactions?: InteractionUpdateManyWithoutOrganisationNestedInput
+    leads?: LeadUpdateManyWithoutOrganisationNestedInput
+    licenses?: LicenseUpdateManyWithoutOrganisationNestedInput
+    opportunities?: OpportunityUpdateManyWithoutOrganisationNestedInput
+    products?: ProductUpdateManyWithoutOrganisationNestedInput
+    quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
+    salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
+    tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
+    workflows?: WorkflowUpdateManyWithoutOrganisationNestedInput
+    workflowRules?: WorkflowRuleUpdateManyWithoutOrganisationNestedInput
+    importJobs?: ImportJobUpdateManyWithoutOrganisationNestedInput
+    pipelines?: PipelineUpdateManyWithoutOrganisationNestedInput
+    webForms?: WebFormUpdateManyWithoutOrganisationNestedInput
+    smsCampaigns?: SMSCampaignUpdateManyWithoutOrganisationNestedInput
+    whatsAppCampaigns?: WhatsAppCampaignUpdateManyWithoutOrganisationNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutOrganisationNestedInput
+    commissions?: CommissionUpdateManyWithoutOrganisationNestedInput
+    landingPages?: LandingPageUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    queueItems?: WorkflowQueueUpdateManyWithoutOrganisationNestedInput
+    teams?: TeamUpdateManyWithoutOrganisationNestedInput
+    accountProducts?: AccountProductUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
+    branches?: BranchUpdateManyWithoutOrganisationNestedInput
+    rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutEmiSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    userLimit?: IntFieldUpdateOperationsInput | number
+    contactLimit?: IntFieldUpdateOperationsInput | number
+    storageLimit?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    userIdCounter?: IntFieldUpdateOperationsInput | number
+    apiKey?: NullableStringFieldUpdateOperationsInput | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
+    assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
+    events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    callSettings?: CallSettingsUncheckedUpdateOneWithoutOrganisationNestedInput
+    campaigns?: CampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    cases?: CaseUncheckedUpdateManyWithoutOrganisationNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutOrganisationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganisationNestedInput
+    customFields?: CustomFieldUncheckedUpdateManyWithoutOrganisationNestedInput
+    emailLists?: EmailListUncheckedUpdateManyWithoutOrganisationNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutOrganisationNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutOrganisationNestedInput
+    leads?: LeadUncheckedUpdateManyWithoutOrganisationNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutOrganisationNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutOrganisationNestedInput
+    products?: ProductUncheckedUpdateManyWithoutOrganisationNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
+    salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
+    workflows?: WorkflowUncheckedUpdateManyWithoutOrganisationNestedInput
+    workflowRules?: WorkflowRuleUncheckedUpdateManyWithoutOrganisationNestedInput
+    importJobs?: ImportJobUncheckedUpdateManyWithoutOrganisationNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutOrganisationNestedInput
+    webForms?: WebFormUncheckedUpdateManyWithoutOrganisationNestedInput
+    smsCampaigns?: SMSCampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    whatsAppCampaigns?: WhatsAppCampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutOrganisationNestedInput
+    commissions?: CommissionUncheckedUpdateManyWithoutOrganisationNestedInput
+    landingPages?: LandingPageUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    queueItems?: WorkflowQueueUncheckedUpdateManyWithoutOrganisationNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutOrganisationNestedInput
+    accountProducts?: AccountProductUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
+    branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
+    rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type EMIInstallmentUpsertWithWhereUniqueWithoutScheduleInput = {
+    where: EMIInstallmentWhereUniqueInput
+    update: XOR<EMIInstallmentUpdateWithoutScheduleInput, EMIInstallmentUncheckedUpdateWithoutScheduleInput>
+    create: XOR<EMIInstallmentCreateWithoutScheduleInput, EMIInstallmentUncheckedCreateWithoutScheduleInput>
+  }
+
+  export type EMIInstallmentUpdateWithWhereUniqueWithoutScheduleInput = {
+    where: EMIInstallmentWhereUniqueInput
+    data: XOR<EMIInstallmentUpdateWithoutScheduleInput, EMIInstallmentUncheckedUpdateWithoutScheduleInput>
+  }
+
+  export type EMIInstallmentUpdateManyWithWhereWithoutScheduleInput = {
+    where: EMIInstallmentScalarWhereInput
+    data: XOR<EMIInstallmentUpdateManyMutationInput, EMIInstallmentUncheckedUpdateManyWithoutScheduleInput>
+  }
+
+  export type EMIInstallmentScalarWhereInput = {
+    AND?: EMIInstallmentScalarWhereInput | EMIInstallmentScalarWhereInput[]
+    OR?: EMIInstallmentScalarWhereInput[]
+    NOT?: EMIInstallmentScalarWhereInput | EMIInstallmentScalarWhereInput[]
+    id?: StringFilter<"EMIInstallment"> | string
+    scheduleId?: StringFilter<"EMIInstallment"> | string
+    installmentNumber?: IntFilter<"EMIInstallment"> | number
+    amount?: FloatFilter<"EMIInstallment"> | number
+    dueDate?: DateTimeFilter<"EMIInstallment"> | Date | string
+    status?: EnumInstallmentStatusFilter<"EMIInstallment"> | $Enums.InstallmentStatus
+    paidDate?: DateTimeNullableFilter<"EMIInstallment"> | Date | string | null
+    notes?: StringNullableFilter<"EMIInstallment"> | string | null
+    createdAt?: DateTimeFilter<"EMIInstallment"> | Date | string
+    updatedAt?: DateTimeFilter<"EMIInstallment"> | Date | string
+  }
+
+  export type EMIScheduleCreateWithoutInstallmentsInput = {
+    id?: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutEmiScheduleInput
+    organisation: OrganisationCreateNestedOneWithoutEmiSchedulesInput
+  }
+
+  export type EMIScheduleUncheckedCreateWithoutInstallmentsInput = {
+    id?: string
+    opportunityId: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId: string
+  }
+
+  export type EMIScheduleCreateOrConnectWithoutInstallmentsInput = {
+    where: EMIScheduleWhereUniqueInput
+    create: XOR<EMIScheduleCreateWithoutInstallmentsInput, EMIScheduleUncheckedCreateWithoutInstallmentsInput>
+  }
+
+  export type PaymentRecordCreateWithoutInstallmentInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    opportunity: OpportunityCreateNestedOneWithoutPaymentRecordsInput
+    createdBy: UserCreateNestedOneWithoutCreatedPaymentRecordsInput
+    organisation: OrganisationCreateNestedOneWithoutPaymentRecordsInput
+  }
+
+  export type PaymentRecordUncheckedCreateWithoutInstallmentInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+    organisationId: string
+  }
+
+  export type PaymentRecordCreateOrConnectWithoutInstallmentInput = {
+    where: PaymentRecordWhereUniqueInput
+    create: XOR<PaymentRecordCreateWithoutInstallmentInput, PaymentRecordUncheckedCreateWithoutInstallmentInput>
+  }
+
+  export type PaymentRecordCreateManyInstallmentInputEnvelope = {
+    data: PaymentRecordCreateManyInstallmentInput | PaymentRecordCreateManyInstallmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EMIScheduleUpsertWithoutInstallmentsInput = {
+    update: XOR<EMIScheduleUpdateWithoutInstallmentsInput, EMIScheduleUncheckedUpdateWithoutInstallmentsInput>
+    create: XOR<EMIScheduleCreateWithoutInstallmentsInput, EMIScheduleUncheckedCreateWithoutInstallmentsInput>
+    where?: EMIScheduleWhereInput
+  }
+
+  export type EMIScheduleUpdateToOneWithWhereWithoutInstallmentsInput = {
+    where?: EMIScheduleWhereInput
+    data: XOR<EMIScheduleUpdateWithoutInstallmentsInput, EMIScheduleUncheckedUpdateWithoutInstallmentsInput>
+  }
+
+  export type EMIScheduleUpdateWithoutInstallmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutEmiScheduleNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutEmiSchedulesNestedInput
+  }
+
+  export type EMIScheduleUncheckedUpdateWithoutInstallmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentRecordUpsertWithWhereUniqueWithoutInstallmentInput = {
+    where: PaymentRecordWhereUniqueInput
+    update: XOR<PaymentRecordUpdateWithoutInstallmentInput, PaymentRecordUncheckedUpdateWithoutInstallmentInput>
+    create: XOR<PaymentRecordCreateWithoutInstallmentInput, PaymentRecordUncheckedCreateWithoutInstallmentInput>
+  }
+
+  export type PaymentRecordUpdateWithWhereUniqueWithoutInstallmentInput = {
+    where: PaymentRecordWhereUniqueInput
+    data: XOR<PaymentRecordUpdateWithoutInstallmentInput, PaymentRecordUncheckedUpdateWithoutInstallmentInput>
+  }
+
+  export type PaymentRecordUpdateManyWithWhereWithoutInstallmentInput = {
+    where: PaymentRecordScalarWhereInput
+    data: XOR<PaymentRecordUpdateManyMutationInput, PaymentRecordUncheckedUpdateManyWithoutInstallmentInput>
+  }
+
+  export type OpportunityCreateWithoutPaymentRecordsInput = {
+    id?: string
+    name: string
+    amount: number
+    stage?: string
+    probability?: number
+    closeDate?: Date | string | null
+    leadSource?: string | null
+    description?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paymentStatus?: string
+    paymentDate?: Date | string | null
+    type?: $Enums.OpportunityType
+    events?: CalendarEventCreateNestedManyWithoutOpportunityInput
+    interactions?: InteractionCreateNestedManyWithoutOpportunityInput
+    account: AccountCreateNestedOneWithoutOpportunitiesInput
+    organisation: OrganisationCreateNestedOneWithoutOpportunitiesInput
+    owner?: UserCreateNestedOneWithoutOwnedOpportunitiesInput
+    quotes?: QuoteCreateNestedManyWithoutOpportunityInput
+    tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
+    documents?: DocumentCreateNestedManyWithoutOpportunityInput
+    lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
+    pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    branch?: BranchCreateNestedOneWithoutOpportunitiesInput
+  }
+
+  export type OpportunityUncheckedCreateWithoutPaymentRecordsInput = {
+    id?: string
+    name: string
+    amount: number
+    stage?: string
+    probability?: number
+    closeDate?: Date | string | null
+    leadSource?: string | null
+    description?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accountId: string
+    ownerId?: string | null
+    organisationId: string
+    paymentStatus?: string
+    paymentDate?: Date | string | null
+    leadId?: string | null
+    pipelineId?: string | null
+    type?: $Enums.OpportunityType
+    branchId?: string | null
+    events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+  }
+
+  export type OpportunityCreateOrConnectWithoutPaymentRecordsInput = {
+    where: OpportunityWhereUniqueInput
+    create: XOR<OpportunityCreateWithoutPaymentRecordsInput, OpportunityUncheckedCreateWithoutPaymentRecordsInput>
+  }
+
+  export type EMIInstallmentCreateWithoutPaymentRecordsInput = {
+    id?: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    schedule: EMIScheduleCreateNestedOneWithoutInstallmentsInput
+  }
+
+  export type EMIInstallmentUncheckedCreateWithoutPaymentRecordsInput = {
+    id?: string
+    scheduleId: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EMIInstallmentCreateOrConnectWithoutPaymentRecordsInput = {
+    where: EMIInstallmentWhereUniqueInput
+    create: XOR<EMIInstallmentCreateWithoutPaymentRecordsInput, EMIInstallmentUncheckedCreateWithoutPaymentRecordsInput>
+  }
+
+  export type UserCreateWithoutCreatedPaymentRecordsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: string
+    position?: string | null
+    phone?: string | null
+    profileImage?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: string | null
+    metaUserId?: string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: string | null
+    resetPasswordExpire?: Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: UserCreatepermissionsInput | string[]
+    dailyLeadQuota?: number | null
+    ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
+    createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleCreateNestedManyWithoutCreatedByInput
+    lastAssignedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutLastAssignedUserInput
+    managedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutTargetManagerInput
+    createdEvents?: CalendarEventCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInCreateNestedManyWithoutUserInput
+    ownedContacts?: ContactCreateNestedManyWithoutOwnerInput
+    createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListCreateNestedManyWithoutCreatedByInput
+    assignedGoals?: GoalCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionCreateNestedManyWithoutCreatedByInput
+    assignedLeads?: LeadCreateNestedManyWithoutAssignedToInput
+    previousLeads?: LeadCreateNestedManyWithoutPreviousOwnerInput
+    createdLeads?: LeadCreateNestedManyWithoutCreatedByInput
+    historyChanger?: LeadHistoryCreateNestedManyWithoutChangedByInput
+    historyNewOwner?: LeadHistoryCreateNestedManyWithoutNewOwnerInput
+    historyOldOwner?: LeadHistoryCreateNestedManyWithoutOldOwnerInput
+    activatedLicenses?: LicenseCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseCreateNestedManyWithoutCancelledByInput
+    notifications?: NotificationCreateNestedManyWithoutRecipientInput
+    ownedOpportunities?: OpportunityCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateCreateNestedManyWithoutCreatedByInput
+    createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
+    assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
+    assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    reportsTo?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutReportsToInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
+    createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleCreateNestedManyWithoutCreatedByInput
+    createdImportJobs?: ImportJobCreateNestedManyWithoutCreatedByInput
+    createdPipelines?: PipelineCreateNestedManyWithoutCreatedByInput
+    createdWebForms?: WebFormCreateNestedManyWithoutCreatedByInput
+    createdSMSCampaigns?: SMSCampaignCreateNestedManyWithoutCreatedByInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignCreateNestedManyWithoutCreatedByInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutAgentInput
+    commissions?: CommissionCreateNestedManyWithoutUserInput
+    createdCommissions?: CommissionCreateNestedManyWithoutCreatedByInput
+    createdLandingPages?: LandingPageCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    createdDocuments?: DocumentCreateNestedManyWithoutCreatedByInput
+    team?: TeamCreateNestedOneWithoutMembersInput
+    createdTeams?: TeamCreateNestedManyWithoutCreatedByInput
+    managedTeams?: TeamCreateNestedManyWithoutManagerInput
+    sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    managedBranches?: BranchCreateNestedManyWithoutManagerInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedPaymentRecordsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: string
+    position?: string | null
+    phone?: string | null
+    profileImage?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: string | null
+    metaUserId?: string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: string | null
+    resetPasswordExpire?: Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId?: string | null
+    reportsToId?: string | null
+    permissions?: UserCreatepermissionsInput | string[]
+    dailyLeadQuota?: number | null
+    teamId?: string | null
+    branchId?: string | null
+    ownedAccounts?: AccountUncheckedCreateNestedManyWithoutOwnerInput
+    createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutLastAssignedUserInput
+    managedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutTargetManagerInput
+    createdEvents?: CalendarEventUncheckedCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseUncheckedCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseUncheckedCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutUserInput
+    ownedContacts?: ContactUncheckedCreateNestedManyWithoutOwnerInput
+    createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedGoals?: GoalUncheckedCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalUncheckedCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedLeads?: LeadUncheckedCreateNestedManyWithoutAssignedToInput
+    previousLeads?: LeadUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    createdLeads?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    historyChanger?: LeadHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    historyNewOwner?: LeadHistoryUncheckedCreateNestedManyWithoutNewOwnerInput
+    historyOldOwner?: LeadHistoryUncheckedCreateNestedManyWithoutOldOwnerInput
+    activatedLicenses?: LicenseUncheckedCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseUncheckedCreateNestedManyWithoutCancelledByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutRecipientInput
+    ownedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteUncheckedCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
+    assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutReportsToInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
+    createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    createdImportJobs?: ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+    createdPipelines?: PipelineUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWebForms?: WebFormUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSCampaigns?: SMSCampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutAgentInput
+    commissions?: CommissionUncheckedCreateNestedManyWithoutUserInput
+    createdCommissions?: CommissionUncheckedCreateNestedManyWithoutCreatedByInput
+    createdLandingPages?: LandingPageUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    createdDocuments?: DocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTeams?: TeamUncheckedCreateNestedManyWithoutCreatedByInput
+    managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
+    sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
+    managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedPaymentRecordsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedPaymentRecordsInput, UserUncheckedCreateWithoutCreatedPaymentRecordsInput>
+  }
+
+  export type OrganisationCreateWithoutPaymentRecordsInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    logo?: string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    status?: string
+    userLimit?: number
+    contactLimit?: number
+    storageLimit?: number
+    currency?: string
+    userIdCounter?: number
+    apiKey?: string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    createdBy?: string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountCreateNestedManyWithoutOrganisationInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
+    assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
+    events?: CalendarEventCreateNestedManyWithoutOrganisationInput
+    callSettings?: CallSettingsCreateNestedOneWithoutOrganisationInput
+    campaigns?: CampaignCreateNestedManyWithoutOrganisationInput
+    cases?: CaseCreateNestedManyWithoutOrganisationInput
+    checkIns?: CheckInCreateNestedManyWithoutOrganisationInput
+    contacts?: ContactCreateNestedManyWithoutOrganisationInput
+    customFields?: CustomFieldCreateNestedManyWithoutOrganisationInput
+    emailLists?: EmailListCreateNestedManyWithoutOrganisationInput
+    goals?: GoalCreateNestedManyWithoutOrganisationInput
+    interactions?: InteractionCreateNestedManyWithoutOrganisationInput
+    leads?: LeadCreateNestedManyWithoutOrganisationInput
+    licenses?: LicenseCreateNestedManyWithoutOrganisationInput
+    opportunities?: OpportunityCreateNestedManyWithoutOrganisationInput
+    products?: ProductCreateNestedManyWithoutOrganisationInput
+    quotes?: QuoteCreateNestedManyWithoutOrganisationInput
+    salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
+    tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    territories?: TerritoryCreateNestedManyWithoutOrganisationInput
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
+    workflows?: WorkflowCreateNestedManyWithoutOrganisationInput
+    workflowRules?: WorkflowRuleCreateNestedManyWithoutOrganisationInput
+    importJobs?: ImportJobCreateNestedManyWithoutOrganisationInput
+    pipelines?: PipelineCreateNestedManyWithoutOrganisationInput
+    webForms?: WebFormCreateNestedManyWithoutOrganisationInput
+    smsCampaigns?: SMSCampaignCreateNestedManyWithoutOrganisationInput
+    whatsAppCampaigns?: WhatsAppCampaignCreateNestedManyWithoutOrganisationInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutOrganisationInput
+    commissions?: CommissionCreateNestedManyWithoutOrganisationInput
+    landingPages?: LandingPageCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    queueItems?: WorkflowQueueCreateNestedManyWithoutOrganisationInput
+    teams?: TeamCreateNestedManyWithoutOrganisationInput
+    accountProducts?: AccountProductCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
+    branches?: BranchCreateNestedManyWithoutOrganisationInput
+    rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutPaymentRecordsInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    logo?: string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    status?: string
+    userLimit?: number
+    contactLimit?: number
+    storageLimit?: number
+    currency?: string
+    userIdCounter?: number
+    apiKey?: string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    createdBy?: string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
+    assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
+    events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
+    callSettings?: CallSettingsUncheckedCreateNestedOneWithoutOrganisationInput
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    cases?: CaseUncheckedCreateNestedManyWithoutOrganisationInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutOrganisationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganisationInput
+    customFields?: CustomFieldUncheckedCreateNestedManyWithoutOrganisationInput
+    emailLists?: EmailListUncheckedCreateNestedManyWithoutOrganisationInput
+    goals?: GoalUncheckedCreateNestedManyWithoutOrganisationInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutOrganisationInput
+    leads?: LeadUncheckedCreateNestedManyWithoutOrganisationInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutOrganisationInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutOrganisationInput
+    products?: ProductUncheckedCreateNestedManyWithoutOrganisationInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
+    salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
+    workflows?: WorkflowUncheckedCreateNestedManyWithoutOrganisationInput
+    workflowRules?: WorkflowRuleUncheckedCreateNestedManyWithoutOrganisationInput
+    importJobs?: ImportJobUncheckedCreateNestedManyWithoutOrganisationInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutOrganisationInput
+    webForms?: WebFormUncheckedCreateNestedManyWithoutOrganisationInput
+    smsCampaigns?: SMSCampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    whatsAppCampaigns?: WhatsAppCampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutOrganisationInput
+    commissions?: CommissionUncheckedCreateNestedManyWithoutOrganisationInput
+    landingPages?: LandingPageUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    queueItems?: WorkflowQueueUncheckedCreateNestedManyWithoutOrganisationInput
+    teams?: TeamUncheckedCreateNestedManyWithoutOrganisationInput
+    accountProducts?: AccountProductUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
+    branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
+    rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutPaymentRecordsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutPaymentRecordsInput, OrganisationUncheckedCreateWithoutPaymentRecordsInput>
+  }
+
+  export type OpportunityUpsertWithoutPaymentRecordsInput = {
+    update: XOR<OpportunityUpdateWithoutPaymentRecordsInput, OpportunityUncheckedUpdateWithoutPaymentRecordsInput>
+    create: XOR<OpportunityCreateWithoutPaymentRecordsInput, OpportunityUncheckedCreateWithoutPaymentRecordsInput>
+    where?: OpportunityWhereInput
+  }
+
+  export type OpportunityUpdateToOneWithWhereWithoutPaymentRecordsInput = {
+    where?: OpportunityWhereInput
+    data: XOR<OpportunityUpdateWithoutPaymentRecordsInput, OpportunityUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type OpportunityUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    stage?: StringFieldUpdateOperationsInput | string
+    probability?: FloatFieldUpdateOperationsInput | number
+    closeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
+    events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
+    interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
+    account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutOpportunitiesNestedInput
+    owner?: UserUpdateOneWithoutOwnedOpportunitiesNestedInput
+    quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
+    tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
+    documents?: DocumentUpdateManyWithoutOpportunityNestedInput
+    lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
+    pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
+  }
+
+  export type OpportunityUncheckedUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    stage?: StringFieldUpdateOperationsInput | string
+    probability?: FloatFieldUpdateOperationsInput | number
+    closeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+  }
+
+  export type EMIInstallmentUpsertWithoutPaymentRecordsInput = {
+    update: XOR<EMIInstallmentUpdateWithoutPaymentRecordsInput, EMIInstallmentUncheckedUpdateWithoutPaymentRecordsInput>
+    create: XOR<EMIInstallmentCreateWithoutPaymentRecordsInput, EMIInstallmentUncheckedCreateWithoutPaymentRecordsInput>
+    where?: EMIInstallmentWhereInput
+  }
+
+  export type EMIInstallmentUpdateToOneWithWhereWithoutPaymentRecordsInput = {
+    where?: EMIInstallmentWhereInput
+    data: XOR<EMIInstallmentUpdateWithoutPaymentRecordsInput, EMIInstallmentUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type EMIInstallmentUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    schedule?: EMIScheduleUpdateOneRequiredWithoutInstallmentsNestedInput
+  }
+
+  export type EMIInstallmentUncheckedUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scheduleId?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutCreatedPaymentRecordsInput = {
+    update: XOR<UserUpdateWithoutCreatedPaymentRecordsInput, UserUncheckedUpdateWithoutCreatedPaymentRecordsInput>
+    create: XOR<UserCreateWithoutCreatedPaymentRecordsInput, UserUncheckedCreateWithoutCreatedPaymentRecordsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedPaymentRecordsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedPaymentRecordsInput, UserUncheckedUpdateWithoutCreatedPaymentRecordsInput>
+  }
+
+  export type UserUpdateWithoutCreatedPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
+    metaUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: UserUpdatepermissionsInput | string[]
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
+    createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUpdateManyWithoutCreatedByNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUpdateManyWithoutLastAssignedUserNestedInput
+    managedAssignmentRules?: AssignmentRuleUpdateManyWithoutTargetManagerNestedInput
+    createdEvents?: CalendarEventUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUpdateManyWithoutUserNestedInput
+    ownedContacts?: ContactUpdateManyWithoutOwnerNestedInput
+    createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUpdateManyWithoutCreatedByNestedInput
+    assignedGoals?: GoalUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUpdateManyWithoutCreatedByNestedInput
+    assignedLeads?: LeadUpdateManyWithoutAssignedToNestedInput
+    previousLeads?: LeadUpdateManyWithoutPreviousOwnerNestedInput
+    createdLeads?: LeadUpdateManyWithoutCreatedByNestedInput
+    historyChanger?: LeadHistoryUpdateManyWithoutChangedByNestedInput
+    historyNewOwner?: LeadHistoryUpdateManyWithoutNewOwnerNestedInput
+    historyOldOwner?: LeadHistoryUpdateManyWithoutOldOwnerNestedInput
+    activatedLicenses?: LicenseUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUpdateManyWithoutCancelledByNestedInput
+    notifications?: NotificationUpdateManyWithoutRecipientNestedInput
+    ownedOpportunities?: OpportunityUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUpdateManyWithoutCreatedByNestedInput
+    createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
+    assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
+    assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    reportsTo?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutReportsToNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
+    createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUpdateManyWithoutCreatedByNestedInput
+    createdImportJobs?: ImportJobUpdateManyWithoutCreatedByNestedInput
+    createdPipelines?: PipelineUpdateManyWithoutCreatedByNestedInput
+    createdWebForms?: WebFormUpdateManyWithoutCreatedByNestedInput
+    createdSMSCampaigns?: SMSCampaignUpdateManyWithoutCreatedByNestedInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUpdateManyWithoutCreatedByNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutAgentNestedInput
+    commissions?: CommissionUpdateManyWithoutUserNestedInput
+    createdCommissions?: CommissionUpdateManyWithoutCreatedByNestedInput
+    createdLandingPages?: LandingPageUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    createdDocuments?: DocumentUpdateManyWithoutCreatedByNestedInput
+    team?: TeamUpdateOneWithoutMembersNestedInput
+    createdTeams?: TeamUpdateManyWithoutCreatedByNestedInput
+    managedTeams?: TeamUpdateManyWithoutManagerNestedInput
+    sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
+    metaUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
+    permissions?: UserUpdatepermissionsInput | string[]
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownedAccounts?: AccountUncheckedUpdateManyWithoutOwnerNestedInput
+    createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutLastAssignedUserNestedInput
+    managedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutTargetManagerNestedInput
+    createdEvents?: CalendarEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUncheckedUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutUserNestedInput
+    ownedContacts?: ContactUncheckedUpdateManyWithoutOwnerNestedInput
+    createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedGoals?: GoalUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedLeads?: LeadUncheckedUpdateManyWithoutAssignedToNestedInput
+    previousLeads?: LeadUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    createdLeads?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyChanger?: LeadHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    historyNewOwner?: LeadHistoryUncheckedUpdateManyWithoutNewOwnerNestedInput
+    historyOldOwner?: LeadHistoryUncheckedUpdateManyWithoutOldOwnerNestedInput
+    activatedLicenses?: LicenseUncheckedUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUncheckedUpdateManyWithoutCancelledByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+    ownedOpportunities?: OpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
+    assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
+    assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutReportsToNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
+    createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdImportJobs?: ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdPipelines?: PipelineUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWebForms?: WebFormUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSCampaigns?: SMSCampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutAgentNestedInput
+    commissions?: CommissionUncheckedUpdateManyWithoutUserNestedInput
+    createdCommissions?: CommissionUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdLandingPages?: LandingPageUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    createdDocuments?: DocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTeams?: TeamUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
+    sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+  }
+
+  export type OrganisationUpsertWithoutPaymentRecordsInput = {
+    update: XOR<OrganisationUpdateWithoutPaymentRecordsInput, OrganisationUncheckedUpdateWithoutPaymentRecordsInput>
+    create: XOR<OrganisationCreateWithoutPaymentRecordsInput, OrganisationUncheckedCreateWithoutPaymentRecordsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutPaymentRecordsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutPaymentRecordsInput, OrganisationUncheckedUpdateWithoutPaymentRecordsInput>
+  }
+
+  export type OrganisationUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    userLimit?: IntFieldUpdateOperationsInput | number
+    contactLimit?: IntFieldUpdateOperationsInput | number
+    storageLimit?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    userIdCounter?: IntFieldUpdateOperationsInput | number
+    apiKey?: NullableStringFieldUpdateOperationsInput | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUpdateManyWithoutOrganisationNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
+    assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
+    events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
+    callSettings?: CallSettingsUpdateOneWithoutOrganisationNestedInput
+    campaigns?: CampaignUpdateManyWithoutOrganisationNestedInput
+    cases?: CaseUpdateManyWithoutOrganisationNestedInput
+    checkIns?: CheckInUpdateManyWithoutOrganisationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganisationNestedInput
+    customFields?: CustomFieldUpdateManyWithoutOrganisationNestedInput
+    emailLists?: EmailListUpdateManyWithoutOrganisationNestedInput
+    goals?: GoalUpdateManyWithoutOrganisationNestedInput
+    interactions?: InteractionUpdateManyWithoutOrganisationNestedInput
+    leads?: LeadUpdateManyWithoutOrganisationNestedInput
+    licenses?: LicenseUpdateManyWithoutOrganisationNestedInput
+    opportunities?: OpportunityUpdateManyWithoutOrganisationNestedInput
+    products?: ProductUpdateManyWithoutOrganisationNestedInput
+    quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
+    salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
+    tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
+    workflows?: WorkflowUpdateManyWithoutOrganisationNestedInput
+    workflowRules?: WorkflowRuleUpdateManyWithoutOrganisationNestedInput
+    importJobs?: ImportJobUpdateManyWithoutOrganisationNestedInput
+    pipelines?: PipelineUpdateManyWithoutOrganisationNestedInput
+    webForms?: WebFormUpdateManyWithoutOrganisationNestedInput
+    smsCampaigns?: SMSCampaignUpdateManyWithoutOrganisationNestedInput
+    whatsAppCampaigns?: WhatsAppCampaignUpdateManyWithoutOrganisationNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutOrganisationNestedInput
+    commissions?: CommissionUpdateManyWithoutOrganisationNestedInput
+    landingPages?: LandingPageUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    queueItems?: WorkflowQueueUpdateManyWithoutOrganisationNestedInput
+    teams?: TeamUpdateManyWithoutOrganisationNestedInput
+    accountProducts?: AccountProductUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
+    branches?: BranchUpdateManyWithoutOrganisationNestedInput
+    rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutPaymentRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    userLimit?: IntFieldUpdateOperationsInput | number
+    contactLimit?: IntFieldUpdateOperationsInput | number
+    storageLimit?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    userIdCounter?: IntFieldUpdateOperationsInput | number
+    apiKey?: NullableStringFieldUpdateOperationsInput | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
+    assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
+    events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    callSettings?: CallSettingsUncheckedUpdateOneWithoutOrganisationNestedInput
+    campaigns?: CampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    cases?: CaseUncheckedUpdateManyWithoutOrganisationNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutOrganisationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganisationNestedInput
+    customFields?: CustomFieldUncheckedUpdateManyWithoutOrganisationNestedInput
+    emailLists?: EmailListUncheckedUpdateManyWithoutOrganisationNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutOrganisationNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutOrganisationNestedInput
+    leads?: LeadUncheckedUpdateManyWithoutOrganisationNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutOrganisationNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutOrganisationNestedInput
+    products?: ProductUncheckedUpdateManyWithoutOrganisationNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
+    salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
+    workflows?: WorkflowUncheckedUpdateManyWithoutOrganisationNestedInput
+    workflowRules?: WorkflowRuleUncheckedUpdateManyWithoutOrganisationNestedInput
+    importJobs?: ImportJobUncheckedUpdateManyWithoutOrganisationNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutOrganisationNestedInput
+    webForms?: WebFormUncheckedUpdateManyWithoutOrganisationNestedInput
+    smsCampaigns?: SMSCampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    whatsAppCampaigns?: WhatsAppCampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutOrganisationNestedInput
+    commissions?: CommissionUncheckedUpdateManyWithoutOrganisationNestedInput
+    landingPages?: LandingPageUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    queueItems?: WorkflowQueueUncheckedUpdateManyWithoutOrganisationNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutOrganisationNestedInput
+    accountProducts?: AccountProductUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
+    branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
+    rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type AccountCreateManyOrganisationInput = {
@@ -153846,6 +161329,30 @@ export namespace Prisma {
     permissions?: RoleCreatepermissionsInput | string[]
     isSystemRole?: boolean
     updatedAt?: Date | string
+  }
+
+  export type EMIScheduleCreateManyOrganisationInput = {
+    id?: string
+    opportunityId: string
+    totalAmount: number
+    paidAmount?: number
+    remainingAmount: number
+    status?: $Enums.EMIStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentRecordCreateManyOrganisationInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
   }
 
   export type AccountUpdateWithoutOrganisationInput = {
@@ -154877,6 +162384,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -154908,6 +162417,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutOrganisationInput = {
@@ -155370,6 +162881,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganisationInput = {
@@ -155458,6 +162970,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrganisationInput = {
@@ -156386,6 +163899,80 @@ export namespace Prisma {
     permissions?: RoleUpdatepermissionsInput | string[]
     isSystemRole?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EMIScheduleUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutEmiScheduleNestedInput
+    installments?: EMIInstallmentUpdateManyWithoutScheduleNestedInput
+  }
+
+  export type EMIScheduleUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    installments?: EMIInstallmentUncheckedUpdateManyWithoutScheduleNestedInput
+  }
+
+  export type EMIScheduleUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    remainingAmount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumEMIStatusFieldUpdateOperationsInput | $Enums.EMIStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    installment?: EMIInstallmentUpdateOneWithoutPaymentRecordsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedPaymentRecordsNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
   }
 
   export type AccountCreateManyOwnerInput = {
@@ -157518,6 +165105,19 @@ export namespace Prisma {
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type PaymentRecordCreateManyCreatedByInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    organisationId: string
   }
 
   export type AccountUpdateWithoutOwnerInput = {
@@ -159410,6 +167010,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -159441,6 +167043,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutOwnerInput = {
@@ -160168,6 +167772,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsToInput = {
@@ -160256,6 +167861,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutReportsToInput = {
@@ -161214,6 +168820,45 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PaymentRecordUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    installment?: EMIInstallmentUpdateOneWithoutPaymentRecordsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutPaymentRecordsNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type UserCreateManyTeamInput = {
     id?: string
     firstName: string
@@ -161354,6 +168999,7 @@ export namespace Prisma {
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTeamInput = {
@@ -161442,6 +169088,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutTeamInput = {
@@ -162466,6 +170113,8 @@ export namespace Prisma {
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -162497,6 +170146,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutLeadInput = {
@@ -163231,6 +170882,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -163262,6 +170915,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutAccountInput = {
@@ -164196,6 +171851,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -164227,6 +171884,8 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutContactsInput = {
@@ -164511,6 +172170,19 @@ export namespace Prisma {
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
+  }
+
+  export type PaymentRecordCreateManyOpportunityInput = {
+    id?: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    installmentId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+    organisationId: string
   }
 
   export type CalendarEventUpdateWithoutOpportunityInput = {
@@ -164977,6 +172649,45 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PaymentRecordUpdateWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    installment?: EMIInstallmentUpdateOneWithoutPaymentRecordsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedPaymentRecordsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutPaymentRecordsNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    installmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
   }
 
   export type QuoteLineItemCreateManyProductInput = {
@@ -166102,6 +173813,8 @@ export namespace Prisma {
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
     branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
   }
 
@@ -166133,6 +173846,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutPipelineInput = {
@@ -166660,6 +174375,7 @@ export namespace Prisma {
     managedTeams?: TeamUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBranchInput = {
@@ -166748,6 +174464,7 @@ export namespace Prisma {
     managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
     sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
     managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutBranchInput = {
@@ -167063,6 +174780,8 @@ export namespace Prisma {
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateWithoutBranchInput = {
@@ -167093,6 +174812,8 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
   }
 
   export type OpportunityUncheckedUpdateManyWithoutBranchInput = {
@@ -167423,6 +175144,108 @@ export namespace Prisma {
     dealValue?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
+  export type EMIInstallmentCreateManyScheduleInput = {
+    id?: string
+    installmentNumber: number
+    amount: number
+    dueDate: Date | string
+    status?: $Enums.InstallmentStatus
+    paidDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EMIInstallmentUpdateWithoutScheduleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentRecords?: PaymentRecordUpdateManyWithoutInstallmentNestedInput
+  }
+
+  export type EMIInstallmentUncheckedUpdateWithoutScheduleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutInstallmentNestedInput
+  }
+
+  export type EMIInstallmentUncheckedUpdateManyWithoutScheduleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    installmentNumber?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
+    paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentRecordCreateManyInstallmentInput = {
+    id?: string
+    opportunityId: string
+    amount: number
+    paymentDate?: Date | string
+    paymentMethod?: string | null
+    paymentType?: $Enums.PaymentType
+    notes?: string | null
+    createdAt?: Date | string
+    createdById: string
+    organisationId: string
+  }
+
+  export type PaymentRecordUpdateWithoutInstallmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    opportunity?: OpportunityUpdateOneRequiredWithoutPaymentRecordsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedPaymentRecordsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutPaymentRecordsNestedInput
+  }
+
+  export type PaymentRecordUncheckedUpdateWithoutInstallmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PaymentRecordUncheckedUpdateManyWithoutInstallmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityId?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentType?: EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+  }
+
 
 
   /**
@@ -167496,6 +175319,14 @@ export namespace Prisma {
      * @deprecated Use BranchCountOutputTypeDefaultArgs instead
      */
     export type BranchCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = BranchCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EMIScheduleCountOutputTypeDefaultArgs instead
+     */
+    export type EMIScheduleCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EMIScheduleCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EMIInstallmentCountOutputTypeDefaultArgs instead
+     */
+    export type EMIInstallmentCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EMIInstallmentCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use OrganisationDefaultArgs instead
      */
@@ -167704,6 +175535,18 @@ export namespace Prisma {
      * @deprecated Use RoleDefaultArgs instead
      */
     export type RoleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = RoleDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EMIScheduleDefaultArgs instead
+     */
+    export type EMIScheduleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EMIScheduleDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EMIInstallmentDefaultArgs instead
+     */
+    export type EMIInstallmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EMIInstallmentDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PaymentRecordDefaultArgs instead
+     */
+    export type PaymentRecordArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PaymentRecordDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

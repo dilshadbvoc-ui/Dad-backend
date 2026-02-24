@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -66,6 +57,8 @@ const leadRoutes_1 = __importDefault(require("./routes/leadRoutes"));
 const contactRoutes_1 = __importDefault(require("./routes/contactRoutes"));
 const accountRoutes_1 = __importDefault(require("./routes/accountRoutes"));
 const opportunityRoutes_1 = __importDefault(require("./routes/opportunityRoutes"));
+const paymentRoutes_1 = __importDefault(require("./routes/paymentRoutes"));
+const emiRoutes_1 = __importDefault(require("./routes/emiRoutes"));
 const campaignRoutes_1 = __importDefault(require("./routes/campaignRoutes"));
 const marketingRoutes_1 = __importDefault(require("./routes/marketingRoutes"));
 const emailListRoutes_1 = __importDefault(require("./routes/emailListRoutes"));
@@ -282,16 +275,15 @@ app.get('/health', (req, res) => {
 });
 // CSRF Token endpoint
 app.get('/api/csrf-token', csrfProtection_1.setCSRFToken, (req, res) => {
-    var _a;
     res.json({
-        csrfToken: req.csrfToken || ((_a = req.session) === null || _a === void 0 ? void 0 : _a.csrfToken),
+        csrfToken: req.csrfToken || req.session?.csrfToken,
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
     });
 });
 // Public Routes (No Auth)
 app.use('/api/public', publicRoutes_1.default);
 // Auth & Core (with enhanced security)
-app.use('/api/auth', rateLimiter_1.authLimiter, securityAudit_1.detectBruteForce, authRoutes_1.default);
+app.use('/api/auth', authRoutes_1.default);
 app.use('/api/analytics', csrfProtection_1.verifyCSRFToken, analyticsRoutes_1.default);
 app.use('/api/workflow', csrfProtection_1.verifyCSRFToken, workflowRoutes_1.default);
 app.use('/api/import', csrfProtection_1.verifyCSRFToken, importRoutes_1.default);
@@ -305,6 +297,8 @@ app.use('/api/leads', leadRoutes_1.default);
 app.use('/api/contacts', contactRoutes_1.default);
 app.use('/api/accounts', accountRoutes_1.default);
 app.use('/api/opportunities', opportunityRoutes_1.default);
+app.use('/api', paymentRoutes_1.default);
+app.use('/api', emiRoutes_1.default);
 // Marketing
 app.use('/api/campaigns', campaignRoutes_1.default);
 app.use('/api/marketing', marketingRoutes_1.default);
@@ -404,14 +398,14 @@ const logRoutes = (stack, parentPath = '') => {
         }
     });
 };
-httpServer.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
+httpServer.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
     // CRITICAL: Verify super admin integrity on startup
-    const { verifySuperAdminIntegrity } = yield Promise.resolve().then(() => __importStar(require('./middleware/superAdminProtection')));
-    yield verifySuperAdminIntegrity();
+    const { verifySuperAdminIntegrity } = await Promise.resolve().then(() => __importStar(require('./middleware/superAdminProtection')));
+    await verifySuperAdminIntegrity();
     // Initialize Global Role Templates
-    const { initializeGlobalRoles } = yield Promise.resolve().then(() => __importStar(require('./controllers/roleController')));
-    yield initializeGlobalRoles();
+    const { initializeGlobalRoles } = await Promise.resolve().then(() => __importStar(require('./controllers/roleController')));
+    await initializeGlobalRoles();
     // Log routes after short delay to ensure all are mounted
     setTimeout(() => {
         console.log('--- Registered Routes ---');
@@ -430,6 +424,6 @@ httpServer.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
             console.error('[Interval] Meeting reminder error:', err);
         });
     }, 60 * 60 * 1000); // 1 hour
-}));
+});
 // Forced restart v2
 // restart 

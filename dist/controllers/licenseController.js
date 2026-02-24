@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -48,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkLicenseValidity = exports.cancelLicense = exports.activateLicense = exports.getCurrentLicense = exports.getLicenses = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getLicenses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLicenses = async (req, res) => {
     try {
         const user = req.user;
         const where = {};
@@ -59,7 +50,7 @@ const getLicenses = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
         }
-        const licenses = yield prisma_1.default.license.findMany({
+        const licenses = await prisma_1.default.license.findMany({
             where,
             include: {
                 organisation: { select: { id: true, name: true, slug: true } },
@@ -72,14 +63,14 @@ const getLicenses = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getLicenses = getLicenses;
-const getCurrentLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCurrentLicense = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        const license = yield prisma_1.default.license.findFirst({
+        const license = await prisma_1.default.license.findFirst({
             where: {
                 organisationId: orgId,
                 status: { in: ['active', 'trial'] }
@@ -91,7 +82,7 @@ const getCurrentLicense = (req, res) => __awaiter(void 0, void 0, void 0, functi
             return res.status(404).json({ message: 'No active license found' });
         }
         // Get current user count
-        const userCount = yield prisma_1.default.user.count({
+        const userCount = await prisma_1.default.user.count({
             where: { organisationId: orgId, isActive: true }
         });
         res.json({
@@ -106,13 +97,13 @@ const getCurrentLicense = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getCurrentLicense = getCurrentLicense;
-const activateLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const activateLicense = async (req, res) => {
     try {
         const { planId, organisationId } = req.body;
         const user = req.user;
-        const plan = yield prisma_1.default.subscriptionPlan.findUnique({ where: { id: planId } });
+        const plan = await prisma_1.default.subscriptionPlan.findUnique({ where: { id: planId } });
         if (!plan)
             return res.status(404).json({ message: 'Plan not found' });
         const orgId = organisationId || (0, hierarchyUtils_1.getOrgId)(user);
@@ -122,7 +113,7 @@ const activateLicense = (req, res) => __awaiter(void 0, void 0, void 0, function
         const startDate = new Date();
         const endDate = new Date();
         endDate.setDate(endDate.getDate() + plan.durationDays);
-        const license = yield prisma_1.default.license.create({
+        const license = await prisma_1.default.license.create({
             data: {
                 organisation: { connect: { id: orgId } },
                 plan: { connect: { id: planId } },
@@ -135,7 +126,7 @@ const activateLicense = (req, res) => __awaiter(void 0, void 0, void 0, function
             }
         });
         // Update organisation subscription
-        yield prisma_1.default.organisation.update({
+        await prisma_1.default.organisation.update({
             where: { id: orgId },
             data: {
                 subscription: {
@@ -149,8 +140,8 @@ const activateLicense = (req, res) => __awaiter(void 0, void 0, void 0, function
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
-            yield logAudit({
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
                 organisationId: orgId,
                 actorId: user.id,
                 action: 'ACTIVATE_LICENSE',
@@ -167,14 +158,14 @@ const activateLicense = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.activateLicense = activateLicense;
-const cancelLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const cancelLicense = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        const license = yield prisma_1.default.license.updateMany({
+        const license = await prisma_1.default.license.updateMany({
             where: {
                 id: req.params.id,
                 organisationId: orgId
@@ -189,14 +180,14 @@ const cancelLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (license.count === 0)
             return res.status(404).json({ message: 'License not found' });
         // Update organisation
-        yield prisma_1.default.organisation.update({
+        await prisma_1.default.organisation.update({
             where: { id: orgId },
             data: { subscription: { status: 'cancelled' } }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
-            yield logAudit({
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
                 organisationId: orgId,
                 actorId: req.user.id,
                 action: 'CANCEL_LICENSE',
@@ -213,14 +204,14 @@ const cancelLicense = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.cancelLicense = cancelLicense;
-const checkLicenseValidity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const checkLicenseValidity = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        const license = yield prisma_1.default.license.findFirst({
+        const license = await prisma_1.default.license.findFirst({
             where: {
                 organisationId: orgId,
                 status: { in: ['active', 'trial'] },
@@ -234,12 +225,12 @@ const checkLicenseValidity = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.json({
             isValid,
             daysRemaining,
-            status: (license === null || license === void 0 ? void 0 : license.status) || 'expired',
-            expiresAt: license === null || license === void 0 ? void 0 : license.endDate
+            status: license?.status || 'expired',
+            expiresAt: license?.endDate
         });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.checkLicenseValidity = checkLicenseValidity;

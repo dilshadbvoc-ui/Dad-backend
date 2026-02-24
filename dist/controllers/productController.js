@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -48,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSharedProduct = exports.generateProductShareLink = exports.getProductShareConfig = exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.createProduct = exports.getProducts = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProducts = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
         const limit = parseInt(req.query.limit || '20');
@@ -75,8 +66,8 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 { category: { contains: search, mode: 'insensitive' } }
             ];
         }
-        const count = yield prisma_1.default.product.count({ where });
-        const products = yield prisma_1.default.product.findMany({
+        const count = await prisma_1.default.product.count({ where });
+        const products = await prisma_1.default.product.findMany({
             where,
             skip,
             take: limit,
@@ -92,9 +83,9 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getProducts = getProducts;
-const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createProduct = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -102,7 +93,7 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return res.status(403).json({ message: 'No org' });
         // Check for existing SKU
         if (req.body.sku) {
-            const existing = yield prisma_1.default.product.findFirst({
+            const existing = await prisma_1.default.product.findFirst({
                 where: {
                     sku: req.body.sku,
                     isDeleted: false,
@@ -113,7 +104,7 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 return res.status(400).json({ message: 'Product with this SKU already exists' });
             }
         }
-        const product = yield prisma_1.default.product.create({
+        const product = await prisma_1.default.product.create({
             data: {
                 name: req.body.name,
                 sku: req.body.sku,
@@ -127,7 +118,7 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_PRODUCT',
                 entity: 'Product',
@@ -145,9 +136,9 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createProduct = createProduct;
-const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProductById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -157,7 +148,7 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const product = yield prisma_1.default.product.findFirst({ where });
+        const product = await prisma_1.default.product.findFirst({ where });
         if (!product)
             return res.status(404).json({ message: 'Product not found' });
         res.json(product);
@@ -165,15 +156,15 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getProductById = getProductById;
-const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateProduct = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { id } = req.params;
         // First, verify the product exists and belongs to the organization
-        const existingProduct = yield prisma_1.default.product.findUnique({
+        const existingProduct = await prisma_1.default.product.findUnique({
             where: { id }
         });
         if (!existingProduct) {
@@ -188,12 +179,12 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             }
         }
         // Update the product
-        const product = yield prisma_1.default.product.update({
+        const product = await prisma_1.default.product.update({
             where: { id },
             data: req.body
         });
         // Audit Log
-        const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+        const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
         logAudit({
             action: 'UPDATE_PRODUCT',
             entity: 'Product',
@@ -207,9 +198,9 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateProduct = updateProduct;
-const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteProduct = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -219,15 +210,15 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const product = yield prisma_1.default.product.findFirst({ where });
+        const product = await prisma_1.default.product.findFirst({ where });
         if (!product)
             return res.status(404).json({ message: 'Product not found' });
-        yield prisma_1.default.product.update({
+        await prisma_1.default.product.update({
             where: { id: req.params.id },
             data: { isDeleted: true }
         });
         // Audit Log
-        const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+        const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
         logAudit({
             action: 'DELETE_PRODUCT',
             entity: 'Product',
@@ -241,16 +232,16 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteProduct = deleteProduct;
-const getProductShareConfig = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProductShareConfig = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { productId } = req.params;
         if (!orgId)
             return res.status(403).json({ message: 'No org' });
-        const share = yield prisma_1.default.productShare.findFirst({
+        const share = await prisma_1.default.productShare.findFirst({
             where: { productId, organisationId: orgId }
         });
         if (!share) {
@@ -273,9 +264,9 @@ const getProductShareConfig = (req, res) => __awaiter(void 0, void 0, void 0, fu
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getProductShareConfig = getProductShareConfig;
-const generateProductShareLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const generateProductShareLink = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -284,20 +275,20 @@ const generateProductShareLink = (req, res) => __awaiter(void 0, void 0, void 0,
         if (!orgId)
             return res.status(403).json({ message: 'No org' });
         // Check if product exists and belongs to org
-        const product = yield prisma_1.default.product.findFirst({
+        const product = await prisma_1.default.product.findFirst({
             where: { id: productId, organisationId: orgId }
         });
         if (!product)
             return res.status(404).json({ message: 'Product not found' });
         // Check if share link already exists
-        let share = yield prisma_1.default.productShare.findFirst({
+        let share = await prisma_1.default.productShare.findFirst({
             where: { productId }
         });
         if (!share) {
             // Create new share link
             // Generate a random slug (8 chars)
             const slug = Math.random().toString(36).substring(2, 10);
-            share = yield prisma_1.default.productShare.create({
+            share = await prisma_1.default.productShare.create({
                 data: {
                     productId,
                     organisationId: orgId,
@@ -312,7 +303,7 @@ const generateProductShareLink = (req, res) => __awaiter(void 0, void 0, void 0,
         }
         else {
             // Update existing share with new details if provided
-            share = yield prisma_1.default.productShare.update({
+            share = await prisma_1.default.productShare.update({
                 where: { id: share.id },
                 data: {
                     youtubeUrl,
@@ -324,13 +315,13 @@ const generateProductShareLink = (req, res) => __awaiter(void 0, void 0, void 0,
         // Create timeline entry if leadId is provided
         if (leadId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(leadId)) {
             try {
-                const lead = yield prisma_1.default.lead.findUnique({
+                const lead = await prisma_1.default.lead.findUnique({
                     where: { id: leadId, organisationId: orgId },
                     select: { id: true, firstName: true, lastName: true }
                 });
                 if (lead) {
                     // Create interaction record for timeline
-                    yield prisma_1.default.interaction.create({
+                    await prisma_1.default.interaction.create({
                         data: {
                             type: 'other',
                             direction: 'outbound',
@@ -362,13 +353,13 @@ const generateProductShareLink = (req, res) => __awaiter(void 0, void 0, void 0,
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.generateProductShareLink = generateProductShareLink;
-const getSharedProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSharedProduct = async (req, res) => {
     try {
         const { slug } = req.params;
         const leadId = req.query.leadId;
-        const share = yield prisma_1.default.productShare.findUnique({
+        const share = await prisma_1.default.productShare.findUnique({
             where: { slug },
             include: {
                 product: true,
@@ -390,13 +381,13 @@ const getSharedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         // Log interaction in lead timeline if leadId is provided
         if (leadId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(leadId)) {
             try {
-                const lead = yield prisma_1.default.lead.findUnique({
+                const lead = await prisma_1.default.lead.findUnique({
                     where: { id: leadId },
                     select: { id: true, firstName: true, lastName: true, company: true, organisationId: true }
                 });
                 if (lead) {
                     // Create interaction record for timeline
-                    yield prisma_1.default.interaction.create({
+                    await prisma_1.default.interaction.create({
                         data: {
                             type: 'other',
                             direction: 'outbound',
@@ -416,7 +407,7 @@ const getSharedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         // Send Notification (if enabled)
         if (share.notificationsEnabled) {
-            const { NotificationService } = yield Promise.resolve().then(() => __importStar(require('../services/NotificationService')));
+            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/NotificationService')));
             const viewedAt = new Date();
             const time = viewedAt.toLocaleString('en-US', {
                 timeZone: 'Asia/Kolkata',
@@ -431,7 +422,7 @@ const getSharedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
             // If leadId is provided, try to fetch lead details (with UUID validation)
             if (leadId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(leadId)) {
                 try {
-                    const lead = yield prisma_1.default.lead.findUnique({
+                    const lead = await prisma_1.default.lead.findUnique({
                         where: { id: leadId },
                         select: { firstName: true, lastName: true, company: true }
                     });
@@ -449,7 +440,7 @@ const getSharedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         let leadData = null;
         if (leadId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(leadId)) {
             try {
-                const lead = yield prisma_1.default.lead.findUnique({
+                const lead = await prisma_1.default.lead.findUnique({
                     where: { id: leadId },
                     select: {
                         id: true,
@@ -499,5 +490,5 @@ const getSharedProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getSharedProduct = getSharedProduct;

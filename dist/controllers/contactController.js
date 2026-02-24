@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -49,7 +40,7 @@ exports.deleteContact = exports.updateContact = exports.getContactById = exports
 const prisma_1 = __importDefault(require("../config/prisma")); // Use the configured instance with adapter
 const hierarchyUtils_1 = require("../utils/hierarchyUtils"); // Use existing utils
 // GET /api/contacts
-const getContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getContacts = async (req, res) => {
     try {
         const pageSize = Number(req.query.pageSize) || 10;
         const page = Number(req.query.page) || 1;
@@ -72,7 +63,7 @@ const getContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             // In Prisma: ownerId IN [...]
             where.ownerId = { in: [...subordinateIds, user.id] };
         }
@@ -90,8 +81,8 @@ const getContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 { jobTitle: { contains: search, mode: 'insensitive' } },
             ];
         }
-        const count = yield prisma_1.default.contact.count({ where });
-        const contacts = yield prisma_1.default.contact.findMany({
+        const count = await prisma_1.default.contact.count({ where });
+        const contacts = await prisma_1.default.contact.findMany({
             where,
             include: {
                 account: { select: { name: true } },
@@ -106,10 +97,10 @@ const getContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getContacts = getContacts;
 // POST /api/contacts
-const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createContact = async (req, res) => {
     try {
         const { email } = req.body;
         const user = req.user;
@@ -117,12 +108,12 @@ const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
         // Limit Check
-        const org = yield prisma_1.default.organisation.findUnique({
+        const org = await prisma_1.default.organisation.findUnique({
             where: { id: orgId },
             select: { contactLimit: true }
         });
         if (org && org.contactLimit > 0) {
-            const count = yield prisma_1.default.contact.count({
+            const count = await prisma_1.default.contact.count({
                 where: { organisationId: orgId, isDeleted: false }
             });
             if (count >= org.contactLimit) {
@@ -134,7 +125,7 @@ const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             }
         }
         if (email) {
-            const existingContact = yield prisma_1.default.contact.findFirst({
+            const existingContact = await prisma_1.default.contact.findFirst({
                 where: {
                     email: email,
                     organisationId: orgId
@@ -166,15 +157,15 @@ const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = yield Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
-            yield CustomFieldValidationService.validateFields('Contact', orgId, req.body.customFields);
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            await CustomFieldValidationService.validateFields('Contact', orgId, req.body.customFields);
         }
-        const contact = yield prisma_1.default.contact.create({
+        const contact = await prisma_1.default.contact.create({
             data: contactData
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_CONTACT',
                 entity: 'Contact',
@@ -192,9 +183,9 @@ const createContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createContact = createContact;
-const getContactById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getContactById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -206,7 +197,7 @@ const getContactById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             if (user.branchId)
                 where.branchId = user.branchId;
         }
-        const contact = yield prisma_1.default.contact.findFirst({
+        const contact = await prisma_1.default.contact.findFirst({
             where,
             include: {
                 account: { select: { name: true } },
@@ -220,11 +211,11 @@ const getContactById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getContactById = getContactById;
-const updateContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateContact = async (req, res) => {
     try {
-        const updates = Object.assign({}, req.body);
+        const updates = { ...req.body };
         const contactId = req.params.id;
         // Handle Relation Updates if IDs are passed as strings
         if (updates.account && typeof updates.account === 'string') {
@@ -238,12 +229,12 @@ const updateContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         // If updates.account is "ID_STRING", passing it as `account: "ID_STRING"` to Prisma Update will fail.
         // So the remapping above is correct.
         // Fetch first to get Org ID for validation
-        const currentContact = yield prisma_1.default.contact.findUnique({ where: { id: contactId } });
+        const currentContact = await prisma_1.default.contact.findUnique({ where: { id: contactId } });
         if (!currentContact)
             return res.status(404).json({ message: 'Contact not found' });
         if (updates.customFields) {
-            const { CustomFieldValidationService } = yield Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
-            yield CustomFieldValidationService.validateFields('Contact', currentContact.organisationId, updates.customFields);
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            await CustomFieldValidationService.validateFields('Contact', currentContact.organisationId, updates.customFields);
         }
         const requester = req.user;
         const whereObj = { id: contactId };
@@ -255,7 +246,7 @@ const updateContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             if (requester.branchId)
                 whereObj.branchId = requester.branchId;
         }
-        const contact = yield prisma_1.default.contact.update({
+        const contact = await prisma_1.default.contact.update({
             where: whereObj,
             data: updates,
             include: {
@@ -265,7 +256,7 @@ const updateContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'UPDATE_CONTACT',
                 entity: 'Contact',
@@ -284,9 +275,9 @@ const updateContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         // Prisma error handling (e.g. RecordNotFound)
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.updateContact = updateContact;
-const deleteContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteContact = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -296,14 +287,14 @@ const deleteContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
         }
-        yield prisma_1.default.contact.update({
+        await prisma_1.default.contact.update({
             where,
             data: { isDeleted: true }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
-            const contact = yield prisma_1.default.contact.findUnique({ where: { id: req.params.id } });
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const contact = await prisma_1.default.contact.findUnique({ where: { id: req.params.id } });
             if (contact) {
                 logAudit({
                     action: 'DELETE_CONTACT',
@@ -323,5 +314,5 @@ const deleteContact = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteContact = deleteContact;

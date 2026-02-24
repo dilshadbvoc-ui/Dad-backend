@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -49,7 +40,7 @@ exports.deleteOpportunity = exports.updateOpportunity = exports.getOpportunityBy
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 // GET /api/opportunities
-const getOpportunities = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getOpportunities = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
         const limit = parseInt(req.query.limit || '10');
@@ -72,7 +63,7 @@ const getOpportunities = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             // In Prisma: ownerId IN [...]
             where.ownerId = { in: [...subordinateIds, user.id] };
         }
@@ -84,8 +75,8 @@ const getOpportunities = (req, res) => __awaiter(void 0, void 0, void 0, functio
         // No, lines 16-25 constructed query.
         // So strict filtering.
         // I'll stick to strict.
-        const count = yield prisma_1.default.opportunity.count({ where });
-        const opportunities = yield prisma_1.default.opportunity.findMany({
+        const count = await prisma_1.default.opportunity.count({ where });
+        const opportunities = await prisma_1.default.opportunity.findMany({
             where,
             include: {
                 account: { select: { name: true } },
@@ -105,15 +96,19 @@ const getOpportunities = (req, res) => __awaiter(void 0, void 0, void 0, functio
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getOpportunities = getOpportunities;
 // POST /api/opportunities
-const createOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createOpportunity = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
+        // Validate required fields
+        if (!req.body.account) {
+            return res.status(400).json({ message: 'Account is required to create an opportunity' });
+        }
         const opportunityData = {
             name: req.body.name,
             amount: Number(req.body.amount),
@@ -133,15 +128,15 @@ const createOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
         };
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = yield Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
-            yield CustomFieldValidationService.validateFields('Opportunity', orgId, req.body.customFields);
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            await CustomFieldValidationService.validateFields('Opportunity', orgId, req.body.customFields);
         }
-        const opportunity = yield prisma_1.default.opportunity.create({
+        const opportunity = await prisma_1.default.opportunity.create({
             data: opportunityData
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_OPPORTUNITY',
                 entity: 'Opportunity',
@@ -172,9 +167,9 @@ const createOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createOpportunity = createOpportunity;
-const getOpportunityById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getOpportunityById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -186,7 +181,7 @@ const getOpportunityById = (req, res) => __awaiter(void 0, void 0, void 0, funct
             if (user.branchId)
                 where.branchId = user.branchId;
         }
-        const opportunity = yield prisma_1.default.opportunity.findFirst({
+        const opportunity = await prisma_1.default.opportunity.findFirst({
             where,
             include: {
                 account: {
@@ -212,11 +207,11 @@ const getOpportunityById = (req, res) => __awaiter(void 0, void 0, void 0, funct
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getOpportunityById = getOpportunityById;
-const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateOpportunity = async (req, res) => {
     try {
-        const updates = Object.assign({}, req.body);
+        const updates = { ...req.body };
         const oppId = req.params.id;
         // Handle Relation Updates
         if (updates.account && typeof updates.account === 'string') {
@@ -226,12 +221,12 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
             updates.owner = { connect: { id: updates.owner } };
         }
         // Fetch first for validation and existence
-        const currentOpp = yield prisma_1.default.opportunity.findUnique({ where: { id: oppId } });
+        const currentOpp = await prisma_1.default.opportunity.findUnique({ where: { id: oppId } });
         if (!currentOpp)
             return res.status(404).json({ message: 'Opportunity not found' });
         if (updates.customFields) {
-            const { CustomFieldValidationService } = yield Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
-            yield CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, updates.customFields);
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, updates.customFields);
         }
         const requester = req.user;
         const whereObj = { id: oppId };
@@ -243,7 +238,7 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
             if (requester.branchId)
                 whereObj.branchId = requester.branchId;
         }
-        const opportunity = yield prisma_1.default.opportunity.update({
+        const opportunity = await prisma_1.default.opportunity.update({
             where: whereObj,
             data: updates,
             include: {
@@ -253,7 +248,7 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'UPDATE_OPPORTUNITY',
                 entity: 'Opportunity',
@@ -281,9 +276,8 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
             });
             // Meta Conversion API: Purchase
             if (req.body.amount && opportunity.amount > 0) {
-                Promise.resolve().then(() => __importStar(require('../services/MetaConversionService'))).then((_a) => __awaiter(void 0, [_a], void 0, function* ({ MetaConversionService }) {
-                    var _b, _c;
-                    const oppWithContact = yield prisma_1.default.opportunity.findUnique({
+                Promise.resolve().then(() => __importStar(require('../services/MetaConversionService'))).then(async ({ MetaConversionService }) => {
+                    const oppWithContact = await prisma_1.default.opportunity.findUnique({
                         where: { id: oppId },
                         include: {
                             contacts: { take: 1 }
@@ -291,7 +285,7 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
                     });
                     if (oppWithContact && oppWithContact.contacts.length > 0) {
                         const contact = oppWithContact.contacts[0];
-                        const phone = ((_b = contact.phones) === null || _b === void 0 ? void 0 : _b.mobile) || ((_c = contact.phones) === null || _c === void 0 ? void 0 : _c.work) || '';
+                        const phone = contact.phones?.mobile || contact.phones?.work || '';
                         MetaConversionService.sendEvent(opportunity.organisationId, {
                             eventName: 'Purchase',
                             userData: {
@@ -309,11 +303,11 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
                             actionSource: 'system_generated'
                         }).catch(console.error);
                     }
-                }));
+                });
             }
         }
         if (updates.stage && updates.stage !== currentOpp.stage) {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'OPPORTUNITY_STAGE_CHANGE',
                 entity: 'Opportunity',
@@ -332,9 +326,9 @@ const updateOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.updateOpportunity = updateOpportunity;
-const deleteOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteOpportunity = async (req, res) => {
     try {
         const user = req.user;
         const opportunityId = req.params.id;
@@ -351,16 +345,16 @@ const deleteOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
             if (user.branchId)
                 where.branchId = user.branchId;
         }
-        const opportunity = yield prisma_1.default.opportunity.findFirst({ where });
+        const opportunity = await prisma_1.default.opportunity.findFirst({ where });
         if (!opportunity)
             return res.status(404).json({ message: 'Opportunity not found' });
-        yield prisma_1.default.opportunity.update({
+        await prisma_1.default.opportunity.update({
             where: { id: opportunityId },
             data: { isDeleted: true }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'DELETE_OPPORTUNITY',
                 entity: 'Opportunity',
@@ -378,5 +372,5 @@ const deleteOpportunity = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteOpportunity = deleteOpportunity;

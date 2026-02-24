@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,9 +9,9 @@ const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const apiResponse_1 = require("../utils/apiResponse");
 const logger_1 = require("../utils/logger");
 // GET /api/search/global
-const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const globalSearch = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     const query = req.query.q;
     const limit = Math.min(50, Number(req.query.limit) || 20);
@@ -35,7 +26,7 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const searchTerm = query.trim();
         const results = [];
         // Search Leads
-        const leads = yield prisma_1.default.lead.findMany({
+        const leads = await prisma_1.default.lead.findMany({
             where: {
                 organisationId,
                 isDeleted: false,
@@ -66,7 +57,7 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         });
         // Search Contacts
-        const contacts = yield prisma_1.default.contact.findMany({
+        const contacts = await prisma_1.default.contact.findMany({
             where: {
                 organisationId,
                 isDeleted: false,
@@ -84,12 +75,11 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             take: Math.ceil(limit * 0.25) // 25% of results for contacts
         });
         contacts.forEach(contact => {
-            var _a;
             results.push({
                 id: contact.id,
                 type: 'contact',
                 title: `${contact.firstName} ${contact.lastName}`,
-                subtitle: ((_a = contact.account) === null || _a === void 0 ? void 0 : _a.name) || contact.jobTitle || 'No account',
+                subtitle: contact.account?.name || contact.jobTitle || 'No account',
                 description: contact.email || 'No email',
                 assignedTo: contact.owner ? `${contact.owner.firstName} ${contact.owner.lastName}` : undefined,
                 createdAt: contact.createdAt,
@@ -97,7 +87,7 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         });
         // Search Accounts
-        const accounts = yield prisma_1.default.account.findMany({
+        const accounts = await prisma_1.default.account.findMany({
             where: {
                 organisationId,
                 isDeleted: false,
@@ -127,7 +117,7 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         });
         // Search Opportunities
-        const opportunities = yield prisma_1.default.opportunity.findMany({
+        const opportunities = await prisma_1.default.opportunity.findMany({
             where: {
                 organisationId,
                 isDeleted: false,
@@ -158,7 +148,7 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         });
         // Search Tasks
-        const tasks = yield prisma_1.default.task.findMany({
+        const tasks = await prisma_1.default.task.findMany({
             where: {
                 organisationId,
                 isDeleted: false,
@@ -210,7 +200,7 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         logger_1.logger.info(`Global search completed: ${finalResults.length} results`, 'SEARCH', userId, organisationId || undefined, { query: searchTerm });
         // Save search history
         if (userId && searchTerm.length >= 2) {
-            yield prisma_1.default.searchHistory.create({
+            await prisma_1.default.searchHistory.create({
                 data: {
                     query: searchTerm,
                     userId
@@ -230,12 +220,12 @@ const globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         logger_1.logger.apiError('GET', '/api/search/global', error, userId, organisationId || undefined);
         return apiResponse_1.ResponseHandler.serverError(res, 'An error occurred while searching');
     }
-});
+};
 exports.globalSearch = globalSearch;
 // GET /api/search/suggestions
-const searchSuggestions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const searchSuggestions = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     const query = req.query.q;
     try {
@@ -248,7 +238,7 @@ const searchSuggestions = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const searchTerm = query.trim();
         const suggestions = [];
         // Get suggestions from different entities
-        const [leadSuggestions, contactSuggestions, accountSuggestions] = yield Promise.all([
+        const [leadSuggestions, contactSuggestions, accountSuggestions] = await Promise.all([
             // Lead name suggestions
             prisma_1.default.lead.findMany({
                 where: {
@@ -317,14 +307,14 @@ const searchSuggestions = (req, res) => __awaiter(void 0, void 0, void 0, functi
         logger_1.logger.apiError('GET', '/api/search/suggestions', error, userId, organisationId || undefined);
         return apiResponse_1.ResponseHandler.serverError(res, 'An error occurred while getting suggestions');
     }
-});
+};
 exports.searchSuggestions = searchSuggestions;
 // GET /api/search/recent
-const recentSearches = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const recentSearches = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     try {
-        const history = yield prisma_1.default.searchHistory.groupBy({
+        const history = await prisma_1.default.searchHistory.groupBy({
             by: ['query'],
             where: {
                 userId
@@ -349,5 +339,5 @@ const recentSearches = (req, res) => __awaiter(void 0, void 0, void 0, function*
         logger_1.logger.apiError('GET', '/api/search/recent', error, userId);
         return apiResponse_1.ResponseHandler.serverError(res, 'An error occurred while getting recent searches');
     }
-});
+};
 exports.recentSearches = recentSearches;

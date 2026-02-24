@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -54,7 +45,7 @@ exports.verifySuperAdminSecret = verifySuperAdminSecret;
 /**
  * Lock the entire system in case of security breach
  */
-const lockSystem = (reason) => __awaiter(void 0, void 0, void 0, function* () {
+const lockSystem = async (reason) => {
     SYSTEM_LOCKED = true;
     LOCK_REASON = reason;
     console.error('🚨🚨🚨 CRITICAL SECURITY ALERT 🚨🚨🚨');
@@ -63,10 +54,10 @@ const lockSystem = (reason) => __awaiter(void 0, void 0, void 0, function* () {
     console.error('🚨🚨🚨 SYSTEM LOCKED 🚨🚨🚨');
     try {
         // Find a valid organisation ID for the log (AuditLog requires it)
-        const org = yield prisma_1.default.organisation.findFirst({ select: { id: true } });
-        const orgId = (org === null || org === void 0 ? void 0 : org.id) || 'SYSTEM'; // Fallback, but might still fail if schema requires valid FK
+        const org = await prisma_1.default.organisation.findFirst({ select: { id: true } });
+        const orgId = org?.id || 'SYSTEM'; // Fallback, but might still fail if schema requires valid FK
         // Log to audit trail
-        yield prisma_1.default.auditLog.create({
+        await prisma_1.default.auditLog.create({
             data: {
                 action: 'SYSTEM_LOCKDOWN',
                 entity: 'System',
@@ -82,7 +73,7 @@ const lockSystem = (reason) => __awaiter(void 0, void 0, void 0, function* () {
     catch (err) {
         console.error('Failed to log system lockdown to database:', err);
     }
-});
+};
 exports.lockSystem = lockSystem;
 /**
  * Check if system is locked
@@ -101,7 +92,7 @@ exports.checkSystemLock = checkSystemLock;
 /**
  * Protect super admin from unauthorized modifications
  */
-const protectSuperAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const protectSuperAdmin = async (req, res, next) => {
     try {
         const user = req.user;
         const targetUserId = req.params.id || req.body.userId || req.body.id;
@@ -110,7 +101,7 @@ const protectSuperAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             return next();
         }
         // Check if target is super admin
-        const targetUser = yield prisma_1.default.user.findUnique({
+        const targetUser = await prisma_1.default.user.findUnique({
             where: { id: targetUserId },
             select: { email: true, role: true, id: true }
         });
@@ -120,19 +111,19 @@ const protectSuperAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         // If target is super admin
         if (targetUser.email === SUPER_ADMIN_EMAIL || targetUser.role === 'super_admin') {
             // Only allow if current user is also super admin
-            if ((user === null || user === void 0 ? void 0 : user.role) !== 'super_admin' || (user === null || user === void 0 ? void 0 : user.email) !== SUPER_ADMIN_EMAIL) {
+            if (user?.role !== 'super_admin' || user?.email !== SUPER_ADMIN_EMAIL) {
                 // SECURITY BREACH DETECTED
-                (0, exports.lockSystem)(`Unauthorized attempt to modify super admin account by user: ${(user === null || user === void 0 ? void 0 : user.email) || 'UNKNOWN'}`);
+                (0, exports.lockSystem)(`Unauthorized attempt to modify super admin account by user: ${user?.email || 'UNKNOWN'}`);
                 // Log the attempt
-                yield prisma_1.default.auditLog.create({
+                await prisma_1.default.auditLog.create({
                     data: {
                         action: 'UNAUTHORIZED_SUPERADMIN_MODIFICATION_ATTEMPT',
                         entity: 'User',
                         entityId: targetUserId,
-                        actorId: (user === null || user === void 0 ? void 0 : user.id) || 'UNKNOWN',
-                        organisationId: (user === null || user === void 0 ? void 0 : user.organisationId) || 'UNKNOWN',
+                        actorId: user?.id || 'UNKNOWN',
+                        organisationId: user?.organisationId || 'UNKNOWN',
                         details: {
-                            attemptedBy: user === null || user === void 0 ? void 0 : user.email,
+                            attemptedBy: user?.email,
                             targetEmail: targetUser.email,
                             endpoint: req.path,
                             method: req.method,
@@ -154,14 +145,14 @@ const protectSuperAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         console.error('Error in super admin protection:', error);
         next();
     }
-});
+};
 exports.protectSuperAdmin = protectSuperAdmin;
 /**
  * Verify super admin integrity on startup
  */
-const verifySuperAdminIntegrity = () => __awaiter(void 0, void 0, void 0, function* () {
+const verifySuperAdminIntegrity = async () => {
     try {
-        const superAdmin = yield prisma_1.default.user.findFirst({
+        const superAdmin = await prisma_1.default.user.findFirst({
             where: { email: SUPER_ADMIN_EMAIL }
         });
         if (!superAdmin) {
@@ -186,20 +177,20 @@ const verifySuperAdminIntegrity = () => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         console.error('Error verifying super admin integrity:', error);
     }
-});
+};
 exports.verifySuperAdminIntegrity = verifySuperAdminIntegrity;
 /**
  * Monitor super admin password changes
  */
-const monitorSuperAdminPasswordChange = (userId, changedBy, ipAddress) => __awaiter(void 0, void 0, void 0, function* () {
+const monitorSuperAdminPasswordChange = async (userId, changedBy, ipAddress) => {
     try {
-        const user = yield prisma_1.default.user.findUnique({
+        const user = await prisma_1.default.user.findUnique({
             where: { id: userId },
             select: { email: true, role: true }
         });
         if (user && (user.email === SUPER_ADMIN_EMAIL || user.role === 'super_admin')) {
             // Log password change
-            yield prisma_1.default.auditLog.create({
+            await prisma_1.default.auditLog.create({
                 data: {
                     action: 'SUPERADMIN_PASSWORD_CHANGED',
                     entity: 'User',
@@ -224,7 +215,7 @@ const monitorSuperAdminPasswordChange = (userId, changedBy, ipAddress) => __awai
     catch (error) {
         console.error('Error monitoring super admin password change:', error);
     }
-});
+};
 exports.monitorSuperAdminPasswordChange = monitorSuperAdminPasswordChange;
 exports.default = {
     checkSystemLock: exports.checkSystemLock,

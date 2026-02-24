@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -49,7 +40,7 @@ exports.recalculateGoal = exports.deleteGoal = exports.updateGoal = exports.crea
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
-const getGoals = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getGoals = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -62,11 +53,11 @@ const getGoals = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         };
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             // Show goals assigned to self OR subordinates
             where.assignedToId = { in: [...subordinateIds, user.id] };
         }
-        const goals = yield prisma_1.default.goal.findMany({
+        const goals = await prisma_1.default.goal.findMany({
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true } }
@@ -79,9 +70,9 @@ const getGoals = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('getGoals Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getGoals = getGoals;
-const createGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createGoal = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -107,7 +98,7 @@ const createGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             default:
                 endDate.setMonth(now.getMonth() + 1);
         }
-        const goal = yield prisma_1.default.goal.create({
+        const goal = await prisma_1.default.goal.create({
             data: {
                 description: req.body.description || undefined,
                 type: req.body.type || 'manual',
@@ -124,10 +115,10 @@ const createGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         // Initial progress update if not manual
         if (goal.type !== 'manual') {
-            const { GoalService } = yield Promise.resolve().then(() => __importStar(require('../services/GoalService')));
-            yield GoalService.updateProgressForUser(goal.assignedToId, goal.type);
+            const { GoalService } = await Promise.resolve().then(() => __importStar(require('../services/GoalService')));
+            await GoalService.updateProgressForUser(goal.assignedToId, goal.type);
         }
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_GOAL',
@@ -141,17 +132,17 @@ const createGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.error('createGoal Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createGoal = createGoal;
-const updateGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateGoal = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
         const { id } = req.params;
-        const updates = Object.assign({}, req.body);
-        const goal = yield prisma_1.default.goal.findFirst({
+        const updates = { ...req.body };
+        const goal = await prisma_1.default.goal.findFirst({
             where: {
                 id,
                 organisationId: orgId
@@ -167,11 +158,11 @@ const updateGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 updates.completedAt = new Date();
             }
         }
-        const updatedGoal = yield prisma_1.default.goal.update({
+        const updatedGoal = await prisma_1.default.goal.update({
             where: { id },
             data: updates
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'UPDATE_GOAL',
@@ -185,22 +176,22 @@ const updateGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.error('updateGoal Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateGoal = updateGoal;
-const deleteGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteGoal = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        yield prisma_1.default.goal.update({
+        await prisma_1.default.goal.update({
             where: {
                 id: req.params.id,
                 organisationId: orgId
             },
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'DELETE_GOAL',
@@ -214,16 +205,16 @@ const deleteGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(404).json({ message: 'Goal not found' });
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteGoal = deleteGoal;
-const recalculateGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const recalculateGoal = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
         const { id } = req.params;
-        const goal = yield prisma_1.default.goal.findFirst({
+        const goal = await prisma_1.default.goal.findFirst({
             where: {
                 id,
                 organisationId: orgId
@@ -234,13 +225,13 @@ const recalculateGoal = (req, res) => __awaiter(void 0, void 0, void 0, function
         if (goal.type === 'manual') {
             return res.status(400).json({ message: 'Cannot automatically recalculate manual goals' });
         }
-        const { GoalService } = yield Promise.resolve().then(() => __importStar(require('../services/GoalService')));
-        yield GoalService.updateProgressForUser(goal.assignedToId, goal.type);
-        const updatedGoal = yield prisma_1.default.goal.findUnique({ where: { id } });
+        const { GoalService } = await Promise.resolve().then(() => __importStar(require('../services/GoalService')));
+        await GoalService.updateProgressForUser(goal.assignedToId, goal.type);
+        const updatedGoal = await prisma_1.default.goal.findUnique({ where: { id } });
         res.json(updatedGoal);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.recalculateGoal = recalculateGoal;

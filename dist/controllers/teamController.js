@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -17,7 +8,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
 // Create a new team
-const createTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createTeam = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -28,13 +19,13 @@ const createTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(400).json({ message: 'Team name is required' });
         // Verify manager if provided
         if (managerId) {
-            const manager = yield prisma_1.default.user.findFirst({
+            const manager = await prisma_1.default.user.findFirst({
                 where: { id: managerId, organisationId: orgId }
             });
             if (!manager)
                 return res.status(400).json({ message: 'Invalid manager ID' });
         }
-        const team = yield prisma_1.default.team.create({
+        const team = await prisma_1.default.team.create({
             data: {
                 name,
                 description,
@@ -42,7 +33,7 @@ const createTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 organisationId: orgId,
                 createdById: user.id,
                 members: {
-                    connect: (memberIds === null || memberIds === void 0 ? void 0 : memberIds.map((id) => ({ id }))) || []
+                    connect: memberIds?.map((id) => ({ id })) || []
                 }
             },
             include: {
@@ -50,7 +41,7 @@ const createTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 manager: { select: { id: true, firstName: true, lastName: true } }
             }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_TEAM',
@@ -63,16 +54,16 @@ const createTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.createTeam = createTeam;
 // Get all teams for organisation
-const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTeams = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(403).json({ message: 'No organisation found' });
-        const teams = yield prisma_1.default.team.findMany({
+        const teams = await prisma_1.default.team.findMany({
             where: { organisationId: orgId, isDeleted: false },
             include: {
                 members: { select: { id: true, firstName: true, lastName: true, profileImage: true } },
@@ -86,14 +77,14 @@ const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTeams = getTeams;
 // Get single team
-const getTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTeam = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const team = yield prisma_1.default.team.findFirst({
+        const team = await prisma_1.default.team.findFirst({
             where: { id: req.params.id, organisationId: orgId, isDeleted: false },
             include: {
                 members: { select: { id: true, firstName: true, lastName: true, email: true, role: true, profileImage: true } },
@@ -112,20 +103,20 @@ const getTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTeam = getTeam;
 // Update team
-const updateTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTeam = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { name, description, managerId, memberIds } = req.body;
-        const existing = yield prisma_1.default.team.findFirst({
+        const existing = await prisma_1.default.team.findFirst({
             where: { id: req.params.id, organisationId: orgId, isDeleted: false }
         });
         if (!existing)
             return res.status(404).json({ message: 'Team not found' });
-        const team = yield prisma_1.default.team.update({
+        const team = await prisma_1.default.team.update({
             where: { id: req.params.id },
             data: {
                 name,
@@ -140,7 +131,7 @@ const updateTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 manager: { select: { id: true, firstName: true, lastName: true } }
             }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'UPDATE_TEAM',
@@ -153,23 +144,23 @@ const updateTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateTeam = updateTeam;
 // Delete team
-const deleteTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTeam = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const existing = yield prisma_1.default.team.findFirst({
+        const existing = await prisma_1.default.team.findFirst({
             where: { id: req.params.id, organisationId: orgId, isDeleted: false }
         });
         if (!existing)
             return res.status(404).json({ message: 'Team not found' });
-        yield prisma_1.default.team.update({
+        await prisma_1.default.team.update({
             where: { id: req.params.id },
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'DELETE_TEAM',
@@ -181,5 +172,5 @@ const deleteTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteTeam = deleteTeam;

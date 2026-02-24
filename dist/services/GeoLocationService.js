@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -140,48 +131,45 @@ exports.GeoLocationService = {
     /**
      * Detect country from IP address using ip-api.com (free, no API key required)
      */
-    detectCountryFromIP(ipAddress) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                // Skip localhost/private IPs
-                if (!ipAddress || ipAddress === '::1' || ipAddress.startsWith('127.') || ipAddress.startsWith('192.168.') || ipAddress.startsWith('10.')) {
-                    console.log('[GeoLocation] Skipping localhost/private IP');
-                    return null;
-                }
-                const response = yield axios_1.default.get(`http://ip-api.com/json/${ipAddress}`, {
-                    params: {
-                        fields: 'status,country,countryCode'
-                    },
-                    timeout: 3000
-                });
-                if (response.data.status === 'success') {
-                    const countryCode = response.data.countryCode;
-                    const phoneCountryCode = COUNTRY_TO_PHONE_CODE[countryCode] || '';
-                    return {
-                        country: response.data.country,
-                        countryCode: countryCode,
-                        phoneCountryCode: phoneCountryCode
-                    };
-                }
+    async detectCountryFromIP(ipAddress) {
+        try {
+            // Skip localhost/private IPs
+            if (!ipAddress || ipAddress === '::1' || ipAddress.startsWith('127.') || ipAddress.startsWith('192.168.') || ipAddress.startsWith('10.')) {
+                console.log('[GeoLocation] Skipping localhost/private IP');
                 return null;
             }
-            catch (error) {
-                console.error('[GeoLocation] Error detecting country from IP:', error);
-                return null;
+            const response = await axios_1.default.get(`http://ip-api.com/json/${ipAddress}`, {
+                params: {
+                    fields: 'status,country,countryCode'
+                },
+                timeout: 3000
+            });
+            if (response.data.status === 'success') {
+                const countryCode = response.data.countryCode;
+                const phoneCountryCode = COUNTRY_TO_PHONE_CODE[countryCode] || '';
+                return {
+                    country: response.data.country,
+                    countryCode: countryCode,
+                    phoneCountryCode: phoneCountryCode
+                };
             }
-        });
+            return null;
+        }
+        catch (error) {
+            console.error('[GeoLocation] Error detecting country from IP:', error);
+            return null;
+        }
     },
     /**
      * Extract country data from Meta lead form data
      */
     extractCountryFromMetaLead(fieldMap) {
-        var _a;
         try {
             // Meta forms might have country field
             const countryName = fieldMap.country || fieldMap.country_name;
             if (countryName) {
                 // Try to find country code from name
-                const countryCode = (_a = Object.entries(COUNTRY_CODE_TO_NAME).find(([_, name]) => name.toLowerCase() === countryName.toLowerCase())) === null || _a === void 0 ? void 0 : _a[0];
+                const countryCode = Object.entries(COUNTRY_CODE_TO_NAME).find(([_, name]) => name.toLowerCase() === countryName.toLowerCase())?.[0];
                 if (countryCode) {
                     return {
                         country: COUNTRY_CODE_TO_NAME[countryCode],

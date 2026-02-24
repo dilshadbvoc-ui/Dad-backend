@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -36,10 +27,13 @@ const transformTask = (task) => {
         relatedTo = task.opportunity;
         onModel = 'Opportunity';
     }
-    return Object.assign(Object.assign({}, task), { relatedTo,
-        onModel });
+    return {
+        ...task,
+        relatedTo,
+        onModel
+    };
 };
-const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTasks = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
         const limit = parseInt(req.query.limit || '20');
@@ -64,7 +58,7 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             // Include self in tasks
             where.assignedToId = { in: [...subordinateIds, user.id] };
         }
@@ -80,8 +74,8 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             // If strict enum needed: where.status = status as TaskStatus
             where.status = status;
         }
-        const count = yield prisma_1.default.task.count({ where });
-        const tasks = yield prisma_1.default.task.findMany({
+        const count = await prisma_1.default.task.count({ where });
+        const tasks = await prisma_1.default.task.findMany({
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
@@ -106,9 +100,9 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTasks = getTasks;
-const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createTask = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -150,7 +144,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             else if (onModel === 'Opportunity')
                 data.opportunity = { connect: { id: relatedTo } };
         }
-        const task = yield prisma_1.default.task.create({
+        const task = await prisma_1.default.task.create({
             data,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true } },
@@ -161,7 +155,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             }
         });
         if (orgId) {
-            yield (0, auditLogger_1.logAudit)({
+            await (0, auditLogger_1.logAudit)({
                 organisationId: orgId,
                 actorId: user.id,
                 action: 'CREATE_TASK',
@@ -175,9 +169,9 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createTask = createTask;
-const getTaskById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTaskById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -189,7 +183,7 @@ const getTaskById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             if (user.branchId)
                 where.branchId = user.branchId;
         }
-        const task = yield prisma_1.default.task.findFirst({
+        const task = await prisma_1.default.task.findFirst({
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true } },
@@ -206,12 +200,12 @@ const getTaskById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTaskById = getTaskById;
-const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTask = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = Object.assign({}, req.body);
+        const updates = { ...req.body };
         // Convert dueDate to ISO-8601 DateTime if provided
         if (updates.dueDate) {
             updates.dueDate = new Date(updates.dueDate).toISOString();
@@ -250,7 +244,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (requester.branchId)
                 whereObj.branchId = requester.branchId;
         }
-        const task = yield prisma_1.default.task.update({
+        const task = await prisma_1.default.task.update({
             where: whereObj,
             data: updates,
             include: {
@@ -261,7 +255,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 opportunity: { select: { id: true, name: true } },
             }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: requester.organisationId || (0, hierarchyUtils_1.getOrgId)(requester),
             actorId: requester.id,
             action: 'UPDATE_TASK',
@@ -274,9 +268,9 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateTask = updateTask;
-const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTask = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -288,11 +282,11 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (user.branchId)
                 where.branchId = user.branchId;
         }
-        yield prisma_1.default.task.update({
+        await prisma_1.default.task.update({
             where,
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: (orgId || (0, hierarchyUtils_1.getOrgId)(user)),
             actorId: user.id,
             action: 'DELETE_TASK',
@@ -304,5 +298,5 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteTask = deleteTask;

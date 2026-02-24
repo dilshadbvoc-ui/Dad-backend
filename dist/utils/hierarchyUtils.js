@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,7 +10,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
  * @param userId The ID of the manager/user.
  * @returns Array of user IDs including the manager themselves.
  */
-const getSubordinateIds = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getSubordinateIds = async (userId) => {
     // 1. Start with the user themselves
     const subordinateIds = [userId.toString()];
     // 2. Queue for BFS/DFS traversing
@@ -27,7 +18,7 @@ const getSubordinateIds = (userId) => __awaiter(void 0, void 0, void 0, function
     while (queue.length > 0) {
         const currentManagerId = queue.shift();
         // Find direct reports using Prisma
-        const directReports = yield prisma_1.default.user.findMany({
+        const directReports = await prisma_1.default.user.findMany({
             where: { reportsToId: currentManagerId },
             select: { id: true }
         });
@@ -41,7 +32,7 @@ const getSubordinateIds = (userId) => __awaiter(void 0, void 0, void 0, function
         }
     }
     return subordinateIds;
-});
+};
 exports.getSubordinateIds = getSubordinateIds;
 /**
  * Safely extracts the Organisation ID as a string from a user object.
@@ -53,17 +44,17 @@ exports.getSubordinateIds = getSubordinateIds;
  *  1. The user themselves + all subordinates (reportsTo chain via BFS)
  *  2. All users in branches the user manages (BranchManager relation)
  */
-const getVisibleUserIds = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getVisibleUserIds = async (userId) => {
     // 1. Subordinates via reporting chain
-    const subordinateIds = yield (0, exports.getSubordinateIds)(userId);
+    const subordinateIds = await (0, exports.getSubordinateIds)(userId);
     // 2. Users in managed branches
-    const managedBranches = yield prisma_1.default.branch.findMany({
+    const managedBranches = await prisma_1.default.branch.findMany({
         where: { managerId: userId, isDeleted: false },
         select: { id: true }
     });
     if (managedBranches.length > 0) {
         const branchIds = managedBranches.map(b => b.id);
-        const branchUsers = yield prisma_1.default.user.findMany({
+        const branchUsers = await prisma_1.default.user.findMany({
             where: { branchId: { in: branchIds } },
             select: { id: true }
         });
@@ -74,7 +65,7 @@ const getVisibleUserIds = (userId) => __awaiter(void 0, void 0, void 0, function
         }
     }
     return subordinateIds;
-});
+};
 exports.getVisibleUserIds = getVisibleUserIds;
 const getOrgId = (user) => {
     if (!user)

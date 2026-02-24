@@ -24,6 +24,8 @@ import leadRoutes from './routes/leadRoutes';
 import contactRoutes from './routes/contactRoutes';
 import accountRoutes from './routes/accountRoutes';
 import opportunityRoutes from './routes/opportunityRoutes';
+import paymentRoutes from './routes/paymentRoutes';
+import emiRoutes from './routes/emiRoutes';
 import campaignRoutes from './routes/campaignRoutes';
 import marketingRoutes from './routes/marketingRoutes';
 import emailListRoutes from './routes/emailListRoutes';
@@ -301,6 +303,8 @@ app.use('/api/leads', leadRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/opportunities', opportunityRoutes);
+app.use('/api', paymentRoutes);
+app.use('/api', emiRoutes);
 
 // Marketing
 app.use('/api/campaigns', campaignRoutes);

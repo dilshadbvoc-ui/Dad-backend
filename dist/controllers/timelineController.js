@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -30,7 +21,7 @@ function getHumanReadableAction(action, entity) {
     };
     return actionMap[action] || `${action.replace(/_/g, ' ')} ${entity}`;
 }
-const getTimeline = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTimeline = async (req, res) => {
     try {
         const { id, type } = req.params; // type = 'lead' | 'contact' | 'account'
         // Basic validation
@@ -38,7 +29,7 @@ const getTimeline = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(400).json({ message: 'Invalid entity type or ID' });
         }
         // Fetch related data concurrently
-        const [interactions, tasks, events, auditLogs] = yield Promise.all([
+        const [interactions, tasks, events, auditLogs] = await Promise.all([
             prisma_1.default.interaction.findMany({
                 where: { [`${type}Id`]: id },
                 orderBy: { date: 'desc' },
@@ -99,8 +90,8 @@ const getTimeline = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 switch (a.action) {
                     case 'CREATE_LEAD':
                     case 'CREATE':
-                        description = (details === null || details === void 0 ? void 0 : details.name) ? `Created: ${details.name}` : 'Created new record';
-                        if (details === null || details === void 0 ? void 0 : details.company)
+                        description = details?.name ? `Created: ${details.name}` : 'Created new record';
+                        if (details?.company)
                             description += ` at ${details.company}`;
                         break;
                     case 'UPDATE':
@@ -116,18 +107,18 @@ const getTimeline = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                         description = 'Exported data';
                         break;
                     case 'LEAD_STATUS_CHANGE':
-                        description = (details === null || details === void 0 ? void 0 : details.oldStatus) && (details === null || details === void 0 ? void 0 : details.newStatus)
+                        description = details?.oldStatus && details?.newStatus
                             ? `Status changed from ${details.oldStatus} to ${details.newStatus}`
                             : 'Status changed';
                         break;
                     case 'BULK_IMPORT_COMPLETED':
-                        description = (details === null || details === void 0 ? void 0 : details.successCount)
+                        description = details?.successCount
                             ? `Imported ${details.successCount} records`
                             : 'Bulk import completed';
                         break;
                     default:
                         // For unknown actions, try to extract meaningful info
-                        if (details === null || details === void 0 ? void 0 : details.name) {
+                        if (details?.name) {
                             description = details.name;
                         }
                         else if (typeof details === 'object' && details !== null) {
@@ -156,5 +147,5 @@ const getTimeline = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.error('Timeline Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTimeline = getTimeline;

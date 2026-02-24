@@ -75,6 +75,8 @@ model Organisation {
   productShares     ProductShare[]
   branches          Branch[]
   rolePermissions   Role[]
+  emiSchedules      EMISchedule[]
+  paymentRecords    PaymentRecord[]
 }
 
 model User {
@@ -168,6 +170,7 @@ model User {
   branchId                    String?
   branch                      Branch?                @relation(fields: [branchId], references: [id])
   managedBranches             Branch[]               @relation("BranchManager")
+  createdPaymentRecords       PaymentRecord[]        @relation("PaymentRecordCreator")
 
   @@index([organisationId])
   @@index([email])
@@ -410,6 +413,8 @@ model Opportunity {
   lead           Lead?           @relation("LeadToOpportunity", fields: [leadId], references: [id])
   pipelineId     String?
   pipeline       Pipeline?       @relation(fields: [pipelineId], references: [id])
+  emiSchedule    EMISchedule?
+  paymentRecords PaymentRecord[]
   type           OpportunityType @default(NEW_BUSINESS)
   branchId       String?
   branch         Branch?         @relation(fields: [branchId], references: [id])
@@ -1526,4 +1531,89 @@ model Role {
 
   @@unique([roleKey, organisationId])
   @@index([organisationId])
+}
+
+// EMI Payment System Models
+
+model EMISchedule {
+  id              String    @id @default(uuid())
+  opportunityId   String    @unique
+  totalAmount     Float // Remaining amount at time of EMI creation
+  paidAmount      Float     @default(0)
+  remainingAmount Float
+  status          EMIStatus @default(active)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  organisationId  String
+
+  opportunity  Opportunity      @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  organisation Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  installments EMIInstallment[]
+
+  @@index([opportunityId])
+  @@index([status])
+  @@index([organisationId])
+}
+
+enum EMIStatus {
+  active
+  completed
+  cancelled
+}
+
+model EMIInstallment {
+  id                String            @id @default(uuid())
+  scheduleId        String
+  installmentNumber Int
+  amount            Float
+  dueDate           DateTime
+  status            InstallmentStatus @default(pending)
+  paidDate          DateTime?
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  schedule       EMISchedule     @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  paymentRecords PaymentRecord[]
+
+  @@index([scheduleId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+enum InstallmentStatus {
+  pending
+  paid
+  overdue
+  cancelled
+}
+
+model PaymentRecord {
+  id             String      @id @default(uuid())
+  opportunityId  String
+  amount         Float
+  paymentDate    DateTime    @default(now())
+  paymentMethod  String? // cash, card, bank_transfer, etc.
+  paymentType    PaymentType @default(full)
+  installmentId  String?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  createdById    String
+  organisationId String
+
+  opportunity  Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  installment  EMIInstallment? @relation(fields: [installmentId], references: [id])
+  createdBy    User            @relation("PaymentRecordCreator", fields: [createdById], references: [id])
+  organisation Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@index([opportunityId])
+  @@index([installmentId])
+  @@index([organisationId])
+  @@index([paymentDate])
+}
+
+enum PaymentType {
+  full
+  partial
+  installment
 }

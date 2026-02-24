@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -22,23 +13,23 @@ const setupPassport = () => {
     passport_1.default.serializeUser((user, done) => {
         done(null, user.id);
     });
-    passport_1.default.deserializeUser((id, done) => __awaiter(void 0, void 0, void 0, function* () {
+    passport_1.default.deserializeUser(async (id, done) => {
         try {
-            const user = yield prisma_1.default.user.findUnique({ where: { id } });
+            const user = await prisma_1.default.user.findUnique({ where: { id } });
             done(null, user);
         }
         catch (err) {
             done(err, null);
         }
-    }));
+    });
     const strategy = new passport_saml_1.MultiSamlStrategy({
         passReqToCallback: true,
-        getSamlOptions: (req, done) => __awaiter(void 0, void 0, void 0, function* () {
+        getSamlOptions: async (req, done) => {
             try {
                 const { orgId } = req.params;
                 if (!orgId)
                     return done(new Error('Organization ID missing for SSO'));
-                const org = yield prisma_1.default.organisation.findUnique({
+                const org = await prisma_1.default.organisation.findUnique({
                     where: { id: orgId }
                 });
                 if (!org || !org.ssoConfig) {
@@ -56,9 +47,9 @@ const setupPassport = () => {
             catch (err) {
                 done(err);
             }
-        })
+        }
     }, // Cast options to any
-    (req, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
+    async (req, profile, done) => {
         // User finding/creation logic
         try {
             // Profile usually has nameID (email) or attributes
@@ -67,7 +58,7 @@ const setupPassport = () => {
                 return done(new Error('No email found in SAML response'));
             const { orgId } = req.params;
             // 1. Find User
-            let user = yield prisma_1.default.user.findFirst({
+            let user = await prisma_1.default.user.findFirst({
                 where: {
                     email: { equals: email, mode: 'insensitive' },
                     organisationId: orgId
@@ -80,13 +71,13 @@ const setupPassport = () => {
                 const lastName = profile.lastName || profile.sn || '-';
                 // Generate random password
                 const randomPass = Math.random().toString(36).slice(-8);
-                const salt = yield bcryptjs_1.default.genSalt(10);
-                const hashedPassword = yield bcryptjs_1.default.hash(randomPass, salt);
+                const salt = await bcryptjs_1.default.genSalt(10);
+                const hashedPassword = await bcryptjs_1.default.hash(randomPass, salt);
                 // Get Org for defaults
-                const org = yield prisma_1.default.organisation.findUnique({ where: { id: orgId } });
+                const org = await prisma_1.default.organisation.findUnique({ where: { id: orgId } });
                 if (!org)
                     return done(new Error('Org not found'));
-                user = yield prisma_1.default.user.create({
+                user = await prisma_1.default.user.create({
                     data: {
                         firstName,
                         lastName,
@@ -105,7 +96,7 @@ const setupPassport = () => {
             console.error('SAML Verify Error:', err);
             return done(err);
         }
-    }));
+    });
     passport_1.default.use('saml', strategy);
 };
 exports.setupPassport = setupPassport;

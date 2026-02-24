@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,12 +10,12 @@ const generateToken_1 = __importDefault(require("../utils/generateToken"));
 // @desc    Initialize SSO Login
 // @route   POST /api/auth/sso/init
 // @access  Public
-const initSSO = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const initSSO = async (req, res) => {
     const { email, slug } = req.body;
     try {
         let org;
         if (slug) {
-            org = yield prisma_1.default.organisation.findUnique({ where: { slug } });
+            org = await prisma_1.default.organisation.findUnique({ where: { slug } });
         }
         else if (email) {
             // Try to find by domain logic or just user lookup (risky if email not unique across orgs, but schema says email is unique?)
@@ -32,11 +23,11 @@ const initSSO = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             // Checking schema: User model has "email String". Not marked unique.
             // But usually SaaS has unique email.
             // Let's assume unique email for simplicity for now, OR find user first.
-            const user = yield prisma_1.default.user.findFirst({
+            const user = await prisma_1.default.user.findFirst({
                 where: { email: { equals: email, mode: 'insensitive' } },
                 include: { organisation: true }
             });
-            org = user === null || user === void 0 ? void 0 : user.organisation;
+            org = user?.organisation;
         }
         if (!org) {
             return res.status(404).json({ message: 'Organization not found' });
@@ -53,7 +44,7 @@ const initSSO = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('SSO Init Error:', error);
         return res.status(500).json({ message: 'Server error during SSO init' });
     }
-});
+};
 exports.initSSO = initSSO;
 // @desc    Trigger SAML Redirect
 // @route   GET /api/auth/sso/login/:orgId
@@ -68,7 +59,7 @@ const auditLogger_1 = require("../utils/auditLogger");
 // @desc    SAML Callback
 // @route   POST /api/auth/sso/callback/:orgId
 const ssoCallback = (req, res, next) => {
-    passport_1.default.authenticate('saml', { session: false }, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
+    passport_1.default.authenticate('saml', { session: false }, async (err, user) => {
         if (err || !user) {
             console.error('SSO Authenticate Error:', err);
             return res.redirect('http://localhost:5173/login?error=sso_failed');
@@ -76,7 +67,7 @@ const ssoCallback = (req, res, next) => {
         // Generate JWT
         const token = (0, generateToken_1.default)(user.id);
         // Audit Log
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             action: 'AUTH_SSO_LOGIN_SUCCESS',
             entity: 'User',
             entityId: user.id,
@@ -102,6 +93,6 @@ const ssoCallback = (req, res, next) => {
         // Encode to pass safely
         const safeInfo = encodeURIComponent(userInfo);
         res.redirect(`http://localhost:5173/sso-callback?data=${safeInfo}`);
-    }))(req, res, next);
+    })(req, res, next);
 };
 exports.ssoCallback = ssoCallback;

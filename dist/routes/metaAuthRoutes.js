@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -41,7 +32,6 @@ const OAUTH_SCOPES = [
  * Redirects user to Facebook OAuth login
  */
 router.get('/auth', authMiddleware_1.protect, (req, res) => {
-    var _a, _b;
     const appId = process.env.META_APP_ID;
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
     const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
@@ -54,8 +44,8 @@ router.get('/auth', authMiddleware_1.protect, (req, res) => {
     }
     // Store org ID in state parameter for the callback
     const state = Buffer.from(JSON.stringify({
-        orgId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.organisationId,
-        userId: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id,
+        orgId: req.user?.organisationId,
+        userId: req.user?.id,
         returnUrl: `${clientUrl}/settings/integrations`
     })).toString('base64');
     const redirectUri = `${serverUrl}/api/meta/callback`;
@@ -72,8 +62,7 @@ router.get('/auth', authMiddleware_1.protect, (req, res) => {
  * GET /api/meta/callback
  * Handles the OAuth callback from Facebook
  */
-router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+router.get('/callback', async (req, res) => {
     // Check if this is a Webhook Verification Request
     if (req.query['hub.mode']) {
         // Helper to grab param regardless of parsing style (dot notation or nested object)
@@ -107,7 +96,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         stateData = JSON.parse(Buffer.from(state, 'base64').toString());
     }
-    catch (_c) {
+    catch {
         return res.redirect(`${process.env.CLIENT_URL}/settings/integrations?error=invalid_state`);
     }
     const { orgId, returnUrl } = stateData;
@@ -128,7 +117,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
             throw new Error('META_APP_ID or META_APP_SECRET not configured');
         }
         // Exchange code for access token
-        const tokenResponse = yield axios_1.default.get(`${META_GRAPH_URL}/oauth/access_token`, {
+        const tokenResponse = await axios_1.default.get(`${META_GRAPH_URL}/oauth/access_token`, {
             params: {
                 client_id: appId,
                 client_secret: appSecret,
@@ -138,7 +127,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         });
         const { access_token: shortLivedToken } = tokenResponse.data;
         // Exchange for long-lived token (60 days)
-        const longLivedTokenResponse = yield axios_1.default.get(`${META_GRAPH_URL}/oauth/access_token`, {
+        const longLivedTokenResponse = await axios_1.default.get(`${META_GRAPH_URL}/oauth/access_token`, {
             params: {
                 grant_type: 'fb_exchange_token',
                 client_id: appId,
@@ -148,7 +137,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         });
         const longLivedToken = longLivedTokenResponse.data.access_token;
         // Get user's ad accounts
-        const adAccountsResponse = yield axios_1.default.get(`${META_GRAPH_URL}/me/adaccounts`, {
+        const adAccountsResponse = await axios_1.default.get(`${META_GRAPH_URL}/me/adaccounts`, {
             params: {
                 access_token: longLivedToken,
                 fields: 'id,name,account_status'
@@ -157,7 +146,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         const adAccounts = adAccountsResponse.data.data || [];
         const primaryAdAccount = adAccounts[0]; // Use first ad account
         // Get user's pages (for Page ID)
-        const pagesResponse = yield axios_1.default.get(`${META_GRAPH_URL}/me/accounts`, {
+        const pagesResponse = await axios_1.default.get(`${META_GRAPH_URL}/me/accounts`, {
             params: {
                 access_token: longLivedToken,
                 fields: 'id,name,access_token'
@@ -170,7 +159,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         let phoneNumberId = null;
         try {
             // List WABA accounts the user has access to via business
-            const businessResponse = yield axios_1.default.get(`${META_GRAPH_URL}/me/businesses`, {
+            const businessResponse = await axios_1.default.get(`${META_GRAPH_URL}/me/businesses`, {
                 params: {
                     access_token: longLivedToken,
                     fields: 'id,name,owned_whatsapp_business_accounts{id,name}'
@@ -178,11 +167,11 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
             });
             const businesses = businessResponse.data.data || [];
             for (const business of businesses) {
-                const wabas = ((_a = business.owned_whatsapp_business_accounts) === null || _a === void 0 ? void 0 : _a.data) || [];
+                const wabas = business.owned_whatsapp_business_accounts?.data || [];
                 if (wabas.length > 0) {
                     wabaId = wabas[0].id;
                     // Get phone numbers for this WABA
-                    const phoneResponse = yield axios_1.default.get(`${META_GRAPH_URL}/${wabaId}/phone_numbers`, {
+                    const phoneResponse = await axios_1.default.get(`${META_GRAPH_URL}/${wabaId}/phone_numbers`, {
                         params: {
                             access_token: longLivedToken,
                             fields: 'id,display_phone_number,verified_name'
@@ -200,7 +189,7 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
             console.log('[Meta OAuth] No WhatsApp Business Account found (this is okay):', wabaError.message);
         }
         // Get the current org
-        const org = yield prisma_1.default.organisation.findUnique({
+        const org = await prisma_1.default.organisation.findUnique({
             where: { id: orgId }
         });
         if (!org) {
@@ -212,10 +201,10 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         const newAccount = {
             connected: true,
             accessToken: longLivedToken,
-            adAccountId: (primaryAdAccount === null || primaryAdAccount === void 0 ? void 0 : primaryAdAccount.id) || null,
-            adAccountName: (primaryAdAccount === null || primaryAdAccount === void 0 ? void 0 : primaryAdAccount.name) || null,
-            pageId: (primaryPage === null || primaryPage === void 0 ? void 0 : primaryPage.id) || null,
-            pageName: (primaryPage === null || primaryPage === void 0 ? void 0 : primaryPage.name) || null,
+            adAccountId: primaryAdAccount?.id || null,
+            adAccountName: primaryAdAccount?.name || null,
+            pageId: primaryPage?.id || null,
+            pageName: primaryPage?.name || null,
             appId: appId,
             connectedAt: new Date().toISOString()
         };
@@ -228,17 +217,28 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         else {
             metaAccounts.push(newAccount); // Add new
         }
-        yield prisma_1.default.organisation.update({
+        await prisma_1.default.organisation.update({
             where: { id: orgId },
             data: {
-                integrations: Object.assign(Object.assign({}, currentIntegrations), { meta: Object.assign(Object.assign({}, newAccount), { accessToken: (0, encryption_1.encrypt)(newAccount.accessToken) }), metaAccounts: metaAccounts.map((acc) => (Object.assign(Object.assign({}, acc), { accessToken: acc.adAccountId === newAccount.adAccountId ? (0, encryption_1.encrypt)(newAccount.accessToken) : acc.accessToken }))), whatsapp: {
+                integrations: {
+                    ...currentIntegrations,
+                    meta: {
+                        ...newAccount,
+                        accessToken: (0, encryption_1.encrypt)(newAccount.accessToken)
+                    },
+                    metaAccounts: metaAccounts.map((acc) => ({
+                        ...acc,
+                        accessToken: acc.adAccountId === newAccount.adAccountId ? (0, encryption_1.encrypt)(newAccount.accessToken) : acc.accessToken
+                    })),
+                    whatsapp: {
                         connected: !!wabaId && !!phoneNumberId,
                         accessToken: (0, encryption_1.encrypt)(longLivedToken),
                         wabaId: wabaId,
                         phoneNumberId: phoneNumberId,
                         appId: appId,
                         connectedAt: wabaId ? new Date().toISOString() : null
-                    } })
+                    }
+                }
             }
         });
         const finalRedirectUrl = `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}`;
@@ -251,16 +251,16 @@ router.get('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function
         res.redirect(finalRedirectUrl);
     }
     catch (err) {
-        console.error('[Meta OAuth] Callback error:', ((_b = err.response) === null || _b === void 0 ? void 0 : _b.data) || err.message);
+        console.error('[Meta OAuth] Callback error:', err.response?.data || err.message);
         const errorUrl = `${returnUrl || (process.env.CLIENT_URL || 'https://pypecrm.com') + '/settings/integrations'}?error=callback_failed&message=${encodeURIComponent(err.message)}`;
         res.redirect(errorUrl);
     }
-}));
+});
 /**
  * POST /api/meta/callback
  * Handles incoming webhook events from Meta
  */
-router.post('/callback', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/callback', async (req, res) => {
     console.log('========== META WEBHOOK RECEIVED ==========');
     // Signature Verification
     const signature = req.headers['x-hub-signature-256'];
@@ -284,22 +284,21 @@ router.post('/callback', (req, res) => __awaiter(void 0, void 0, void 0, functio
     res.sendStatus(200);
     // Process async
     try {
-        yield MetaIntegrationService_1.MetaIntegrationService.handleWebhook(req.body);
+        await MetaIntegrationService_1.MetaIntegrationService.handleWebhook(req.body);
     }
     catch (error) {
         console.error('Webhook processing error:', error);
     }
-}));
+});
 /**
  * POST /api/meta/disconnect
  * Disconnects Meta integration
  */
-router.post('/disconnect', authMiddleware_1.protect, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+router.post('/disconnect', authMiddleware_1.protect, async (req, res) => {
     try {
         const orgId = req.user.organisationId;
         const { type } = req.body; // 'meta', 'whatsapp', or 'both'
-        const org = yield prisma_1.default.organisation.findUnique({
+        const org = await prisma_1.default.organisation.findUnique({
             where: { id: orgId }
         });
         if (!org) {
@@ -314,7 +313,7 @@ router.post('/disconnect', authMiddleware_1.protect, (req, res) => __awaiter(voi
                     currentIntegrations.metaAccounts = currentIntegrations.metaAccounts.filter((acc) => acc.adAccountId !== accountIdToRemove);
                 }
                 // Check if primary is the one being removed
-                if (((_a = currentIntegrations.meta) === null || _a === void 0 ? void 0 : _a.adAccountId) === accountIdToRemove) {
+                if (currentIntegrations.meta?.adAccountId === accountIdToRemove) {
                     // Promote another one or clear
                     currentIntegrations.meta = currentIntegrations.metaAccounts[0] || {
                         connected: false,
@@ -337,7 +336,7 @@ router.post('/disconnect', authMiddleware_1.protect, (req, res) => __awaiter(voi
                 disconnectedAt: new Date().toISOString()
             };
         }
-        yield prisma_1.default.organisation.update({
+        await prisma_1.default.organisation.update({
             where: { id: orgId },
             data: { integrations: currentIntegrations }
         });
@@ -347,32 +346,31 @@ router.post('/disconnect', authMiddleware_1.protect, (req, res) => __awaiter(voi
         console.error('[Meta] Disconnect error:', err);
         res.status(500).json({ error: err.message });
     }
-}));
+});
 /**
  * GET /api/meta/status
  * Gets current Meta/WhatsApp connection status
  */
-router.get('/status', authMiddleware_1.protect, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g;
+router.get('/status', authMiddleware_1.protect, async (req, res) => {
     try {
         const orgId = req.user.organisationId;
-        const org = yield prisma_1.default.organisation.findUnique({
+        const org = await prisma_1.default.organisation.findUnique({
             where: { id: orgId },
             select: { integrations: true }
         });
-        const integrations = (org === null || org === void 0 ? void 0 : org.integrations) || {};
+        const integrations = org?.integrations || {};
         res.json({
             meta: {
-                connected: ((_a = integrations.meta) === null || _a === void 0 ? void 0 : _a.connected) || false,
-                adAccountName: ((_b = integrations.meta) === null || _b === void 0 ? void 0 : _b.adAccountName) || null,
-                pageName: ((_c = integrations.meta) === null || _c === void 0 ? void 0 : _c.pageName) || null,
-                connectedAt: ((_d = integrations.meta) === null || _d === void 0 ? void 0 : _d.connectedAt) || null,
+                connected: integrations.meta?.connected || false,
+                adAccountName: integrations.meta?.adAccountName || null,
+                pageName: integrations.meta?.pageName || null,
+                connectedAt: integrations.meta?.connectedAt || null,
                 accounts: integrations.metaAccounts || [] // Return list
             },
             whatsapp: {
-                connected: ((_e = integrations.whatsapp) === null || _e === void 0 ? void 0 : _e.connected) || false,
-                wabaId: ((_f = integrations.whatsapp) === null || _f === void 0 ? void 0 : _f.wabaId) || null,
-                connectedAt: ((_g = integrations.whatsapp) === null || _g === void 0 ? void 0 : _g.connectedAt) || null
+                connected: integrations.whatsapp?.connected || false,
+                wabaId: integrations.whatsapp?.wabaId || null,
+                connectedAt: integrations.whatsapp?.connectedAt || null
             }
         });
     }
@@ -380,7 +378,7 @@ router.get('/status', authMiddleware_1.protect, (req, res) => __awaiter(void 0, 
         console.error('[Meta] Status error:', err);
         res.status(500).json({ error: err.message });
     }
-}));
+});
 /**
  * GET /api/meta/webhook
  * Webhook verification for Meta
@@ -408,7 +406,7 @@ router.get('/webhook', (req, res) => {
  * POST /api/meta/webhook
  * Handles incoming events from Meta (Leads, etc.)
  */
-router.post('/webhook', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/webhook', async (req, res) => {
     const body = req.body;
     // Check if this is an event from a page subscription
     if (body.object === 'page') {
@@ -434,5 +432,5 @@ router.post('/webhook', (req, res) => __awaiter(void 0, void 0, void 0, function
         // Not a page event
         res.sendStatus(404);
     }
-}));
+});
 exports.default = router;

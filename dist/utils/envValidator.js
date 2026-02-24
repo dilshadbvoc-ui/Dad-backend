@@ -141,7 +141,7 @@ class EnvironmentValidator {
             try {
                 new URL(origin);
             }
-            catch (_a) {
+            catch {
                 errors.push(`Invalid CORS origin format: ${origin}`);
             }
         }

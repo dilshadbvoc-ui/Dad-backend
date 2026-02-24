@@ -1,23 +1,14 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePlan = exports.updatePlan = exports.createPlan = exports.getPlans = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
-const getPlans = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getPlans = async (req, res) => {
     try {
         // Always filter by isActive: true - deleted plans should not reappear
-        const plans = yield prisma_1.default.subscriptionPlan.findMany({
+        const plans = await prisma_1.default.subscriptionPlan.findMany({
             where: { isActive: true },
             orderBy: { price: 'asc' }
         });
@@ -26,27 +17,27 @@ const getPlans = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getPlans = getPlans;
-const createPlan = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createPlan = async (req, res) => {
     try {
         if (req.user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Not authorized' });
         }
-        const plan = yield prisma_1.default.subscriptionPlan.create({ data: req.body });
+        const plan = await prisma_1.default.subscriptionPlan.create({ data: req.body });
         res.status(201).json(plan);
     }
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createPlan = createPlan;
-const updatePlan = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePlan = async (req, res) => {
     try {
         if (req.user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Not authorized' });
         }
-        const plan = yield prisma_1.default.subscriptionPlan.update({
+        const plan = await prisma_1.default.subscriptionPlan.update({
             where: { id: req.params.id },
             data: req.body
         });
@@ -55,15 +46,15 @@ const updatePlan = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updatePlan = updatePlan;
-const deletePlan = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deletePlan = async (req, res) => {
     try {
         if (req.user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Not authorized' });
         }
         // Soft delete
-        yield prisma_1.default.subscriptionPlan.update({
+        await prisma_1.default.subscriptionPlan.update({
             where: { id: req.params.id },
             data: { isActive: false }
         });
@@ -72,5 +63,5 @@ const deletePlan = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deletePlan = deletePlan;

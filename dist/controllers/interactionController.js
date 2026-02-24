@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -17,7 +8,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
 // POST /api/interactions - Create interaction (generic endpoint)
-const createInteractionGeneric = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createInteractionGeneric = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -53,11 +44,11 @@ const createInteractionGeneric = (req, res) => __awaiter(void 0, void 0, void 0,
             data.account = { connect: { id: account } };
         if (opportunity)
             data.opportunity = { connect: { id: opportunity } };
-        const interaction = yield prisma_1.default.interaction.create({
+        const interaction = await prisma_1.default.interaction.create({
             data
         });
         if (orgId) {
-            yield (0, auditLogger_1.logAudit)({
+            await (0, auditLogger_1.logAudit)({
                 organisationId: orgId,
                 actorId: user.id,
                 action: 'CREATE_INTERACTION',
@@ -72,10 +63,10 @@ const createInteractionGeneric = (req, res) => __awaiter(void 0, void 0, void 0,
         console.error('createInteractionGeneric Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createInteractionGeneric = createInteractionGeneric;
 // POST /api/leads/:leadId/interactions - Log a new interaction
-const createInteraction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createInteraction = async (req, res) => {
     try {
         const { leadId } = req.params;
         const user = req.user;
@@ -83,14 +74,14 @@ const createInteraction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
         // Verify lead exists and belongs to org
-        const lead = yield prisma_1.default.lead.findFirst({
+        const lead = await prisma_1.default.lead.findFirst({
             where: { id: leadId, organisationId: orgId },
             include: { branch: true }
         });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
         const { type, direction = 'outbound', subject, description, duration, recordingUrl, recordingDuration, callStatus, phoneNumber } = req.body;
-        const interaction = yield prisma_1.default.interaction.create({
+        const interaction = await prisma_1.default.interaction.create({
             data: {
                 type: type,
                 direction: direction,
@@ -107,7 +98,7 @@ const createInteraction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 branch: lead.branchId ? { connect: { id: lead.branchId } } : (user.branchId ? { connect: { id: user.branchId } } : undefined)
             }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_INTERACTION',
@@ -121,10 +112,10 @@ const createInteraction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.error('createInteraction Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createInteraction = createInteraction;
 // GET /api/leads/:leadId/interactions - Get all interactions for a lead
-const getLeadInteractions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeadInteractions = async (req, res) => {
     try {
         const { leadId } = req.params;
         const user = req.user;
@@ -135,7 +126,7 @@ const getLeadInteractions = (req, res) => __awaiter(void 0, void 0, void 0, func
         const where = { leadId, isDeleted: false };
         if (orgId)
             where.organisationId = orgId;
-        const interactions = yield prisma_1.default.interaction.findMany({
+        const interactions = await prisma_1.default.interaction.findMany({
             where,
             include: {
                 createdBy: {
@@ -150,10 +141,10 @@ const getLeadInteractions = (req, res) => __awaiter(void 0, void 0, void 0, func
         console.error('getLeadInteractions Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getLeadInteractions = getLeadInteractions;
 // GET /api/interactions - Get all interactions (with filters)
-const getAllInteractions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllInteractions = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -179,7 +170,7 @@ const getAllInteractions = (req, res) => __awaiter(void 0, void 0, void 0, funct
             if (endDate)
                 where.createdAt.lte = new Date(endDate);
         }
-        const interactions = yield prisma_1.default.interaction.findMany({
+        const interactions = await prisma_1.default.interaction.findMany({
             where,
             include: {
                 lead: {
@@ -198,22 +189,22 @@ const getAllInteractions = (req, res) => __awaiter(void 0, void 0, void 0, funct
         console.error('getAllInteractions Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getAllInteractions = getAllInteractions;
 // PUT /api/interactions/:id/recording - Update interaction with recording URL (for mobile app)
-const updateInteractionRecording = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateInteractionRecording = async (req, res) => {
     try {
         const { id } = req.params;
         const { recordingUrl, recordingDuration, callStatus } = req.body;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         // Verify interaction exists and belongs to org
-        const existing = yield prisma_1.default.interaction.findFirst({
-            where: Object.assign({ id }, (orgId ? { organisationId: orgId } : {}))
+        const existing = await prisma_1.default.interaction.findFirst({
+            where: { id, ...(orgId ? { organisationId: orgId } : {}) }
         });
         if (!existing)
             return res.status(404).json({ message: 'Interaction not found' });
-        const interaction = yield prisma_1.default.interaction.update({
+        const interaction = await prisma_1.default.interaction.update({
             where: { id },
             data: {
                 recordingUrl,
@@ -222,7 +213,7 @@ const updateInteractionRecording = (req, res) => __awaiter(void 0, void 0, void 
             }
         });
         if (orgId || existing.organisationId) {
-            yield (0, auditLogger_1.logAudit)({
+            await (0, auditLogger_1.logAudit)({
                 organisationId: (orgId || existing.organisationId),
                 actorId: user.id,
                 action: 'UPDATE_INTERACTION_RECORDING',
@@ -236,10 +227,10 @@ const updateInteractionRecording = (req, res) => __awaiter(void 0, void 0, void 
         console.error('updateInteractionRecording Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.updateInteractionRecording = updateInteractionRecording;
 // Quick log helper for WhatsApp/Call clicks (minimal payload)
-const logQuickInteraction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const logQuickInteraction = async (req, res) => {
     try {
         const { leadId } = req.params;
         const { type, phoneNumber } = req.body; // type: 'call' | 'whatsapp'
@@ -247,7 +238,7 @@ const logQuickInteraction = (req, res) => __awaiter(void 0, void 0, void 0, func
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
-        const lead = yield prisma_1.default.lead.findFirst({
+        const lead = await prisma_1.default.lead.findFirst({
             where: { id: leadId, organisationId: orgId },
             include: { branch: true }
         });
@@ -255,7 +246,7 @@ const logQuickInteraction = (req, res) => __awaiter(void 0, void 0, void 0, func
             return res.status(404).json({ message: 'Lead not found' });
         // Map 'whatsapp' to 'other' since it's not in InteractionType enum
         const interactionType = type === 'whatsapp' ? 'other' : type;
-        const interaction = yield prisma_1.default.interaction.create({
+        const interaction = await prisma_1.default.interaction.create({
             data: {
                 type: interactionType,
                 direction: 'outbound',
@@ -269,7 +260,7 @@ const logQuickInteraction = (req, res) => __awaiter(void 0, void 0, void 0, func
                 branch: lead.branchId ? { connect: { id: lead.branchId } } : (user.branchId ? { connect: { id: user.branchId } } : undefined)
             }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'LOG_QUICK_INTERACTION',
@@ -283,5 +274,5 @@ const logQuickInteraction = (req, res) => __awaiter(void 0, void 0, void 0, func
         console.error('logQuickInteraction Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.logQuickInteraction = logQuickInteraction;

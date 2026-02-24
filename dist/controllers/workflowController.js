@@ -32,26 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -59,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runWorkflow = exports.deleteWorkflow = exports.updateWorkflow = exports.getWorkflowById = exports.createWorkflow = exports.getWorkflows = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getWorkflows = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getWorkflows = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
         const limit = parseInt(req.query.limit || '20');
@@ -81,8 +61,8 @@ const getWorkflows = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (search) {
             where.name = { contains: search, mode: 'insensitive' };
         }
-        const count = yield prisma_1.default.workflow.count({ where });
-        const workflows = yield prisma_1.default.workflow.findMany({
+        const count = await prisma_1.default.workflow.count({ where });
+        const workflows = await prisma_1.default.workflow.findMany({
             where,
             skip,
             take: limit,
@@ -98,15 +78,15 @@ const getWorkflows = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getWorkflows = getWorkflows;
-const createWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createWorkflow = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const workflow = yield prisma_1.default.workflow.create({
+        const workflow = await prisma_1.default.workflow.create({
             data: {
                 name: req.body.name,
                 description: req.body.description,
@@ -121,7 +101,7 @@ const createWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_WORKFLOW',
                 entity: 'Workflow',
@@ -139,9 +119,9 @@ const createWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createWorkflow = createWorkflow;
-const getWorkflowById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getWorkflowById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -151,7 +131,7 @@ const getWorkflowById = (req, res) => __awaiter(void 0, void 0, void 0, function
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const workflow = yield prisma_1.default.workflow.findFirst({
+        const workflow = await prisma_1.default.workflow.findFirst({
             where
         });
         if (!workflow)
@@ -161,15 +141,15 @@ const getWorkflowById = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getWorkflowById = getWorkflowById;
-const updateWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateWorkflow = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const workflowId = req.params.id;
         // Verify existence and org
-        const existing = yield prisma_1.default.workflow.findFirst({
+        const existing = await prisma_1.default.workflow.findFirst({
             where: { id: workflowId, isDeleted: false }
         });
         if (!existing)
@@ -177,14 +157,14 @@ const updateWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (existing.organisationId !== orgId && user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Access denied' });
         }
-        const _a = req.body, { organisationId: _orgId, createdById: _createdById, executionCount: _count } = _a, updateData = __rest(_a, ["organisationId", "createdById", "executionCount"]);
-        const workflow = yield prisma_1.default.workflow.update({
+        const { organisationId: _orgId, createdById: _createdById, executionCount: _count, ...updateData } = req.body;
+        const workflow = await prisma_1.default.workflow.update({
             where: { id: workflowId },
             data: updateData
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'UPDATE_WORKFLOW',
                 entity: 'Workflow',
@@ -202,15 +182,15 @@ const updateWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateWorkflow = updateWorkflow;
-const deleteWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteWorkflow = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const workflowId = req.params.id;
         // Verify existence and org
-        const existing = yield prisma_1.default.workflow.findFirst({
+        const existing = await prisma_1.default.workflow.findFirst({
             where: { id: workflowId, isDeleted: false }
         });
         if (!existing)
@@ -218,13 +198,13 @@ const deleteWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (existing.organisationId !== orgId && user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Access denied' });
         }
-        yield prisma_1.default.workflow.update({
+        await prisma_1.default.workflow.update({
             where: { id: workflowId },
             data: { isDeleted: true }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'DELETE_WORKFLOW',
                 entity: 'Workflow',
@@ -241,9 +221,9 @@ const deleteWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteWorkflow = deleteWorkflow;
-const runWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const runWorkflow = async (req, res) => {
     try {
         const { id } = req.params;
         const { entityId } = req.body;
@@ -251,7 +231,7 @@ const runWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (!entityId) {
             return res.status(400).json({ message: 'Entity ID is required' });
         }
-        const workflow = yield prisma_1.default.workflow.findUnique({ where: { id } });
+        const workflow = await prisma_1.default.workflow.findUnique({ where: { id } });
         if (!workflow) {
             return res.status(404).json({ message: 'Workflow not found' });
         }
@@ -268,19 +248,19 @@ const runWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // Let's use switch case for safety.
         switch (workflow.triggerEntity) {
             case 'Lead':
-                entityData = yield prisma_1.default.lead.findUnique({ where: { id: entityId } });
+                entityData = await prisma_1.default.lead.findUnique({ where: { id: entityId } });
                 break;
             case 'Contact':
-                entityData = yield prisma_1.default.contact.findUnique({ where: { id: entityId } });
+                entityData = await prisma_1.default.contact.findUnique({ where: { id: entityId } });
                 break;
             case 'Opportunity':
-                entityData = yield prisma_1.default.opportunity.findUnique({ where: { id: entityId } });
+                entityData = await prisma_1.default.opportunity.findUnique({ where: { id: entityId } });
                 break;
             case 'Account':
-                entityData = yield prisma_1.default.account.findUnique({ where: { id: entityId } });
+                entityData = await prisma_1.default.account.findUnique({ where: { id: entityId } });
                 break;
             case 'Task':
-                entityData = yield prisma_1.default.task.findUnique({ where: { id: entityId } });
+                entityData = await prisma_1.default.task.findUnique({ where: { id: entityId } });
                 break;
             default:
                 return res.status(400).json({ message: `Unsupported entity type: ${workflow.triggerEntity}` });
@@ -288,11 +268,11 @@ const runWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (!entityData) {
             return res.status(404).json({ message: `${workflow.triggerEntity} with ID ${entityId} not found` });
         }
-        const { WorkflowEngine } = yield Promise.resolve().then(() => __importStar(require('../services/WorkflowEngine')));
-        yield WorkflowEngine.executeActions(workflow, entityData, workflow.organisationId);
+        const { WorkflowEngine } = await Promise.resolve().then(() => __importStar(require('../services/WorkflowEngine')));
+        await WorkflowEngine.executeActions(workflow, entityData, workflow.organisationId);
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'RUN_WORKFLOW_MANUAL',
                 entity: 'Workflow',
@@ -315,5 +295,5 @@ const runWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.error('Manual Workflow Run Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.runWorkflow = runWorkflow;

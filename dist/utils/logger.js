@@ -37,8 +37,12 @@ class Logger {
         return logString;
     }
     log(level, message, options = {}) {
-        const entry = Object.assign({ timestamp: new Date().toISOString(), level,
-            message }, options);
+        const entry = {
+            timestamp: new Date().toISOString(),
+            level,
+            message,
+            ...options
+        };
         const formattedLog = this.formatLog(entry);
         switch (level) {
             case LogLevel.ERROR:

@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,7 +7,7 @@ exports.deleteCase = exports.updateCase = exports.getCaseById = exports.createCa
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
-const getCases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCases = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
         const limit = parseInt(req.query.limit || '20');
@@ -33,7 +24,7 @@ const getCases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         };
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             // Show cases assigned to self OR subordinates
             where.assignedToId = { in: [...subordinateIds, user.id] };
         }
@@ -46,7 +37,7 @@ const getCases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (status && status !== 'all') {
             where.status = status;
         }
-        const cases = yield prisma_1.default.case.findMany({
+        const cases = await prisma_1.default.case.findMany({
             where,
             include: {
                 contact: { select: { firstName: true, lastName: true, email: true } },
@@ -57,7 +48,7 @@ const getCases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             skip,
             take: limit
         });
-        const total = yield prisma_1.default.case.count({ where });
+        const total = await prisma_1.default.case.count({ where });
         res.json({
             cases,
             page,
@@ -69,23 +60,30 @@ const getCases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('getCases Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getCases = getCases;
-const createCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createCase = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
         // Generate case number
-        const count = yield prisma_1.default.case.count({ where: { organisationId: orgId } });
+        const count = await prisma_1.default.case.count({ where: { organisationId: orgId } });
         const caseNumber = `CASE-${String(count + 1).padStart(5, '0')}`;
-        const newCase = yield prisma_1.default.case.create({
-            data: Object.assign(Object.assign({}, req.body), { caseNumber, organisationId: orgId, createdById: user.id, 
+        const newCase = await prisma_1.default.case.create({
+            data: {
+                ...req.body,
+                caseNumber,
+                organisationId: orgId,
+                createdById: user.id,
                 // Ensure relations are connected properly if provided
-                contactId: req.body.contact || req.body.contactId || undefined, accountId: req.body.account || req.body.accountId || undefined, assignedToId: req.body.assignedTo || req.body.assignedToId || undefined })
+                contactId: req.body.contact || req.body.contactId || undefined,
+                accountId: req.body.account || req.body.accountId || undefined,
+                assignedToId: req.body.assignedTo || req.body.assignedToId || undefined
+            }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_CASE',
@@ -99,15 +97,15 @@ const createCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.error('createCase Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createCase = createCase;
-const getCaseById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCaseById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        const supportCase = yield prisma_1.default.case.findFirst({
+        const supportCase = await prisma_1.default.case.findFirst({
             where: {
                 id: req.params.id,
                 organisationId: orgId,
@@ -124,7 +122,7 @@ const getCaseById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         // Hierarchy check
         if (user.role !== 'super_admin' && user.role !== 'admin' && supportCase.assignedToId !== user.id) {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             if (!subordinateIds.includes(supportCase.assignedToId || '')) {
                 return res.status(403).json({ message: 'Not authorized to view this case' });
             }
@@ -134,12 +132,12 @@ const getCaseById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getCaseById = getCaseById;
-const updateCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCase = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = Object.assign({}, req.body);
+        const updates = { ...req.body };
         // Handle relation updates if passed as objects or IDs
         if (updates.contact)
             updates.contactId = updates.contact;
@@ -154,14 +152,14 @@ const updateCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        const supportCase = yield prisma_1.default.case.update({
+        const supportCase = await prisma_1.default.case.update({
             where: {
                 id,
                 organisationId: orgId
             },
             data: updates
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'UPDATE_CASE',
@@ -177,22 +175,22 @@ const updateCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(404).json({ message: 'Case not found' });
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateCase = updateCase;
-const deleteCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCase = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        yield prisma_1.default.case.update({
+        await prisma_1.default.case.update({
             where: {
                 id: req.params.id,
                 organisationId: orgId
             },
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'DELETE_CASE',
@@ -206,5 +204,5 @@ const deleteCase = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(404).json({ message: 'Case not found' });
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteCase = deleteCase;

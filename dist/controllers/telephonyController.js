@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,8 +10,7 @@ const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const telephonyService_1 = require("../services/telephonyService");
 const VoiceResponse = twilio_1.default.twiml.VoiceResponse;
 // Voice Webhook (Inbound or Outbound Answered)
-const handleVoiceWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+const handleVoiceWebhook = async (req, res) => {
     const { orgId, leadId } = req.query; // Added leadId from query
     const { CallSid, From } = req.body; // Removed unused To, Direction
     const twiml = new VoiceResponse();
@@ -31,7 +21,7 @@ const handleVoiceWebhook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             res.type('text/xml').send(twiml.toString());
             return;
         }
-        const org = yield prisma_1.default.organisation.findUnique({
+        const org = await prisma_1.default.organisation.findUnique({
             where: { id: orgId },
             include: { callSettings: true }
         });
@@ -41,9 +31,9 @@ const handleVoiceWebhook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             return;
         }
         const integrations = org.integrations;
-        const twilioConfig = integrations === null || integrations === void 0 ? void 0 : integrations.twilio;
+        const twilioConfig = integrations?.twilio;
         // Check recording settings
-        const shouldRecord = (_b = (_a = org.callSettings) === null || _a === void 0 ? void 0 : _a.autoRecordInbound) !== null && _b !== void 0 ? _b : true;
+        const shouldRecord = org.callSettings?.autoRecordInbound ?? true;
         // Prepare Interaction Data
         const interactionData = {
             type: 'call',
@@ -62,13 +52,13 @@ const handleVoiceWebhook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             interactionData.subject = `Outbound Call to ${From}`;
         }
         // Create Interaction Record
-        yield prisma_1.default.interaction.create({
+        await prisma_1.default.interaction.create({
             data: interactionData
         });
         if (shouldRecord) {
             // TwiML to Record
             // If we have a forward number, we Dial it.
-            const forwardTo = twilioConfig === null || twilioConfig === void 0 ? void 0 : twilioConfig.forwardTo; // Custom field in integration config
+            const forwardTo = twilioConfig?.forwardTo; // Custom field in integration config
             if (forwardTo) {
                 const dial = twiml.dial({
                     record: 'record-from-ringing',
@@ -86,7 +76,7 @@ const handleVoiceWebhook = (req, res) => __awaiter(void 0, void 0, void 0, funct
             }
         }
         else {
-            const forwardTo = twilioConfig === null || twilioConfig === void 0 ? void 0 : twilioConfig.forwardTo;
+            const forwardTo = twilioConfig?.forwardTo;
             if (forwardTo) {
                 twiml.dial(forwardTo);
             }
@@ -101,9 +91,9 @@ const handleVoiceWebhook = (req, res) => __awaiter(void 0, void 0, void 0, funct
         twiml.say('An application error occurred.');
         res.type('text/xml').send(twiml.toString());
     }
-});
+};
 exports.handleVoiceWebhook = handleVoiceWebhook;
-const handleStatusWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const handleStatusWebhook = async (req, res) => {
     const { orgId } = req.query;
     const { CallSid, RecordingUrl, RecordingDuration, CallStatus } = req.body;
     try {
@@ -115,7 +105,7 @@ const handleStatusWebhook = (req, res) => __awaiter(void 0, void 0, void 0, func
         // Since we stored CallSid in description safely or subject... 
         // This is fuzzy. Better to have stored it properly. 
         // For now, finding the most recent call with that description substring
-        const interaction = yield prisma_1.default.interaction.findFirst({
+        const interaction = await prisma_1.default.interaction.findFirst({
             where: {
                 organisationId: orgId,
                 description: { contains: CallSid }
@@ -132,7 +122,7 @@ const handleStatusWebhook = (req, res) => __awaiter(void 0, void 0, void 0, func
                 data.duration = parseInt(RecordingDuration); // seconds
                 data.recordingDuration = parseInt(RecordingDuration);
             }
-            yield prisma_1.default.interaction.update({
+            await prisma_1.default.interaction.update({
                 where: { id: interaction.id },
                 data
             });
@@ -144,9 +134,9 @@ const handleStatusWebhook = (req, res) => __awaiter(void 0, void 0, void 0, func
         console.error(error);
         res.sendStatus(500);
     }
-});
+};
 exports.handleStatusWebhook = handleStatusWebhook;
-const makeOutboundCall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const makeOutboundCall = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -156,7 +146,7 @@ const makeOutboundCall = (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (!orgId) {
             return res.status(400).json({ message: 'Organisation not found' });
         }
-        const telephonyService = yield telephonyService_1.TelephonyService.getClientForOrg(orgId);
+        const telephonyService = await telephonyService_1.TelephonyService.getClientForOrg(orgId);
         if (!telephonyService) {
             return res.status(400).json({ message: 'Telephony not configured' });
         }
@@ -171,12 +161,12 @@ const makeOutboundCall = (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (leadId) {
             callbackUrl += `&leadId=${leadId}`;
         }
-        const call = yield telephonyService.makeCall(to, callbackUrl);
+        const call = await telephonyService.makeCall(to, callbackUrl);
         res.json({ message: 'Call initiated', callSid: call.sid });
     }
     catch (error) {
         console.error('Outbound Call Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.makeOutboundCall = makeOutboundCall;

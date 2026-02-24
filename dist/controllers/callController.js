@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -22,14 +13,14 @@ const uploadDir = path_1.default.join(__dirname, '../../uploads/recordings');
 if (!fs_1.default.existsSync(uploadDir)) {
     fs_1.default.mkdirSync(uploadDir, { recursive: true });
 }
-const initiateCall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const initiateCall = async (req, res) => {
     try {
         const { leadId, phoneNumber, direction = 'outbound' } = req.body;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const interaction = yield prisma_1.default.interaction.create({
+        const interaction = await prisma_1.default.interaction.create({
             data: {
                 type: 'call',
                 direction,
@@ -49,10 +40,9 @@ const initiateCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.initiateCall = initiateCall;
-const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const completeCall = async (req, res) => {
     try {
         const file = req.file;
         const { duration, status, notes, scheduleFollowUp } = req.body;
@@ -67,14 +57,14 @@ const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (notes) {
             updateData.description = notes;
         }
-        const interaction = yield prisma_1.default.interaction.update({
+        const interaction = await prisma_1.default.interaction.update({
             where: { id: callId },
             data: updateData,
             include: { createdBy: true }
         });
         // Emit socket event for real-time update
         const io = req.app.get('io');
-        if (io && ((_a = interaction.createdBy) === null || _a === void 0 ? void 0 : _a.id)) {
+        if (io && interaction.createdBy?.id) {
             io.to(interaction.createdBy.id).emit('call_completed', { callId });
         }
         // Logic for Follow-up Task: Explicit override OR Global Setting
@@ -87,10 +77,10 @@ const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // 2. If no override, check settings
         if (scheduleFollowUp === undefined || scheduleFollowUp === null || scheduleFollowUp === '') {
             if (interaction.organisationId) {
-                const settings = yield prisma_1.default.callSettings.findUnique({
+                const settings = await prisma_1.default.callSettings.findUnique({
                     where: { organisationId: interaction.organisationId }
                 });
-                if (settings === null || settings === void 0 ? void 0 : settings.autoFollowupReminder) {
+                if (settings?.autoFollowupReminder) {
                     shouldCreateTask = true;
                     delay = settings.followupDelayMinutes || 30; // Default 30 mins
                 }
@@ -99,7 +89,7 @@ const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (shouldCreateTask) {
             const dueDate = new Date();
             dueDate.setMinutes(dueDate.getMinutes() + delay);
-            yield prisma_1.default.task.create({
+            await prisma_1.default.task.create({
                 data: {
                     subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
                     description: `Follow-up task from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
@@ -118,14 +108,14 @@ const completeCall = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.completeCall = completeCall;
-const getLeadCalls = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeadCalls = async (req, res) => {
     try {
         const { leadId } = req.params;
         if (leadId === 'new')
             return res.json([]);
-        const calls = yield prisma_1.default.interaction.findMany({
+        const calls = await prisma_1.default.interaction.findMany({
             where: {
                 leadId: leadId,
                 type: 'call'
@@ -137,9 +127,9 @@ const getLeadCalls = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getLeadCalls = getLeadCalls;
-const getRecording = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getRecording = async (req, res) => {
     try {
         const { filename } = req.params;
         const filePath = path_1.default.join(uploadDir, filename);
@@ -153,10 +143,10 @@ const getRecording = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getRecording = getRecording;
 // Get all calls with filters and pagination
-const getAllCalls = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllCalls = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -197,9 +187,9 @@ const getAllCalls = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             ];
         }
         // Get total count
-        const total = yield prisma_1.default.interaction.count({ where: where });
+        const total = await prisma_1.default.interaction.count({ where: where });
         // Get calls with relations
-        const calls = yield prisma_1.default.interaction.findMany({
+        const calls = await prisma_1.default.interaction.findMany({
             where: where,
             include: {
                 createdBy: {
@@ -244,10 +234,10 @@ const getAllCalls = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.error('Get all calls error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getAllCalls = getAllCalls;
 // Get call statistics for dashboard
-const getCallStats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCallStats = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -277,33 +267,40 @@ const getCallStats = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             date: { gte: startDate }
         };
         // Total calls
-        const totalCalls = yield prisma_1.default.interaction.count({ where: baseWhere });
+        const totalCalls = await prisma_1.default.interaction.count({ where: baseWhere });
         // Calls by direction
-        const outboundCalls = yield prisma_1.default.interaction.count({
-            where: Object.assign(Object.assign({}, baseWhere), { direction: 'outbound' })
+        const outboundCalls = await prisma_1.default.interaction.count({
+            where: { ...baseWhere, direction: 'outbound' }
         });
-        const inboundCalls = yield prisma_1.default.interaction.count({
-            where: Object.assign(Object.assign({}, baseWhere), { direction: 'inbound' })
+        const inboundCalls = await prisma_1.default.interaction.count({
+            where: { ...baseWhere, direction: 'inbound' }
         });
         // Missed calls
-        const missedCalls = yield prisma_1.default.interaction.count({
-            where: Object.assign(Object.assign({}, baseWhere), { callStatus: 'missed' })
+        const missedCalls = await prisma_1.default.interaction.count({
+            where: { ...baseWhere, callStatus: 'missed' }
         });
         // Completed calls
-        const completedCalls = yield prisma_1.default.interaction.count({
-            where: Object.assign(Object.assign({}, baseWhere), { callStatus: 'completed' })
+        const completedCalls = await prisma_1.default.interaction.count({
+            where: { ...baseWhere, callStatus: 'completed' }
         });
         // Average duration (for completed calls with duration)
-        const callsWithDuration = yield prisma_1.default.interaction.findMany({
-            where: Object.assign(Object.assign({}, baseWhere), { callStatus: 'completed', duration: { not: null } }),
+        const callsWithDuration = await prisma_1.default.interaction.findMany({
+            where: {
+                ...baseWhere,
+                callStatus: 'completed',
+                duration: { not: null }
+            },
             select: { duration: true }
         });
         const avgDuration = callsWithDuration.length > 0
             ? callsWithDuration.reduce((sum, c) => sum + (c.duration || 0), 0) / callsWithDuration.length
             : 0;
         // Calls with recordings
-        const callsWithRecording = yield prisma_1.default.interaction.count({
-            where: Object.assign(Object.assign({}, baseWhere), { recordingUrl: { not: null } })
+        const callsWithRecording = await prisma_1.default.interaction.count({
+            where: {
+                ...baseWhere,
+                recordingUrl: { not: null }
+            }
         });
         res.json({
             totalCalls,
@@ -320,10 +317,10 @@ const getCallStats = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.error('Get call stats error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getCallStats = getCallStats;
 // Delete a call recording
-const deleteRecording = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteRecording = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -331,7 +328,7 @@ const deleteRecording = (req, res) => __awaiter(void 0, void 0, void 0, function
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
         // Find the call
-        const call = yield prisma_1.default.interaction.findFirst({
+        const call = await prisma_1.default.interaction.findFirst({
             where: {
                 id,
                 organisationId: orgId,
@@ -353,7 +350,7 @@ const deleteRecording = (req, res) => __awaiter(void 0, void 0, void 0, function
             }
         }
         // Update the call record
-        yield prisma_1.default.interaction.update({
+        await prisma_1.default.interaction.update({
             where: { id },
             data: {
                 recordingUrl: null,
@@ -366,5 +363,5 @@ const deleteRecording = (req, res) => __awaiter(void 0, void 0, void 0, function
         console.error('Delete recording error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteRecording = deleteRecording;

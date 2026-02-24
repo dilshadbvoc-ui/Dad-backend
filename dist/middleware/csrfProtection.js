@@ -23,7 +23,7 @@ class CSRFProtection {
         return (req, res, next) => {
             const session = req.session;
             // Generate new token if not exists
-            if (!(session === null || session === void 0 ? void 0 : session.csrfToken)) {
+            if (!session?.csrfToken) {
                 req.session = req.session || {};
                 req.session.csrfToken = CSRFProtection.generateToken();
             }
@@ -57,7 +57,7 @@ class CSRFProtection {
                 return next();
             }
             const session = req.session;
-            const sessionToken = session === null || session === void 0 ? void 0 : session.csrfToken;
+            const sessionToken = session?.csrfToken;
             const headerToken = req.headers[CSRFProtection.CSRF_HEADER_NAME.toLowerCase()];
             const cookieToken = req.cookies[CSRFProtection.CSRF_COOKIE_NAME];
             // Check if tokens exist
@@ -91,7 +91,7 @@ class CSRFProtection {
         return (req, res) => {
             const session = req.session;
             res.json({
-                csrfToken: req.csrfToken || (session === null || session === void 0 ? void 0 : session.csrfToken),
+                csrfToken: req.csrfToken || session?.csrfToken,
                 expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
             });
         };

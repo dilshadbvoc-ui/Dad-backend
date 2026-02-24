@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -48,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRuleTypes = exports.deleteAssignmentRule = exports.updateAssignmentRule = exports.createAssignmentRule = exports.getAssignmentRules = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getAssignmentRules = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAssignmentRules = async (req, res) => {
     try {
         const user = req.user;
         let orgId;
@@ -75,7 +66,7 @@ const getAssignmentRules = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         else if (user.role !== 'super_admin' && user.role !== 'admin') {
             // For non-admins: show rules for their managed branches + global rules
-            const managedBranches = yield prisma_1.default.branch.findMany({
+            const managedBranches = await prisma_1.default.branch.findMany({
                 where: { managerId: user.id, isDeleted: false },
                 select: { id: true }
             });
@@ -88,7 +79,7 @@ const getAssignmentRules = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 ];
             }
         }
-        const rules = yield prisma_1.default.assignmentRule.findMany({
+        const rules = await prisma_1.default.assignmentRule.findMany({
             where,
             include: {
                 targetManager: { select: { id: true, firstName: true, lastName: true } },
@@ -102,20 +93,19 @@ const getAssignmentRules = (req, res) => __awaiter(void 0, void 0, void 0, funct
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getAssignmentRules = getAssignmentRules;
-const createAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const createAssignmentRule = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        const rule = yield prisma_1.default.assignmentRule.create({
+        const rule = await prisma_1.default.assignmentRule.create({
             data: {
                 name: req.body.name,
                 description: req.body.description,
-                isActive: (_a = req.body.isActive) !== null && _a !== void 0 ? _a : true,
+                isActive: req.body.isActive ?? true,
                 priority: req.body.priority || 0,
                 entity: req.body.entity || 'Lead',
                 distributionType: req.body.distributionType || 'specific_user',
@@ -133,8 +123,8 @@ const createAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
-            yield logAudit({
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
                 organisationId: orgId,
                 actorId: user.id,
                 action: 'CREATE_ASSIGNMENT_RULE',
@@ -151,26 +141,34 @@ const createAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createAssignmentRule = createAssignmentRule;
-const updateAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateAssignmentRule = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         // Verify existence and ownership
-        const existing = yield prisma_1.default.assignmentRule.findFirst({
-            where: Object.assign({ id: req.params.id, isDeleted: false }, (user.role !== 'super_admin' ? { organisationId: orgId } : {}))
+        const existing = await prisma_1.default.assignmentRule.findFirst({
+            where: {
+                id: req.params.id,
+                isDeleted: false,
+                ...(user.role !== 'super_admin' ? { organisationId: orgId } : {})
+            }
         });
         if (!existing)
             return res.status(404).json({ message: 'Assignment rule not found' });
-        const rule = yield prisma_1.default.assignmentRule.update({
+        const rule = await prisma_1.default.assignmentRule.update({
             where: { id: req.params.id },
-            data: Object.assign(Object.assign({}, req.body), { branchId: undefined, branch: req.body.branchId ? { connect: { id: req.body.branchId } } : undefined })
+            data: {
+                ...req.body,
+                branchId: undefined, // remove raw branchId
+                branch: req.body.branchId ? { connect: { id: req.body.branchId } } : undefined
+            }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
-            yield logAudit({
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
                 organisationId: rule.organisationId || orgId,
                 actorId: user.id,
                 action: 'UPDATE_ASSIGNMENT_RULE',
@@ -187,26 +185,30 @@ const updateAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateAssignmentRule = updateAssignmentRule;
-const deleteAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteAssignmentRule = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         // Verify existence and ownership
-        const existing = yield prisma_1.default.assignmentRule.findFirst({
-            where: Object.assign({ id: req.params.id, isDeleted: false }, (user.role !== 'super_admin' ? { organisationId: orgId } : {}))
+        const existing = await prisma_1.default.assignmentRule.findFirst({
+            where: {
+                id: req.params.id,
+                isDeleted: false,
+                ...(user.role !== 'super_admin' ? { organisationId: orgId } : {})
+            }
         });
         if (!existing)
             return res.status(404).json({ message: 'Assignment rule not found' });
-        const rule = yield prisma_1.default.assignmentRule.update({
+        const rule = await prisma_1.default.assignmentRule.update({
             where: { id: req.params.id },
             data: { isDeleted: true }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
-            yield logAudit({
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
                 organisationId: rule.organisationId || orgId,
                 actorId: user.id,
                 action: 'DELETE_ASSIGNMENT_RULE',
@@ -223,10 +225,10 @@ const deleteAssignmentRule = (req, res) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteAssignmentRule = deleteAssignmentRule;
 // Get available rule types for UI
-const getRuleTypes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getRuleTypes = async (req, res) => {
     res.json({
         ruleTypes: [
             { id: 'round_robin', name: 'Round Robin', description: 'Distribute evenly across team members' },
@@ -268,5 +270,5 @@ const getRuleTypes = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             { id: 'lifecycleStage', name: 'Lifecycle Stage', type: 'string' }
         ]
     });
-});
+};
 exports.getRuleTypes = getRuleTypes;

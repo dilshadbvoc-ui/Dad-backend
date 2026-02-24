@@ -1100,6 +1100,45 @@ exports.Prisma.RoleScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EMIScheduleScalarFieldEnum = {
+  id: 'id',
+  opportunityId: 'opportunityId',
+  totalAmount: 'totalAmount',
+  paidAmount: 'paidAmount',
+  remainingAmount: 'remainingAmount',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  organisationId: 'organisationId'
+};
+
+exports.Prisma.EMIInstallmentScalarFieldEnum = {
+  id: 'id',
+  scheduleId: 'scheduleId',
+  installmentNumber: 'installmentNumber',
+  amount: 'amount',
+  dueDate: 'dueDate',
+  status: 'status',
+  paidDate: 'paidDate',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentRecordScalarFieldEnum = {
+  id: 'id',
+  opportunityId: 'opportunityId',
+  amount: 'amount',
+  paymentDate: 'paymentDate',
+  paymentMethod: 'paymentMethod',
+  paymentType: 'paymentType',
+  installmentId: 'installmentId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  createdById: 'createdById',
+  organisationId: 'organisationId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1189,6 +1228,25 @@ exports.TargetScope = exports.$Enums.TargetScope = {
   HIERARCHY: 'HIERARCHY'
 };
 
+exports.EMIStatus = exports.$Enums.EMIStatus = {
+  active: 'active',
+  completed: 'completed',
+  cancelled: 'cancelled'
+};
+
+exports.InstallmentStatus = exports.$Enums.InstallmentStatus = {
+  pending: 'pending',
+  paid: 'paid',
+  overdue: 'overdue',
+  cancelled: 'cancelled'
+};
+
+exports.PaymentType = exports.$Enums.PaymentType = {
+  full: 'full',
+  partial: 'partial',
+  installment: 'installment'
+};
+
 exports.Prisma.ModelName = {
   Organisation: 'Organisation',
   User: 'User',
@@ -1241,7 +1299,10 @@ exports.Prisma.ModelName = {
   ProductShare: 'ProductShare',
   Branch: 'Branch',
   SystemSetting: 'SystemSetting',
-  Role: 'Role'
+  Role: 'Role',
+  EMISchedule: 'EMISchedule',
+  EMIInstallment: 'EMIInstallment',
+  PaymentRecord: 'PaymentRecord'
 };
 
 /**

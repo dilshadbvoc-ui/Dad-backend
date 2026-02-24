@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,21 +10,20 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const socket_1 = require("../socket");
 const encryption_1 = require("../utils/encryption");
-const getWhatsAppConfig = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.organisationId)) {
+const getWhatsAppConfig = async (req) => {
+    if (!req.user?.organisationId) {
         throw new Error('User not authenticated or missing organisation');
     }
-    const org = yield prisma_1.default.organisation.findUnique({
+    const org = await prisma_1.default.organisation.findUnique({
         where: { id: req.user.organisationId }
     });
     if (!org)
         throw new Error('Organisation not found');
     const integrations = org.integrations;
     // Check for dedicated WhatsApp config first
-    let whatsappConfig = integrations === null || integrations === void 0 ? void 0 : integrations.whatsapp;
+    let whatsappConfig = integrations?.whatsapp;
     // Fallback to meta config for backward compatibility
-    if (!(whatsappConfig === null || whatsappConfig === void 0 ? void 0 : whatsappConfig.connected) && ((_b = integrations === null || integrations === void 0 ? void 0 : integrations.meta) === null || _b === void 0 ? void 0 : _b.phoneNumberId)) {
+    if (!whatsappConfig?.connected && integrations?.meta?.phoneNumberId) {
         whatsappConfig = {
             accessToken: integrations.meta.accessToken,
             phoneNumberId: integrations.meta.phoneNumberId,
@@ -41,15 +31,17 @@ const getWhatsAppConfig = (req) => __awaiter(void 0, void 0, void 0, function* (
             connected: integrations.meta.connected
         };
     }
-    if (!(whatsappConfig === null || whatsappConfig === void 0 ? void 0 : whatsappConfig.connected) || !whatsappConfig.phoneNumberId || !whatsappConfig.accessToken) {
+    if (!whatsappConfig?.connected || !whatsappConfig.phoneNumberId || !whatsappConfig.accessToken) {
         throw new Error('WhatsApp integration not configured. Please check settings.');
     }
     // Decrypt the token before using it
-    return Object.assign(Object.assign({}, whatsappConfig), { accessToken: (0, encryption_1.decrypt)(whatsappConfig.accessToken) });
-});
+    return {
+        ...whatsappConfig,
+        accessToken: (0, encryption_1.decrypt)(whatsappConfig.accessToken)
+    };
+};
 exports.getWhatsAppConfig = getWhatsAppConfig;
-const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+const sendMessage = async (req, res) => {
     try {
         // Validate required fields
         const { to, message, type = 'text' } = req.body;
@@ -69,7 +61,7 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         // Sanitize message content
         const sanitizedMessage = message ? message.trim().substring(0, 4096) : undefined;
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
@@ -78,16 +70,16 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         let result;
         if (type === 'template') {
             const { templateName, languageCode = 'en_US', components = [] } = req.body;
-            result = yield whatsAppService.sendTemplateMessage(to, templateName, languageCode, components);
+            result = await whatsAppService.sendTemplateMessage(to, templateName, languageCode, components);
         }
         else {
-            result = yield whatsAppService.sendTextMessage(to, sanitizedMessage);
+            result = await whatsAppService.sendTextMessage(to, sanitizedMessage);
         }
         // Log the message to database
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (orgId) {
-            yield prisma_1.default.whatsAppMessage.create({
+            await prisma_1.default.whatsAppMessage.create({
                 data: {
                     conversationId: `${to}_${Date.now()}`,
                     phoneNumber: to,
@@ -100,10 +92,10 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                         components: type === 'template' ? req.body.components : undefined
                     },
                     status: 'sent',
-                    waMessageId: (_b = (_a = result.messages) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.id,
+                    waMessageId: result.messages?.[0]?.id,
                     sentAt: new Date(),
                     organisationId: orgId,
-                    agentId: user === null || user === void 0 ? void 0 : user.id
+                    agentId: user?.id
                 }
             });
             // Real-time socket notification for outgoing message
@@ -123,7 +115,7 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                         status: 'sent',
                         sentAt: new Date(),
                         organisationId: orgId,
-                        agentId: user === null || user === void 0 ? void 0 : user.id
+                        agentId: user?.id
                     },
                     phoneNumber: to
                 });
@@ -135,9 +127,9 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.error('Error in sendMessage:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.sendMessage = sendMessage;
-const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMessages = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -151,7 +143,7 @@ const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (phoneNumber) {
             where.phoneNumber = phoneNumber;
         }
-        const messages = yield prisma_1.default.whatsAppMessage.findMany({
+        const messages = await prisma_1.default.whatsAppMessage.findMany({
             where,
             orderBy: { createdAt: 'desc' },
             take: Number(limit),
@@ -174,16 +166,16 @@ const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.error('Error in getMessages:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMessages = getMessages;
-const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getConversations = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
         // 1. Get unique phone numbers (conversations)
-        const conversations = yield prisma_1.default.whatsAppMessage.groupBy({
+        const conversations = await prisma_1.default.whatsAppMessage.groupBy({
             by: ['phoneNumber'],
             where: {
                 organisationId: orgId,
@@ -199,8 +191,8 @@ const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, functio
             }
         });
         // 2. Fetch details for each conversation (latest message, contact info)
-        const conversationDetails = yield Promise.all(conversations.map((conv) => __awaiter(void 0, void 0, void 0, function* () {
-            const lastMessage = yield prisma_1.default.whatsAppMessage.findFirst({
+        const conversationDetails = await Promise.all(conversations.map(async (conv) => {
+            const lastMessage = await prisma_1.default.whatsAppMessage.findFirst({
                 where: {
                     organisationId: orgId,
                     phoneNumber: conv.phoneNumber,
@@ -213,14 +205,14 @@ const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, functio
             });
             // Determine display name
             let displayName = conv.phoneNumber;
-            if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.contact) {
+            if (lastMessage?.contact) {
                 displayName = `${lastMessage.contact.firstName} ${lastMessage.contact.lastName}`;
             }
-            else if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.lead) {
+            else if (lastMessage?.lead) {
                 displayName = `${lastMessage.lead.firstName} ${lastMessage.lead.lastName}`;
             }
             // Count unread messages for this specific conversation
-            const unreadCount = yield prisma_1.default.whatsAppMessage.count({
+            const unreadCount = await prisma_1.default.whatsAppMessage.count({
                 where: {
                     organisationId: orgId,
                     phoneNumber: conv.phoneNumber,
@@ -231,33 +223,33 @@ const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, functio
             });
             return {
                 phoneNumber: conv.phoneNumber,
-                lastMessage: lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.content,
-                lastMessageAt: lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.createdAt,
+                lastMessage: lastMessage?.content,
+                lastMessageAt: lastMessage?.createdAt,
                 displayName: displayName.trim(),
-                leadId: lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.leadId,
-                contactId: lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.contactId,
-                messageType: lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.messageType,
+                leadId: lastMessage?.leadId,
+                contactId: lastMessage?.contactId,
+                messageType: lastMessage?.messageType,
                 unreadCount
             };
-        })));
+        }));
         res.json(conversationDetails);
     }
     catch (error) {
         console.error('Error in getConversations:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getConversations = getConversations;
-const testConnection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const testConnection = async (req, res) => {
     try {
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
         // Test by getting phone number info
-        const response = yield whatsAppService.makeRequest(`${config.phoneNumberId}`, config.accessToken, {
+        const response = await whatsAppService.makeRequest(`${config.phoneNumberId}`, config.accessToken, {
             fields: 'display_phone_number,verified_name,quality_rating'
         });
         res.json({
@@ -271,11 +263,11 @@ const testConnection = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.error('Error in testConnection:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.testConnection = testConnection;
-const getTemplates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTemplates = async (req, res) => {
     try {
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         if (!config.wabaId) {
             return res.status(400).json({ message: 'WABA ID required to fetch templates' });
         }
@@ -284,7 +276,7 @@ const getTemplates = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
-        const response = yield whatsAppService.makeRequest(`${config.wabaId}/message_templates`, config.accessToken, {
+        const response = await whatsAppService.makeRequest(`${config.wabaId}/message_templates`, config.accessToken, {
             fields: 'name,status,category,language,components'
         });
         res.json(response.data || []);
@@ -293,11 +285,11 @@ const getTemplates = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.error('Error in getTemplates:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTemplates = getTemplates;
-const createTemplate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createTemplate = async (req, res) => {
     try {
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         if (!config.wabaId) {
             return res.status(400).json({ message: 'WABA ID required to create templates' });
         }
@@ -306,34 +298,33 @@ const createTemplate = (req, res) => __awaiter(void 0, void 0, void 0, function*
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
-        const result = yield whatsAppService.createTemplate(req.body);
+        const result = await whatsAppService.createTemplate(req.body);
         res.json(result);
     }
     catch (error) {
         console.error('Error in createTemplate:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.createTemplate = createTemplate;
-const sendMediaMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+const sendMediaMessage = async (req, res) => {
     try {
         const { to, mediaType, mediaId, caption, filename } = req.body;
         if (!to || !mediaType || !mediaId) {
             return res.status(400).json({ message: 'Phone number, media type, and media ID are required' });
         }
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
-        const result = yield whatsAppService.sendMediaMessage(to, mediaType, mediaId, caption, filename);
+        const result = await whatsAppService.sendMediaMessage(to, mediaType, mediaId, caption, filename);
         // Log the message to database
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (orgId) {
-            yield prisma_1.default.whatsAppMessage.create({
+            await prisma_1.default.whatsAppMessage.create({
                 data: {
                     conversationId: `${to}_${Date.now()}`,
                     phoneNumber: to,
@@ -345,10 +336,10 @@ const sendMediaMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
                         filename
                     },
                     status: 'sent',
-                    waMessageId: (_b = (_a = result.messages) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.id,
+                    waMessageId: result.messages?.[0]?.id,
                     sentAt: new Date(),
                     organisationId: orgId,
-                    agentId: user === null || user === void 0 ? void 0 : user.id
+                    agentId: user?.id
                 }
             });
         }
@@ -358,30 +349,30 @@ const sendMediaMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
         console.error('Error in sendMediaMessage:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.sendMediaMessage = sendMediaMessage;
-const getMessageStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMessageStatus = async (req, res) => {
     try {
         const { messageId } = req.params;
         if (!messageId) {
             return res.status(400).json({ message: 'Message ID is required' });
         }
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
-        const result = yield whatsAppService.getMessageStatus(messageId);
+        const result = await whatsAppService.getMessageStatus(messageId);
         res.json(result);
     }
     catch (error) {
         console.error('Error in getMessageStatus:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMessageStatus = getMessageStatus;
-const markMessageAsRead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const markMessageAsRead = async (req, res) => {
     try {
         const { messageId } = req.body;
         const user = req.user;
@@ -392,14 +383,14 @@ const markMessageAsRead = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!messageId) {
             return res.status(400).json({ message: 'Message ID is required' });
         }
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
         // Update internal database
-        yield prisma_1.default.whatsAppMessage.updateMany({
+        await prisma_1.default.whatsAppMessage.updateMany({
             where: {
                 waMessageId: messageId,
                 organisationId: orgId
@@ -408,16 +399,16 @@ const markMessageAsRead = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 isReadByAgent: true
             }
         });
-        const result = yield whatsAppService.markMessageAsRead(messageId);
+        const result = await whatsAppService.markMessageAsRead(messageId);
         res.json({ success: true, result });
     }
     catch (error) {
         console.error('Error in markMessageAsRead:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.markMessageAsRead = markMessageAsRead;
-const markConversationAsRead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const markConversationAsRead = async (req, res) => {
     try {
         const { phoneNumber } = req.body;
         const user = req.user;
@@ -427,7 +418,7 @@ const markConversationAsRead = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
-        yield prisma_1.default.whatsAppMessage.updateMany({
+        await prisma_1.default.whatsAppMessage.updateMany({
             where: {
                 organisationId: orgId,
                 phoneNumber,
@@ -451,30 +442,30 @@ const markConversationAsRead = (req, res) => __awaiter(void 0, void 0, void 0, f
         console.error('Error in markConversationAsRead:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.markConversationAsRead = markConversationAsRead;
-const getConversationAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getConversationAnalytics = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
         if (!startDate || !endDate) {
             return res.status(400).json({ message: 'Start date and end date are required' });
         }
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
-        const result = yield whatsAppService.getConversationAnalytics(startDate, endDate);
+        const result = await whatsAppService.getConversationAnalytics(startDate, endDate);
         res.json(result);
     }
     catch (error) {
         console.error('Error in getConversationAnalytics:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getConversationAnalytics = getConversationAnalytics;
-const getMessageStatistics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMessageStatistics = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -495,7 +486,7 @@ const getMessageStatistics = (req, res) => __awaiter(void 0, void 0, void 0, fun
             where.phoneNumber = phoneNumber;
         }
         // Get message counts by status
-        const statusCounts = yield prisma_1.default.whatsAppMessage.groupBy({
+        const statusCounts = await prisma_1.default.whatsAppMessage.groupBy({
             by: ['status'],
             where,
             _count: {
@@ -503,7 +494,7 @@ const getMessageStatistics = (req, res) => __awaiter(void 0, void 0, void 0, fun
             }
         });
         // Get message counts by type
-        const typeCounts = yield prisma_1.default.whatsAppMessage.groupBy({
+        const typeCounts = await prisma_1.default.whatsAppMessage.groupBy({
             by: ['messageType'],
             where,
             _count: {
@@ -511,7 +502,7 @@ const getMessageStatistics = (req, res) => __awaiter(void 0, void 0, void 0, fun
             }
         });
         // Get message counts by direction
-        const directionCounts = yield prisma_1.default.whatsAppMessage.groupBy({
+        const directionCounts = await prisma_1.default.whatsAppMessage.groupBy({
             by: ['direction'],
             where,
             _count: {
@@ -519,9 +510,9 @@ const getMessageStatistics = (req, res) => __awaiter(void 0, void 0, void 0, fun
             }
         });
         // Get total messages
-        const totalMessages = yield prisma_1.default.whatsAppMessage.count({ where });
+        const totalMessages = await prisma_1.default.whatsAppMessage.count({ where });
         // Get unique conversations
-        const uniqueConversations = yield prisma_1.default.whatsAppMessage.findMany({
+        const uniqueConversations = await prisma_1.default.whatsAppMessage.findMany({
             where,
             select: { phoneNumber: true },
             distinct: ['phoneNumber']
@@ -547,53 +538,53 @@ const getMessageStatistics = (req, res) => __awaiter(void 0, void 0, void 0, fun
         console.error('Error in getMessageStatistics:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMessageStatistics = getMessageStatistics;
-const getMedia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMedia = async (req, res) => {
     try {
         const { mediaId } = req.params;
         if (!mediaId) {
             return res.status(400).json({ message: 'Media ID is required' });
         }
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
         // 1. Get media URL
-        const mediaUrl = yield whatsAppService.getMediaUrl(mediaId);
+        const mediaUrl = await whatsAppService.getMediaUrl(mediaId);
         // 2. Download/Proxy media
-        const mediaStream = yield whatsAppService.downloadMedia(mediaUrl);
+        const mediaStream = await whatsAppService.downloadMedia(mediaUrl);
         mediaStream.pipe(res);
     }
     catch (error) {
         console.error('Error in getMedia:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMedia = getMedia;
-const uploadMedia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const uploadMedia = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
         }
-        const config = yield (0, exports.getWhatsAppConfig)(req);
+        const config = await (0, exports.getWhatsAppConfig)(req);
         const whatsAppService = new WhatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
         });
-        const result = yield whatsAppService.uploadMedia(req.file.buffer, req.file.originalname, req.file.mimetype);
+        const result = await whatsAppService.uploadMedia(req.file.buffer, req.file.originalname, req.file.mimetype);
         res.json(result);
     }
     catch (error) {
         console.error('Error in uploadMedia:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.uploadMedia = uploadMedia;
-const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const handleWebhook = async (req, res) => {
     try {
         const signature = req.headers['x-hub-signature-256'];
         const appSecret = process.env.WHATSAPP_APP_SECRET;
@@ -604,22 +595,22 @@ const handleWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 return res.sendStatus(401);
             }
         }
-        yield WhatsAppIntegrationService_1.WhatsAppIntegrationService.handleWebhook(req.body);
+        await WhatsAppIntegrationService_1.WhatsAppIntegrationService.handleWebhook(req.body);
         res.sendStatus(200);
     }
     catch (error) {
         console.error('Error in handleWebhook:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.handleWebhook = handleWebhook;
-const verifyWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyWebhook = async (req, res) => {
     try {
-        yield WhatsAppIntegrationService_1.WhatsAppIntegrationService.verifyWebhook(req, res);
+        await WhatsAppIntegrationService_1.WhatsAppIntegrationService.verifyWebhook(req, res);
     }
     catch (error) {
         console.error('Error in verifyWebhook:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.verifyWebhook = verifyWebhook;

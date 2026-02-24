@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadDocument = exports.uploadGenericImage = exports.logCallWithoutRecording = exports.uploadCallRecording = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const uploadCallRecording = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const uploadCallRecording = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
@@ -31,13 +22,13 @@ const uploadCallRecording = (req, res) => __awaiter(void 0, void 0, void 0, func
         // Clean phone number (remove non-digits, maybe keep +)
         const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
         // 0. Storage Limit Check (basic implementation)
-        const org = yield prisma_1.default.organisation.findUnique({
+        const org = await prisma_1.default.organisation.findUnique({
             where: { id: orgId || user.organisationId },
             select: { storageLimit: true }
         });
         if (org && org.storageLimit > 0) {
             // Calculate total storage used by this org
-            const totalUsed = yield prisma_1.default.interaction.aggregate({
+            const totalUsed = await prisma_1.default.interaction.aggregate({
                 where: { organisationId: orgId || user.organisationId, recordingUrl: { not: null } },
                 _sum: { recordingDuration: true } // Duration is a proxy, but better to check file size if we tracked it.
                 // Since we don't track file size in DB, we'll use a count-based heuristic or just duration sum as placeholder
@@ -56,7 +47,7 @@ const uploadCallRecording = (req, res) => __awaiter(void 0, void 0, void 0, func
         let entityId = null;
         let entityType = null;
         // Try Lead
-        const lead = yield prisma_1.default.lead.findFirst({
+        const lead = await prisma_1.default.lead.findFirst({
             where: {
                 organisationId: orgId || undefined,
                 phone: { contains: cleanPhone } // Loose match
@@ -69,7 +60,7 @@ const uploadCallRecording = (req, res) => __awaiter(void 0, void 0, void 0, func
         // SAVE TO DATABASE (DOCUMENT TABLE)
         const fileData = req.file.buffer;
         const filename = `recording-${cleanPhone}-${timestamp || Date.now()}.mp3`;
-        const document = yield prisma_1.default.document.create({
+        const document = await prisma_1.default.document.create({
             data: {
                 name: filename,
                 fileKey: filename,
@@ -83,7 +74,7 @@ const uploadCallRecording = (req, res) => __awaiter(void 0, void 0, void 0, func
             }
         });
         // Create Interaction linked to Document
-        const interaction = yield prisma_1.default.interaction.create({
+        const interaction = await prisma_1.default.interaction.create({
             data: {
                 organisationId: orgId || user.organisationId,
                 type: 'call',
@@ -110,13 +101,13 @@ const uploadCallRecording = (req, res) => __awaiter(void 0, void 0, void 0, func
         console.error('[Upload Call] Error:', error);
         res.status(500).json({ message: 'Upload failed: ' + error.message });
     }
-});
+};
 exports.uploadCallRecording = uploadCallRecording;
 /**
  * Log a call without a recording (for when Android blocks audio capture)
  * POST /api/upload/log-call
  */
-const logCallWithoutRecording = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const logCallWithoutRecording = async (req, res) => {
     try {
         const { phoneNumber, duration, timestamp, subject, description } = req.body;
         const user = req.user;
@@ -127,21 +118,21 @@ const logCallWithoutRecording = (req, res) => __awaiter(void 0, void 0, void 0, 
         // Clean phone number
         const cleanPhone = phoneNumber.replace(/[^0-9]/g, '').slice(-10);
         // Find Lead by phone
-        const lead = yield prisma_1.default.lead.findFirst({
+        const lead = await prisma_1.default.lead.findFirst({
             where: {
                 organisationId: orgId || undefined,
                 phone: { contains: cleanPhone }
             }
         });
         // Create Interaction (without recording)
-        const interaction = yield prisma_1.default.interaction.create({
+        const interaction = await prisma_1.default.interaction.create({
             data: {
                 organisationId: orgId || user.organisationId,
                 type: 'call',
                 subject: subject || `Phone Call with ${phoneNumber}`,
                 description: description || `Auto-logged call. Duration: ${duration || 0}s. Recording unavailable due to Android restrictions.`,
                 date: new Date(parseInt(timestamp) || Date.now()),
-                leadId: lead === null || lead === void 0 ? void 0 : lead.id,
+                leadId: lead?.id,
                 createdById: user.id,
                 recordingDuration: parseInt(duration) || 0,
                 direction: 'outbound',
@@ -159,9 +150,9 @@ const logCallWithoutRecording = (req, res) => __awaiter(void 0, void 0, void 0, 
         console.error('[Log Call] Error:', error);
         res.status(500).json({ message: 'Log call failed: ' + error.message });
     }
-});
+};
 exports.logCallWithoutRecording = logCallWithoutRecording;
-const uploadGenericImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const uploadGenericImage = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
@@ -174,7 +165,7 @@ const uploadGenericImage = (req, res) => __awaiter(void 0, void 0, void 0, funct
         // Read file data as buffer
         const fileData = req.file.buffer;
         // Save image to database
-        const document = yield prisma_1.default.document.create({
+        const document = await prisma_1.default.document.create({
             data: {
                 name: req.file.originalname,
                 fileKey: req.file.originalname,
@@ -198,9 +189,9 @@ const uploadGenericImage = (req, res) => __awaiter(void 0, void 0, void 0, funct
         console.error('[Upload Image] Error:', error);
         res.status(500).json({ message: 'Upload failed: ' + error.message });
     }
-});
+};
 exports.uploadGenericImage = uploadGenericImage;
-const uploadDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const uploadDocument = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
@@ -212,7 +203,7 @@ const uploadDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
         // Read file data as buffer
         const fileData = req.file.buffer;
         // Save document to database with binary data
-        const document = yield prisma_1.default.document.create({
+        const document = await prisma_1.default.document.create({
             data: {
                 name: name || req.file.originalname,
                 description: description || null,
@@ -252,5 +243,5 @@ const uploadDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.error('[Upload Document] Error:', error);
         res.status(500).json({ message: 'Upload failed: ' + error.message });
     }
-});
+};
 exports.uploadDocument = uploadDocument;

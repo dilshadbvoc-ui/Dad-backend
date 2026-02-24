@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -20,97 +11,95 @@ class GoalService {
      * @param userId The ID of the user whose goals need updating
      * @param type The type of goal (e.g., 'revenue', 'leads', 'calls')
      */
-    static updateProgressForUser(userId, type) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                console.log(`[GoalService] Updating ${type} progress for user: ${userId}`);
-                const now = new Date();
-                // Find all active goals of this type for the user
-                const activeGoals = yield prisma_1.default.goal.findMany({
-                    where: {
-                        assignedToId: userId,
-                        type: type,
-                        status: 'active',
-                        isDeleted: false,
-                        startDate: { lte: now },
-                        endDate: { gte: now }
+    static async updateProgressForUser(userId, type) {
+        try {
+            console.log(`[GoalService] Updating ${type} progress for user: ${userId}`);
+            const now = new Date();
+            // Find all active goals of this type for the user
+            const activeGoals = await prisma_1.default.goal.findMany({
+                where: {
+                    assignedToId: userId,
+                    type: type,
+                    status: 'active',
+                    isDeleted: false,
+                    startDate: { lte: now },
+                    endDate: { gte: now }
+                }
+            });
+            if (activeGoals.length === 0) {
+                console.log(`[GoalService] No active ${type} goals found for user: ${userId}`);
+                return;
+            }
+            for (const goal of activeGoals) {
+                let progressValue = 0;
+                // Calculate progress based on type
+                switch (type.toLowerCase()) {
+                    case 'revenue': {
+                        const revenueAggregation = await prisma_1.default.opportunity.aggregate({
+                            where: {
+                                ownerId: userId,
+                                stage: 'closed_won',
+                                isDeleted: false,
+                                updatedAt: {
+                                    gte: goal.startDate,
+                                    lte: goal.endDate
+                                }
+                            },
+                            _sum: { amount: true }
+                        });
+                        progressValue = revenueAggregation._sum.amount || 0;
+                        break;
                     }
+                    case 'leads':
+                        progressValue = await prisma_1.default.lead.count({
+                            where: {
+                                assignedToId: userId,
+                                isDeleted: false,
+                                createdAt: {
+                                    gte: goal.startDate,
+                                    lte: goal.endDate
+                                }
+                            }
+                        });
+                        break;
+                    case 'calls':
+                        progressValue = await prisma_1.default.interaction.count({
+                            where: {
+                                createdById: userId,
+                                type: 'call',
+                                isDeleted: false,
+                                createdAt: {
+                                    gte: goal.startDate,
+                                    lte: goal.endDate
+                                }
+                            }
+                        });
+                        break;
+                    default:
+                        console.warn(`[GoalService] Unknown goal type: ${type}`);
+                        continue;
+                }
+                // Calculate percent and update goal
+                const achievementPercent = Math.round((progressValue / goal.targetValue) * 100);
+                const updateData = {
+                    currentValue: progressValue,
+                    achievementPercent: achievementPercent
+                };
+                // Check for completion
+                if (progressValue >= goal.targetValue && goal.status !== 'completed') {
+                    updateData.status = 'completed';
+                    updateData.completedAt = new Date();
+                }
+                await prisma_1.default.goal.update({
+                    where: { id: goal.id },
+                    data: updateData
                 });
-                if (activeGoals.length === 0) {
-                    console.log(`[GoalService] No active ${type} goals found for user: ${userId}`);
-                    return;
-                }
-                for (const goal of activeGoals) {
-                    let progressValue = 0;
-                    // Calculate progress based on type
-                    switch (type.toLowerCase()) {
-                        case 'revenue': {
-                            const revenueAggregation = yield prisma_1.default.opportunity.aggregate({
-                                where: {
-                                    ownerId: userId,
-                                    stage: 'closed_won',
-                                    isDeleted: false,
-                                    updatedAt: {
-                                        gte: goal.startDate,
-                                        lte: goal.endDate
-                                    }
-                                },
-                                _sum: { amount: true }
-                            });
-                            progressValue = revenueAggregation._sum.amount || 0;
-                            break;
-                        }
-                        case 'leads':
-                            progressValue = yield prisma_1.default.lead.count({
-                                where: {
-                                    assignedToId: userId,
-                                    isDeleted: false,
-                                    createdAt: {
-                                        gte: goal.startDate,
-                                        lte: goal.endDate
-                                    }
-                                }
-                            });
-                            break;
-                        case 'calls':
-                            progressValue = yield prisma_1.default.interaction.count({
-                                where: {
-                                    createdById: userId,
-                                    type: 'call',
-                                    isDeleted: false,
-                                    createdAt: {
-                                        gte: goal.startDate,
-                                        lte: goal.endDate
-                                    }
-                                }
-                            });
-                            break;
-                        default:
-                            console.warn(`[GoalService] Unknown goal type: ${type}`);
-                            continue;
-                    }
-                    // Calculate percent and update goal
-                    const achievementPercent = Math.round((progressValue / goal.targetValue) * 100);
-                    const updateData = {
-                        currentValue: progressValue,
-                        achievementPercent: achievementPercent
-                    };
-                    // Check for completion
-                    if (progressValue >= goal.targetValue && goal.status !== 'completed') {
-                        updateData.status = 'completed';
-                        updateData.completedAt = new Date();
-                    }
-                    yield prisma_1.default.goal.update({
-                        where: { id: goal.id },
-                        data: updateData
-                    });
-                    console.log(`[GoalService] Updated Goal ${goal.id}: Progress ${progressValue}/${goal.targetValue} (${achievementPercent}%)`);
-                }
+                console.log(`[GoalService] Updated Goal ${goal.id}: Progress ${progressValue}/${goal.targetValue} (${achievementPercent}%)`);
             }
-            catch (error) {
-                console.error('[GoalService] Error updating progress:', error);
-            }
-        });
+        }
+        catch (error) {
+            console.error('[GoalService] Error updating progress:', error);
+        }
     }
 }
 exports.GoalService = GoalService;

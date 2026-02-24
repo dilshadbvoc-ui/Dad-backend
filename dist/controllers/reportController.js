@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -20,13 +11,13 @@ const exceljs_1 = __importDefault(require("exceljs"));
  * Get leads report with filters
  * Query params: stage, status, userId, startDate, endDate
  */
-const getLeadsReport = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeadsReport = async (req, res) => {
     try {
         const user = req.user;
         if (!user)
             return res.status(401).json({ message: 'Unauthorized' });
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
         const { stage, status, userId, startDate, endDate } = req.query;
         const where = {
             organisationId: orgId,
@@ -49,7 +40,7 @@ const getLeadsReport = (req, res) => __awaiter(void 0, void 0, void 0, function*
             if (endDate)
                 where.createdAt.lte = new Date(endDate);
         }
-        const leads = yield prisma_1.default.lead.findMany({
+        const leads = await prisma_1.default.lead.findMany({
             where,
             include: {
                 assignedTo: { select: { id: true, firstName: true, lastName: true } }
@@ -79,23 +70,23 @@ const getLeadsReport = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.error('[ReportController] getLeadsReport error:', error);
         res.status(500).json({ message: 'Failed to fetch leads report' });
     }
-});
+};
 exports.getLeadsReport = getLeadsReport;
 /**
  * Get user performance metrics
  */
-const getUserPerformance = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserPerformance = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
         const { startDate, endDate } = req.query;
         const dateFilter = {};
         if (startDate)
             dateFilter.gte = new Date(startDate);
         if (endDate)
             dateFilter.lte = new Date(endDate);
-        const users = yield prisma_1.default.user.findMany({
+        const users = await prisma_1.default.user.findMany({
             where: {
                 id: { in: [...subordinateIds, user.id] },
                 organisationId: orgId,
@@ -109,19 +100,38 @@ const getUserPerformance = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 dailyLeadQuota: true
             }
         });
-        const performance = yield Promise.all(users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
-            const [leadsAssigned, leadsConverted, callsMade, meetingsHeld] = yield Promise.all([
+        const performance = await Promise.all(users.map(async (user) => {
+            const [leadsAssigned, leadsConverted, callsMade, meetingsHeld] = await Promise.all([
                 prisma_1.default.lead.count({
-                    where: Object.assign({ assignedToId: user.id, isDeleted: false }, (Object.keys(dateFilter).length ? { createdAt: dateFilter } : {}))
+                    where: {
+                        assignedToId: user.id,
+                        isDeleted: false,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
                 }),
                 prisma_1.default.lead.count({
-                    where: Object.assign({ assignedToId: user.id, status: 'converted', isDeleted: false }, (Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {}))
+                    where: {
+                        assignedToId: user.id,
+                        status: 'converted',
+                        isDeleted: false,
+                        ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
+                    }
                 }),
                 prisma_1.default.interaction.count({
-                    where: Object.assign({ createdById: user.id, type: 'call', isDeleted: false }, (Object.keys(dateFilter).length ? { createdAt: dateFilter } : {}))
+                    where: {
+                        createdById: user.id,
+                        type: 'call',
+                        isDeleted: false,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
                 }),
                 prisma_1.default.calendarEvent.count({
-                    where: Object.assign({ createdById: user.id, type: 'meeting', isDeleted: false }, (Object.keys(dateFilter).length ? { createdAt: dateFilter } : {}))
+                    where: {
+                        createdById: user.id,
+                        type: 'meeting',
+                        isDeleted: false,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
                 })
             ]);
             const conversionRate = leadsAssigned > 0
@@ -142,24 +152,24 @@ const getUserPerformance = (req, res) => __awaiter(void 0, void 0, void 0, funct
                     meetingsHeld
                 }
             };
-        })));
+        }));
         res.json({ performance });
     }
     catch (error) {
         console.error('[ReportController] getUserPerformance error:', error);
         res.status(500).json({ message: 'Failed to fetch user performance' });
     }
-});
+};
 exports.getUserPerformance = getUserPerformance;
 /**
  * Get sales book data with time period filter
  * Query params: period (day|week|month|year)
  */
-const getSalesBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSalesBook = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
         const { period = 'month' } = req.query;
         const now = new Date();
         const startDate = new Date();
@@ -188,7 +198,7 @@ const getSalesBook = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             where.ownerId = { in: [...subordinateIds, user.id] };
         }
         // Get won opportunities (sales)
-        const sales = yield prisma_1.default.opportunity.findMany({
+        const sales = await prisma_1.default.opportunity.findMany({
             where,
             include: {
                 account: { select: { name: true } },
@@ -212,17 +222,14 @@ const getSalesBook = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             period,
             startDate,
             endDate: now,
-            sales: sales.map(s => {
-                var _a;
-                return ({
-                    id: s.id,
-                    name: s.name,
-                    amount: s.amount,
-                    account: ((_a = s.account) === null || _a === void 0 ? void 0 : _a.name) || 'N/A',
-                    owner: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unassigned',
-                    closedAt: s.updatedAt
-                });
-            }),
+            sales: sales.map(s => ({
+                id: s.id,
+                name: s.name,
+                amount: s.amount,
+                account: s.account?.name || 'N/A',
+                owner: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unassigned',
+                closedAt: s.updatedAt
+            })),
             summary: {
                 totalDeals: sales.length,
                 totalValue,
@@ -235,23 +242,23 @@ const getSalesBook = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.error('[ReportController] getSalesBook error:', error);
         res.status(500).json({ message: 'Failed to fetch sales book' });
     }
-});
+};
 exports.getSalesBook = getSalesBook;
 /**
  * Export report data to Excel
  * Params: type (leads|performance|sales)
  */
-const exportToExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const exportToExcel = async (req, res) => {
     try {
         const { type } = req.params;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
         const workbook = new exceljs_1.default.Workbook();
         workbook.creator = 'CRM Reports';
         workbook.created = new Date();
         if (type === 'leads') {
-            const leads = yield prisma_1.default.lead.findMany({
+            const leads = await prisma_1.default.lead.findMany({
                 where: {
                     organisationId: orgId,
                     assignedToId: { in: [...subordinateIds, user.id] },
@@ -299,7 +306,7 @@ const exportToExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             if (user.role !== 'admin' && user.role !== 'super_admin') {
                 where.ownerId = { in: [...subordinateIds, user.id] };
             }
-            const sales = yield prisma_1.default.opportunity.findMany({
+            const sales = await prisma_1.default.opportunity.findMany({
                 where,
                 include: {
                     account: { select: { name: true } },
@@ -315,10 +322,9 @@ const exportToExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 { header: 'Closed Date', key: 'closedAt', width: 15 }
             ];
             sales.forEach(sale => {
-                var _a;
                 sheet.addRow({
                     name: sale.name,
-                    account: ((_a = sale.account) === null || _a === void 0 ? void 0 : _a.name) || 'N/A',
+                    account: sale.account?.name || 'N/A',
                     amount: sale.amount,
                     owner: sale.owner ? `${sale.owner.firstName} ${sale.owner.lastName}` : 'Unassigned',
                     closedAt: sale.updatedAt.toLocaleDateString()
@@ -329,12 +335,12 @@ const exportToExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=${type}_report_${Date.now()}.xlsx`);
-        yield workbook.xlsx.write(res);
+        await workbook.xlsx.write(res);
         res.end();
     }
     catch (error) {
         console.error('[ReportController] exportToExcel error:', error);
         res.status(500).json({ message: 'Failed to export report' });
     }
-});
+};
 exports.exportToExcel = exportToExcel;

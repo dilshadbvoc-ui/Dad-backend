@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,12 +9,12 @@ const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
 const SalesTargetService_1 = require("../services/SalesTargetService");
 // Helper: Get direct reports of a user
-const getDirectReports = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma_1.default.user.findMany({
+const getDirectReports = async (userId) => {
+    return await prisma_1.default.user.findMany({
         where: { reportsToId: userId, isActive: true },
         select: { id: true, firstName: true, lastName: true }
     });
-});
+};
 // Helper: Calculate period dates
 const calculatePeriodDates = (period) => {
     const now = new Date();
@@ -47,7 +38,7 @@ const calculatePeriodDates = (period) => {
     return { startDate, endDate };
 };
 // Assign target to a subordinate or team (with auto-distribution)
-const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const assignTarget = async (req, res) => {
     try {
         const user = req.user;
         const { assignToUserId, teamId, targetValue, period, metric = 'revenue', productId, scope = 'HIERARCHY', opportunityType } = req.body; // Default to revenue & hierarchy (legacy support)
@@ -59,7 +50,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(400).json({ message: 'Organisation not found' });
         // Validate Product if provided
         if (productId) {
-            const product = yield prisma_1.default.product.findUnique({ where: { id: productId } });
+            const product = await prisma_1.default.product.findUnique({ where: { id: productId } });
             if (!product)
                 return res.status(400).json({ message: 'Product not found' });
         }
@@ -69,14 +60,14 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // --- TEAM ASSIGNMENT ---
         if (teamId) {
             // Verify team existence
-            const team = yield prisma_1.default.team.findFirst({
+            const team = await prisma_1.default.team.findFirst({
                 where: { id: teamId, organisationId: userOrgId },
                 include: { members: true }
             });
             if (!team)
                 return res.status(404).json({ message: 'Team not found' });
             // Check for existing team target
-            const existingTeamTarget = yield prisma_1.default.salesTarget.findFirst({
+            const existingTeamTarget = await prisma_1.default.salesTarget.findFirst({
                 where: {
                     teamId,
                     period,
@@ -92,7 +83,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 return res.status(400).json({ message: `Team already has an active ${metric} target for this period` });
             }
             // Create valid team target (assignedToId is null)
-            mainTarget = yield prisma_1.default.salesTarget.create({
+            mainTarget = await prisma_1.default.salesTarget.create({
                 data: {
                     targetValue,
                     period,
@@ -112,7 +103,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const distributedValue = Math.floor(targetValue / team.members.length);
                 for (const member of team.members) {
                     // Check if member already has a target
-                    const existingMemberTarget = yield prisma_1.default.salesTarget.findFirst({
+                    const existingMemberTarget = await prisma_1.default.salesTarget.findFirst({
                         where: {
                             assignedToId: member.id,
                             period,
@@ -125,7 +116,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                         }
                     });
                     if (!existingMemberTarget) {
-                        const childTarget = yield prisma_1.default.salesTarget.create({
+                        const childTarget = await prisma_1.default.salesTarget.create({
                             data: {
                                 targetValue: distributedValue,
                                 period,
@@ -143,7 +134,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                         });
                         childTargets.push(childTarget);
                         // Notify member
-                        yield prisma_1.default.notification.create({
+                        await prisma_1.default.notification.create({
                             data: {
                                 recipientId: member.id,
                                 title: 'New Team Sales Target Assigned',
@@ -160,7 +151,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // --- INDIVIDUAL ASSIGNMENT ---
         else if (assignToUserId) {
             // Verify the assignee is a subordinate or user is admin
-            const assignee = yield prisma_1.default.user.findUnique({
+            const assignee = await prisma_1.default.user.findUnique({
                 where: { id: assignToUserId }
             });
             if (!assignee)
@@ -168,7 +159,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             if (assignee.organisationId !== userOrgId)
                 return res.status(403).json({ message: 'Cannot assign target to crossover user' });
             // Check existing
-            const existingTarget = yield prisma_1.default.salesTarget.findFirst({
+            const existingTarget = await prisma_1.default.salesTarget.findFirst({
                 where: {
                     assignedToId: assignToUserId,
                     period,
@@ -183,10 +174,10 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             if (existingTarget)
                 return res.status(400).json({ message: `User already has an active ${metric} target for this period` });
             // Determine if distribution is needed
-            const directReports = yield getDirectReports(assignToUserId);
+            const directReports = await getDirectReports(assignToUserId);
             const shouldDistribute = scope === 'HIERARCHY' && directReports.length > 0;
             // Create main target
-            mainTarget = yield prisma_1.default.salesTarget.create({
+            mainTarget = await prisma_1.default.salesTarget.create({
                 data: {
                     targetValue,
                     period,
@@ -209,7 +200,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const totalMembers = directReports.length + 1;
                 const distributedValue = Math.floor(targetValue / totalMembers);
                 // Manager's Personal Target
-                const selfChild = yield prisma_1.default.salesTarget.create({
+                const selfChild = await prisma_1.default.salesTarget.create({
                     data: {
                         targetValue: distributedValue,
                         period,
@@ -229,7 +220,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 childTargets.push(selfChild);
                 // 2. Distribute to Reports
                 for (const report of directReports) {
-                    const existingSubTarget = yield prisma_1.default.salesTarget.findFirst({
+                    const existingSubTarget = await prisma_1.default.salesTarget.findFirst({
                         where: {
                             assignedToId: report.id,
                             period,
@@ -244,12 +235,12 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     if (!existingSubTarget) {
                         // Recursively create targets
                         // distributeToSubordinates will handle creating the report's target and ITS children
-                        yield distributeToSubordinates(report.id, distributedValue, period, startDate, endDate, mainTarget.id, user.id, userOrgId, metric, productId, opportunityType);
+                        await distributeToSubordinates(report.id, distributedValue, period, startDate, endDate, mainTarget.id, user.id, userOrgId, metric, productId, opportunityType);
                     }
                 }
             }
             // Notification for Individual
-            yield prisma_1.default.notification.create({
+            await prisma_1.default.notification.create({
                 data: {
                     recipientId: assignToUserId,
                     title: 'New Sales Target Assigned',
@@ -260,7 +251,7 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 }
             });
         }
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: userOrgId,
             actorId: user.id,
             action: 'CREATE_SALES_TARGET',
@@ -278,12 +269,12 @@ const assignTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.error('assignTarget Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.assignTarget = assignTarget;
 // Recursive helper to distribute targets down the hierarchy
-const distributeToSubordinates = (userId, targetValue, period, startDate, endDate, parentTargetId, assignerId, organisationId, metric, productId, opportunityType) => __awaiter(void 0, void 0, void 0, function* () {
+const distributeToSubordinates = async (userId, targetValue, period, startDate, endDate, parentTargetId, assignerId, organisationId, metric, productId, opportunityType) => {
     // 1. Check if we should distribute further
-    const directReports = yield getDirectReports(userId);
+    const directReports = await getDirectReports(userId);
     // 2. Create target for THIS user (userId) linked to parentTargetId
     // If they have reports, they get a CONTAINER target (auto=true) AND a SELF target
     // If they have no reports, they get a LEAF target (auto=false)
@@ -301,7 +292,7 @@ const distributeToSubordinates = (userId, targetValue, period, startDate, endDat
     // Wait, previous logic distributed the value BEFORE passing it.
     // Let's stick to: "Assign targetValue to userId, child of parentTargetId".
     const isContainer = hasReports;
-    const myTarget = yield prisma_1.default.salesTarget.create({
+    const myTarget = await prisma_1.default.salesTarget.create({
         data: {
             targetValue: targetValue,
             period,
@@ -319,7 +310,7 @@ const distributeToSubordinates = (userId, targetValue, period, startDate, endDat
         }
     });
     // Notify
-    yield prisma_1.default.notification.create({
+    await prisma_1.default.notification.create({
         data: {
             recipientId: userId,
             title: 'New Sales Target Assigned',
@@ -333,7 +324,7 @@ const distributeToSubordinates = (userId, targetValue, period, startDate, endDat
         // Distribute to self (Personal) and Children
         const childValue = Math.floor(targetValue / totalMembers);
         // Self Personal Child
-        yield prisma_1.default.salesTarget.create({
+        await prisma_1.default.salesTarget.create({
             data: {
                 targetValue: childValue,
                 period,
@@ -352,15 +343,15 @@ const distributeToSubordinates = (userId, targetValue, period, startDate, endDat
         });
         // Distribute to reports
         for (const report of directReports) {
-            yield distributeToSubordinates(report.id, childValue, period, startDate, endDate, myTarget.id, assignerId, organisationId, metric, productId, opportunityType);
+            await distributeToSubordinates(report.id, childValue, period, startDate, endDate, myTarget.id, assignerId, organisationId, metric, productId, opportunityType);
         }
     }
-});
+};
 // Get current user's targets
-const getMyTargets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyTargets = async (req, res) => {
     try {
         const user = req.user;
-        const targets = yield prisma_1.default.salesTarget.findMany({
+        const targets = await prisma_1.default.salesTarget.findMany({
             where: {
                 assignedToId: user.id,
                 isDeleted: false
@@ -376,15 +367,15 @@ const getMyTargets = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMyTargets = getMyTargets;
 // Get team targets (hierarchical view)
-const getTeamTargets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTeamTargets = async (req, res) => {
     try {
         const user = req.user;
         // Get all subordinate IDs recursively
-        const subordinateIds = yield getSubordinateIdsRecursive(user.id);
-        const targets = yield prisma_1.default.salesTarget.findMany({
+        const subordinateIds = await getSubordinateIdsRecursive(user.id);
+        const targets = await prisma_1.default.salesTarget.findMany({
             where: {
                 OR: [
                     { assignedToId: { in: [...subordinateIds, user.id] } },
@@ -406,15 +397,15 @@ const getTeamTargets = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTeamTargets = getTeamTargets;
 // Helper: Get all subordinate IDs recursively
-const getSubordinateIdsRecursive = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getSubordinateIdsRecursive = async (userId) => {
     const subordinateIds = [];
     const queue = [userId];
     while (queue.length > 0) {
         const currentId = queue.shift();
-        const directReports = yield prisma_1.default.user.findMany({
+        const directReports = await prisma_1.default.user.findMany({
             where: { reportsToId: currentId, isActive: true },
             select: { id: true }
         });
@@ -427,15 +418,15 @@ const getSubordinateIdsRecursive = (userId) => __awaiter(void 0, void 0, void 0,
         }
     }
     return subordinateIds;
-});
+};
 // Get daily achievement summary for notification
-const getDailyAchievement = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDailyAchievement = async (req, res) => {
     try {
         const user = req.user;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         // Get active targets for the user
-        const activeTargets = yield prisma_1.default.salesTarget.findMany({
+        const activeTargets = await prisma_1.default.salesTarget.findMany({
             where: {
                 assignedToId: user.id,
                 status: 'active',
@@ -474,14 +465,14 @@ const getDailyAchievement = (req, res) => __awaiter(void 0, void 0, void 0, func
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getDailyAchievement = getDailyAchievement;
 // Acknowledge daily notification
-const acknowledgeDailyNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const acknowledgeDailyNotification = async (req, res) => {
     try {
         const user = req.user;
         // Find active activeTargets
-        const activeTargets = yield prisma_1.default.salesTarget.findMany({
+        const activeTargets = await prisma_1.default.salesTarget.findMany({
             where: {
                 assignedToId: user.id,
                 status: 'active',
@@ -491,7 +482,7 @@ const acknowledgeDailyNotification = (req, res) => __awaiter(void 0, void 0, voi
             }
         });
         if (activeTargets.length > 0) {
-            yield prisma_1.default.salesTarget.update({
+            await prisma_1.default.salesTarget.update({
                 where: { id: activeTargets[0].id },
                 data: { lastNotifiedDate: new Date() }
             });
@@ -501,33 +492,33 @@ const acknowledgeDailyNotification = (req, res) => __awaiter(void 0, void 0, voi
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.acknowledgeDailyNotification = acknowledgeDailyNotification;
 // Recalculate progress from closed_won opportunities
-const recalculateProgress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const recalculateProgress = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
         // Get all users in the organisation
-        const users = yield prisma_1.default.user.findMany({
+        const users = await prisma_1.default.user.findMany({
             where: { organisationId: orgId, isActive: true },
             select: { id: true }
         });
         console.log(`[Recalculate] Triggered by ${user.id} for ${users.length} users.`);
         for (const u of users) {
-            yield SalesTargetService_1.SalesTargetService.updateProgressForUser(u.id);
+            await SalesTargetService_1.SalesTargetService.updateProgressForUser(u.id);
         }
         res.json({ message: 'Progress recalculated successfully' });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.recalculateProgress = recalculateProgress;
 // Update target
-const updateTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTarget = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -535,7 +526,7 @@ const updateTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { targetValue, period, metric, productId, opportunityType } = req.body;
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
-        const target = yield prisma_1.default.salesTarget.findFirst({
+        const target = await prisma_1.default.salesTarget.findFirst({
             where: { id, organisationId: orgId, isDeleted: false }
         });
         if (!target)
@@ -557,11 +548,11 @@ const updateTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             updateData.productId = productId || null;
         if (opportunityType !== undefined)
             updateData.opportunityType = opportunityType || null;
-        const updatedTarget = yield prisma_1.default.salesTarget.update({
+        const updatedTarget = await prisma_1.default.salesTarget.update({
             where: { id },
             data: updateData
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'UPDATE_SALES_TARGET',
@@ -574,21 +565,24 @@ const updateTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateTarget = updateTarget;
 // Delete target
-const deleteTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTarget = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId && user.role !== 'super_admin') {
             return res.status(403).json({ message: 'Organisation not found' });
         }
-        const target = yield prisma_1.default.salesTarget.update({
-            where: Object.assign({ id: req.params.id }, (orgId ? { organisationId: orgId } : {})),
+        const target = await prisma_1.default.salesTarget.update({
+            where: {
+                id: req.params.id,
+                ...(orgId ? { organisationId: orgId } : {})
+            },
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId || target.organisationId,
             actorId: user.id,
             action: 'DELETE_SALES_TARGET',
@@ -596,8 +590,11 @@ const deleteTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             entityId: req.params.id
         });
         // Also delete child targets
-        yield prisma_1.default.salesTarget.updateMany({
-            where: Object.assign({ parentTargetId: req.params.id }, (orgId ? { organisationId: orgId } : {})),
+        await prisma_1.default.salesTarget.updateMany({
+            where: {
+                parentTargetId: req.params.id,
+                ...(orgId ? { organisationId: orgId } : {})
+            },
             data: { isDeleted: true }
         });
         res.json({ message: 'Target deleted successfully' });
@@ -605,17 +602,17 @@ const deleteTarget = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteTarget = deleteTarget;
 // Get subordinates for assignment dropdown
-const getSubordinates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSubordinates = async (req, res) => {
     try {
         const user = req.user;
-        const subordinates = yield getDirectReports(user.id);
+        const subordinates = await getDirectReports(user.id);
         res.json({ subordinates });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getSubordinates = getSubordinates;

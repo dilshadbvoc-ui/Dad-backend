@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -25,13 +16,13 @@ const auditLogger_1 = require("../utils/auditLogger");
  * Handles bulk actions across different entities
  */
 // POST /api/bulk/leads
-const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkLeadOperations = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     const { action, leadIds, data } = req.body;
     try {
-        logger_1.logger.apiRequest('POST', '/api/bulk/leads', userId, organisationId || undefined, { action, count: leadIds === null || leadIds === void 0 ? void 0 : leadIds.length });
+        logger_1.logger.apiRequest('POST', '/api/bulk/leads', userId, organisationId || undefined, { action, count: leadIds?.length });
         if (!organisationId) {
             return apiResponse_1.ResponseHandler.forbidden(res, 'User not associated with an organisation');
         }
@@ -45,17 +36,17 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
         let message = '';
         switch (action) {
             case 'assign': {
-                if (!(data === null || data === void 0 ? void 0 : data.assignedToId)) {
+                if (!data?.assignedToId) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'assignedToId is required for assign action');
                 }
                 // Verify user belongs to org
-                const assignedUser = yield prisma_1.default.user.findFirst({
+                const assignedUser = await prisma_1.default.user.findFirst({
                     where: { id: data.assignedToId, organisationId }
                 });
                 if (!assignedUser) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'Assigned user does not belong to your organisation');
                 }
-                result = yield prisma_1.default.lead.updateMany({
+                result = await prisma_1.default.lead.updateMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -66,7 +57,7 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                         updatedAt: new Date()
                     }
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_LEAD_ASSIGN',
@@ -77,10 +68,10 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
             }
             case 'update-status':
-                if (!(data === null || data === void 0 ? void 0 : data.status)) {
+                if (!data?.status) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'status is required for update-status action');
                 }
-                result = yield prisma_1.default.lead.updateMany({
+                result = await prisma_1.default.lead.updateMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -91,7 +82,7 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                         updatedAt: new Date()
                     }
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_LEAD_UPDATE_STATUS',
@@ -101,11 +92,11 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 message = `${result.count} leads status updated successfully`;
                 break;
             case 'add-tags': {
-                if (!(data === null || data === void 0 ? void 0 : data.tags) || !Array.isArray(data.tags)) {
+                if (!data?.tags || !Array.isArray(data.tags)) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'tags array is required for add-tags action');
                 }
                 // Get existing leads with their current tags
-                const leadsWithTags = yield prisma_1.default.lead.findMany({
+                const leadsWithTags = await prisma_1.default.lead.findMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -125,8 +116,8 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                         }
                     });
                 });
-                yield Promise.all(updatePromises);
-                yield (0, auditLogger_1.logAudit)({
+                await Promise.all(updatePromises);
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_LEAD_ADD_TAGS',
@@ -137,11 +128,11 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
             }
             case 'send-email': {
-                if (!(data === null || data === void 0 ? void 0 : data.subject) || !(data === null || data === void 0 ? void 0 : data.content)) {
+                if (!data?.subject || !data?.content) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'subject and content are required for send-email action');
                 }
                 // Get leads with email addresses
-                const leadsWithEmail = yield prisma_1.default.lead.findMany({
+                const leadsWithEmail = await prisma_1.default.lead.findMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -152,15 +143,15 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                     select: { id: true, email: true, firstName: true, lastName: true }
                 });
                 // Send emails (in background)
-                const emailPromises = leadsWithEmail.map((lead) => __awaiter(void 0, void 0, void 0, function* () {
+                const emailPromises = leadsWithEmail.map(async (lead) => {
                     try {
                         const personalizedContent = data.content
                             .replace(/\{firstName\}/g, lead.firstName)
                             .replace(/\{lastName\}/g, lead.lastName)
                             .replace(/\{fullName\}/g, `${lead.firstName} ${lead.lastName}`);
-                        yield EmailService_1.EmailService.sendEmail(lead.email, data.subject, personalizedContent);
+                        await EmailService_1.EmailService.sendEmail(lead.email, data.subject, personalizedContent);
                         // Log interaction
-                        yield prisma_1.default.interaction.create({
+                        await prisma_1.default.interaction.create({
                             data: {
                                 type: 'email',
                                 direction: 'outbound',
@@ -175,12 +166,12 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                     catch (error) {
                         logger_1.logger.error('Failed to send email to lead', error, 'BULK_EMAIL', userId, organisationId, { leadId: lead.id });
                     }
-                }));
+                });
                 // Don't wait for all emails to complete
                 Promise.all(emailPromises).catch(error => {
                     logger_1.logger.error('Some bulk emails failed', error, 'BULK_EMAIL', userId, organisationId);
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_LEAD_SEND_EMAIL',
@@ -191,11 +182,11 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
             }
             case 'send-whatsapp': {
-                if (!(data === null || data === void 0 ? void 0 : data.message)) {
+                if (!data?.message) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'message is required for send-whatsapp action');
                 }
                 // Get leads with phone numbers
-                const leadsWithPhone = yield prisma_1.default.lead.findMany({
+                const leadsWithPhone = await prisma_1.default.lead.findMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -205,16 +196,15 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                     select: { id: true, phone: true, firstName: true, lastName: true }
                 });
                 // Send WhatsApp messages (in background)
-                const whatsappPromises = leadsWithPhone.map((lead) => __awaiter(void 0, void 0, void 0, function* () {
-                    var _a;
+                const whatsappPromises = leadsWithPhone.map(async (lead) => {
                     try {
                         const personalizedMessage = data.message
                             .replace(/\{firstName\}/g, lead.firstName)
                             .replace(/\{lastName\}/g, lead.lastName)
                             .replace(/\{fullName\}/g, `${lead.firstName} ${lead.lastName}`);
-                        yield ((_a = WhatsAppService_1.WhatsAppService.getClientForOrg(organisationId)) === null || _a === void 0 ? void 0 : _a.then(client => client === null || client === void 0 ? void 0 : client.sendTextMessage(lead.phone, personalizedMessage)));
+                        await WhatsAppService_1.WhatsAppService.getClientForOrg(organisationId)?.then(client => client?.sendTextMessage(lead.phone, personalizedMessage));
                         // Log interaction
-                        yield prisma_1.default.interaction.create({
+                        await prisma_1.default.interaction.create({
                             data: {
                                 type: 'other', // Using 'other' for WhatsApp messages
                                 direction: 'outbound',
@@ -229,12 +219,12 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                     catch (error) {
                         logger_1.logger.error('Failed to send WhatsApp to lead', error, 'BULK_WHATSAPP', userId, organisationId, { leadId: lead.id });
                     }
-                }));
+                });
                 // Don't wait for all messages to complete
                 Promise.all(whatsappPromises).catch(error => {
                     logger_1.logger.error('Some bulk WhatsApp messages failed', error, 'BULK_WHATSAPP', userId, organisationId);
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_LEAD_SEND_WHATSAPP',
@@ -245,7 +235,7 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
             }
             case 'delete':
-                result = yield prisma_1.default.lead.updateMany({
+                result = await prisma_1.default.lead.updateMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -256,7 +246,7 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                         updatedAt: new Date()
                     }
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_LEAD_DELETE',
@@ -267,7 +257,7 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 break;
             case 'export': {
                 // Get leads data for export
-                const exportLeads = yield prisma_1.default.lead.findMany({
+                const exportLeads = await prisma_1.default.lead.findMany({
                     where: {
                         id: { in: leadIds },
                         organisationId,
@@ -301,22 +291,22 @@ const bulkLeadOperations = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 return apiResponse_1.ResponseHandler.validationError(res, `Unsupported action: ${action}`);
         }
         logger_1.logger.info(`Bulk lead operation completed: ${action}`, 'BULK_LEADS', userId, organisationId, { count: leadIds.length });
-        return apiResponse_1.ResponseHandler.success(res, { processed: (result === null || result === void 0 ? void 0 : result.count) || leadIds.length }, message);
+        return apiResponse_1.ResponseHandler.success(res, { processed: result?.count || leadIds.length }, message);
     }
     catch (error) {
         logger_1.logger.apiError('POST', '/api/bulk/leads', error, userId, organisationId || undefined);
         return apiResponse_1.ResponseHandler.serverError(res, 'An error occurred while processing bulk operation');
     }
-});
+};
 exports.bulkLeadOperations = bulkLeadOperations;
 // POST /api/bulk/contacts
-const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkContactOperations = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     const { action, contactIds, data } = req.body;
     try {
-        logger_1.logger.apiRequest('POST', '/api/bulk/contacts', userId, organisationId || undefined, { action, count: contactIds === null || contactIds === void 0 ? void 0 : contactIds.length });
+        logger_1.logger.apiRequest('POST', '/api/bulk/contacts', userId, organisationId || undefined, { action, count: contactIds?.length });
         if (!organisationId) {
             return apiResponse_1.ResponseHandler.forbidden(res, 'User not associated with an organisation');
         }
@@ -327,10 +317,10 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
         let message = '';
         switch (action) {
             case 'assign-owner':
-                if (!(data === null || data === void 0 ? void 0 : data.ownerId)) {
+                if (!data?.ownerId) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'ownerId is required for assign-owner action');
                 }
-                result = yield prisma_1.default.contact.updateMany({
+                result = await prisma_1.default.contact.updateMany({
                     where: {
                         id: { in: contactIds },
                         organisationId,
@@ -341,7 +331,7 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                         updatedAt: new Date()
                     }
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_CONTACT_ASSIGN',
@@ -351,19 +341,19 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 message = `${result.count} contacts assigned successfully`;
                 break;
             case 'add-to-campaign': {
-                if (!(data === null || data === void 0 ? void 0 : data.campaignId)) {
+                if (!data?.campaignId) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'campaignId is required for add-to-campaign action');
                 }
                 // Add contacts to email list associated with campaign
-                const campaign = yield prisma_1.default.campaign.findUnique({
+                const campaign = await prisma_1.default.campaign.findUnique({
                     where: { id: data.campaignId },
                     select: { emailListId: true }
                 });
-                if (!(campaign === null || campaign === void 0 ? void 0 : campaign.emailListId)) {
+                if (!campaign?.emailListId) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'Campaign does not have an associated email list');
                 }
                 // Get contacts that aren't already in the email list
-                const contactsToAdd = yield prisma_1.default.contact.findMany({
+                const contactsToAdd = await prisma_1.default.contact.findMany({
                     where: {
                         id: { in: contactIds },
                         organisationId,
@@ -373,7 +363,7 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                     }
                 });
                 // Add contacts to email list
-                yield prisma_1.default.emailList.update({
+                await prisma_1.default.emailList.update({
                     where: { id: campaign.emailListId },
                     data: {
                         contacts: {
@@ -385,7 +375,7 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 break;
             }
             case 'delete':
-                result = yield prisma_1.default.contact.updateMany({
+                result = await prisma_1.default.contact.updateMany({
                     where: {
                         id: { in: contactIds },
                         organisationId,
@@ -396,7 +386,7 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                         updatedAt: new Date()
                     }
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_CONTACT_DELETE',
@@ -406,7 +396,7 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 message = `${result.count} contacts deleted successfully`;
                 break;
             case 'export': {
-                const exportContacts = yield prisma_1.default.contact.findMany({
+                const exportContacts = await prisma_1.default.contact.findMany({
                     where: {
                         id: { in: contactIds },
                         organisationId
@@ -416,20 +406,17 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                         owner: { select: { firstName: true, lastName: true } }
                     }
                 });
-                const exportData = exportContacts.map(contact => {
-                    var _a;
-                    return ({
-                        'First Name': contact.firstName,
-                        'Last Name': contact.lastName,
-                        'Email': contact.email || '',
-                        'Job Title': contact.jobTitle || '',
-                        'Department': contact.department || '',
-                        'Account': ((_a = contact.account) === null || _a === void 0 ? void 0 : _a.name) || '',
-                        'Owner': contact.owner ? `${contact.owner.firstName} ${contact.owner.lastName}` : '',
-                        'Created At': contact.createdAt.toISOString(),
-                        'Updated At': contact.updatedAt.toISOString()
-                    });
-                });
+                const exportData = exportContacts.map(contact => ({
+                    'First Name': contact.firstName,
+                    'Last Name': contact.lastName,
+                    'Email': contact.email || '',
+                    'Job Title': contact.jobTitle || '',
+                    'Department': contact.department || '',
+                    'Account': contact.account?.name || '',
+                    'Owner': contact.owner ? `${contact.owner.firstName} ${contact.owner.lastName}` : '',
+                    'Created At': contact.createdAt.toISOString(),
+                    'Updated At': contact.updatedAt.toISOString()
+                }));
                 return apiResponse_1.ResponseHandler.success(res, {
                     data: exportData,
                     filename: `contacts_export_${new Date().toISOString().split('T')[0]}.csv`,
@@ -440,22 +427,22 @@ const bulkContactOperations = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 return apiResponse_1.ResponseHandler.validationError(res, `Unsupported action: ${action}`);
         }
         logger_1.logger.info(`Bulk contact operation completed: ${action}`, 'BULK_CONTACTS', userId, organisationId, { count: contactIds.length });
-        return apiResponse_1.ResponseHandler.success(res, { processed: (result === null || result === void 0 ? void 0 : result.count) || contactIds.length }, message);
+        return apiResponse_1.ResponseHandler.success(res, { processed: result?.count || contactIds.length }, message);
     }
     catch (error) {
         logger_1.logger.apiError('POST', '/api/bulk/contacts', error, userId, organisationId || undefined);
         return apiResponse_1.ResponseHandler.serverError(res, 'An error occurred while processing bulk operation');
     }
-});
+};
 exports.bulkContactOperations = bulkContactOperations;
 // POST /api/bulk/opportunities
-const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkOpportunityOperations = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     const { action, opportunityIds, data } = req.body;
     try {
-        logger_1.logger.apiRequest('POST', '/api/bulk/opportunities', userId, organisationId || undefined, { action, count: opportunityIds === null || opportunityIds === void 0 ? void 0 : opportunityIds.length });
+        logger_1.logger.apiRequest('POST', '/api/bulk/opportunities', userId, organisationId || undefined, { action, count: opportunityIds?.length });
         if (!organisationId) {
             return apiResponse_1.ResponseHandler.forbidden(res, 'User not associated with an organisation');
         }
@@ -466,10 +453,10 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
         let message = '';
         switch (action) {
             case 'update-stage':
-                if (!(data === null || data === void 0 ? void 0 : data.stage)) {
+                if (!data?.stage) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'stage is required for update-stage action');
                 }
-                result = yield prisma_1.default.opportunity.updateMany({
+                result = await prisma_1.default.opportunity.updateMany({
                     where: {
                         id: { in: opportunityIds },
                         organisationId
@@ -481,7 +468,7 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                     }
                 });
                 message = `${result.count} opportunities stage updated successfully`;
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_OPPORTUNITY_UPDATE_STAGE',
@@ -490,10 +477,10 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                 });
                 break;
             case 'assign-owner':
-                if (!(data === null || data === void 0 ? void 0 : data.ownerId)) {
+                if (!data?.ownerId) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'ownerId is required for assign-owner action');
                 }
-                result = yield prisma_1.default.opportunity.updateMany({
+                result = await prisma_1.default.opportunity.updateMany({
                     where: {
                         id: { in: opportunityIds },
                         organisationId
@@ -504,7 +491,7 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                     }
                 });
                 message = `${result.count} opportunities assigned successfully`;
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_OPPORTUNITY_ASSIGN',
@@ -513,7 +500,7 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                 });
                 break;
             case 'delete':
-                result = yield prisma_1.default.opportunity.updateMany({
+                result = await prisma_1.default.opportunity.updateMany({
                     where: {
                         id: { in: opportunityIds },
                         organisationId,
@@ -524,7 +511,7 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                         updatedAt: new Date()
                     }
                 });
-                yield (0, auditLogger_1.logAudit)({
+                await (0, auditLogger_1.logAudit)({
                     organisationId,
                     actorId: userId,
                     action: 'BULK_OPPORTUNITY_DELETE',
@@ -534,7 +521,7 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                 message = `${result.count} opportunities deleted successfully`;
                 break;
             case 'export': {
-                const exportOpportunities = yield prisma_1.default.opportunity.findMany({
+                const exportOpportunities = await prisma_1.default.opportunity.findMany({
                     where: {
                         id: { in: opportunityIds },
                         organisationId
@@ -544,21 +531,18 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                         owner: { select: { firstName: true, lastName: true } }
                     }
                 });
-                const exportData = exportOpportunities.map(opp => {
-                    var _a;
-                    return ({
-                        'Name': opp.name,
-                        'Account': opp.account.name,
-                        'Amount': opp.amount,
-                        'Stage': opp.stage,
-                        'Probability': opp.probability,
-                        'Close Date': ((_a = opp.closeDate) === null || _a === void 0 ? void 0 : _a.toISOString().split('T')[0]) || '',
-                        'Lead Source': opp.leadSource || '',
-                        'Owner': opp.owner ? `${opp.owner.firstName} ${opp.owner.lastName}` : '',
-                        'Created At': opp.createdAt.toISOString(),
-                        'Updated At': opp.updatedAt.toISOString()
-                    });
-                });
+                const exportData = exportOpportunities.map(opp => ({
+                    'Name': opp.name,
+                    'Account': opp.account.name,
+                    'Amount': opp.amount,
+                    'Stage': opp.stage,
+                    'Probability': opp.probability,
+                    'Close Date': opp.closeDate?.toISOString().split('T')[0] || '',
+                    'Lead Source': opp.leadSource || '',
+                    'Owner': opp.owner ? `${opp.owner.firstName} ${opp.owner.lastName}` : '',
+                    'Created At': opp.createdAt.toISOString(),
+                    'Updated At': opp.updatedAt.toISOString()
+                }));
                 return apiResponse_1.ResponseHandler.success(res, {
                     data: exportData,
                     filename: `opportunities_export_${new Date().toISOString().split('T')[0]}.csv`,
@@ -569,11 +553,11 @@ const bulkOpportunityOperations = (req, res) => __awaiter(void 0, void 0, void 0
                 return apiResponse_1.ResponseHandler.validationError(res, `Unsupported action: ${action}`);
         }
         logger_1.logger.info(`Bulk opportunity operation completed: ${action}`, 'BULK_OPPORTUNITIES', userId, organisationId, { count: opportunityIds.length });
-        return apiResponse_1.ResponseHandler.success(res, { processed: (result === null || result === void 0 ? void 0 : result.count) || opportunityIds.length }, message);
+        return apiResponse_1.ResponseHandler.success(res, { processed: result?.count || opportunityIds.length }, message);
     }
     catch (error) {
         logger_1.logger.apiError('POST', '/api/bulk/opportunities', error, userId, organisationId || undefined);
         return apiResponse_1.ResponseHandler.serverError(res, 'An error occurred while processing bulk operation');
     }
-});
+};
 exports.bulkOpportunityOperations = bulkOpportunityOperations;

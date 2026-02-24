@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkPlanLimits = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const checkPlanLimits = (resource) => {
-    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    return async (req, res, next) => {
         try {
             const orgId = req.user.organisationId || req.user.organisation;
             if (!orgId) {
@@ -26,7 +17,7 @@ const checkPlanLimits = (resource) => {
                 return res.status(403).json({ message: 'No organisation context found for limit check' });
             }
             // Fetch Organisation using Prisma
-            const org = yield prisma_1.default.organisation.findUnique({
+            const org = await prisma_1.default.organisation.findUnique({
                 where: { id: orgId.toString() }
             });
             if (!org || !org.subscription) {
@@ -40,7 +31,7 @@ const checkPlanLimits = (resource) => {
             // Fetch Plan
             let plan;
             if (subscription.planId) {
-                plan = yield prisma_1.default.subscriptionPlan.findUnique({
+                plan = await prisma_1.default.subscriptionPlan.findUnique({
                     where: { id: subscription.planId }
                 });
             }
@@ -59,17 +50,17 @@ const checkPlanLimits = (resource) => {
                 case 'leads':
                     // Verify if Leads are stored in Postgres or Mongo?
                     // Previous logs showed Lead controller using Prisma (Postgres)
-                    currentCount = yield prisma_1.default.lead.count({ where: { organisationId: orgId.toString(), isDeleted: false } });
+                    currentCount = await prisma_1.default.lead.count({ where: { organisationId: orgId.toString(), isDeleted: false } });
                     limit = plan.maxLeads || 100;
                     break;
                 case 'contacts':
                     // Contact model in schema does NOT have isDeleted (checked schema.prisma)
-                    currentCount = yield prisma_1.default.contact.count({ where: { organisationId: orgId.toString() } });
+                    currentCount = await prisma_1.default.contact.count({ where: { organisationId: orgId.toString() } });
                     limit = plan.maxContacts || 500;
                     break;
                 case 'users':
                     // User check is usually done in inviteUser, but good to have middleware too
-                    currentCount = yield prisma_1.default.user.count({ where: { organisationId: orgId.toString(), isActive: true } });
+                    currentCount = await prisma_1.default.user.count({ where: { organisationId: orgId.toString(), isActive: true } });
                     limit = plan.maxUsers || 1;
                     break;
                 // Add storage check if needed
@@ -86,6 +77,6 @@ const checkPlanLimits = (resource) => {
             console.error('[SubscriptionMiddleware] Error:', error);
             res.status(500).json({ message: 'Error checking subscription limits' });
         }
-    });
+    };
 };
 exports.checkPlanLimits = checkPlanLimits;

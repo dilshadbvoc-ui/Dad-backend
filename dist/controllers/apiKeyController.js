@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,13 +7,13 @@ exports.deleteApiKey = exports.revokeApiKey = exports.createApiKey = exports.get
 const prisma_1 = __importDefault(require("../config/prisma"));
 const crypto_1 = __importDefault(require("crypto"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getApiKeys = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getApiKeys = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const apiKeys = yield prisma_1.default.apiKey.findMany({
+        const apiKeys = await prisma_1.default.apiKey.findMany({
             where: {
                 organisationId: orgId,
                 isDeleted: false
@@ -38,15 +29,19 @@ const getApiKeys = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             }
         });
         // Map for frontend compatibility
-        const mappedKeys = apiKeys.map(k => (Object.assign(Object.assign({}, k), { isActive: k.status === 'active', firstEight: k.keyPrefix })));
+        const mappedKeys = apiKeys.map(k => ({
+            ...k,
+            isActive: k.status === 'active',
+            firstEight: k.keyPrefix
+        }));
         res.json({ apiKeys: mappedKeys });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getApiKeys = getApiKeys;
-const createApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createApiKey = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -56,7 +51,7 @@ const createApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const rawKey = `crm_${keyBytes}`; // crm_ prefix for identification
         const keyHash = crypto_1.default.createHash('sha256').update(rawKey).digest('hex');
         const keyPrefix = rawKey.substring(0, 12); // e.g., crm_1a2b3c4d
-        const apiKey = yield prisma_1.default.apiKey.create({
+        const apiKey = await prisma_1.default.apiKey.create({
             data: {
                 name: req.body.name || 'New API Key',
                 description: req.body.description,
@@ -70,18 +65,18 @@ const createApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         // Return the raw key ONLY once
         res.status(201).json({
-            apiKey: Object.assign(Object.assign({}, apiKey), { key: rawKey }), // Inject raw key for display
+            apiKey: { ...apiKey, key: rawKey }, // Inject raw key for display
             message: 'Save this key - it will not be shown again'
         });
     }
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createApiKey = createApiKey;
-const revokeApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const revokeApiKey = async (req, res) => {
     try {
-        const apiKey = yield prisma_1.default.apiKey.update({
+        const apiKey = await prisma_1.default.apiKey.update({
             where: { id: req.params.id },
             data: {
                 status: 'revoked',
@@ -93,11 +88,11 @@ const revokeApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.revokeApiKey = revokeApiKey;
-const deleteApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteApiKey = async (req, res) => {
     try {
-        yield prisma_1.default.apiKey.update({
+        await prisma_1.default.apiKey.update({
             where: { id: req.params.id },
             data: { isDeleted: true }
         });
@@ -106,5 +101,5 @@ const deleteApiKey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteApiKey = deleteApiKey;

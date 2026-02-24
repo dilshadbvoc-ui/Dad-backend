@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -48,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCampaign = exports.updateCampaign = exports.getCampaignById = exports.createCampaign = exports.getCampaigns = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCampaigns = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -58,7 +49,7 @@ const getCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (user.role === 'super_admin' && req.query.organisationId) {
             where.organisationId = String(req.query.organisationId);
         }
-        const campaigns = yield prisma_1.default.campaign.findMany({
+        const campaigns = await prisma_1.default.campaign.findMany({
             where,
             include: {
                 emailList: { select: { name: true } }
@@ -70,9 +61,9 @@ const getCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getCampaigns = getCampaigns;
-const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createCampaign = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -90,12 +81,12 @@ const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (req.body.emailList) {
             data.emailList = { connect: { id: req.body.emailList } };
         }
-        const campaign = yield prisma_1.default.campaign.create({
+        const campaign = await prisma_1.default.campaign.create({
             data
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_CAMPAIGN',
                 entity: 'Campaign',
@@ -113,9 +104,9 @@ const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createCampaign = createCampaign;
-const getCampaignById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCampaignById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -125,7 +116,7 @@ const getCampaignById = (req, res) => __awaiter(void 0, void 0, void 0, function
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const campaign = yield prisma_1.default.campaign.findFirst({
+        const campaign = await prisma_1.default.campaign.findFirst({
             where,
             include: { emailList: true }
         });
@@ -136,15 +127,15 @@ const getCampaignById = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getCampaignById = getCampaignById;
-const updateCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCampaign = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const campaignId = req.params.id;
         // Verify campaign exists and belongs to org
-        const existing = yield prisma_1.default.campaign.findFirst({
+        const existing = await prisma_1.default.campaign.findFirst({
             where: { id: campaignId, isDeleted: false }
         });
         if (!existing) {
@@ -170,14 +161,14 @@ const updateCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 ? { connect: { id: req.body.emailList } }
                 : { disconnect: true };
         }
-        const campaign = yield prisma_1.default.campaign.update({
+        const campaign = await prisma_1.default.campaign.update({
             where: { id: campaignId },
             data: updateData,
             include: { emailList: { select: { name: true } } }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'UPDATE_CAMPAIGN',
                 entity: 'Campaign',
@@ -193,7 +184,7 @@ const updateCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json(campaign);
         // Process campaign if status is set to 'sent' or 'scheduled'
         if (req.body.status === 'sent' || req.body.status === 'scheduled') {
-            const { CampaignProcessor } = yield Promise.resolve().then(() => __importStar(require('../services/CampaignProcessor')));
+            const { CampaignProcessor } = await Promise.resolve().then(() => __importStar(require('../services/CampaignProcessor')));
             CampaignProcessor.processEmailCampaign(campaignId).catch(err => {
                 console.error('[CampaignController] Error triggering campaign processing:', err);
             });
@@ -202,15 +193,15 @@ const updateCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.updateCampaign = updateCampaign;
-const deleteCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCampaign = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const campaignId = req.params.id;
         // Verify campaign exists
-        const existing = yield prisma_1.default.campaign.findFirst({
+        const existing = await prisma_1.default.campaign.findFirst({
             where: { id: campaignId, isDeleted: false }
         });
         if (!existing) {
@@ -220,13 +211,13 @@ const deleteCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
             return res.status(403).json({ message: 'Not authorized to delete this campaign' });
         }
         // Soft delete
-        yield prisma_1.default.campaign.update({
+        await prisma_1.default.campaign.update({
             where: { id: campaignId },
             data: { isDeleted: true }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'DELETE_CAMPAIGN',
                 entity: 'Campaign',
@@ -244,5 +235,5 @@ const deleteCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteCampaign = deleteCampaign;

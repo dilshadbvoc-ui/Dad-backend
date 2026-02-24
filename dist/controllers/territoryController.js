@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,7 +7,7 @@ exports.deleteTerritory = exports.updateTerritory = exports.createTerritory = ex
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
-const getTerritories = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTerritories = async (req, res) => {
     try {
         const user = req.user;
         let orgId;
@@ -31,7 +22,7 @@ const getTerritories = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const where = { isDeleted: false };
         if (orgId)
             where.organisationId = orgId;
-        const territories = yield prisma_1.default.territory.findMany({
+        const territories = await prisma_1.default.territory.findMany({
             where,
             include: {
                 manager: { select: { id: true, firstName: true, lastName: true } }
@@ -39,30 +30,30 @@ const getTerritories = (req, res) => __awaiter(void 0, void 0, void 0, function*
             orderBy: { name: 'asc' }
         });
         // Fetch member details for each territory
-        const territoriesWithMembers = yield Promise.all(territories.map((t) => __awaiter(void 0, void 0, void 0, function* () {
+        const territoriesWithMembers = await Promise.all(territories.map(async (t) => {
             let members = [];
             if (t.memberIds && t.memberIds.length > 0) {
-                members = yield prisma_1.default.user.findMany({
+                members = await prisma_1.default.user.findMany({
                     where: { id: { in: t.memberIds } },
                     select: { id: true, firstName: true, lastName: true }
                 });
             }
-            return Object.assign(Object.assign({}, t), { members });
-        })));
+            return { ...t, members };
+        }));
         res.json({ territories: territoriesWithMembers });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getTerritories = getTerritories;
-const createTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createTerritory = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        const territory = yield prisma_1.default.territory.create({
+        const territory = await prisma_1.default.territory.create({
             data: {
                 name: req.body.name,
                 description: req.body.description,
@@ -76,7 +67,7 @@ const createTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function
                 organisation: { connect: { id: orgId } }
             }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_TERRITORY',
@@ -89,11 +80,11 @@ const createTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createTerritory = createTerritory;
-const updateTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTerritory = async (req, res) => {
     try {
-        const data = Object.assign({}, req.body);
+        const data = { ...req.body };
         // Map manager and members to correct field names
         if (req.body.manager !== undefined) {
             data.managerId = req.body.manager;
@@ -107,14 +98,14 @@ const updateTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        const territory = yield prisma_1.default.territory.update({
+        const territory = await prisma_1.default.territory.update({
             where: {
                 id: req.params.id,
                 organisationId: orgId
             },
             data
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'UPDATE_TERRITORY',
@@ -127,22 +118,22 @@ const updateTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateTerritory = updateTerritory;
-const deleteTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTerritory = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
-        yield prisma_1.default.territory.update({
+        await prisma_1.default.territory.update({
             where: {
                 id: req.params.id,
                 organisationId: orgId
             },
             data: { isDeleted: true }
         });
-        yield (0, auditLogger_1.logAudit)({
+        await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'DELETE_TERRITORY',
@@ -154,5 +145,5 @@ const deleteTerritory = (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteTerritory = deleteTerritory;

@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -48,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteQuote = exports.downloadQuotePdf = exports.updateQuote = exports.getQuoteById = exports.createQuote = exports.getQuotes = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const getQuotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getQuotes = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
         const limit = parseInt(req.query.limit || '20');
@@ -70,7 +61,7 @@ const getQuotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
             where.OR = [
                 { assignedToId: { in: [...subordinateIds, user.id] } },
                 { createdById: { in: [...subordinateIds, user.id] } }
@@ -94,8 +85,8 @@ const getQuotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 where.OR = searchParams;
             }
         }
-        const count = yield prisma_1.default.quote.count({ where });
-        const quotes = yield prisma_1.default.quote.findMany({
+        const count = await prisma_1.default.quote.count({ where });
+        const quotes = await prisma_1.default.quote.findMany({
             where,
             include: {
                 account: { select: { name: true } },
@@ -116,9 +107,9 @@ const getQuotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getQuotes = getQuotes;
-const createQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createQuote = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -127,7 +118,7 @@ const createQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // Generate quote number if not provided
         let quoteNumber = req.body.quoteNumber;
         if (!quoteNumber) {
-            const count = yield prisma_1.default.quote.count({ where: { organisationId: orgId } });
+            const count = await prisma_1.default.quote.count({ where: { organisationId: orgId } });
             quoteNumber = `QT-${String(count + 1).padStart(5, '0')}`;
         }
         const data = {
@@ -162,13 +153,13 @@ const createQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }))
             };
         }
-        const quote = yield prisma_1.default.quote.create({
+        const quote = await prisma_1.default.quote.create({
             data,
             include: { lineItems: true } // Return with line items
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_QUOTE',
                 entity: 'Quote',
@@ -186,9 +177,9 @@ const createQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createQuote = createQuote;
-const getQuoteById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getQuoteById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -198,7 +189,7 @@ const getQuoteById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const quote = yield prisma_1.default.quote.findFirst({
+        const quote = await prisma_1.default.quote.findFirst({
             where,
             include: {
                 account: true,
@@ -214,12 +205,12 @@ const getQuoteById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getQuoteById = getQuoteById;
-const updateQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateQuote = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = Object.assign({}, req.body);
+        const updates = { ...req.body };
         const lineItemsData = updates.lineItems;
         delete updates.lineItems; // Handle separately
         const requester = req.user;
@@ -269,11 +260,13 @@ const updateQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             // Let's do:
             // 1. Delete items
             // 2. Update quote + Create new items
-            yield prisma_1.default.$transaction([
+            await prisma_1.default.$transaction([
                 prisma_1.default.quoteLineItem.deleteMany({ where: { quoteId: id } }),
                 prisma_1.default.quote.update({
                     where: { id },
-                    data: Object.assign(Object.assign({}, updates), { lineItems: {
+                    data: {
+                        ...updates, // Scalars
+                        lineItems: {
                             create: lineItemsData.map((item) => ({
                                 productName: item.productName,
                                 quantity: Number(item.quantity),
@@ -281,14 +274,15 @@ const updateQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                                 total: Number(item.total),
                                 product: item.product ? { connect: { id: item.product } } : undefined
                             }))
-                        } }),
+                        }
+                    },
                     include: { lineItems: true }
                 })
             ]);
-            result = yield prisma_1.default.quote.findUnique({ where: { id }, include: { lineItems: true } });
+            result = await prisma_1.default.quote.findUnique({ where: { id }, include: { lineItems: true } });
         }
         else {
-            result = yield prisma_1.default.quote.update({
+            result = await prisma_1.default.quote.update({
                 where: whereObj,
                 data: updates,
                 include: { lineItems: true }
@@ -297,7 +291,7 @@ const updateQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (!result)
             return res.status(404).json({ message: 'Quote not found' });
         // Audit Log
-        const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+        const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
         logAudit({
             action: 'UPDATE_QUOTE',
             entity: 'Quote',
@@ -311,9 +305,9 @@ const updateQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateQuote = updateQuote;
-const downloadQuotePdf = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const downloadQuotePdf = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -323,7 +317,7 @@ const downloadQuotePdf = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const quote = yield prisma_1.default.quote.findFirst({
+        const quote = await prisma_1.default.quote.findFirst({
             where,
             include: {
                 account: true,
@@ -336,15 +330,15 @@ const downloadQuotePdf = (req, res) => __awaiter(void 0, void 0, void 0, functio
             return res.status(404).json({ message: 'Quote not found' });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${quote.quoteNumber}.pdf`);
-        const { QuotePdfService } = yield Promise.resolve().then(() => __importStar(require('../services/QuotePdfService')));
+        const { QuotePdfService } = await Promise.resolve().then(() => __importStar(require('../services/QuotePdfService')));
         QuotePdfService.generate(quote, res);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.downloadQuotePdf = downloadQuotePdf;
-const deleteQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteQuote = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -354,15 +348,15 @@ const deleteQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
         }
-        const quote = yield prisma_1.default.quote.findFirst({ where });
+        const quote = await prisma_1.default.quote.findFirst({ where });
         if (!quote)
             return res.status(404).json({ message: 'Quote not found' });
-        yield prisma_1.default.quote.update({
+        await prisma_1.default.quote.update({
             where: { id: req.params.id },
             data: { isDeleted: true }
         });
         // Audit Log
-        const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+        const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
         logAudit({
             action: 'DELETE_QUOTE',
             entity: 'Quote',
@@ -376,5 +370,5 @@ const deleteQuote = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteQuote = deleteQuote;

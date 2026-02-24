@@ -32,26 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -60,13 +40,13 @@ exports.deleteWhatsAppCampaign = exports.updateWhatsAppCampaign = exports.create
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const CampaignProcessor_1 = require("../services/CampaignProcessor");
-const getWhatsAppCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getWhatsAppCampaigns = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
-        const campaigns = yield prisma_1.default.whatsAppCampaign.findMany({
+        const campaigns = await prisma_1.default.whatsAppCampaign.findMany({
             where: { organisationId: orgId, isDeleted: false },
             orderBy: { createdAt: 'desc' },
             include: {
@@ -80,15 +60,15 @@ const getWhatsAppCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getWhatsAppCampaigns = getWhatsAppCampaigns;
-const createWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createWhatsAppCampaign = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
-        const _a = req.body, { recipients, testNumber } = _a, campaignData = __rest(_a, ["recipients", "testNumber"]);
+        const { recipients, testNumber, ...campaignData } = req.body;
         // Validate that we have either recipients or testNumber
         if (!recipients && !testNumber) {
             return res.status(400).json({
@@ -103,12 +83,19 @@ const createWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
             failed: 0,
             replied: 0
         };
-        const campaign = yield prisma_1.default.whatsAppCampaign.create({
-            data: Object.assign(Object.assign({}, campaignData), { recipients: recipients || [], testNumber, organisationId: orgId, createdById: user.id, stats: initialStats })
+        const campaign = await prisma_1.default.whatsAppCampaign.create({
+            data: {
+                ...campaignData,
+                recipients: recipients || [],
+                testNumber,
+                organisationId: orgId, // Type assertion since we've validated orgId is not null
+                createdById: user.id,
+                stats: initialStats
+            }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'CREATE_WHATSAPP_CAMPAIGN',
                 entity: 'WhatsAppCampaign',
@@ -135,9 +122,9 @@ const createWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
         console.error('WhatsApp Campaign Error:', error);
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createWhatsAppCampaign = createWhatsAppCampaign;
-const updateWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateWhatsAppCampaign = async (req, res) => {
     try {
         const campaignId = req.params.id;
         // Check if campaign exists and belongs to user's organisation
@@ -145,7 +132,7 @@ const updateWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
-        const existingCampaign = yield prisma_1.default.whatsAppCampaign.findFirst({
+        const existingCampaign = await prisma_1.default.whatsAppCampaign.findFirst({
             where: {
                 id: campaignId,
                 organisationId: orgId,
@@ -159,13 +146,13 @@ const updateWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
         if (existingCampaign.status === 'sent' && req.body.status !== 'sent') {
             return res.status(400).json({ message: 'Cannot modify a campaign that has already been sent' });
         }
-        const campaign = yield prisma_1.default.whatsAppCampaign.update({
+        const campaign = await prisma_1.default.whatsAppCampaign.update({
             where: { id: campaignId },
             data: req.body
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'UPDATE_WHATSAPP_CAMPAIGN',
                 entity: 'WhatsAppCampaign',
@@ -190,9 +177,9 @@ const updateWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateWhatsAppCampaign = updateWhatsAppCampaign;
-const deleteWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteWhatsAppCampaign = async (req, res) => {
     try {
         const campaignId = req.params.id;
         const user = req.user;
@@ -200,7 +187,7 @@ const deleteWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
         // Check if campaign exists and belongs to user's organisation
-        const existingCampaign = yield prisma_1.default.whatsAppCampaign.findFirst({
+        const existingCampaign = await prisma_1.default.whatsAppCampaign.findFirst({
             where: {
                 id: campaignId,
                 organisationId: orgId,
@@ -210,13 +197,13 @@ const deleteWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
         if (!existingCampaign) {
             return res.status(404).json({ message: 'Campaign not found' });
         }
-        yield prisma_1.default.whatsAppCampaign.update({
+        await prisma_1.default.whatsAppCampaign.update({
             where: { id: campaignId },
             data: { isDeleted: true }
         });
         // Audit Log
         try {
-            const { logAudit } = yield Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'DELETE_WHATSAPP_CAMPAIGN',
                 entity: 'WhatsAppCampaign',
@@ -234,5 +221,5 @@ const deleteWhatsAppCampaign = (req, res) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deleteWhatsAppCampaign = deleteWhatsAppCampaign;

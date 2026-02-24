@@ -109,8 +109,8 @@ class SecurityAuditMiddleware {
             severity,
             description: 'Sensitive endpoint accessed',
             metadata: {
-                userId: user === null || user === void 0 ? void 0 : user.id,
-                role: user === null || user === void 0 ? void 0 : user.role,
+                userId: user?.id,
+                role: user?.role,
                 path: req.path,
                 method: req.method,
                 statusCode: res.statusCode,
@@ -137,14 +137,19 @@ class SecurityAuditMiddleware {
     static logSecurityEvent(event, req) {
         const user = req.user;
         // Log to audit system
-        if (user === null || user === void 0 ? void 0 : user.organisationId) {
+        if (user?.organisationId) {
             (0, auditLogger_1.logAudit)({
                 action: 'SECURITY_EVENT',
                 entity: 'Security',
                 entityId: 'system',
                 actorId: user.id,
                 organisationId: user.organisationId,
-                details: Object.assign({ eventType: event.type, severity: event.severity, description: event.description }, event.metadata),
+                details: {
+                    eventType: event.type,
+                    severity: event.severity,
+                    description: event.description,
+                    ...event.metadata
+                },
                 ipAddress: req.ip,
                 userAgent: req.headers['user-agent']
             });
@@ -162,7 +167,14 @@ class SecurityAuditMiddleware {
      */
     static handleCriticalEvent(event, req) {
         // Log to console for immediate attention
-        console.error('🚨 CRITICAL SECURITY EVENT:', Object.assign({ type: event.type, description: event.description, ip: req.ip, userAgent: req.headers['user-agent'], timestamp: new Date().toISOString() }, event.metadata));
+        console.error('🚨 CRITICAL SECURITY EVENT:', {
+            type: event.type,
+            description: event.description,
+            ip: req.ip,
+            userAgent: req.headers['user-agent'],
+            timestamp: new Date().toISOString(),
+            ...event.metadata
+        });
         // TODO: Implement additional alerting (email, Slack, etc.)
         // TODO: Consider automatic IP blocking for repeated violations
         // TODO: Implement rate limiting escalation

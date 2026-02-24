@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -72,8 +63,7 @@ const initSocket = (httpServer) => {
     });
     ioInstance = io;
     io.use((socket, next) => {
-        var _a;
-        const token = socket.handshake.auth.token || ((_a = socket.handshake.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+        const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1];
         if (!token) {
             return next(new Error('Authentication error: No token provided'));
         }
@@ -126,7 +116,7 @@ const initSocket = (httpServer) => {
             io.to(userId).emit('call_completed', { callId });
         });
         // Mobile Device reports call connected
-        socket.on('call_connected', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        socket.on('call_connected', async (data) => {
             // We assume the mobile app sends { phoneNumber, timestamp }
             // We need to know WHICH user this socket belongs to. 
             // Ideally, the mobile socket "joins" the room with the userId on connection.
@@ -174,15 +164,15 @@ const initSocket = (httpServer) => {
             const { userId, phoneNumber, timestamp } = data;
             if (userId) {
                 // Find Organisation for this user
-                const user = yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.user.findUnique({
+                const user = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.user.findUnique({
                     where: { id: userId },
                     select: { organisationId: true }
                 }));
                 // Ensure organisationId is valid string
-                const orgId = user === null || user === void 0 ? void 0 : user.organisationId;
+                const orgId = user?.organisationId;
                 if (orgId) {
                     // Try to find matching Lead using 'phone' field (Lead has direct string)
-                    const lead = yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.lead.findFirst({
+                    const lead = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.lead.findFirst({
                         where: {
                             organisationId: orgId,
                             phone: { contains: phoneNumber }
@@ -192,7 +182,7 @@ const initSocket = (httpServer) => {
                     const contactId = null;
                     // Check if an initiated call already exists (web dialer flow)
                     // We look for a call created in the last 2 minutes to same number
-                    const recentCall = yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.findFirst({
+                    const recentCall = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.findFirst({
                         where: {
                             createdById: userId,
                             phoneNumber: { contains: phoneNumber }, // Loose match
@@ -204,14 +194,14 @@ const initSocket = (httpServer) => {
                     }));
                     if (recentCall) {
                         // Update existing
-                        yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.update({
+                        await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.update({
                             where: { id: recentCall.id },
                             data: { callStatus: 'in-progress' }
                         }));
                     }
                     else {
                         // Create new "Manual Outbound" call detected from phone
-                        yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.create({
+                        await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.create({
                             data: {
                                 type: 'call',
                                 direction: 'outbound',
@@ -222,7 +212,7 @@ const initSocket = (httpServer) => {
                                 description: 'Auto-logged via Mobile App',
                                 organisationId: orgId,
                                 createdById: userId,
-                                leadId: lead === null || lead === void 0 ? void 0 : lead.id,
+                                leadId: lead?.id,
                                 contactId: undefined
                             }
                         }));
@@ -230,12 +220,12 @@ const initSocket = (httpServer) => {
                 }
                 io.to(userId).emit('call_status_update', { status: 'connected', phoneNumber, timestamp });
             }
-        }));
-        socket.on('call_ended', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        socket.on('call_ended', async (data) => {
             const { userId, phoneNumber, timestamp, duration } = data;
             if (userId) {
                 // Find the active call to close
-                const activeCall = yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.findFirst({
+                const activeCall = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.findFirst({
                     where: {
                         createdById: userId,
                         phoneNumber: { contains: phoneNumber },
@@ -245,7 +235,7 @@ const initSocket = (httpServer) => {
                     orderBy: { date: 'desc' }
                 }));
                 if (activeCall) {
-                    yield Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.update({
+                    await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.update({
                         where: { id: activeCall.id },
                         data: {
                             callStatus: 'completed',
@@ -256,7 +246,7 @@ const initSocket = (httpServer) => {
                 }
                 io.to(userId).emit('call_status_update', { status: 'ended', phoneNumber, timestamp, duration });
             }
-        }));
+        });
         // Collaboration: User joins a specific resource (e.g., Lead page)
         socket.on('join_collaboration', (data) => {
             const { resourceId } = data;

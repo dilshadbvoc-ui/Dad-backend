@@ -1,53 +1,37 @@
-import { api } from './api';
+import prisma from '../config/prisma';
+import { Prisma } from '../generated/client';
 
-export interface Task {
-    id: string;
-    subject: string;
-    description?: string;
-    status: 'not_started' | 'in_progress' | 'completed' | 'deferred';
-    priority: 'high' | 'medium' | 'low';
-    dueDate?: string;
+export class TaskService {
+    static async createTask(data: {
+        subject: string;
+        description?: string;
+        status?: any; // TaskStatus
+        priority?: any; // TaskPriority
+        dueDate?: Date;
+        organisationId: string;
+        createdById?: string;
+        leadId?: string;
+        contactId?: string;
+        accountId?: string;
+        opportunityId?: string;
+        assignedToId?: string;
+    }) {
+        const { organisationId, createdById, assignedToId, leadId, contactId, accountId, opportunityId, ...rest } = data;
 
-    assignedTo?: { _id: string; firstName: string; lastName: string; email: string };
-    relatedTo?: { _id: string; firstName?: string; lastName?: string; name?: string };
-    onModel?: 'Lead' | 'Contact' | 'Account' | 'Opportunity';
+        const createData: Prisma.TaskCreateInput = {
+            ...rest,
+            organisation: { connect: { id: organisationId } },
+        };
 
-    createdAt: string;
+        if (createdById) createData.createdBy = { connect: { id: createdById } };
+        if (assignedToId) createData.assignedTo = { connect: { id: assignedToId } };
+        if (leadId) createData.lead = { connect: { id: leadId } };
+        if (contactId) createData.contact = { connect: { id: contactId } };
+        if (accountId) createData.account = { connect: { id: accountId } };
+        if (opportunityId) createData.opportunity = { connect: { id: opportunityId } };
+
+        return await prisma.task.create({
+            data: createData
+        });
+    }
 }
-
-export interface CreateTaskData {
-    subject: string;
-    description?: string;
-    status?: string;
-    priority?: string;
-    dueDate?: string;
-    assignedTo?: string;
-    relatedTo?: string;
-    onModel?: string;
-}
-
-export interface TaskSearchParams {
-    status?: string;
-    priority?: string;
-    assignedTo?: string;
-}
-
-export const getTasks = async (params?: TaskSearchParams) => {
-    const response = await api.get('/tasks', { params });
-    return response.data;
-};
-
-export const createTask = async (data: CreateTaskData) => {
-    const response = await api.post('/tasks', data);
-    return response.data;
-};
-
-export const updateTask = async (id: string, data: Partial<CreateTaskData>) => {
-    const response = await api.put(`/tasks/${id}`, data);
-    return response.data;
-};
-
-export const deleteTask = async (id: string) => {
-    const response = await api.delete(`/tasks/${id}`);
-    return response.data;
-};

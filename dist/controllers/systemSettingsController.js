@@ -1,21 +1,12 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPublicSystemSettings = exports.updateSystemSettings = exports.getSystemSettings = void 0;
 const prisma_1 = require("../config/prisma");
-const getSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getSystemSettings = async (req, res) => {
     try {
         const { group } = req.query;
         const where = group ? { group: String(group) } : {};
-        const settings = yield prisma_1.prisma.systemSetting.findMany({
+        const settings = await prisma_1.prisma.systemSetting.findMany({
             where
         });
         // Convert array to object for easier frontend consumption
@@ -29,9 +20,9 @@ const getSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.error('Get settings error:', error);
         res.status(500).json({ message: 'Failed to fetch settings' });
     }
-});
+};
 exports.getSystemSettings = getSystemSettings;
-const updateSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateSystemSettings = async (req, res) => {
     try {
         const settings = req.body; // Expecting { key: value, key2: value2 }
         const group = req.query.group || 'general';
@@ -42,16 +33,16 @@ const updateSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 create: { key, value: String(value), group }
             });
         });
-        yield prisma_1.prisma.$transaction(updates);
+        await prisma_1.prisma.$transaction(updates);
         res.json({ message: 'Settings updated successfully' });
     }
     catch (error) {
         console.error('Update settings error:', error);
         res.status(500).json({ message: 'Failed to update settings' });
     }
-});
+};
 exports.updateSystemSettings = updateSystemSettings;
-const getPublicSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getPublicSystemSettings = async (req, res) => {
     try {
         // Only return specific public settings (SEO, Branding)
         // Avoid exposing sensitive keys if any
@@ -64,7 +55,7 @@ const getPublicSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, 
             'favicon_url',
             'logo_url'
         ];
-        const settings = yield prisma_1.prisma.systemSetting.findMany({
+        const settings = await prisma_1.prisma.systemSetting.findMany({
             where: {
                 key: { in: publicKeys }
             }
@@ -79,5 +70,5 @@ const getPublicSystemSettings = (req, res) => __awaiter(void 0, void 0, void 0, 
         console.error('Get public settings error:', error);
         res.status(500).json({ message: 'Failed to fetch settings' });
     }
-});
+};
 exports.getPublicSystemSettings = getPublicSystemSettings;

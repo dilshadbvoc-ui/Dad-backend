@@ -32,26 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -65,12 +45,12 @@ const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
 const roleUtils_1 = require("../utils/roleUtils");
 // GET /api/users/:id/stats - Get user performance stats
-const getUserStats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserStats = async (req, res) => {
     try {
         const userId = req.params.id;
         const currentUser = req.user;
         // Security: Verify existence and org match
-        const targetUser = yield prisma_1.default.user.findUnique({ where: { id: userId } });
+        const targetUser = await prisma_1.default.user.findUnique({ where: { id: userId } });
         if (!targetUser)
             return res.status(404).json({ message: 'User not found' });
         if (currentUser.role !== 'super_admin') {
@@ -86,20 +66,20 @@ const getUserStats = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             }
         }
         // 1. Total Leads Owned
-        const totalLeads = yield prisma_1.default.lead.count({
+        const totalLeads = await prisma_1.default.lead.count({
             where: { assignedToId: userId, isDeleted: false }
         });
         // 2. Leads Converted (Won)
-        const convertedLeads = yield prisma_1.default.lead.count({
+        const convertedLeads = await prisma_1.default.lead.count({
             where: { assignedToId: userId, status: 'converted', isDeleted: false }
         });
         // 3. Leads Lost
-        const lostLeads = yield prisma_1.default.lead.count({
+        const lostLeads = await prisma_1.default.lead.count({
             where: { assignedToId: userId, status: 'lost', isDeleted: false }
         });
         // 4. Sales Value (from Opportunities won or Orders?) 
         // For now, let's assume Opportunity 'closed_won' linked to User
-        const totalSalesValue = yield prisma_1.default.opportunity.aggregate({
+        const totalSalesValue = await prisma_1.default.opportunity.aggregate({
             where: { ownerId: userId, stage: 'closed_won' },
             _sum: { amount: true }
         });
@@ -118,12 +98,11 @@ const getUserStats = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         logger_1.logger.error('getUserStats Error', error, 'UserController');
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getUserStats = getUserStats;
-const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const getUsers = async (req, res) => {
     try {
-        logger_1.logger.info('getUsers called', 'UserController', undefined, (_a = req.user) === null || _a === void 0 ? void 0 : _a.organisationId);
+        logger_1.logger.info('getUsers called', 'UserController', undefined, req.user?.organisationId);
         const currentUser = req.user;
         const where = { isActive: true }; // Default to active? Original was isDeleted: {$ne: true}, but schema uses isActive.
         // Wait, Mongoose schema had isDeleted check?
@@ -151,11 +130,11 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             where.organisationId = orgId;
             // Hierarchy filtering: non-admin users only see subordinates + branch members
             if (currentUser.role !== 'admin') {
-                const visibleIds = yield (0, hierarchyUtils_1.getVisibleUserIds)(currentUser.id);
+                const visibleIds = await (0, hierarchyUtils_1.getVisibleUserIds)(currentUser.id);
                 where.id = { in: visibleIds };
             }
         }
-        const users = yield prisma_1.default.user.findMany({
+        const users = await prisma_1.default.user.findMany({
             where,
             include: {
                 organisation: { select: { name: true } }, // Equivalent to populate role? No role is enum.
@@ -179,22 +158,33 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // logger.debug(`Query where: ${JSON.stringify(where)}`, 'UserController');
         logger_1.logger.info(`Users found: ${users.length}`, 'UserController');
         // Build role lookup for UUID → name resolution
-        const allRoles = yield prisma_1.default.role.findMany({
+        const allRoles = await prisma_1.default.role.findMany({
             select: { id: true, roleKey: true, name: true }
         });
         const roleIdToInfo = new Map(allRoles.map(r => [r.id, { key: r.roleKey, name: r.name }]));
         // Transform results to match frontend expectations and ensure security
         const transformedUsers = users.map(u => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password } = u, userWithoutPassword = __rest(u, ["password"]);
+            const { password, ...userWithoutPassword } = u;
             // Resolve role: if u.role is a UUID (matches a role id), use roleKey/name
             const roleInfo = roleIdToInfo.get(u.role);
             const roleKey = roleInfo ? roleInfo.key : u.role;
             const roleName = roleInfo ? roleInfo.name : u.role.replace(/_/g, ' ');
-            return Object.assign(Object.assign({}, userWithoutPassword), { _id: u.id, id: u.id, role: { id: roleKey, name: roleName }, reportsTo: u.reportsTo ? Object.assign(Object.assign({}, u.reportsTo), { id: u.reportsTo.id, _id: u.reportsTo.id }) : null, branch: u.branch ? {
+            return {
+                ...userWithoutPassword,
+                _id: u.id,
+                id: u.id,
+                role: { id: roleKey, name: roleName },
+                reportsTo: u.reportsTo ? {
+                    ...u.reportsTo,
+                    id: u.reportsTo.id,
+                    _id: u.reportsTo.id
+                } : null,
+                branch: u.branch ? {
                     id: u.branch.id,
                     name: u.branch.name
-                } : null });
+                } : null
+            };
         });
         res.json({ users: transformedUsers });
     }
@@ -202,10 +192,10 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         logger_1.logger.error('getUsers Error', error, 'UserController');
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getUsers = getUsers;
 // GET /api/users/my-team — lightweight endpoint for sidebar hierarchy
-const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyTeam = async (req, res) => {
     try {
         const currentUser = req.user;
         const targetParentId = req.query.parentId || currentUser.id;
@@ -215,7 +205,7 @@ const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // or someone who reports directly or indirectly to them.
         if (targetParentId !== currentUser.id && !(0, roleUtils_1.isAdmin)(currentUser)) {
             // Check if target is a descendant
-            const targetUser = yield prisma_1.default.user.findUnique({
+            const targetUser = await prisma_1.default.user.findUnique({
                 where: { id: targetParentId },
                 select: { reportsToId: true }
             });
@@ -224,7 +214,7 @@ const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
             // Path-based check or recursive check (simpler: check if reportsToId is currentUser or if they are in the hierarchy)
             // For now, let's verify if they are at least in the same organisation
-            const targetFullUser = yield prisma_1.default.user.findFirst({
+            const targetFullUser = await prisma_1.default.user.findFirst({
                 where: { id: targetParentId, organisationId: currentUser.organisationId }
             });
             if (!targetFullUser) {
@@ -232,7 +222,7 @@ const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Fetch direct reports (one level)
-        const directReports = yield prisma_1.default.user.findMany({
+        const directReports = await prisma_1.default.user.findMany({
             where: { reportsToId: targetParentId, isActive: true },
             select: {
                 id: true,
@@ -245,7 +235,7 @@ const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         // Check which reports have subordinates
         const reportIds = directReports.map(r => r.id);
-        const subCounts = yield prisma_1.default.user.groupBy({
+        const subCounts = await prisma_1.default.user.groupBy({
             by: ['reportsToId'],
             where: { reportsToId: { in: reportIds }, isActive: true },
             _count: { id: true }
@@ -254,13 +244,13 @@ const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Fetch managed branches (only for the root fetch)
         let managedBranches = [];
         if (targetParentId === currentUser.id) {
-            managedBranches = yield prisma_1.default.branch.findMany({
+            managedBranches = await prisma_1.default.branch.findMany({
                 where: { managerId: currentUser.id, isDeleted: false },
                 select: { id: true, name: true }
             });
         }
         // Role lookup
-        const allRoles = yield prisma_1.default.role.findMany({ select: { id: true, roleKey: true, name: true } });
+        const allRoles = await prisma_1.default.role.findMany({ select: { id: true, roleKey: true, name: true } });
         const roleIdToInfo = new Map(allRoles.map(r => [r.id, { key: r.roleKey, name: r.name }]));
         const team = directReports.map(u => {
             const roleInfo = roleIdToInfo.get(u.role);
@@ -279,12 +269,12 @@ const getMyTeam = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         logger_1.logger.error('getMyTeam Error', error, 'UserController');
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getMyTeam = getMyTeam;
-const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserById = async (req, res) => {
     try {
         const currentUser = req.user;
-        const user = yield prisma_1.default.user.findUnique({
+        const user = await prisma_1.default.user.findUnique({
             where: { id: req.params.id },
             include: { organisation: true }
         });
@@ -300,23 +290,23 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         // Exclude password
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password } = user, userWithoutPassword = __rest(user, ["password"]);
+        const { password, ...userWithoutPassword } = user;
         res.json(userWithoutPassword);
     }
     catch (error) {
         logger_1.logger.error('getUserById Error', error, 'UserController');
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.getUserById = getUserById;
-const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = async (req, res) => {
     try {
         const currentUser = req.user;
-        const _a = req.body, { password } = _a, updateData = __rest(_a, ["password"]);
+        const { password, ...updateData } = req.body;
         const userId = req.params.id;
         // Security Check
         if (currentUser.role !== 'super_admin') {
-            const tempUser = yield prisma_1.default.user.findUnique({ where: { id: userId }, include: { organisation: true } });
+            const tempUser = await prisma_1.default.user.findUnique({ where: { id: userId }, include: { organisation: true } });
             if (!tempUser)
                 return res.status(404).json({ message: 'User not found' });
             const isSelfUpdate = userId === currentUser.id;
@@ -352,12 +342,12 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (updateData.reportsTo === userId) {
                 return res.status(400).json({ message: 'User cannot report to themselves' });
             }
-            const manager = yield prisma_1.default.user.findUnique({ where: { id: updateData.reportsTo } });
+            const manager = await prisma_1.default.user.findUnique({ where: { id: updateData.reportsTo } });
             if (!manager)
                 return res.status(400).json({ message: 'Manager not found' });
             // Check Org
             const managerOrgId = (0, hierarchyUtils_1.getOrgId)(manager);
-            const targetUser = yield prisma_1.default.user.findUnique({ where: { id: userId } });
+            const targetUser = await prisma_1.default.user.findUnique({ where: { id: userId } });
             const targetOrgId = (0, hierarchyUtils_1.getOrgId)(targetUser) || (0, hierarchyUtils_1.getOrgId)(currentUser);
             if (targetOrgId !== managerOrgId) {
                 return res.status(400).json({ message: 'Manager must belong to same organisation' });
@@ -366,11 +356,11 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // Handle Branch assignment
         if (updateData.branchId) {
-            const branch = yield prisma_1.default.branch.findUnique({ where: { id: updateData.branchId } });
+            const branch = await prisma_1.default.branch.findUnique({ where: { id: updateData.branchId } });
             if (!branch)
                 return res.status(400).json({ message: 'Branch not found' });
             // Check Org
-            if (branch.organisationId !== ((0, hierarchyUtils_1.getOrgId)(currentUser) || (0, hierarchyUtils_1.getOrgId)(yield prisma_1.default.user.findUnique({ where: { id: userId } })))) {
+            if (branch.organisationId !== ((0, hierarchyUtils_1.getOrgId)(currentUser) || (0, hierarchyUtils_1.getOrgId)(await prisma_1.default.user.findUnique({ where: { id: userId } })))) {
                 return res.status(400).json({ message: 'Branch must belong to same organisation' });
             }
             dataToUpdate.branch = { connect: { id: updateData.branchId } };
@@ -381,10 +371,10 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             delete dataToUpdate.branchId;
         }
         if (password && password.trim() !== '') {
-            const salt = yield bcryptjs_1.default.genSalt(10);
-            dataToUpdate.password = yield bcryptjs_1.default.hash(password, salt);
+            const salt = await bcryptjs_1.default.genSalt(10);
+            dataToUpdate.password = await bcryptjs_1.default.hash(password, salt);
         }
-        const updatedUser = yield prisma_1.default.user.update({
+        const updatedUser = await prisma_1.default.user.update({
             where: { id: userId },
             data: dataToUpdate
         });
@@ -398,17 +388,17 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             details: { updatedFields: Object.keys(dataToUpdate).filter(k => k !== 'password') }
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password: _password } = updatedUser, userNoPass = __rest(updatedUser, ["password"]);
+        const { password: _password, ...userNoPass } = updatedUser;
         res.json(userNoPass);
     }
     catch (error) {
         logger_1.logger.error('UpdateUser Error', error, 'UserController');
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.updateUser = updateUser;
 // POST /api/users
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createUser = async (req, res) => {
     try {
         const { email, password, role, firstName, lastName, organisationId, branchId, phone, dailyLeadQuota } = req.body;
         const currentUser = req.user;
@@ -422,19 +412,19 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         // 1. License Check (User Limit)
         if (currentUser.role !== 'super_admin') {
-            const { LicenseEnforcementService } = yield Promise.resolve().then(() => __importStar(require('../services/LicenseEnforcementService')));
-            yield LicenseEnforcementService.checkLimits(targetOrgId, 'users');
+            const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/LicenseEnforcementService')));
+            await LicenseEnforcementService.checkLimits(targetOrgId, 'users');
         }
         // 2. Email duplication check
-        const existingUser = yield prisma_1.default.user.findUnique({ where: { email } });
+        const existingUser = await prisma_1.default.user.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(409).json({ message: 'User with this email already exists' });
         }
         if (!password || password.length < 8) {
             return res.status(400).json({ message: 'Password must be at least 8 characters' });
         }
-        const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-        const newUser = yield prisma_1.default.user.create({
+        const hashedPassword = await bcryptjs_1.default.hash(password, 10);
+        const newUser = await prisma_1.default.user.create({
             data: {
                 email,
                 password: hashedPassword,
@@ -462,28 +452,28 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // 3. Update Organisation Counter (Optional, if using userIdCounter)
         // await prisma.organisation.update({ where: { id: targetOrgId }, data: { userIdCounter: { increment: 1 } } });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password: _ } = newUser, userWithoutPassword = __rest(newUser, ["password"]);
+        const { password: _, ...userWithoutPassword } = newUser;
         res.status(201).json(userWithoutPassword);
     }
     catch (error) {
         logger_1.logger.error('createUser Error', error, 'UserController');
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.createUser = createUser;
-const inviteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const inviteUser = async (req, res) => {
     try {
         const { email, firstName, lastName, role, organisationId, position, reportsTo, password, branchId, phone, dailyLeadQuota } = req.body;
         const currentUser = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(currentUser) || organisationId;
         // 1. License Check
-        const { LicenseEnforcementService } = yield Promise.resolve().then(() => __importStar(require('../services/LicenseEnforcementService')));
-        yield LicenseEnforcementService.checkLimits(orgId, 'users');
+        const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/LicenseEnforcementService')));
+        await LicenseEnforcementService.checkLimits(orgId, 'users');
         // Check if user exists
         if (currentUser.role !== 'super_admin' && currentUser.role !== 'admin') {
             return res.status(403).json({ message: 'Only administrators can invite users' });
         }
-        const existingUser = yield prisma_1.default.user.findUnique({ where: { email } });
+        const existingUser = await prisma_1.default.user.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ message: 'User with this email already exists' });
         }
@@ -494,9 +484,9 @@ const inviteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!targetOrgId)
             return res.status(400).json({ message: 'Organisation is required' });
         // Check limits and increment counter
-        const org = yield prisma_1.default.organisation.findUnique({ where: { id: targetOrgId } });
+        const org = await prisma_1.default.organisation.findUnique({ where: { id: targetOrgId } });
         if (org) {
-            const userCount = yield prisma_1.default.user.count({ where: { organisationId: targetOrgId, isActive: true } });
+            const userCount = await prisma_1.default.user.count({ where: { organisationId: targetOrgId, isActive: true } });
             if (userCount >= org.userLimit) {
                 return res.status(403).json({ message: 'User limit reached' });
             }
@@ -505,7 +495,7 @@ const inviteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         let generatedUserId;
         if (org) {
             // Atomic update
-            const updatedOrg = yield prisma_1.default.organisation.update({
+            const updatedOrg = await prisma_1.default.organisation.update({
                 where: { id: targetOrgId },
                 data: { userIdCounter: { increment: 1 } }
             });
@@ -514,9 +504,9 @@ const inviteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             generatedUserId = `${prefix}${counter.toString().padStart(3, '0')}`;
         }
         const tempPassword = password || Math.random().toString(36).slice(-8);
-        const salt = yield bcryptjs_1.default.genSalt(10);
-        const hashedPassword = yield bcryptjs_1.default.hash(tempPassword, salt);
-        const newUser = yield prisma_1.default.user.create({
+        const salt = await bcryptjs_1.default.genSalt(10);
+        const hashedPassword = await bcryptjs_1.default.hash(tempPassword, salt);
+        const newUser = await prisma_1.default.user.create({
             data: {
                 email,
                 firstName,
@@ -550,9 +540,9 @@ const inviteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     catch (error) {
         res.status(400).json({ message: error.message });
     }
-});
+};
 exports.inviteUser = inviteUser;
-const deactivateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deactivateUser = async (req, res) => {
     try {
         const currentUser = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(currentUser);
@@ -569,10 +559,10 @@ const deactivateUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
         // We can just add organisationId to the where clause of update, but prisma update `where` only accepts unique identifiers.
         // So we need to use updateMany or findFirst then update.
         // Using findFirst then update for safety.
-        const existing = yield prisma_1.default.user.findFirst({ where });
+        const existing = await prisma_1.default.user.findFirst({ where });
         if (!existing)
             return res.status(404).json({ message: 'User not found or access denied' });
-        const user = yield prisma_1.default.user.update({
+        const user = await prisma_1.default.user.update({
             where: { id: userId },
             data: { isActive: false }
         });
@@ -586,11 +576,11 @@ const deactivateUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
             details: { email: user.email }
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password: _pw } = user, sanitizedUser = __rest(user, ["password"]);
+        const { password: _pw, ...sanitizedUser } = user;
         res.json({ message: 'User deactivated', user: sanitizedUser });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.deactivateUser = deactivateUser;
