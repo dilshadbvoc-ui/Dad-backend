@@ -3,6 +3,40 @@ set -e
 
 echo "🚀 Starting Deployment..."
 
+# Check disk space before starting
+AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
+AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
+
+echo "💾 Available disk space: ${AVAILABLE_GB}GB"
+
+if [ "$AVAILABLE_KB" -lt 2000000 ]; then
+    echo "⚠️  Low disk space detected (less than 2GB). Running emergency cleanup..."
+    
+    # Clean npm cache
+    npm cache clean --force 2>/dev/null || true
+    
+    # Remove old PM2 logs
+    pm2 flush 2>/dev/null || true
+    
+    # Remove old log files (older than 7 days)
+    find ~/backend -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
+    
+    # Clean apt cache if we have sudo
+    sudo apt-get clean 2>/dev/null || true
+    sudo apt-get autoclean 2>/dev/null || true
+    
+    # Check space again
+    AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
+    AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
+    echo "💾 Available disk space after cleanup: ${AVAILABLE_GB}GB"
+    
+    if [ "$AVAILABLE_KB" -lt 1000000 ]; then
+        echo "❌ Still not enough disk space (less than 1GB). Manual intervention required!"
+        echo "Please SSH into the server and run: rm -rf ~/backend/node_modules && npm cache clean --force"
+        exit 1
+    fi
+fi
+
 # Load NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -23,6 +57,14 @@ fi
 
 git fetch origin main
 git reset --hard origin/main
+
+# Clean node_modules if disk space is tight (less than 3GB)
+AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
+if [ "$AVAILABLE_KB" -lt 3000000 ]; then
+    echo "🧹 Removing node_modules to save space before reinstall..."
+    rm -rf node_modules
+fi
+
 npm install --ignore-scripts
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
