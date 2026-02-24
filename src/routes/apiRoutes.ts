@@ -3,8 +3,8 @@ import express from 'express';
 import { verifyApiKey } from '../middleware/apiKeyMiddleware';
 import prisma from '../config/prisma';
 import { LeadSource, LeadStatus } from '../generated/client';
-import { DistributionService } from '../services/DistributionService';
-import { WorkflowEngine } from '../services/WorkflowEngine';
+import { DistributionService } from '../services/distributionService';
+import { WorkflowEngine } from '../services/workflowEngine';
 
 const router = express.Router();
 

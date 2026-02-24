@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import prisma from '../config/prisma';
-import { DistributionService } from '../services/DistributionService';
+import { DistributionService } from '../services/distributionService';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 

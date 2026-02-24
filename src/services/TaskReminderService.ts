@@ -1,7 +1,7 @@
 
 import prisma from '../config/prisma';
 import { TaskStatus } from '../generated/client';
-import { NotificationService } from './NotificationService';
+import { NotificationService } from './notificationService';
 
 export class TaskReminderService {
     /**

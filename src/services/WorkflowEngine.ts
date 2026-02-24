@@ -1,8 +1,8 @@
 import prisma from '../config/prisma';
-import { EmailService } from './EmailService';
-import { TaskService } from './TaskService';
-import { WhatsAppService } from './WhatsAppService';
-import { NotificationService } from './NotificationService';
+import { EmailService } from './emailService';
+import { TaskService } from './taskService';
+import { WhatsAppService } from './whatsAppService';
+import { NotificationService } from './notificationService';
 
 export const WorkflowEngine = {
     /**

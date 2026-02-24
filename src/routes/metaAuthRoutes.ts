@@ -3,8 +3,8 @@ import prisma from '../config/prisma';
 import { AuthRequest, protect } from '../middleware/authMiddleware';
 import axios from 'axios';
 import crypto from 'crypto';
-import { MetaLeadService } from '../services/MetaLeadService'; // Service for handling Meta leads
-import { MetaIntegrationService } from '../services/MetaIntegrationService';
+import { MetaLeadService } from '../services/metaLeadService'; // Service for handling Meta leads
+import { MetaIntegrationService } from '../services/metaIntegrationService';
 import { encrypt } from '../utils/encryption';
 
 const router = Router();

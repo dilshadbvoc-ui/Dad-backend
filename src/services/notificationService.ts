@@ -1,7 +1,7 @@
 
 import prisma from '../config/prisma';
 import { getIO } from '../socket';
-import { EmailService } from './EmailService';
+import { EmailService } from './emailService';
 
 // Singleton helper to get IO instance if not exported globally
 // Assuming socket.ts exports initSocket and returns io instance, 

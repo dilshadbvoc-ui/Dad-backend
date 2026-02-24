@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
-import { DistributionService } from '../services/DistributionService';
-import { WorkflowEngine } from '../services/WorkflowEngine';
+import { DistributionService } from '../services/distributionService';
+import { WorkflowEngine } from '../services/workflowEngine';
 import { LeadSource, LeadStatus } from '../generated/client';
 import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 // Dynamic import used for OpenAI to avoid startup errors if missing

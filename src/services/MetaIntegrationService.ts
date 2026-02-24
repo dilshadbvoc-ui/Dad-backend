@@ -1,7 +1,7 @@
 import prisma from '../config/prisma';
-import { metaService } from './MetaService';
+import { metaService } from './metaService';
 import { logger } from '../utils/logger';
-import { DistributionService } from './DistributionService';
+import { DistributionService } from './distributionService';
 import { decrypt } from '../utils/encryption';
 
 export const MetaIntegrationService = {

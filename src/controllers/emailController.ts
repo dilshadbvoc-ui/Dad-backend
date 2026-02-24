@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ResponseHandler } from '../utils/apiResponse';
-import { EmailService } from '../services/EmailService';
+import { EmailService } from '../services/emailService';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { InteractionType } from '../generated/client';

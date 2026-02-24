@@ -1,7 +1,7 @@
 
 import express from 'express';
 import { submitWebForm } from '../controllers/webFormController';
-import { MetaIntegrationService } from '../services/MetaIntegrationService';
+import { MetaIntegrationService } from '../services/metaIntegrationService';
 
 const router = express.Router();
 

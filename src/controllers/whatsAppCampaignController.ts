@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
-import { CampaignProcessor } from '../services/CampaignProcessor';
+import { CampaignProcessor } from '../services/campaignProcessor';
 
 interface AuthenticatedRequest extends Request {
     user?: {

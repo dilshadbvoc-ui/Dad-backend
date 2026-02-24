@@ -1,6 +1,6 @@
 import axios from 'axios';
 import prisma from '../config/prisma';
-import { DistributionService } from './DistributionService';
+import { DistributionService } from './distributionService';
 import { LeadSource, LeadStatus, Prisma } from '../generated/client';
 import { decrypt } from '../utils/encryption';
 

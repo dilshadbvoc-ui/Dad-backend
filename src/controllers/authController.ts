@@ -6,7 +6,7 @@ import generateToken from '../utils/generateToken';
 import bcrypt from 'bcryptjs';
 // UserRole import removed
 import { logAudit } from '../utils/auditLogger';
-import { EmailService } from '../services/EmailService';
+import { EmailService } from '../services/emailService';
 import { validatePassword } from '../utils/passwordValidator';
 
 // @desc    Auth user & get token

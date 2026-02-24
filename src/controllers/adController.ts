@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { metaService } from '../services/MetaService';
-import { MetaIntegrationService } from '../services/MetaIntegrationService';
+import { metaService } from '../services/metaService';
+import { MetaIntegrationService } from '../services/metaIntegrationService';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 

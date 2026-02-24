@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import PaymentService from '../services/PaymentService';
+import PaymentService from '../services/paymentService';
 
 /**
  * Record full payment for an opportunity

@@ -1,7 +1,7 @@
 import prisma from '../config/prisma';
 import fs from 'fs';
 import csv from 'csv-parser';
-import { DistributionService } from './DistributionService';
+import { DistributionService } from './distributionService';
 
 export class ImportJobService {
     static async createJob(userId: string, orgId: string, filePath: string, mapping: any, options?: {

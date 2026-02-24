@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import EMIService from '../services/EMIService';
+import EMIService from '../services/emiService';
 
 /**
  * Convert partial payment to EMI

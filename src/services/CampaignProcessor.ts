@@ -1,6 +1,6 @@
 import prisma from '../config/prisma';
-import { WhatsAppService } from './WhatsAppService';
-import { EmailService } from './EmailService';
+import { WhatsAppService } from './whatsAppService';
+import { EmailService } from './emailService';
 import { logger } from '../utils/logger';
 
 

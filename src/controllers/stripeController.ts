@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { StripeService } from '../services/StripeService';
+import { StripeService } from '../services/stripeService';
 import prisma from '../config/prisma';
 
 export const createCheckoutSession = async (req: Request, res: Response) => {

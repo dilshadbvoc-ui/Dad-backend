@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
-import { SalesTargetService } from '../services/SalesTargetService';
+import { SalesTargetService } from '../services/salesTargetService';
 
 // Helper: Get direct reports of a user
 const getDirectReports = async (userId: string): Promise<any[]> => {

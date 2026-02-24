@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { encrypt } from '../utils/encryption';
-import { metaService } from '../services/MetaService';
+import { metaService } from '../services/metaService';
 import bcrypt from 'bcryptjs';
 import { logAudit } from '../utils/auditLogger';
 

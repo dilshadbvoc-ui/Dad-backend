@@ -3,8 +3,8 @@ import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { ResponseHandler } from '../utils/apiResponse';
 import { logger } from '../utils/logger';
-import { EmailService } from '../services/EmailService';
-import { WhatsAppService } from '../services/WhatsAppService';
+import { EmailService } from '../services/emailService';
+import { WhatsAppService } from '../services/whatsAppService';
 import { logAudit } from '../utils/auditLogger';
 
 /**

@@ -1,5 +1,5 @@
 import { PrismaClient } from '../generated/client';
-import PaymentService from './PaymentService';
+import PaymentService from './paymentService';
 
 const prisma = new PrismaClient();
 

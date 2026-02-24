@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { WhatsAppService } from '../services/WhatsAppService';
-import { WhatsAppIntegrationService } from '../services/WhatsAppIntegrationService';
+import { WhatsAppService } from '../services/whatsAppService';
+import { WhatsAppIntegrationService } from '../services/whatsAppIntegrationService';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { getIO } from '../socket';

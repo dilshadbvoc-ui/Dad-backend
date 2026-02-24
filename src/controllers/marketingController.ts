@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import MarketingAPIService from '../services/MarketingAPIService';
+import MarketingAPIService from '../services/marketingAPIService';
 import prisma from '../config/prisma';
 
 interface AuthRequest extends Request {
