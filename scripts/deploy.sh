@@ -62,6 +62,16 @@ git reset --hard origin/main
 echo "🧹 Removing node_modules to save space before reinstall..."
 rm -rf node_modules
 
+# Remove duplicate uppercase service files (Linux is case-sensitive)
+echo "🔧 Removing duplicate uppercase service files..."
+rm -f src/services/WebhookService.ts
+rm -f src/services/GoalService.ts
+rm -f src/services/AssignmentRuleService.ts
+rm -f src/services/SalesTargetService.ts
+rm -f src/services/WhatsAppService.ts
+rm -f src/services/TaskService.ts
+rm -f src/services/NotificationService.ts
+
 # Remove package-lock.json to force regeneration with correct versions
 echo "🔄 Regenerating package-lock.json..."
 rm -f package-lock.json
