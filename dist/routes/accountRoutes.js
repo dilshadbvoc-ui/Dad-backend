@@ -18,3 +18,4 @@ router.route('/:accountId/products')
     .post(authMiddleware_1.protect, accountController_1.addAccountProduct)
     .get(authMiddleware_1.protect, accountController_1.getAccountProducts);
 exports.default = router;
+//# sourceMappingURL=accountRoutes.js.map

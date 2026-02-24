@@ -356,3 +356,4 @@ const getAccountProducts = async (req, res) => {
     }
 };
 exports.getAccountProducts = getAccountProducts;
+//# sourceMappingURL=accountController.js.map

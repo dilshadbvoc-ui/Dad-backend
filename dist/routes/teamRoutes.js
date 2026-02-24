@@ -15,3 +15,4 @@ router.route('/:id')
     .put(authMiddleware_1.protect, teamController_1.updateTeam)
     .delete(authMiddleware_1.protect, teamController_1.deleteTeam);
 exports.default = router;
+//# sourceMappingURL=teamRoutes.js.map

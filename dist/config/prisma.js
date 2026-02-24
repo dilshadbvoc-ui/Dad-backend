@@ -25,3 +25,4 @@ if (!globalForPrisma.prisma) {
 }
 exports.prisma = globalForPrisma.prisma;
 exports.default = exports.prisma;
+//# sourceMappingURL=prisma.js.map

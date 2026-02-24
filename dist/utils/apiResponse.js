@@ -101,3 +101,4 @@ exports.sendServerError = ResponseHandler.serverError;
 exports.sendCreated = ResponseHandler.created;
 exports.sendNoContent = ResponseHandler.noContent;
 exports.sendPaginated = ResponseHandler.paginated;
+//# sourceMappingURL=apiResponse.js.map

@@ -9,3 +9,4 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.get('/:type/:id', authMiddleware_1.protect, timelineController_1.getTimeline);
 exports.default = router;
+//# sourceMappingURL=timelineRoutes.js.map

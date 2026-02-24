@@ -7,7 +7,7 @@ exports.getSubordinates = exports.deleteTarget = exports.updateTarget = exports.
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
-const SalesTargetService_1 = require("../services/SalesTargetService");
+const salesTargetService_1 = require("../services/salesTargetService");
 // Helper: Get direct reports of a user
 const getDirectReports = async (userId) => {
     return await prisma_1.default.user.findMany({
@@ -508,7 +508,7 @@ const recalculateProgress = async (req, res) => {
         });
         console.log(`[Recalculate] Triggered by ${user.id} for ${users.length} users.`);
         for (const u of users) {
-            await SalesTargetService_1.SalesTargetService.updateProgressForUser(u.id);
+            await salesTargetService_1.SalesTargetService.updateProgressForUser(u.id);
         }
         res.json({ message: 'Progress recalculated successfully' });
     }
@@ -616,3 +616,4 @@ const getSubordinates = async (req, res) => {
     }
 };
 exports.getSubordinates = getSubordinates;
+//# sourceMappingURL=salesTargetController.js.map

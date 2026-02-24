@@ -272,3 +272,4 @@ const getRuleTypes = async (req, res) => {
     });
 };
 exports.getRuleTypes = getRuleTypes;
+//# sourceMappingURL=assignmentRuleController.js.map

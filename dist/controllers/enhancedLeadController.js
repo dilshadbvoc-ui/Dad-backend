@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateLeadEnhanced = exports.createLeadEnhanced = exports.getLeadsEnhanced = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const DistributionService_1 = require("../services/DistributionService");
-const WorkflowEngine_1 = require("../services/WorkflowEngine");
+const distributionService_1 = require("../services/distributionService");
+const workflowEngine_1 = require("../services/workflowEngine");
 const client_1 = require("../generated/client");
 const logger_1 = require("../utils/logger");
 const apiResponse_1 = require("../utils/apiResponse");
@@ -26,9 +17,9 @@ const validation_1 = require("../utils/validation");
  * This serves as an example of best practices for other controllers
  */
 // GET /api/leads - Enhanced with better error handling
-const getLeadsEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLeadsEnhanced = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     try {
         logger_1.logger.apiRequest('GET', '/api/leads', userId, organisationId || undefined, req.query);
@@ -53,7 +44,7 @@ const getLeadsEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, functio
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             try {
-                const subordinateIds = yield (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+                const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
                 where.assignedToId = { in: subordinateIds };
                 logger_1.logger.debug('Applied hierarchy filter', 'LEADS', userId, organisationId || undefined, { subordinateCount: subordinateIds.length });
             }
@@ -82,7 +73,7 @@ const getLeadsEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, functio
             }
         }
         // 5. Execute queries with error handling
-        const [leads, total] = yield Promise.all([
+        const [leads, total] = await Promise.all([
             prisma_1.default.lead.findMany({
                 where,
                 include: {
@@ -110,12 +101,12 @@ const getLeadsEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         return apiResponse_1.ResponseHandler.serverError(res, 'An unexpected error occurred while fetching leads');
     }
-});
+};
 exports.getLeadsEnhanced = getLeadsEnhanced;
 // POST /api/leads - Enhanced with comprehensive validation
-const createLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createLeadEnhanced = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     try {
         logger_1.logger.apiRequest('POST', '/api/leads', userId, organisationId || undefined, req.body);
@@ -146,7 +137,7 @@ const createLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
             return apiResponse_1.ResponseHandler.validationError(res, validationErrors);
         }
         // 4. Check for duplicate email
-        const existingLead = yield prisma_1.default.lead.findFirst({
+        const existingLead = await prisma_1.default.lead.findFirst({
             where: {
                 email: sanitizedData.email,
                 organisationId,
@@ -161,8 +152,15 @@ const createLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
             return apiResponse_1.ResponseHandler.validationError(res, 'A lead with this email already exists');
         }
         // 5. Create lead with error handling
-        const leadData = Object.assign(Object.assign({}, sanitizedData), { organisationId, createdById: userId, source: sanitizedData.source || client_1.LeadSource.manual, status: sanitizedData.status || client_1.LeadStatus.new, leadScore: sanitizedData.leadScore || 0 });
-        const newLead = yield prisma_1.default.lead.create({
+        const leadData = {
+            ...sanitizedData,
+            organisationId,
+            createdById: userId,
+            source: sanitizedData.source || client_1.LeadSource.manual,
+            status: sanitizedData.status || client_1.LeadStatus.new,
+            leadScore: sanitizedData.leadScore || 0
+        };
+        const newLead = await prisma_1.default.lead.create({
             data: leadData,
             include: {
                 assignedTo: { select: { id: true, firstName: true, lastName: true } }
@@ -173,7 +171,7 @@ const createLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
         // 6. Apply distribution rules (non-blocking)
         try {
-            yield DistributionService_1.DistributionService.assignLead(newLead, organisationId);
+            await distributionService_1.DistributionService.assignLead(newLead, organisationId);
             logger_1.logger.info('Lead distribution applied', 'LEADS', userId, organisationId || undefined, { leadId: newLead.id });
         }
         catch (error) {
@@ -182,7 +180,7 @@ const createLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         // 7. Trigger workflows (non-blocking)
         try {
-            yield WorkflowEngine_1.WorkflowEngine.evaluate('lead', 'created', newLead, organisationId);
+            await workflowEngine_1.WorkflowEngine.evaluate('lead', 'created', newLead, organisationId);
             logger_1.logger.info('Lead workflows triggered', 'LEADS', userId, organisationId || undefined, { leadId: newLead.id });
         }
         catch (error) {
@@ -199,12 +197,12 @@ const createLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         return apiResponse_1.ResponseHandler.serverError(res, 'An unexpected error occurred while creating the lead');
     }
-});
+};
 exports.createLeadEnhanced = createLeadEnhanced;
 // PUT /api/leads/:id - Enhanced with validation and error handling
-const updateLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateLeadEnhanced = async (req, res) => {
     const user = req.user;
-    const userId = user === null || user === void 0 ? void 0 : user.id;
+    const userId = user?.id;
     const organisationId = (0, hierarchyUtils_1.getOrgId)(user);
     const leadId = req.params.id;
     try {
@@ -214,7 +212,7 @@ const updateLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
             return apiResponse_1.ResponseHandler.validationError(res, 'Invalid lead ID format');
         }
         // 2. Check if lead exists and user has access
-        const existingLead = yield prisma_1.default.lead.findFirst({
+        const existingLead = await prisma_1.default.lead.findFirst({
             where: {
                 id: leadId,
                 organisationId: organisationId || undefined,
@@ -251,7 +249,7 @@ const updateLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         // 5. Check for duplicate email if email is being updated
         if (sanitizedData.email && sanitizedData.email !== existingLead.email) {
-            const duplicateLead = yield prisma_1.default.lead.findFirst({
+            const duplicateLead = await prisma_1.default.lead.findFirst({
                 where: {
                     email: sanitizedData.email,
                     organisationId: organisationId || '',
@@ -268,9 +266,12 @@ const updateLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
             }
         }
         // 6. Update lead
-        const updatedLead = yield prisma_1.default.lead.update({
+        const updatedLead = await prisma_1.default.lead.update({
             where: { id: leadId },
-            data: Object.assign(Object.assign({}, sanitizedData), { updatedAt: new Date() }),
+            data: {
+                ...sanitizedData,
+                updatedAt: new Date()
+            },
             include: {
                 assignedTo: { select: { id: true, firstName: true, lastName: true } }
             }
@@ -281,7 +282,7 @@ const updateLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
         // 7. Trigger workflows for status changes (non-blocking)
         if (sanitizedData.status && sanitizedData.status !== existingLead.status) {
             try {
-                yield WorkflowEngine_1.WorkflowEngine.evaluate('lead', 'updated', updatedLead, organisationId || '');
+                await workflowEngine_1.WorkflowEngine.evaluate('lead', 'updated', updatedLead, organisationId || '');
                 logger_1.logger.info('Lead status change workflows triggered', 'LEADS', userId, organisationId || undefined, { leadId, oldStatus: existingLead.status, newStatus: sanitizedData.status });
             }
             catch (error) {
@@ -298,5 +299,6 @@ const updateLeadEnhanced = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         return apiResponse_1.ResponseHandler.serverError(res, 'An unexpected error occurred while updating the lead');
     }
-});
+};
 exports.updateLeadEnhanced = updateLeadEnhanced;
+//# sourceMappingURL=enhancedLeadController.js.map

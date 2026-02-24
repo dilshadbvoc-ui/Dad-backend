@@ -15,3 +15,4 @@ router.get('/sales-book', reportController_1.getSalesBook);
 // Export to Excel
 router.get('/export/:type', reportController_1.exportToExcel);
 exports.default = router;
+//# sourceMappingURL=reportRoutes.js.map

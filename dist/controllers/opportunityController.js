@@ -374,3 +374,4 @@ const deleteOpportunity = async (req, res) => {
     }
 };
 exports.deleteOpportunity = deleteOpportunity;
+//# sourceMappingURL=opportunityController.js.map

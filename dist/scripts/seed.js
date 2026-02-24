@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -17,10 +8,10 @@ const path_1 = __importDefault(require("path"));
 const prisma_1 = __importDefault(require("../config/prisma"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
-const seed = () => __awaiter(void 0, void 0, void 0, function* () {
+const seed = async () => {
     try {
         console.log('Connecting to PostgreSQL via Prisma...');
-        yield prisma_1.default.$connect();
+        await prisma_1.default.$connect();
         // 1. Seed Subscription Plans
         const plans = [
             {
@@ -58,7 +49,7 @@ const seed = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         ];
         for (const plan of plans) {
-            yield prisma_1.default.subscriptionPlan.upsert({
+            await prisma_1.default.subscriptionPlan.upsert({
                 where: { name: plan.name },
                 update: plan,
                 create: plan
@@ -66,9 +57,9 @@ const seed = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         console.log('Seeded Subscription Plans');
         // Create Default Organisation
-        let org = yield prisma_1.default.organisation.findFirst({ where: { slug: 'demo-corp' } });
+        let org = await prisma_1.default.organisation.findFirst({ where: { slug: 'demo-corp' } });
         if (!org) {
-            org = yield prisma_1.default.organisation.create({
+            org = await prisma_1.default.organisation.create({
                 data: {
                     name: 'Demo Corp',
                     slug: 'demo-corp',
@@ -92,10 +83,10 @@ const seed = () => __awaiter(void 0, void 0, void 0, function* () {
         // Create Super Admin
         const superAdminEmail = 'superadmin@crm.com';
         const superAdminPassword = 'password123';
-        const hashedPassword = yield bcryptjs_1.default.hash(superAdminPassword, 10);
-        let superAdmin = yield prisma_1.default.user.findUnique({ where: { email: superAdminEmail } });
+        const hashedPassword = await bcryptjs_1.default.hash(superAdminPassword, 10);
+        let superAdmin = await prisma_1.default.user.findUnique({ where: { email: superAdminEmail } });
         if (!superAdmin) {
-            superAdmin = yield prisma_1.default.user.create({
+            superAdmin = await prisma_1.default.user.create({
                 data: {
                     firstName: 'Super',
                     lastName: 'Admin',
@@ -110,7 +101,7 @@ const seed = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         else {
             // Update password and ensure no org - CRITICAL FIX
-            yield prisma_1.default.user.update({
+            await prisma_1.default.user.update({
                 where: { email: superAdminEmail },
                 data: {
                     password: hashedPassword,
@@ -134,5 +125,6 @@ const seed = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Error seeding database:', error);
         process.exit(1);
     }
-});
+};
 seed();
+//# sourceMappingURL=seed.js.map

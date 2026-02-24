@@ -1,38 +1,28 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("../generated/client");
 const prisma = new client_1.PrismaClient();
-function checkRules() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const rules = yield prisma.assignmentRule.findMany({
-                include: {
-                    organisation: true
-                }
-            });
-            console.log(`Found ${rules.length} assignment rules.`);
-            rules.forEach((rule) => {
-                console.log(`- Rule: ${rule.name} (Type: ${rule.distributionType}, Org: ${rule.organisation.name}, Active: ${rule.isActive})`);
-            });
-            if (rules.length === 0) {
-                console.log("No assignment rules found. This explains why leads are not being assigned.");
+async function checkRules() {
+    try {
+        const rules = await prisma.assignmentRule.findMany({
+            include: {
+                organisation: true
             }
+        });
+        console.log(`Found ${rules.length} assignment rules.`);
+        rules.forEach((rule) => {
+            console.log(`- Rule: ${rule.name} (Type: ${rule.distributionType}, Org: ${rule.organisation.name}, Active: ${rule.isActive})`);
+        });
+        if (rules.length === 0) {
+            console.log("No assignment rules found. This explains why leads are not being assigned.");
         }
-        catch (error) {
-            console.error("Error checking rules:", error);
-        }
-        finally {
-            yield prisma.$disconnect();
-        }
-    });
+    }
+    catch (error) {
+        console.error("Error checking rules:", error);
+    }
+    finally {
+        await prisma.$disconnect();
+    }
 }
 checkRules();
+//# sourceMappingURL=check_rules.js.map

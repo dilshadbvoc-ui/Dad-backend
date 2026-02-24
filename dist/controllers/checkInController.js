@@ -109,3 +109,4 @@ const getCheckIns = async (req, res) => {
     }
 };
 exports.getCheckIns = getCheckIns;
+//# sourceMappingURL=checkInController.js.map

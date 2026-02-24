@@ -235,3 +235,4 @@ const recalculateGoal = async (req, res) => {
     }
 };
 exports.recalculateGoal = recalculateGoal;
+//# sourceMappingURL=goalController.js.map

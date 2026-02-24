@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.syncData = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const syncData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const syncData = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -30,7 +21,7 @@ const syncData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             organisationId: orgId,
             updatedAt: { gt: lastSync }
         };
-        const [leads, contacts, tasks, events, opportunities] = yield Promise.all([
+        const [leads, contacts, tasks, events, opportunities] = await Promise.all([
             prisma_1.default.lead.findMany({ where: whereClause }),
             prisma_1.default.contact.findMany({ where: whereClause }),
             prisma_1.default.task.findMany({
@@ -62,5 +53,6 @@ const syncData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Sync Error:', error);
         res.status(500).json({ message: error.message });
     }
-});
+};
 exports.syncData = syncData;
+//# sourceMappingURL=syncController.js.map

@@ -254,3 +254,4 @@ const downloadDocument = async (req, res) => {
     }
 };
 exports.downloadDocument = downloadDocument;
+//# sourceMappingURL=documentController.js.map

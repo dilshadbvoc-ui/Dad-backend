@@ -14,3 +14,4 @@ router.put('/:id', authMiddleware_1.protect, workflowController_1.updateWorkflow
 router.delete('/:id', authMiddleware_1.protect, workflowController_1.deleteWorkflow);
 router.post('/:id/run', authMiddleware_1.protect, workflowController_1.runWorkflow);
 exports.default = router;
+//# sourceMappingURL=workflowRoutes.js.map

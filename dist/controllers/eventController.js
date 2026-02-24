@@ -156,3 +156,4 @@ const deleteEvent = async (req, res) => {
     }
 };
 exports.deleteEvent = deleteEvent;
+//# sourceMappingURL=eventController.js.map

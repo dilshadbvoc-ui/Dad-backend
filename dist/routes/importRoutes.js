@@ -12,3 +12,4 @@ const upload = (0, multer_1.default)({ dest: 'uploads/' });
 router.post('/leads', authMiddleware_1.protect, upload.single('file'), importController_1.importLeads);
 router.get('/job/:id', authMiddleware_1.protect, importController_1.getImportJobStatus);
 exports.default = router;
+//# sourceMappingURL=importRoutes.js.map

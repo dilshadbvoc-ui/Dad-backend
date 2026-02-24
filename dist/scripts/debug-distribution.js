@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,21 +6,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 const prisma_1 = __importDefault(require("../config/prisma"));
-const DistributionService_1 = require("../services/DistributionService");
+const distributionService_1 = require("../services/distributionService");
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
-const debugDistribution = () => __awaiter(void 0, void 0, void 0, function* () {
+const debugDistribution = async () => {
     try {
         console.log('--- Debugging Lead Distribution ---');
         // 1. Get the admin user (uploader)
         const adminEmail = 'superadmin@crm.com'; // Adjust if user is different
-        const admin = yield prisma_1.default.user.findFirst({
+        const admin = await prisma_1.default.user.findFirst({
             where: { email: adminEmail },
             include: { organisation: true }
         });
         if (!admin) {
             console.error(`Admin user ${adminEmail} not found.`);
             // Fallback: Find ANY admin
-            const anyAdmin = yield prisma_1.default.user.findFirst({
+            const anyAdmin = await prisma_1.default.user.findFirst({
                 where: { role: 'super_admin' },
                 include: { organisation: true }
             });
@@ -42,14 +33,14 @@ const debugDistribution = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Improved Org ID extraction (mimic hierarchyUtils)
-        let orgId = admin === null || admin === void 0 ? void 0 : admin.organisationId;
-        if (!orgId && (admin === null || admin === void 0 ? void 0 : admin.organisation)) {
+        let orgId = admin?.organisationId;
+        if (!orgId && admin?.organisation) {
             orgId = admin.organisation.id;
         }
         if (!orgId) {
             console.warn(`Admin has no Linked Organisation. Checking for Organisation created by this user...`);
-            const ownedOrg = yield prisma_1.default.organisation.findFirst({
-                where: { createdBy: admin === null || admin === void 0 ? void 0 : admin.id }
+            const ownedOrg = await prisma_1.default.organisation.findFirst({
+                where: { createdBy: admin?.id }
             });
             if (ownedOrg) {
                 orgId = ownedOrg.id;
@@ -57,7 +48,7 @@ const debugDistribution = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             else {
                 console.warn('Still no org found. Fetching FIRST active organisation for debugging...');
-                const firstOrg = yield prisma_1.default.organisation.findFirst();
+                const firstOrg = await prisma_1.default.organisation.findFirst();
                 if (firstOrg) {
                     orgId = firstOrg.id;
                     console.log(`Using first available organisation: ${firstOrg.name} (${orgId})`);
@@ -70,7 +61,7 @@ const debugDistribution = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         console.log(`Target Organisation ID: ${orgId}`);
         // 2. Fetch Active Rules
-        const rules = yield prisma_1.default.assignmentRule.findMany({
+        const rules = await prisma_1.default.assignmentRule.findMany({
             where: {
                 organisationId: orgId,
                 isActive: true,
@@ -103,11 +94,11 @@ const debugDistribution = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log('Mock Lead:', JSON.stringify(mockLead, null, 2));
         for (const rule of rules) {
             console.log(`\nChecking Rule: "${rule.name}"...`);
-            const isMatch = DistributionService_1.DistributionService.matchesRule(rule, mockLead);
+            const isMatch = distributionService_1.DistributionService.matchesRule(rule, mockLead);
             console.log(`Match Result: ${isMatch}`);
             if (isMatch) {
                 console.log('  -> Attempting to find eligible users...');
-                const eligibleUsers = yield DistributionService_1.DistributionService.getEligibleUsers(rule, orgId);
+                const eligibleUsers = await distributionService_1.DistributionService.getEligibleUsers(rule, orgId);
                 console.log(`  -> Found ${eligibleUsers.length} eligible users:`);
                 eligibleUsers.forEach(u => console.log(`     - ${u.firstName} ${u.lastName} (Quota: ${u.dailyLeadQuota || 'Unlimited'})`));
             }
@@ -117,7 +108,8 @@ const debugDistribution = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error('Debug Error:', error);
     }
     finally {
-        yield prisma_1.default.$disconnect();
+        await prisma_1.default.$disconnect();
     }
-});
+};
 debugDistribution();
+//# sourceMappingURL=debug-distribution.js.map

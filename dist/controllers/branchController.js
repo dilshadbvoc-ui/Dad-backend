@@ -135,3 +135,4 @@ const deleteBranch = async (req, res) => {
     }
 };
 exports.deleteBranch = deleteBranch;
+//# sourceMappingURL=branchController.js.map

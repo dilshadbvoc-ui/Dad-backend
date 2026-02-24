@@ -112,11 +112,11 @@ const compression_1 = __importDefault(require("compression"));
 const cronService_1 = require("./services/cronService");
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
-const SSOService_1 = require("./services/SSOService");
+const ssoService_1 = require("./services/ssoService");
 const app = (0, express_1.default)();
 const httpServer = (0, http_1.createServer)(app);
 // Initialize Passport/SSO
-(0, SSOService_1.setupPassport)();
+(0, ssoService_1.setupPassport)();
 // Trust Proxy for Render/Vercel
 app.set('trust proxy', 1);
 // Security Headers
@@ -427,3 +427,4 @@ httpServer.listen(PORT, async () => {
 });
 // Forced restart v2
 // restart 
+//# sourceMappingURL=index.js.map

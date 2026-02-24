@@ -40,7 +40,7 @@ exports.ImportJobService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const fs_1 = __importDefault(require("fs"));
 const csv_parser_1 = __importDefault(require("csv-parser"));
-const DistributionService_1 = require("./DistributionService");
+const distributionService_1 = require("./distributionService");
 class ImportJobService {
     static async createJob(userId, orgId, filePath, mapping, options) {
         return await prisma_1.default.importJob.create({
@@ -202,7 +202,7 @@ class ImportJobService {
                     const createdLead = await prisma_1.default.lead.create({ data: leadData });
                     // Assign Lead via Rules (only if flag is set, or if no explicit owner was mapped)
                     if (applyAssignmentRules) {
-                        await DistributionService_1.DistributionService.assignLead(createdLead, job.organisationId);
+                        await distributionService_1.DistributionService.assignLead(createdLead, job.organisationId);
                     }
                     successCount++;
                 }
@@ -262,3 +262,4 @@ class ImportJobService {
     }
 }
 exports.ImportJobService = ImportJobService;
+//# sourceMappingURL=ImportJobService.js.map

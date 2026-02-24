@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MetaLeadService = void 0;
 const axios_1 = __importDefault(require("axios"));
 const prisma_1 = __importDefault(require("../config/prisma"));
-const DistributionService_1 = require("./DistributionService");
+const distributionService_1 = require("./distributionService");
 const client_1 = require("../generated/client");
 const encryption_1 = require("../utils/encryption");
 exports.MetaLeadService = {
@@ -163,7 +163,7 @@ exports.MetaLeadService = {
             });
             console.log(`[MetaLeadService] Successfully created lead ${lead.id} from Meta`);
             // 7. Auto-assign via DistributionService
-            await DistributionService_1.DistributionService.assignLead(lead, org.id);
+            await distributionService_1.DistributionService.assignLead(lead, org.id);
         }
         catch (error) {
             console.error('[MetaLeadService] Error processing Meta lead:', error.response?.data || error.message);
@@ -172,3 +172,4 @@ exports.MetaLeadService = {
     }
 };
 exports.default = exports.MetaLeadService;
+//# sourceMappingURL=metaLeadService.js.map

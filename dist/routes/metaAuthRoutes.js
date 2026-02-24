@@ -8,8 +8,8 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const axios_1 = __importDefault(require("axios"));
 const crypto_1 = __importDefault(require("crypto"));
-const MetaLeadService_1 = require("../services/MetaLeadService"); // Service for handling Meta leads
-const MetaIntegrationService_1 = require("../services/MetaIntegrationService");
+const metaLeadService_1 = require("../services/metaLeadService"); // Service for handling Meta leads
+const metaIntegrationService_1 = require("../services/metaIntegrationService");
 const encryption_1 = require("../utils/encryption");
 const router = (0, express_1.Router)();
 // Meta OAuth Configuration
@@ -284,7 +284,7 @@ router.post('/callback', async (req, res) => {
     res.sendStatus(200);
     // Process async
     try {
-        await MetaIntegrationService_1.MetaIntegrationService.handleWebhook(req.body);
+        await metaIntegrationService_1.MetaIntegrationService.handleWebhook(req.body);
     }
     catch (error) {
         console.error('Webhook processing error:', error);
@@ -420,7 +420,7 @@ router.post('/webhook', async (req, res) => {
                     const { leadgen_id, ad_id, form_id } = change.value;
                     console.log(`[Meta Webhook] Received new lead: ${leadgen_id} from Page: ${pageId}`);
                     // Process lead asynchronously
-                    MetaLeadService_1.MetaLeadService.processIncomingLead(leadgen_id, pageId, ad_id, form_id).catch((err) => {
+                    metaLeadService_1.MetaLeadService.processIncomingLead(leadgen_id, pageId, ad_id, form_id).catch((err) => {
                         console.error('[Meta Webhook] Error processing lead:', err);
                     });
                 }
@@ -434,3 +434,4 @@ router.post('/webhook', async (req, res) => {
     }
 });
 exports.default = router;
+//# sourceMappingURL=metaAuthRoutes.js.map

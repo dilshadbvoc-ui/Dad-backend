@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadAdImage = exports.createFullAd = exports.getAccountInsights = exports.getCampaignInsights = exports.syncCampaigns = exports.testConnection = exports.getInsights = exports.getAds = exports.getAdSets = exports.getCampaigns = exports.getMetaConfig = void 0;
-const MetaService_1 = require("../services/MetaService");
-const MetaIntegrationService_1 = require("../services/MetaIntegrationService");
+const metaService_1 = require("../services/metaService");
+const metaIntegrationService_1 = require("../services/metaIntegrationService");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const encryption_1 = require("../utils/encryption");
@@ -33,7 +33,7 @@ exports.getMetaConfig = getMetaConfig;
 const getCampaigns = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
-        const campaigns = await MetaService_1.metaService.getCampaigns(config);
+        const campaigns = await metaService_1.metaService.getCampaigns(config);
         res.json(campaigns);
     }
     catch (error) {
@@ -51,7 +51,7 @@ const getAdSets = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
         const { campaignId } = req.query;
-        const adSets = await MetaService_1.metaService.getAdSets(config, campaignId);
+        const adSets = await metaService_1.metaService.getAdSets(config, campaignId);
         res.json(adSets);
     }
     catch (error) {
@@ -68,7 +68,7 @@ const getAds = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
         const { adSetId } = req.query;
-        const ads = await MetaService_1.metaService.getAds(config, adSetId);
+        const ads = await metaService_1.metaService.getAds(config, adSetId);
         res.json(ads);
     }
     catch (error) {
@@ -85,7 +85,7 @@ const getInsights = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
         const { level } = req.query;
-        const insights = await MetaService_1.metaService.getInsights(config, level);
+        const insights = await metaService_1.metaService.getInsights(config, level);
         res.json(insights);
     }
     catch (error) {
@@ -101,7 +101,7 @@ exports.getInsights = getInsights;
 const testConnection = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
-        const result = await MetaService_1.metaService.testConnection(config);
+        const result = await metaService_1.metaService.testConnection(config);
         res.json(result);
     }
     catch (error) {
@@ -120,7 +120,7 @@ const syncCampaigns = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
-        const campaigns = await MetaIntegrationService_1.MetaIntegrationService.syncCampaigns(orgId);
+        const campaigns = await metaIntegrationService_1.MetaIntegrationService.syncCampaigns(orgId);
         res.json({
             message: `Successfully synced ${campaigns.length} campaigns`,
             campaigns
@@ -139,7 +139,7 @@ exports.syncCampaigns = syncCampaigns;
 const getCampaignInsights = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
-        const insights = await MetaService_1.metaService.getInsights(config, 'campaign');
+        const insights = await metaService_1.metaService.getInsights(config, 'campaign');
         res.json(insights);
     }
     catch (error) {
@@ -155,7 +155,7 @@ exports.getCampaignInsights = getCampaignInsights;
 const getAccountInsights = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
-        const insights = await MetaService_1.metaService.getInsights(config, 'account');
+        const insights = await metaService_1.metaService.getInsights(config, 'account');
         res.json(insights);
     }
     catch (error) {
@@ -173,10 +173,10 @@ const createFullAd = async (req, res) => {
         const config = await (0, exports.getMetaConfig)(req);
         const { campaign, adSet, creative, ad } = req.body;
         // 1. Create Campaign
-        const campaignResult = await MetaService_1.metaService.createCampaign(config, campaign);
+        const campaignResult = await metaService_1.metaService.createCampaign(config, campaign);
         const campaignId = campaignResult.id;
         // 2. Create Ad Set
-        const adSetResult = await MetaService_1.metaService.createAdSet(config, {
+        const adSetResult = await metaService_1.metaService.createAdSet(config, {
             ...adSet,
             campaignId
         });
@@ -185,16 +185,16 @@ const createFullAd = async (req, res) => {
         // First, check if we need to upload an image from a URL
         let imageHash = creative.imageHash;
         if (creative.imageUrl && !imageHash) {
-            const uploadResult = await MetaService_1.metaService.uploadImage(config, creative.imageUrl);
+            const uploadResult = await metaService_1.metaService.uploadImage(config, creative.imageUrl);
             imageHash = uploadResult.images[Object.keys(uploadResult.images)[0]].hash;
         }
-        const creativeResult = await MetaService_1.metaService.createAdCreative(config, {
+        const creativeResult = await metaService_1.metaService.createAdCreative(config, {
             ...creative,
             imageHash
         });
         const creativeId = creativeResult.id;
         // 4. Create Ad
-        const adResult = await MetaService_1.metaService.createAd(config, {
+        const adResult = await metaService_1.metaService.createAd(config, {
             ...ad,
             adSetId,
             creativeId
@@ -220,7 +220,7 @@ const uploadAdImage = async (req, res) => {
         if (!imageUrl) {
             return res.status(400).json({ message: 'imageUrl is required' });
         }
-        const result = await MetaService_1.metaService.uploadImage(config, imageUrl);
+        const result = await metaService_1.metaService.uploadImage(config, imageUrl);
         res.json(result);
     }
     catch (error) {
@@ -229,3 +229,4 @@ const uploadAdImage = async (req, res) => {
     }
 };
 exports.uploadAdImage = uploadAdImage;
+//# sourceMappingURL=adController.js.map

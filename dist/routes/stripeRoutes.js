@@ -13,3 +13,4 @@ router.post('/webhook', express_1.default.raw({ type: 'application/json' }), str
 router.post('/create-checkout-session', authMiddleware_1.protect, stripeController_1.createCheckoutSession);
 router.post('/create-portal-session', authMiddleware_1.protect, stripeController_1.createPortalSession);
 exports.default = router;
+//# sourceMappingURL=stripeRoutes.js.map

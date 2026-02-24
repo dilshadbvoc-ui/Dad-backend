@@ -52,3 +52,4 @@ router.post('/image', authMiddleware_1.protect, uploadImage.single('image'), upl
 // Route: POST /api/upload/document
 router.post('/document', authMiddleware_1.protect, uploadDocument.single('document'), uploadController_2.uploadDocument);
 exports.default = router;
+//# sourceMappingURL=uploadRoutes.js.map

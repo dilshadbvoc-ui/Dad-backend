@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskReminderService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const client_1 = require("../generated/client");
-const NotificationService_1 = require("./NotificationService");
+const notificationService_1 = require("./notificationService");
 class TaskReminderService {
     /**
      * Send reminders for tasks due today or overdue
@@ -42,7 +42,7 @@ class TaskReminderService {
                 const isOverdue = task.dueDate < new Date();
                 const title = isOverdue ? '⚠️ Overdue Task' : '📅 Task Due Today';
                 const message = `Task: "${task.subject}" is ${isOverdue ? 'overdue' : 'due today'}. Please review.`;
-                await NotificationService_1.NotificationService.send(task.assignedToId, title, message, 'reminder').catch(err => console.error(`[TaskReminderService] Failed to notify user ${task.assignedToId}:`, err));
+                await notificationService_1.NotificationService.send(task.assignedToId, title, message, 'reminder').catch(err => console.error(`[TaskReminderService] Failed to notify user ${task.assignedToId}:`, err));
             }
             return pendingTasks.length;
         }
@@ -53,3 +53,4 @@ class TaskReminderService {
     }
 }
 exports.TaskReminderService = TaskReminderService;
+//# sourceMappingURL=TaskReminderService.js.map

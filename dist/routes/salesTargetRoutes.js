@@ -25,3 +25,4 @@ router.delete('/:id', authMiddleware_1.protect, salesTargetController_1.deleteTa
 // Update target
 router.put('/:id', authMiddleware_1.protect, salesTargetController_1.updateTarget);
 exports.default = router;
+//# sourceMappingURL=salesTargetRoutes.js.map

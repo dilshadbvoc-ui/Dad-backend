@@ -17,3 +17,4 @@ router.put('/', authMiddleware_1.protect, organisationController_1.updateOrganis
 router.get('/:id', authMiddleware_1.protect, organisationController_1.getOrganisation);
 router.put('/:id', authMiddleware_1.protect, organisationController_1.updateOrganisation);
 exports.default = router;
+//# sourceMappingURL=organisationRoutes.js.map

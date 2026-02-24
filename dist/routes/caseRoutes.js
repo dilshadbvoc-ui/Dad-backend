@@ -13,3 +13,4 @@ router.get('/:id', authMiddleware_1.protect, caseController_1.getCaseById);
 router.put('/:id', authMiddleware_1.protect, caseController_1.updateCase);
 router.delete('/:id', authMiddleware_1.protect, caseController_1.deleteCase);
 exports.default = router;
+//# sourceMappingURL=caseRoutes.js.map

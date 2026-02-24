@@ -105,3 +105,4 @@ CSRFProtection.CSRF_COOKIE_NAME = 'csrf-token';
 exports.setCSRFToken = CSRFProtection.setToken();
 exports.verifyCSRFToken = CSRFProtection.verifyToken();
 exports.getCSRFToken = CSRFProtection.getTokenEndpoint();
+//# sourceMappingURL=csrfProtection.js.map

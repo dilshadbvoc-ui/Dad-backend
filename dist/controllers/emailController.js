@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendOneOffEmail = void 0;
 const apiResponse_1 = require("../utils/apiResponse");
-const EmailService_1 = require("../services/EmailService");
+const emailService_1 = require("../services/emailService");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const client_1 = require("../generated/client");
@@ -28,7 +28,7 @@ const sendOneOffEmail = async (req, res) => {
             return apiResponse_1.ResponseHandler.notFound(res, 'Lead not found');
         }
         // Send Email
-        const sent = await EmailService_1.EmailService.sendEmail(to, subject, body);
+        const sent = await emailService_1.EmailService.sendEmail(to, subject, body);
         if (!sent) {
             return apiResponse_1.ResponseHandler.serverError(res, 'Failed to send email');
         }
@@ -52,3 +52,4 @@ const sendOneOffEmail = async (req, res) => {
     }
 };
 exports.sendOneOffEmail = sendOneOffEmail;
+//# sourceMappingURL=emailController.js.map

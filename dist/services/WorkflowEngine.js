@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkflowEngine = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
-const EmailService_1 = require("./EmailService");
-const TaskService_1 = require("./TaskService");
-const WhatsAppService_1 = require("./WhatsAppService");
-const NotificationService_1 = require("./NotificationService");
+const emailService_1 = require("./emailService");
+const taskService_1 = require("./taskService");
+const whatsAppService_1 = require("./whatsAppService");
+const notificationService_1 = require("./notificationService");
 exports.WorkflowEngine = {
     /**
      * Evaluate triggers and execute matching workflows
@@ -214,7 +214,7 @@ exports.WorkflowEngine = {
                         const body = this.parseTemplate(action.config?.body || 'Hello', data);
                         if (to) {
                             console.log(`[WorkflowEngine] Action: Sending Email to ${to}`);
-                            await EmailService_1.EmailService.sendEmail(to, subject, body, organisationId, workflow.createdById, {
+                            await emailService_1.EmailService.sendEmail(to, subject, body, organisationId, workflow.createdById, {
                                 leadId: workflow.triggerEntity === 'Lead' ? effectiveEntityId : undefined,
                                 contactId: workflow.triggerEntity === 'Contact' ? effectiveEntityId : undefined
                             });
@@ -225,7 +225,7 @@ exports.WorkflowEngine = {
                         const phone = action.config?.phone || data.phone;
                         if (!phone)
                             break;
-                        const waClient = await WhatsAppService_1.WhatsAppService.getClientForOrg(organisationId);
+                        const waClient = await whatsAppService_1.WhatsAppService.getClientForOrg(organisationId);
                         if (!waClient) {
                             console.warn(`[WorkflowEngine] WhatsApp not connected for org ${organisationId}`);
                             break;
@@ -259,7 +259,7 @@ exports.WorkflowEngine = {
                         const subject = this.parseTemplate(action.config?.subject || 'Workflow Task', data);
                         const description = this.parseTemplate(action.config?.description || '', data);
                         console.log(`[WorkflowEngine] Action: Creating Task '${subject}'`);
-                        await TaskService_1.TaskService.createTask({
+                        await taskService_1.TaskService.createTask({
                             subject,
                             description,
                             status: action.config?.status || 'pending',
@@ -280,7 +280,7 @@ exports.WorkflowEngine = {
                         const title = this.parseTemplate(action.config?.title || 'System Notification', data);
                         const message = this.parseTemplate(action.config?.message || 'A workflow has been triggered.', data);
                         console.log(`[WorkflowEngine] Action: Notifying User ${userId}`);
-                        await NotificationService_1.NotificationService.send(userId, title, message, action.config?.notificationType || 'info');
+                        await notificationService_1.NotificationService.send(userId, title, message, action.config?.notificationType || 'info');
                         break;
                     }
                     default:
@@ -301,3 +301,4 @@ exports.WorkflowEngine = {
         });
     }
 };
+//# sourceMappingURL=workflowEngine.js.map

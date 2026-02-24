@@ -136,3 +136,4 @@ const generateContent = async (req, res) => {
     }
 };
 exports.generateContent = generateContent;
+//# sourceMappingURL=aiController.js.map

@@ -26,3 +26,4 @@ router.post('/contacts', authMiddleware_1.protect, bulkOperationsController_1.bu
  */
 router.post('/opportunities', authMiddleware_1.protect, bulkOperationsController_1.bulkOpportunityOperations);
 exports.default = router;
+//# sourceMappingURL=bulkRoutes.js.map

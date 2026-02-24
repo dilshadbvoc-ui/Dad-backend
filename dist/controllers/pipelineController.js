@@ -152,3 +152,4 @@ const deletePipeline = async (req, res) => {
     }
 };
 exports.deletePipeline = deletePipeline;
+//# sourceMappingURL=pipelineController.js.map

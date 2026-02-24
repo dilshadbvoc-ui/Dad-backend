@@ -13,3 +13,4 @@ router.post('/', authMiddleware_1.protect, assignmentRuleController_1.createAssi
 router.put('/:id', authMiddleware_1.protect, assignmentRuleController_1.updateAssignmentRule);
 router.delete('/:id', authMiddleware_1.protect, assignmentRuleController_1.deleteAssignmentRule);
 exports.default = router;
+//# sourceMappingURL=assignmentRuleRoutes.js.map

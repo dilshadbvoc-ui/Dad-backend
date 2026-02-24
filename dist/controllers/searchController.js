@@ -341,3 +341,4 @@ const recentSearches = async (req, res) => {
     }
 };
 exports.recentSearches = recentSearches;
+//# sourceMappingURL=searchController.js.map

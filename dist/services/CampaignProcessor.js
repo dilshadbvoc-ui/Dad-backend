@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CampaignProcessor = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
-const WhatsAppService_1 = require("./WhatsAppService");
-const EmailService_1 = require("./EmailService");
+const whatsAppService_1 = require("./whatsAppService");
+const emailService_1 = require("./emailService");
 const logger_1 = require("../utils/logger");
 class CampaignProcessor {
     /**
@@ -29,7 +29,7 @@ class CampaignProcessor {
                 throw new Error('Campaign is not in a sendable state');
             }
             // Get WhatsApp service for the organisation
-            const whatsAppService = await WhatsAppService_1.WhatsAppService.getClientForOrg(campaign.organisationId);
+            const whatsAppService = await whatsAppService_1.WhatsAppService.getClientForOrg(campaign.organisationId);
             if (!whatsAppService) {
                 throw new Error('WhatsApp integration not configured for this organisation');
             }
@@ -132,12 +132,12 @@ class CampaignProcessor {
                 const batch = recipients.slice(i, i + batchSize);
                 await Promise.all(batch.map(async (recipient) => {
                     try {
-                        const personalizedBody = EmailService_1.EmailService.personalize(campaign.content, {
+                        const personalizedBody = emailService_1.EmailService.personalize(campaign.content, {
                             firstName: recipient.firstName,
                             lastName: recipient.lastName,
                             company: recipient.company
                         });
-                        const sent = await EmailService_1.EmailService.sendEmail(recipient.email, campaign.subject, personalizedBody, campaign.organisationId, campaign.createdById || undefined, { leadId: recipient.id });
+                        const sent = await emailService_1.EmailService.sendEmail(recipient.email, campaign.subject, personalizedBody, campaign.organisationId, campaign.createdById || undefined, { leadId: recipient.id });
                         if (sent)
                             stats.sent++;
                         else
@@ -373,3 +373,4 @@ class CampaignProcessor {
     }
 }
 exports.CampaignProcessor = CampaignProcessor;
+//# sourceMappingURL=CampaignProcessor.js.map

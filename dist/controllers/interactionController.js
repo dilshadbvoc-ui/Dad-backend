@@ -276,3 +276,4 @@ const logQuickInteraction = async (req, res) => {
     }
 };
 exports.logQuickInteraction = logQuickInteraction;
+//# sourceMappingURL=interactionController.js.map

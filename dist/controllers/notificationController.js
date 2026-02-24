@@ -78,3 +78,4 @@ const markAllAsRead = async (req, res) => {
     }
 };
 exports.markAllAsRead = markAllAsRead;
+//# sourceMappingURL=notificationController.js.map

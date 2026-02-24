@@ -24,3 +24,4 @@ router.post('/:id/generate-response', authMiddleware_1.protect, leadController_1
 router.post('/:id/convert', authMiddleware_1.protect, leadController_1.convertLead);
 router.delete('/:id', authMiddleware_1.protect, leadController_1.deleteLead);
 exports.default = router;
+//# sourceMappingURL=leadRoutes.js.map

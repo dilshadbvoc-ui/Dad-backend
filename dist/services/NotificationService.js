@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const socket_1 = require("../socket");
-const EmailService_1 = require("./EmailService");
+const emailService_1 = require("./emailService");
 // Singleton helper to get IO instance if not exported globally
 // Assuming socket.ts exports initSocket and returns io instance, 
 // but we might need a way to access it here. 
@@ -52,7 +52,7 @@ class NotificationService {
                             <small>You received this because email notifications are enabled in your CRM settings.</small>
                         </div>
                     `;
-                    await EmailService_1.EmailService.sendEmail(user.email, `Notification: ${title}`, emailHtml);
+                    await emailService_1.EmailService.sendEmail(user.email, `Notification: ${title}`, emailHtml);
                 }
             }
             return notification;
@@ -73,3 +73,4 @@ class NotificationService {
     }
 }
 exports.NotificationService = NotificationService;
+//# sourceMappingURL=notificationService.js.map

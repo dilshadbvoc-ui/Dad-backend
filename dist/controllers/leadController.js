@@ -39,8 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDuplicateLeads = exports.getReEnquiryLeads = exports.generateAIResponse = exports.getPendingFollowUpsCount = exports.submitExplanation = exports.getLeadHistory = exports.getViolations = exports.convertLead = exports.bulkAssignLeads = exports.createBulkLeads = exports.deleteLead = exports.updateLead = exports.getLeadById = exports.createLead = exports.getLeads = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const DistributionService_1 = require("../services/DistributionService");
-const WorkflowEngine_1 = require("../services/WorkflowEngine");
+const distributionService_1 = require("../services/distributionService");
+const workflowEngine_1 = require("../services/workflowEngine");
 const client_1 = require("../generated/client");
 const roleUtils_1 = require("../utils/roleUtils");
 // Dynamic import used for OpenAI to avoid startup errors if missing
@@ -285,11 +285,11 @@ const createLead = async (req, res) => {
         // Enable Distribution only if no explicit assignment was made
         // This allows assignment rules to work for automated leads, but respects manual assignments
         if (!assignedTo) {
-            await DistributionService_1.DistributionService.assignLead(lead, orgId);
+            await distributionService_1.DistributionService.assignLead(lead, orgId);
         }
         // Trigger Workflow Engine for lead creation
         try {
-            await WorkflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId);
+            await workflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId);
             Promise.resolve().then(() => __importStar(require('../services/WebhookService'))).then(({ WebhookService }) => {
                 WebhookService.triggerEvent('lead.created', lead, orgId).catch(console.error);
             });
@@ -1157,3 +1157,4 @@ const getDuplicateLeads = async (req, res) => {
     }
 };
 exports.getDuplicateLeads = getDuplicateLeads;
+//# sourceMappingURL=leadController.js.map

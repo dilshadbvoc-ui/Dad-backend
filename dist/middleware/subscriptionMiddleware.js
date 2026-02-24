@@ -80,3 +80,4 @@ const checkPlanLimits = (resource) => {
     };
 };
 exports.checkPlanLimits = checkPlanLimits;
+//# sourceMappingURL=subscriptionMiddleware.js.map

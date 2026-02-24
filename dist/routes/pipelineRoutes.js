@@ -10,3 +10,4 @@ router.post('/', (0, authMiddleware_1.authorize)('admin', 'super_admin'), pipeli
 router.put('/:id', (0, authMiddleware_1.authorize)('admin', 'super_admin'), pipelineController_1.updatePipeline);
 router.delete('/:id', (0, authMiddleware_1.authorize)('admin', 'super_admin'), pipelineController_1.deletePipeline);
 exports.default = router;
+//# sourceMappingURL=pipelineRoutes.js.map

@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,7 +10,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
  * Ensures all queries are scoped to the user's organisation
  * This middleware adds org filtering to req for use in controllers
  */
-const dataIsolation = (req, _res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const dataIsolation = async (req, _res, next) => {
     try {
         const user = req.user;
         if (!user) {
@@ -37,13 +28,13 @@ const dataIsolation = (req, _res, next) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         next(error);
     }
-});
+};
 exports.dataIsolation = dataIsolation;
 /**
  * License Check Middleware
  * Verifies the organisation has a valid license before allowing access
  */
-const requireValidLicense = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const requireValidLicense = async (req, res, next) => {
     try {
         const user = req.user;
         if (!user || !user.organisationId) {
@@ -56,7 +47,7 @@ const requireValidLicense = (req, res, next) => __awaiter(void 0, void 0, void 0
         if (req.isSuperAdmin || user.role === 'super_admin') {
             return next();
         }
-        const license = yield prisma_1.default.license.findFirst({
+        const license = await prisma_1.default.license.findFirst({
             where: {
                 organisationId: user.organisationId,
                 status: { in: ['active', 'trial'] },
@@ -77,19 +68,19 @@ const requireValidLicense = (req, res, next) => __awaiter(void 0, void 0, void 0
     catch (error) {
         next(error);
     }
-});
+};
 exports.requireValidLicense = requireValidLicense;
 /**
  * User Limit Check Middleware
  * Prevents adding users beyond the license limit
  */
-const checkUserLimit = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const checkUserLimit = async (req, res, next) => {
     try {
         const user = req.user;
         if (!user || !user.organisationId) {
             return next();
         }
-        const license = yield prisma_1.default.license.findFirst({
+        const license = await prisma_1.default.license.findFirst({
             where: {
                 organisationId: user.organisationId,
                 status: { in: ['active', 'trial'] }
@@ -112,14 +103,14 @@ const checkUserLimit = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         next(error);
     }
-});
+};
 exports.checkUserLimit = checkUserLimit;
 /**
  * Feature Access Middleware
  * Checks if a specific feature is available in the current plan
  */
 const requireFeature = (featureName) => {
-    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    return async (req, res, next) => {
         try {
             const user = req.user;
             if (!user || !user.organisationId) {
@@ -129,7 +120,7 @@ const requireFeature = (featureName) => {
             if (req.isSuperAdmin || user.role === 'super_admin') {
                 return next();
             }
-            const license = yield prisma_1.default.license.findFirst({
+            const license = await prisma_1.default.license.findFirst({
                 where: {
                     organisationId: user.organisationId,
                     status: { in: ['active', 'trial'] }
@@ -154,6 +145,7 @@ const requireFeature = (featureName) => {
         catch (error) {
             next(error);
         }
-    });
+    };
 };
 exports.requireFeature = requireFeature;
+//# sourceMappingURL=dataIsolation.js.map

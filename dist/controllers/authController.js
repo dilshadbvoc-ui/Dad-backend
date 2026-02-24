@@ -43,7 +43,7 @@ const generateToken_1 = __importDefault(require("../utils/generateToken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // UserRole import removed
 const auditLogger_1 = require("../utils/auditLogger");
-const EmailService_1 = require("../services/EmailService");
+const emailService_1 = require("../services/emailService");
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
@@ -272,7 +272,7 @@ const forgotPassword = async (req, res) => {
             <a href="${resetUrl}" clicktracking=off>${resetUrl}</a>
             <p>This link expires in 10 minutes.</p>
         `;
-        const sent = await EmailService_1.EmailService.sendEmail(user.email, 'Password Reset Request', message);
+        const sent = await emailService_1.EmailService.sendEmail(user.email, 'Password Reset Request', message);
         if (sent) {
             // Log security event
             (0, auditLogger_1.logAudit)({
@@ -391,3 +391,4 @@ const getMe = async (req, res) => {
     }
 };
 exports.getMe = getMe;
+//# sourceMappingURL=authController.js.map

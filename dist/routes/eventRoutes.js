@@ -12,3 +12,4 @@ router.post('/', authMiddleware_1.protect, eventController_1.createEvent);
 router.get('/:id', authMiddleware_1.protect, eventController_1.getEventById);
 router.delete('/:id', authMiddleware_1.protect, eventController_1.deleteEvent);
 exports.default = router;
+//# sourceMappingURL=eventRoutes.js.map

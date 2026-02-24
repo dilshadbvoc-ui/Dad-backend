@@ -492,3 +492,4 @@ const getSharedProduct = async (req, res) => {
     }
 };
 exports.getSharedProduct = getSharedProduct;
+//# sourceMappingURL=productController.js.map

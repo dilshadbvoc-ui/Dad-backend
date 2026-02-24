@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCampaign = exports.getCampaigns = exports.getAdAccounts = void 0;
-const MarketingAPIService_1 = __importDefault(require("../services/MarketingAPIService"));
+const marketingAPIService_1 = __importDefault(require("../services/marketingAPIService"));
 const prisma_1 = __importDefault(require("../config/prisma"));
 const getAdAccounts = async (req, res) => {
     try {
@@ -21,7 +21,7 @@ const getAdAccounts = async (req, res) => {
                 message: 'User not connected to Meta'
             });
         }
-        const marketingService = new MarketingAPIService_1.default(user.metaAccessToken);
+        const marketingService = new marketingAPIService_1.default(user.metaAccessToken);
         const accounts = await marketingService.getAdAccounts();
         res.status(200).json({
             success: true,
@@ -49,7 +49,7 @@ const getCampaigns = async (req, res) => {
                 message: 'User not connected to Meta'
             });
         }
-        const marketingService = new MarketingAPIService_1.default(user.metaAccessToken);
+        const marketingService = new marketingAPIService_1.default(user.metaAccessToken);
         const campaigns = await marketingService.getCampaigns(adAccountId);
         res.status(200).json({
             success: true,
@@ -78,7 +78,7 @@ const createCampaign = async (req, res) => {
                 message: 'User not connected to Meta'
             });
         }
-        const marketingService = new MarketingAPIService_1.default(user.metaAccessToken);
+        const marketingService = new marketingAPIService_1.default(user.metaAccessToken);
         const campaign = await marketingService.createCampaign(adAccountId, {
             name,
             objective, // e.g., 'OUTCOME_LEADS', 'OUTCOME_TRAFFIC'
@@ -96,3 +96,4 @@ const createCampaign = async (req, res) => {
     }
 };
 exports.createCampaign = createCampaign;
+//# sourceMappingURL=marketingController.js.map

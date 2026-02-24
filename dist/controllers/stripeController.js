@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleWebhook = exports.createPortalSession = exports.createCheckoutSession = void 0;
-const StripeService_1 = require("../services/StripeService");
+const stripeService_1 = require("../services/stripeService");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const createCheckoutSession = async (req, res) => {
     try {
@@ -20,7 +20,7 @@ const createCheckoutSession = async (req, res) => {
         });
         if (!plan)
             return res.status(404).json({ message: 'Plan not found' });
-        const session = await StripeService_1.StripeService.createCheckoutSession(plan, organisationId, userEmail);
+        const session = await stripeService_1.StripeService.createCheckoutSession(plan, organisationId, userEmail);
         res.json({ url: session.url });
     }
     catch (error) {
@@ -46,7 +46,7 @@ const createPortalSession = async (req, res) => {
         if (!subscription.stripeCustomerId) {
             return res.status(404).json({ message: 'Stripe Customer ID not found' });
         }
-        const session = await StripeService_1.StripeService.createPortalSession(subscription.stripeCustomerId);
+        const session = await stripeService_1.StripeService.createPortalSession(subscription.stripeCustomerId);
         res.json({ url: session.url });
     }
     catch (error) {
@@ -62,7 +62,7 @@ const handleWebhook = async (req, res) => {
             throw new Error('No signature');
         // Note: Stripe Webhook requires the RAW body. 
         // Ensure express.raw() is used in routes for this endpoint.
-        await StripeService_1.StripeService.handleWebhook(sig, req.body);
+        await stripeService_1.StripeService.handleWebhook(sig, req.body);
         res.json({ received: true });
     }
     catch (err) {
@@ -71,3 +71,4 @@ const handleWebhook = async (req, res) => {
     }
 };
 exports.handleWebhook = handleWebhook;
+//# sourceMappingURL=stripeController.js.map

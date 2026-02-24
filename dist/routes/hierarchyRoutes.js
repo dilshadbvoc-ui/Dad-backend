@@ -10,3 +10,4 @@ const router = express_1.default.Router();
 router.get('/', authMiddleware_1.protect, hierarchyController_1.getHierarchy);
 router.put('/:id/reports-to', authMiddleware_1.protect, hierarchyController_1.updateReportsTo);
 exports.default = router;
+//# sourceMappingURL=hierarchyRoutes.js.map

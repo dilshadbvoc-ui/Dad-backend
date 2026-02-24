@@ -110,3 +110,4 @@ exports.opportunityValidation = {
     probability: (value) => (0, exports.validateNumber)(value, 0, 100),
     closeDate: (value) => (0, exports.validateDate)(value)
 };
+//# sourceMappingURL=validation.js.map

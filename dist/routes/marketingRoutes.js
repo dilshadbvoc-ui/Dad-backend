@@ -12,3 +12,4 @@ router.get('/ad-accounts', marketingController_1.getAdAccounts);
 router.get('/:adAccountId/campaigns', marketingController_1.getCampaigns);
 router.post('/:adAccountId/campaigns', marketingController_1.createCampaign);
 exports.default = router;
+//# sourceMappingURL=marketingRoutes.js.map

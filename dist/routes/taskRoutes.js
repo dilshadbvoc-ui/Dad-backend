@@ -13,3 +13,4 @@ router.get('/:id', authMiddleware_1.protect, taskController_1.getTaskById);
 router.put('/:id', authMiddleware_1.protect, taskController_1.updateTask);
 router.delete('/:id', authMiddleware_1.protect, taskController_1.deleteTask);
 exports.default = router;
+//# sourceMappingURL=taskRoutes.js.map

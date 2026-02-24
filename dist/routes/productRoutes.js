@@ -15,3 +15,4 @@ router.delete('/:id', authMiddleware_1.protect, productController_1.deleteProduc
 router.post('/:productId/share', authMiddleware_1.protect, productController_1.generateProductShareLink);
 router.get('/:productId/share', authMiddleware_1.protect, productController_1.getProductShareConfig);
 exports.default = router;
+//# sourceMappingURL=productRoutes.js.map

@@ -13,3 +13,4 @@ router.get('/check', authMiddleware_1.protect, licenseController_1.checkLicenseV
 router.post('/activate', authMiddleware_1.protect, licenseController_1.activateLicense);
 router.post('/:id/cancel', authMiddleware_1.protect, licenseController_1.cancelLicense);
 exports.default = router;
+//# sourceMappingURL=licenseRoutes.js.map

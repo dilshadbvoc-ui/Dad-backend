@@ -18,3 +18,4 @@ router.post('/sso/init', ssoController_1.initSSO);
 router.get('/sso/login/:orgId', ssoController_1.ssoLogin);
 router.post('/sso/callback/:orgId', ssoController_1.ssoCallback);
 exports.default = router;
+//# sourceMappingURL=authRoutes.js.map

@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyWebhook = exports.handleWebhook = exports.uploadMedia = exports.getMedia = exports.getMessageStatistics = exports.getConversationAnalytics = exports.markConversationAsRead = exports.markMessageAsRead = exports.getMessageStatus = exports.sendMediaMessage = exports.createTemplate = exports.getTemplates = exports.testConnection = exports.getConversations = exports.getMessages = exports.sendMessage = exports.getWhatsAppConfig = void 0;
-const WhatsAppService_1 = require("../services/WhatsAppService");
-const WhatsAppIntegrationService_1 = require("../services/WhatsAppIntegrationService");
+const whatsAppService_1 = require("../services/whatsAppService");
+const whatsAppIntegrationService_1 = require("../services/whatsAppIntegrationService");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const socket_1 = require("../socket");
@@ -62,7 +62,7 @@ const sendMessage = async (req, res) => {
         // Sanitize message content
         const sanitizedMessage = message ? message.trim().substring(0, 4096) : undefined;
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -243,7 +243,7 @@ exports.getConversations = getConversations;
 const testConnection = async (req, res) => {
     try {
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -271,7 +271,7 @@ const getTemplates = async (req, res) => {
         if (!config.wabaId) {
             return res.status(400).json({ message: 'WABA ID required to fetch templates' });
         }
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -293,7 +293,7 @@ const createTemplate = async (req, res) => {
         if (!config.wabaId) {
             return res.status(400).json({ message: 'WABA ID required to create templates' });
         }
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -314,7 +314,7 @@ const sendMediaMessage = async (req, res) => {
             return res.status(400).json({ message: 'Phone number, media type, and media ID are required' });
         }
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -358,7 +358,7 @@ const getMessageStatus = async (req, res) => {
             return res.status(400).json({ message: 'Message ID is required' });
         }
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -384,7 +384,7 @@ const markMessageAsRead = async (req, res) => {
             return res.status(400).json({ message: 'Message ID is required' });
         }
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -451,7 +451,7 @@ const getConversationAnalytics = async (req, res) => {
             return res.status(400).json({ message: 'Start date and end date are required' });
         }
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -547,7 +547,7 @@ const getMedia = async (req, res) => {
             return res.status(400).json({ message: 'Media ID is required' });
         }
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -570,7 +570,7 @@ const uploadMedia = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
         const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new WhatsAppService_1.WhatsAppService({
+        const whatsAppService = new whatsAppService_1.WhatsAppService({
             accessToken: config.accessToken,
             phoneNumberId: config.phoneNumberId,
             wabaId: config.wabaId
@@ -589,13 +589,13 @@ const handleWebhook = async (req, res) => {
         const signature = req.headers['x-hub-signature-256'];
         const appSecret = process.env.WHATSAPP_APP_SECRET;
         if (appSecret && signature) {
-            const isValid = WhatsAppService_1.WhatsAppService.verifySignature(JSON.stringify(req.body), signature, appSecret);
+            const isValid = whatsAppService_1.WhatsAppService.verifySignature(JSON.stringify(req.body), signature, appSecret);
             if (!isValid) {
                 console.warn('[WhatsAppWebhook] Invalid signature');
                 return res.sendStatus(401);
             }
         }
-        await WhatsAppIntegrationService_1.WhatsAppIntegrationService.handleWebhook(req.body);
+        await whatsAppIntegrationService_1.WhatsAppIntegrationService.handleWebhook(req.body);
         res.sendStatus(200);
     }
     catch (error) {
@@ -606,7 +606,7 @@ const handleWebhook = async (req, res) => {
 exports.handleWebhook = handleWebhook;
 const verifyWebhook = async (req, res) => {
     try {
-        await WhatsAppIntegrationService_1.WhatsAppIntegrationService.verifyWebhook(req, res);
+        await whatsAppIntegrationService_1.WhatsAppIntegrationService.verifyWebhook(req, res);
     }
     catch (error) {
         console.error('Error in verifyWebhook:', error);
@@ -614,3 +614,4 @@ const verifyWebhook = async (req, res) => {
     }
 };
 exports.verifyWebhook = verifyWebhook;
+//# sourceMappingURL=whatsAppController.js.map

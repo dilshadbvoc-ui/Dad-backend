@@ -14,3 +14,4 @@ router.get('/:id/pdf', authMiddleware_1.protect, quoteController_1.downloadQuote
 router.put('/:id', authMiddleware_1.protect, quoteController_1.updateQuote);
 router.delete('/:id', authMiddleware_1.protect, quoteController_1.deleteQuote);
 exports.default = router;
+//# sourceMappingURL=quoteRoutes.js.map

@@ -12,3 +12,4 @@ router.post('/', authMiddleware_1.protect, apiKeyController_1.createApiKey);
 router.post('/:id/revoke', authMiddleware_1.protect, apiKeyController_1.revokeApiKey);
 router.delete('/:id', authMiddleware_1.protect, apiKeyController_1.deleteApiKey);
 exports.default = router;
+//# sourceMappingURL=apiKeyRoutes.js.map

@@ -102,3 +102,4 @@ class Logger {
 // Export singleton instance
 exports.logger = new Logger();
 exports.default = exports.logger;
+//# sourceMappingURL=logger.js.map

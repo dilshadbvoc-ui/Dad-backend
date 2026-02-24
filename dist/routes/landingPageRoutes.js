@@ -12,3 +12,4 @@ router.post('/', authMiddleware_1.protect, landingPageController_1.createLanding
 router.put('/:id', authMiddleware_1.protect, landingPageController_1.updateLandingPage);
 router.delete('/:id', authMiddleware_1.protect, landingPageController_1.deleteLandingPage);
 exports.default = router;
+//# sourceMappingURL=landingPageRoutes.js.map

@@ -69,3 +69,4 @@ const deleteLandingPage = async (req, res) => {
     }
 };
 exports.deleteLandingPage = deleteLandingPage;
+//# sourceMappingURL=landingPageController.js.map

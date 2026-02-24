@@ -35,3 +35,4 @@ router.get('/sockets', authMiddleware_1.protect, (req, res) => {
     });
 });
 exports.default = router;
+//# sourceMappingURL=debugRoutes.js.map

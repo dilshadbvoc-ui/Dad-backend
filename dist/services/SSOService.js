@@ -100,3 +100,4 @@ const setupPassport = () => {
     passport_1.default.use('saml', strategy);
 };
 exports.setupPassport = setupPassport;
+//# sourceMappingURL=ssoService.js.map

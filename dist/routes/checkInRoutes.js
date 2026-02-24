@@ -11,3 +11,4 @@ router.use(authMiddleware_1.protect);
 router.post('/', checkInController_1.createCheckIn);
 router.get('/', checkInController_1.getCheckIns);
 exports.default = router;
+//# sourceMappingURL=checkInRoutes.js.map

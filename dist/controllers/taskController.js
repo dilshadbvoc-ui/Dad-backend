@@ -111,12 +111,19 @@ const createTask = async (req, res) => {
             return res.status(400).json({ message: 'User must belong to an organization to create tasks' });
         }
         const { relatedTo, onModel } = req.body;
+        // Normalize dueDate to start of day to ensure consistent date comparisons
+        let normalizedDueDate = undefined;
+        if (req.body.dueDate) {
+            const date = new Date(req.body.dueDate);
+            date.setHours(0, 0, 0, 0); // Set to midnight
+            normalizedDueDate = date.toISOString();
+        }
         const data = {
             subject: req.body.subject,
             description: req.body.description,
             status: req.body.status || 'not_started',
             priority: req.body.priority || 'medium',
-            dueDate: req.body.dueDate ? new Date(req.body.dueDate).toISOString() : undefined,
+            dueDate: normalizedDueDate,
             createdBy: { connect: { id: user.id } },
         };
         // Only connect organization if user has one
@@ -206,9 +213,11 @@ const updateTask = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = { ...req.body };
-        // Convert dueDate to ISO-8601 DateTime if provided
+        // Normalize dueDate to start of day to ensure consistent date comparisons
         if (updates.dueDate) {
-            updates.dueDate = new Date(updates.dueDate).toISOString();
+            const date = new Date(updates.dueDate);
+            date.setHours(0, 0, 0, 0); // Set to midnight
+            updates.dueDate = date.toISOString();
         }
         // Handle Relation Updates
         if (updates.assignedTo && typeof updates.assignedTo === 'string') {
@@ -300,3 +309,4 @@ const deleteTask = async (req, res) => {
     }
 };
 exports.deleteTask = deleteTask;
+//# sourceMappingURL=taskController.js.map

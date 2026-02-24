@@ -92,3 +92,4 @@ const deleteWebhook = async (req, res) => {
     }
 };
 exports.deleteWebhook = deleteWebhook;
+//# sourceMappingURL=webhookController.js.map

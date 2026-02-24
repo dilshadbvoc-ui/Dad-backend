@@ -18,3 +18,4 @@ router.get('/sales-book', authMiddleware_1.protect, analyticsController_1.getSal
 router.get('/user-sales', authMiddleware_1.protect, analyticsController_1.getUserWiseSales);
 router.get('/overview', authMiddleware_1.protect, analyticsController_1.getDashboardStats); // Alias for reports page
 exports.default = router;
+//# sourceMappingURL=analyticsRoutes.js.map

@@ -707,3 +707,4 @@ const getUserWiseSales = async (req, res) => {
     }
 };
 exports.getUserWiseSales = getUserWiseSales;
+//# sourceMappingURL=analyticsController.js.map

@@ -40,8 +40,8 @@ const express_1 = __importDefault(require("express"));
 const apiKeyMiddleware_1 = require("../middleware/apiKeyMiddleware");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const client_1 = require("../generated/client");
-const DistributionService_1 = require("../services/DistributionService");
-const WorkflowEngine_1 = require("../services/WorkflowEngine");
+const distributionService_1 = require("../services/distributionService");
+const workflowEngine_1 = require("../services/workflowEngine");
 const router = express_1.default.Router();
 /**
  * @route POST /api/v1/leads
@@ -95,14 +95,14 @@ router.post('/leads', apiKeyMiddleware_1.verifyApiKey, async (req, res) => {
             }
         });
         // Async Distribution & Workflow
-        DistributionService_1.DistributionService.assignLead(lead, orgId).catch(console.error);
+        distributionService_1.DistributionService.assignLead(lead, orgId).catch(console.error);
         if (req.body.score !== false) {
             Promise.resolve().then(() => __importStar(require('../services/LeadScoringService'))).then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(lead.id).catch(console.error);
             });
         }
         // Trigger Created Workflow
-        WorkflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId).catch(console.error);
+        workflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId).catch(console.error);
         res.status(201).json({ id: lead.id, message: 'Lead created successfully' });
     }
     catch (error) {
@@ -143,3 +143,4 @@ router.get('/leads', apiKeyMiddleware_1.verifyApiKey, async (req, res) => {
     }
 });
 exports.default = router;
+//# sourceMappingURL=apiRoutes.js.map

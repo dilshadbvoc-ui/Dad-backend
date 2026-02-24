@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteWhatsAppCampaign = exports.updateWhatsAppCampaign = exports.createWhatsAppCampaign = exports.getWhatsAppCampaigns = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const CampaignProcessor_1 = require("../services/CampaignProcessor");
+const campaignProcessor_1 = require("../services/campaignProcessor");
 const getWhatsAppCampaigns = async (req, res) => {
     try {
         const user = req.user;
@@ -111,7 +111,7 @@ const createWhatsAppCampaign = async (req, res) => {
         // If status is 'sent', process the campaign immediately
         if (req.body.status === 'sent') {
             // Process campaign asynchronously
-            CampaignProcessor_1.CampaignProcessor.processWhatsAppCampaign(campaign.id)
+            campaignProcessor_1.CampaignProcessor.processWhatsAppCampaign(campaign.id)
                 .catch(error => {
                 console.error('Campaign processing error:', error);
             });
@@ -167,7 +167,7 @@ const updateWhatsAppCampaign = async (req, res) => {
         }
         // If status changed to 'sent', process the campaign
         if (req.body.status === 'sent' && existingCampaign.status !== 'sent') {
-            CampaignProcessor_1.CampaignProcessor.processWhatsAppCampaign(campaign.id)
+            campaignProcessor_1.CampaignProcessor.processWhatsAppCampaign(campaign.id)
                 .catch(error => {
                 console.error('Campaign processing error:', error);
             });
@@ -223,3 +223,4 @@ const deleteWhatsAppCampaign = async (req, res) => {
     }
 };
 exports.deleteWhatsAppCampaign = deleteWhatsAppCampaign;
+//# sourceMappingURL=whatsAppCampaignController.js.map

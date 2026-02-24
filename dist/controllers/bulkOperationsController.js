@@ -8,8 +8,8 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const apiResponse_1 = require("../utils/apiResponse");
 const logger_1 = require("../utils/logger");
-const EmailService_1 = require("../services/EmailService");
-const WhatsAppService_1 = require("../services/WhatsAppService");
+const emailService_1 = require("../services/emailService");
+const whatsAppService_1 = require("../services/whatsAppService");
 const auditLogger_1 = require("../utils/auditLogger");
 /**
  * Bulk Operations Controller
@@ -149,7 +149,7 @@ const bulkLeadOperations = async (req, res) => {
                             .replace(/\{firstName\}/g, lead.firstName)
                             .replace(/\{lastName\}/g, lead.lastName)
                             .replace(/\{fullName\}/g, `${lead.firstName} ${lead.lastName}`);
-                        await EmailService_1.EmailService.sendEmail(lead.email, data.subject, personalizedContent);
+                        await emailService_1.EmailService.sendEmail(lead.email, data.subject, personalizedContent);
                         // Log interaction
                         await prisma_1.default.interaction.create({
                             data: {
@@ -202,7 +202,7 @@ const bulkLeadOperations = async (req, res) => {
                             .replace(/\{firstName\}/g, lead.firstName)
                             .replace(/\{lastName\}/g, lead.lastName)
                             .replace(/\{fullName\}/g, `${lead.firstName} ${lead.lastName}`);
-                        await WhatsAppService_1.WhatsAppService.getClientForOrg(organisationId)?.then(client => client?.sendTextMessage(lead.phone, personalizedMessage));
+                        await whatsAppService_1.WhatsAppService.getClientForOrg(organisationId)?.then(client => client?.sendTextMessage(lead.phone, personalizedMessage));
                         // Log interaction
                         await prisma_1.default.interaction.create({
                             data: {
@@ -561,3 +561,4 @@ const bulkOpportunityOperations = async (req, res) => {
     }
 };
 exports.bulkOpportunityOperations = bulkOpportunityOperations;
+//# sourceMappingURL=bulkOperationsController.js.map

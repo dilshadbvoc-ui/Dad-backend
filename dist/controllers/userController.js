@@ -584,3 +584,4 @@ const deactivateUser = async (req, res) => {
     }
 };
 exports.deactivateUser = deactivateUser;
+//# sourceMappingURL=userController.js.map

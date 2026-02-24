@@ -77,3 +77,4 @@ class MarketingAPIService {
     }
 }
 exports.default = MarketingAPIService;
+//# sourceMappingURL=marketingAPIService.js.map

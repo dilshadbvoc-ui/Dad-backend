@@ -40,7 +40,7 @@ exports.permanentlyDeleteOrganisation = exports.sendTestReport = exports.restore
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const encryption_1 = require("../utils/encryption");
-const MetaService_1 = require("../services/MetaService");
+const metaService_1 = require("../services/metaService");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const auditLogger_1 = require("../utils/auditLogger");
 const createOrganisation = async (req, res) => {
@@ -221,7 +221,7 @@ const updateOrganisation = async (req, res) => {
                 const currentToken = data.integrations.meta.accessToken;
                 const isEncrypted = currentToken.split(':').length === 3;
                 if (!isEncrypted) {
-                    const longLivedToken = await MetaService_1.metaService.exchangeForLongLivedToken(currentToken, data.integrations.meta);
+                    const longLivedToken = await metaService_1.metaService.exchangeForLongLivedToken(currentToken, data.integrations.meta);
                     data.integrations.meta.accessToken = (0, encryption_1.encrypt)(longLivedToken);
                 }
             }
@@ -588,3 +588,4 @@ const permanentlyDeleteOrganisation = async (req, res) => {
     }
 };
 exports.permanentlyDeleteOrganisation = permanentlyDeleteOrganisation;
+//# sourceMappingURL=organisationController.js.map

@@ -108,3 +108,4 @@ const authorize = (...roles) => {
     };
 };
 exports.authorize = authorize;
+//# sourceMappingURL=authMiddleware.js.map

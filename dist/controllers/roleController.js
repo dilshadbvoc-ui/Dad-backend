@@ -316,3 +316,4 @@ const upsertGlobalRole = async (req, res) => {
     }
 };
 exports.upsertGlobalRole = upsertGlobalRole;
+//# sourceMappingURL=roleController.js.map

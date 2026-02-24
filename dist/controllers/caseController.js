@@ -206,3 +206,4 @@ const deleteCase = async (req, res) => {
     }
 };
 exports.deleteCase = deleteCase;
+//# sourceMappingURL=caseController.js.map

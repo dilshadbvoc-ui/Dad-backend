@@ -65,3 +65,4 @@ const deletePlan = async (req, res) => {
     }
 };
 exports.deletePlan = deletePlan;
+//# sourceMappingURL=subscriptionPlanController.js.map
