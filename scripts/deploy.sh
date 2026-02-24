@@ -62,9 +62,13 @@ git reset --hard origin/main
 echo "🧹 Removing node_modules to save space before reinstall..."
 rm -rf node_modules
 
-# Use npm ci with production only to save space
+# Remove package-lock.json to force regeneration with correct versions
+echo "🔄 Regenerating package-lock.json..."
+rm -f package-lock.json
+
+# Use npm install with production only to save space
 echo "📦 Installing production dependencies only..."
-npm ci --omit=dev --ignore-scripts
+npm install --omit=dev --ignore-scripts
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
