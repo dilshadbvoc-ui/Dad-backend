@@ -58,14 +58,13 @@ fi
 git fetch origin main
 git reset --hard origin/main
 
-# Clean node_modules if disk space is tight (less than 3GB)
-AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
-if [ "$AVAILABLE_KB" -lt 3000000 ]; then
-    echo "🧹 Removing node_modules to save space before reinstall..."
-    rm -rf node_modules
-fi
+# Always remove node_modules on low disk space servers
+echo "🧹 Removing node_modules to save space before reinstall..."
+rm -rf node_modules
 
-npm install --ignore-scripts
+# Use npm ci with production only to save space
+echo "📦 Installing production dependencies only..."
+npm ci --production --ignore-scripts
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
@@ -73,38 +72,9 @@ echo "🏗️ Building Backend..."
 NODE_OPTIONS=--max-old-space-size=512 npm run build
 node copy-prisma.js
 
-# 2. Update Frontend (Sibling Directory)
-# Assumes frontend is cloned as a sibling folder named 'frontend' or 'client'
-CLIENT_DIR="$BACKEND_DIR/../frontend" 
-if [ ! -d "$CLIENT_DIR" ]; then
-    CLIENT_DIR="$BACKEND_DIR/../client"
-fi
-
-if [ -d "$CLIENT_DIR" ]; then
-    echo "📥 Updating Frontend in $CLIENT_DIR..."
-    cd "$CLIENT_DIR"
-    
-    # Clean up stale locks
-    if [ -f .git/index.lock ]; then
-        echo "🧹 Removing stale git lock for frontend..."
-        rm -f .git/index.lock
-    fi
-
-    git fetch origin main
-    git reset --hard origin/main
-    npm install
-    echo "🏗️ Building Frontend..."
-    # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
-    NODE_OPTIONS=--max-old-space-size=800 npm run build
-    
-    # Deploy to Nginx
-    echo "📂 Deploying Static Files..."
-    sudo mkdir -p /var/www/crm-client
-    sudo rm -rf /var/www/crm-client/*
-    sudo cp -r dist/* /var/www/crm-client/
-else
-    echo "⚠️ Frontend directory not found as sibling! Skipping frontend build."
-fi
+# 2. Skip Frontend Build on Backend Server
+# Frontend is deployed separately on Vercel
+echo "⏭️  Skipping frontend build (deployed separately on Vercel)"
 
 echo "▶️ Restarting Backend API..."
 cd "$BACKEND_DIR"
