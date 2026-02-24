@@ -81,7 +81,7 @@ export const MetaLeadService = {
             });
 
             // Extract country information from Meta lead
-            const { GeoLocationService } = await import('./GeoLocationService');
+            const { GeoLocationService } = await import('./geoLocationService');
             const geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
 
             // Common Meta Field Names -> CRM Field Names
@@ -116,7 +116,7 @@ export const MetaLeadService = {
             }
 
             // 5. Check for duplicate (by phone and org)
-            const { DuplicateLeadService } = await import('./DuplicateLeadService');
+            const { DuplicateLeadService } = await import('./duplicateLeadService');
             const duplicateCheck = await DuplicateLeadService.checkDuplicate(crmData.phone, crmData.email, org.id);
 
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {

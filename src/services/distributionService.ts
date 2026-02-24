@@ -505,7 +505,7 @@ export const DistributionService = {
             if (!user?.phone) return;
 
             // Lazy load WhatsAppService
-            const { WhatsAppService } = await import('./WhatsAppService');
+            const { WhatsAppService } = await import('./whatsAppService');
             const waClient = await WhatsAppService.getClientForOrg(organisationId);
 
             if (!waClient) return;

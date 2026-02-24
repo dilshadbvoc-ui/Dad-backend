@@ -46,7 +46,7 @@ export const initCronJobs = () => {
 
         console.log('[Cron] Running daily license expiry check...');
         try {
-            const { LicenseEnforcementService } = await import('./LicenseEnforcementService');
+            const { LicenseEnforcementService } = await import('./licenseEnforcementService');
             await LicenseEnforcementService.enforceExpiry();
         } catch (error) {
             console.error('[Cron] Error running license expiry check:', error);
@@ -59,7 +59,7 @@ export const initCronJobs = () => {
     cron.schedule('0 8 * * *', async () => {
         console.log('[Cron] Running daily task reminders...');
         try {
-            const { TaskReminderService } = await import('./TaskReminderService');
+            const { TaskReminderService } = await import('./taskReminderService');
             await TaskReminderService.sendDailyReminders();
         } catch (error) {
             console.error('[Cron] Error running task reminders:', error);
@@ -81,8 +81,8 @@ export const initCronJobs = () => {
     cron.schedule('0 9 * * *', async () => {
         console.log('[Cron] Running daily organisation reports...');
         try {
-            const { ReportingService } = await import('./ReportingService');
-            const { WhatsAppService } = await import('./WhatsAppService');
+            const { ReportingService } = await import('./reportingService');
+            const { WhatsAppService } = await import('./whatsAppService');
 
             const organisations = await prisma.organisation.findMany({
                 where: { status: 'active' },
@@ -142,7 +142,7 @@ export const initCronJobs = () => {
                 console.log(`[Cron] Found ${pendingItems.length} pending workflow items ready to execute.`);
 
                 // Dynamically import to avoid circular dependency issues if any
-                const { WorkflowEngine } = await import('./WorkflowEngine');
+                const { WorkflowEngine } = await import('./workflowEngine');
 
                 for (const item of pendingItems) {
                     // Fire and forget or sequential?

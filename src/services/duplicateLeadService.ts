@@ -163,14 +163,14 @@ export const DuplicateLeadService = {
      */
     async notifyOwner(lead: any, organisationId: string): Promise<void> {
         try {
-            const { NotificationService } = await import('./NotificationService');
-            
+            const { NotificationService } = await import('./notificationService');
+
             const ownerId = lead.assignedToId || lead.assignedTo?.id;
             if (!ownerId) {
                 console.log(`[DuplicateLeadService] No owner to notify for lead ${lead.id}`);
                 return;
             }
-            
+
             await NotificationService.send(
                 ownerId,
                 'Re-Enquiry Alert',
@@ -189,12 +189,12 @@ export const DuplicateLeadService = {
      */
     async notifyManager(lead: any, managerId: string, organisationId: string): Promise<void> {
         try {
-            const { NotificationService } = await import('./NotificationService');
-            
-            const ownerName = lead.assignedTo 
+            const { NotificationService } = await import('./notificationService');
+
+            const ownerName = lead.assignedTo
                 ? `${lead.assignedTo.firstName} ${lead.assignedTo.lastName}`
                 : 'Unknown';
-            
+
             await NotificationService.send(
                 managerId,
                 'Team Re-Enquiry Alert',

@@ -170,7 +170,7 @@ export const WhatsAppIntegrationService = {
                 }
 
                 // Check for duplicates
-                const { DuplicateLeadService } = await import('./DuplicateLeadService');
+                const { DuplicateLeadService } = await import('./duplicateLeadService');
                 const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, null, organisationId);
 
                 let leadToLink;
@@ -259,7 +259,7 @@ export const WhatsAppIntegrationService = {
                 // Update campaign statistics if message was updated
                 if (updatedMessage.count > 0) {
                     // Import CampaignProcessor here to avoid circular dependency
-                    const { CampaignProcessor } = await import('./CampaignProcessor');
+                    const { CampaignProcessor } = await import('./campaignProcessor');
 
                     // Find the message to get its ID for campaign stats update
                     const message = await prisma.whatsAppMessage.findFirst({

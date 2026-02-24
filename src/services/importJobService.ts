@@ -152,7 +152,7 @@ export class ImportJobService {
                     }
 
                     // Check for duplicates using DuplicateLeadService
-                    const { DuplicateLeadService } = await import('./DuplicateLeadService');
+                    const { DuplicateLeadService } = await import('./duplicateLeadService');
                     const duplicateCheck = await DuplicateLeadService.checkDuplicate(
                         leadData.phone,
                         leadData.email,
