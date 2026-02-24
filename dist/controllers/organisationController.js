@@ -414,8 +414,8 @@ const sendTestReport = async (req, res) => {
         });
         if (!org)
             return res.status(404).json({ message: 'Organisation not found' });
-        const { ReportingService } = await Promise.resolve().then(() => __importStar(require('../services/ReportingService')));
-        const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('../services/WhatsAppService')));
+        const { ReportingService } = await Promise.resolve().then(() => __importStar(require('../services/reportingService')));
+        const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('../services/whatsAppService')));
         const stats = await ReportingService.getDailyStats(orgId);
         const report = ReportingService.formatWhatsAppReport(stats, org.name);
         const targetPhone = org.users[0]?.phone || org.contactPhone;

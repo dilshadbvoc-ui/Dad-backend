@@ -85,4 +85,4 @@ exports.WebhookService = {
         }
     }
 };
-//# sourceMappingURL=WebhookService.js.map
+//# sourceMappingURL=webhookService.js.map

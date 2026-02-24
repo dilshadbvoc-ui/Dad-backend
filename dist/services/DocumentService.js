@@ -81,4 +81,4 @@ class DocumentService {
     }
 }
 exports.DocumentService = DocumentService;
-//# sourceMappingURL=DocumentService.js.map
+//# sourceMappingURL=documentService.js.map

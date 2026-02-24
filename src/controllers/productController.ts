@@ -392,7 +392,7 @@ export const getSharedProduct = async (req: Request, res: Response) => {
 
         // Send Notification (if enabled)
         if (share.notificationsEnabled) {
-            const { NotificationService } = await import('../services/NotificationService');
+            const { NotificationService } = await import('../services/notificationService');
             const viewedAt = new Date();
             const time = viewedAt.toLocaleString('en-US', { 
                 timeZone: 'Asia/Kolkata',

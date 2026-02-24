@@ -85,7 +85,7 @@ export const createGoal = async (req: Request, res: Response) => {
 
         // Initial progress update if not manual
         if (goal.type !== 'manual') {
-            const { GoalService } = await import('../services/GoalService');
+            const { GoalService } = await import('../services/goalService');
             await GoalService.updateProgressForUser(goal.assignedToId, goal.type);
         }
 
@@ -203,7 +203,7 @@ export const recalculateGoal = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Cannot automatically recalculate manual goals' });
         }
 
-        const { GoalService } = await import('../services/GoalService');
+        const { GoalService } = await import('../services/goalService');
         await GoalService.updateProgressForUser(goal.assignedToId, goal.type);
 
         const updatedGoal = await prisma.goal.findUnique({ where: { id } });

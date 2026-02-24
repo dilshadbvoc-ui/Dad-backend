@@ -115,7 +115,7 @@ const createGoal = async (req, res) => {
         });
         // Initial progress update if not manual
         if (goal.type !== 'manual') {
-            const { GoalService } = await Promise.resolve().then(() => __importStar(require('../services/GoalService')));
+            const { GoalService } = await Promise.resolve().then(() => __importStar(require('../services/goalService')));
             await GoalService.updateProgressForUser(goal.assignedToId, goal.type);
         }
         await (0, auditLogger_1.logAudit)({
@@ -225,7 +225,7 @@ const recalculateGoal = async (req, res) => {
         if (goal.type === 'manual') {
             return res.status(400).json({ message: 'Cannot automatically recalculate manual goals' });
         }
-        const { GoalService } = await Promise.resolve().then(() => __importStar(require('../services/GoalService')));
+        const { GoalService } = await Promise.resolve().then(() => __importStar(require('../services/goalService')));
         await GoalService.updateProgressForUser(goal.assignedToId, goal.type);
         const updatedGoal = await prisma_1.default.goal.findUnique({ where: { id } });
         res.json(updatedGoal);

@@ -305,7 +305,7 @@ export const downloadQuotePdf = async (req: Request, res: Response) => {
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${quote.quoteNumber}.pdf`);
 
-        const { QuotePdfService } = await import('../services/QuotePdfService');
+        const { QuotePdfService } = await import('../services/quotePdfService');
         QuotePdfService.generate(quote, res);
 
     } catch (error) {

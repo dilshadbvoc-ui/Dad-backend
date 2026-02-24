@@ -268,7 +268,7 @@ const runWorkflow = async (req, res) => {
         if (!entityData) {
             return res.status(404).json({ message: `${workflow.triggerEntity} with ID ${entityId} not found` });
         }
-        const { WorkflowEngine } = await Promise.resolve().then(() => __importStar(require('../services/WorkflowEngine')));
+        const { WorkflowEngine } = await Promise.resolve().then(() => __importStar(require('../services/workflowEngine')));
         await WorkflowEngine.executeActions(workflow, entityData, workflow.organisationId);
         // Audit Log
         try {

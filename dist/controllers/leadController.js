@@ -167,7 +167,7 @@ const createLead = async (req, res) => {
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
@@ -198,7 +198,7 @@ const createLead = async (req, res) => {
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
-            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/GeoLocationService')));
+            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/geoLocationService')));
             const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress;
             if (ipAddress) {
                 geoData = await GeoLocationService.detectCountryFromIP(ipAddress);
@@ -210,7 +210,7 @@ const createLead = async (req, res) => {
         }
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
         // Create
@@ -290,22 +290,22 @@ const createLead = async (req, res) => {
         // Trigger Workflow Engine for lead creation
         try {
             await workflowEngine_1.WorkflowEngine.evaluate('Lead', 'created', lead, orgId);
-            Promise.resolve().then(() => __importStar(require('../services/WebhookService'))).then(({ WebhookService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/webhookService'))).then(({ WebhookService }) => {
                 WebhookService.triggerEvent('lead.created', lead, orgId).catch(console.error);
             });
             // AI Scoring
-            Promise.resolve().then(() => __importStar(require('../services/LeadScoringService'))).then(({ LeadScoringService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/leadScoringService'))).then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(lead.id).catch(console.error);
             });
             // Goal Automation
-            Promise.resolve().then(() => __importStar(require('../services/GoalService'))).then(({ GoalService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/goalService'))).then(({ GoalService }) => {
                 const assignedId = lead.assignedToId;
                 if (assignedId) {
                     GoalService.updateProgressForUser(assignedId, 'leads').catch(console.error);
                 }
             });
             // Meta Conversion API: New Lead
-            Promise.resolve().then(() => __importStar(require('../services/MetaConversionService'))).then(({ MetaConversionService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/metaConversionService'))).then(({ MetaConversionService }) => {
                 MetaConversionService.sendEvent(orgId, {
                     eventName: 'Lead',
                     userData: {
@@ -452,7 +452,7 @@ const updateLead = async (req, res) => {
             });
         }
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Lead', currentLead.organisationId, updates.customFields);
         }
         const whereObj = { id: leadId };
@@ -544,12 +544,12 @@ const updateLead = async (req, res) => {
         }
         res.json(finalLead);
         // Webhook
-        Promise.resolve().then(() => __importStar(require('../services/WebhookService'))).then(({ WebhookService }) => {
+        Promise.resolve().then(() => __importStar(require('../services/webhookService'))).then(({ WebhookService }) => {
             WebhookService.triggerEvent('lead.updated', lead, lead.organisationId).catch(console.error);
         });
         // AI Scoring Trigger (if relevant fields changed)
         if (updates.jobTitle || updates.company || updates.email || updates.phone) {
-            Promise.resolve().then(() => __importStar(require('../services/LeadScoringService'))).then(({ LeadScoringService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/leadScoringService'))).then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(leadId).catch(console.error);
             });
         }
@@ -629,9 +629,9 @@ const createBulkLeads = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { AssignmentRuleService } = await Promise.resolve().then(() => __importStar(require('../services/AssignmentRuleService')));
-        const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/GeoLocationService')));
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const { AssignmentRuleService } = await Promise.resolve().then(() => __importStar(require('../services/assignmentRuleService')));
+        const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/geoLocationService')));
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
@@ -688,7 +688,7 @@ const createBulkLeads = async (req, res) => {
                 };
                 const lead = await prisma_1.default.lead.create({ data });
                 // AI Scoring
-                Promise.resolve().then(() => __importStar(require('../services/LeadScoringService'))).then(({ LeadScoringService }) => {
+                Promise.resolve().then(() => __importStar(require('../services/leadScoringService'))).then(({ LeadScoringService }) => {
                     LeadScoringService.scoreLead(lead.id).catch(console.error);
                 });
                 createdCount++;
@@ -1125,7 +1125,7 @@ const getReEnquiryLeads = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
         const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
         res.json({
             leads: reEnquiryLeads,
@@ -1144,7 +1144,7 @@ const getDuplicateLeads = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
         const duplicates = await DuplicateLeadService.findDuplicates(orgId);
         res.json({
             duplicates,

@@ -24,7 +24,7 @@ export const importLeads = async (req: Request, res: Response) => {
         if (!orgId) return res.status(400).json({ message: 'User has no organisation' });
 
         // Create Import Job with options
-        const { ImportJobService } = await import('../services/ImportJobService');
+        const { ImportJobService } = await import('../services/importJobService');
         const job = await ImportJobService.createJob(user.id, orgId, req.file.path, mapping, {
             defaultStatus,
             pipelineId,

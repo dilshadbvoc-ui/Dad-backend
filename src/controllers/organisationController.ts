@@ -418,8 +418,8 @@ export const sendTestReport = async (req: Request, res: Response) => {
 
         if (!org) return res.status(404).json({ message: 'Organisation not found' });
 
-        const { ReportingService } = await import('../services/ReportingService');
-        const { WhatsAppService } = await import('../services/WhatsAppService');
+        const { ReportingService } = await import('../services/reportingService');
+        const { WhatsAppService } = await import('../services/whatsAppService');
 
         const stats = await ReportingService.getDailyStats(orgId);
         const report = ReportingService.formatWhatsAppReport(stats, org.name);

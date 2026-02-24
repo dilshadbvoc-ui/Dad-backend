@@ -330,7 +330,7 @@ const downloadQuotePdf = async (req, res) => {
             return res.status(404).json({ message: 'Quote not found' });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${quote.quoteNumber}.pdf`);
-        const { QuotePdfService } = await Promise.resolve().then(() => __importStar(require('../services/QuotePdfService')));
+        const { QuotePdfService } = await Promise.resolve().then(() => __importStar(require('../services/quotePdfService')));
         QuotePdfService.generate(quote, res);
     }
     catch (error) {

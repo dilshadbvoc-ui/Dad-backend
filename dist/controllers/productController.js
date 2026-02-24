@@ -407,7 +407,7 @@ const getSharedProduct = async (req, res) => {
         }
         // Send Notification (if enabled)
         if (share.notificationsEnabled) {
-            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/NotificationService')));
+            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/notificationService')));
             const viewedAt = new Date();
             const time = viewedAt.toLocaleString('en-US', {
                 timeZone: 'Asia/Kolkata',

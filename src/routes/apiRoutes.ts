@@ -28,7 +28,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
         if (cleanPhone && cleanPhone.length > 10) cleanPhone = cleanPhone.slice(-10);
 
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = await import('../services/DuplicateLeadService');
+        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
@@ -72,7 +72,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
         // Async Distribution & Workflow
         DistributionService.assignLead(lead, orgId).catch(console.error);
         if (req.body.score !== false) {
-            import('../services/LeadScoringService').then(({ LeadScoringService }) => {
+            import('../services/leadScoringService').then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(lead.id).catch(console.error);
             });
         }

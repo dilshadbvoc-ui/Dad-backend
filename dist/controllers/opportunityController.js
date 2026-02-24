@@ -128,7 +128,7 @@ const createOpportunity = async (req, res) => {
         };
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Opportunity', orgId, req.body.customFields);
         }
         const opportunity = await prisma_1.default.opportunity.create({
@@ -151,15 +151,15 @@ const createOpportunity = async (req, res) => {
         }
         res.status(201).json(opportunity);
         // Webhook
-        Promise.resolve().then(() => __importStar(require('../services/WebhookService'))).then(({ WebhookService }) => {
+        Promise.resolve().then(() => __importStar(require('../services/webhookService'))).then(({ WebhookService }) => {
             WebhookService.triggerEvent('opportunity.created', opportunity, orgId).catch(console.error);
         });
         // Trigger Sales Target Update if created as closed_won
         if (opportunity.stage === 'closed_won' && opportunity.ownerId) {
-            Promise.resolve().then(() => __importStar(require('../services/SalesTargetService'))).then(({ SalesTargetService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/salesTargetService'))).then(({ SalesTargetService }) => {
                 SalesTargetService.updateProgressForUser(opportunity.ownerId).catch(console.error);
             });
-            Promise.resolve().then(() => __importStar(require('../services/GoalService'))).then(({ GoalService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/goalService'))).then(({ GoalService }) => {
                 GoalService.updateProgressForUser(opportunity.ownerId, 'revenue').catch(console.error);
             });
         }
@@ -225,7 +225,7 @@ const updateOpportunity = async (req, res) => {
         if (!currentOpp)
             return res.status(404).json({ message: 'Opportunity not found' });
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, updates.customFields);
         }
         const requester = req.user;
@@ -263,7 +263,7 @@ const updateOpportunity = async (req, res) => {
         }
         // Trigger Sales Target Update when opportunity is closed won
         if ((req.body.stage === 'closed_won' || (opportunity.stage === 'closed_won' && req.body.amount)) && opportunity.ownerId) {
-            Promise.resolve().then(() => __importStar(require('../services/SalesTargetService'))).then(({ SalesTargetService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/salesTargetService'))).then(({ SalesTargetService }) => {
                 SalesTargetService.updateProgressForUser(opportunity.ownerId).catch(err => {
                     console.error('SalesTargetService error:', err);
                 });
@@ -271,12 +271,12 @@ const updateOpportunity = async (req, res) => {
                 console.error('Failed to load SalesTargetService:', err);
             });
             // Goal Automation
-            Promise.resolve().then(() => __importStar(require('../services/GoalService'))).then(({ GoalService }) => {
+            Promise.resolve().then(() => __importStar(require('../services/goalService'))).then(({ GoalService }) => {
                 GoalService.updateProgressForUser(opportunity.ownerId, 'revenue').catch(console.error);
             });
             // Meta Conversion API: Purchase
             if (req.body.amount && opportunity.amount > 0) {
-                Promise.resolve().then(() => __importStar(require('../services/MetaConversionService'))).then(async ({ MetaConversionService }) => {
+                Promise.resolve().then(() => __importStar(require('../services/metaConversionService'))).then(async ({ MetaConversionService }) => {
                     const oppWithContact = await prisma_1.default.opportunity.findUnique({
                         where: { id: oppId },
                         include: {
@@ -319,7 +319,7 @@ const updateOpportunity = async (req, res) => {
         }
         res.json(opportunity);
         // Webhook
-        Promise.resolve().then(() => __importStar(require('../services/WebhookService'))).then(({ WebhookService }) => {
+        Promise.resolve().then(() => __importStar(require('../services/webhookService'))).then(({ WebhookService }) => {
             WebhookService.triggerEvent('opportunity.updated', opportunity, opportunity.organisationId).catch(console.error);
         });
     }

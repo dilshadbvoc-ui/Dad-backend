@@ -144,7 +144,7 @@ export const createLead = async (req: Request, res: Response) => {
         if (!orgId) return res.status(400).json({ message: 'Organisation context required' });
 
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = await import('../services/DuplicateLeadService');
+        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
@@ -185,7 +185,7 @@ export const createLead = async (req: Request, res: Response) => {
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
-            const { GeoLocationService } = await import('../services/GeoLocationService');
+            const { GeoLocationService } = await import('../services/geoLocationService');
             const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress;
             if (ipAddress) {
                 geoData = await GeoLocationService.detectCountryFromIP(ipAddress as string);
@@ -199,7 +199,7 @@ export const createLead = async (req: Request, res: Response) => {
 
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
 
@@ -287,15 +287,15 @@ export const createLead = async (req: Request, res: Response) => {
         // Trigger Workflow Engine for lead creation
         try {
             await WorkflowEngine.evaluate('Lead', 'created', lead, orgId);
-            import('../services/WebhookService').then(({ WebhookService }) => {
+            import('../services/webhookService').then(({ WebhookService }) => {
                 WebhookService.triggerEvent('lead.created', lead, orgId).catch(console.error);
             });
             // AI Scoring
-            import('../services/LeadScoringService').then(({ LeadScoringService }) => {
+            import('../services/leadScoringService').then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(lead.id).catch(console.error);
             });
             // Goal Automation
-            import('../services/GoalService').then(({ GoalService }) => {
+            import('../services/goalService').then(({ GoalService }) => {
                 const assignedId = lead.assignedToId;
                 if (assignedId) {
                     GoalService.updateProgressForUser(assignedId, 'leads').catch(console.error);
@@ -303,7 +303,7 @@ export const createLead = async (req: Request, res: Response) => {
             });
 
             // Meta Conversion API: New Lead
-            import('../services/MetaConversionService').then(({ MetaConversionService }) => {
+            import('../services/metaConversionService').then(({ MetaConversionService }) => {
                 MetaConversionService.sendEvent(orgId, {
                     eventName: 'Lead',
                     userData: {
@@ -459,7 +459,7 @@ export const updateLead = async (req: Request, res: Response) => {
         }
 
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Lead', currentLead.organisationId, updates.customFields);
         }
 
@@ -563,13 +563,13 @@ export const updateLead = async (req: Request, res: Response) => {
         res.json(finalLead);
 
         // Webhook
-        import('../services/WebhookService').then(({ WebhookService }) => {
+        import('../services/webhookService').then(({ WebhookService }) => {
             WebhookService.triggerEvent('lead.updated', lead, lead.organisationId).catch(console.error);
         });
 
         // AI Scoring Trigger (if relevant fields changed)
         if (updates.jobTitle || updates.company || updates.email || updates.phone) {
-            import('../services/LeadScoringService').then(({ LeadScoringService }) => {
+            import('../services/leadScoringService').then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(leadId).catch(console.error);
             });
         }
@@ -654,9 +654,9 @@ export const createBulkLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { AssignmentRuleService } = await import('../services/AssignmentRuleService');
-        const { GeoLocationService } = await import('../services/GeoLocationService');
-        const { DuplicateLeadService } = await import('../services/DuplicateLeadService');
+        const { AssignmentRuleService } = await import('../services/assignmentRuleService');
+        const { GeoLocationService } = await import('../services/geoLocationService');
+        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
@@ -730,7 +730,7 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                 const lead = await prisma.lead.create({ data });
 
                 // AI Scoring
-                import('../services/LeadScoringService').then(({ LeadScoringService }) => {
+                import('../services/leadScoringService').then(({ LeadScoringService }) => {
                     LeadScoringService.scoreLead(lead.id).catch(console.error);
                 });
 
@@ -1204,7 +1204,7 @@ export const getReEnquiryLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { DuplicateLeadService } = await import('../services/DuplicateLeadService');
+        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
 
         res.json({
@@ -1223,7 +1223,7 @@ export const getDuplicateLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { DuplicateLeadService } = await import('../services/DuplicateLeadService');
+        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const duplicates = await DuplicateLeadService.findDuplicates(orgId);
 
         res.json({

@@ -415,7 +415,7 @@ export const createUser = async (req: Request, res: Response) => {
 
         // 1. License Check (User Limit)
         if (currentUser.role !== 'super_admin') {
-            const { LicenseEnforcementService } = await import('../services/LicenseEnforcementService');
+            const { LicenseEnforcementService } = await import('../services/licenseEnforcementService');
             await LicenseEnforcementService.checkLimits(targetOrgId, 'users');
         }
 
@@ -478,7 +478,7 @@ export const inviteUser = async (req: Request, res: Response) => {
         const orgId = getOrgId(currentUser) || organisationId;
 
         // 1. License Check
-        const { LicenseEnforcementService } = await import('../services/LicenseEnforcementService');
+        const { LicenseEnforcementService } = await import('../services/licenseEnforcementService');
         await LicenseEnforcementService.checkLimits(orgId, 'users');
 
         // Check if user exists

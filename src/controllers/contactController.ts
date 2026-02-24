@@ -131,7 +131,7 @@ export const createContact = async (req: Request, res: Response) => {
 
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Contact', orgId, req.body.customFields);
         }
 
@@ -210,7 +210,7 @@ export const updateContact = async (req: Request, res: Response) => {
         if (!currentContact) return res.status(404).json({ message: 'Contact not found' });
 
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Contact', currentContact.organisationId, updates.customFields);
         }
 

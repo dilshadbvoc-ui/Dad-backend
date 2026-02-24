@@ -412,7 +412,7 @@ const createUser = async (req, res) => {
         }
         // 1. License Check (User Limit)
         if (currentUser.role !== 'super_admin') {
-            const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/LicenseEnforcementService')));
+            const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/licenseEnforcementService')));
             await LicenseEnforcementService.checkLimits(targetOrgId, 'users');
         }
         // 2. Email duplication check
@@ -467,7 +467,7 @@ const inviteUser = async (req, res) => {
         const currentUser = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(currentUser) || organisationId;
         // 1. License Check
-        const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/LicenseEnforcementService')));
+        const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/licenseEnforcementService')));
         await LicenseEnforcementService.checkLimits(orgId, 'users');
         // Check if user exists
         if (currentUser.role !== 'super_admin' && currentUser.role !== 'admin') {

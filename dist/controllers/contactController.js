@@ -157,7 +157,7 @@ const createContact = async (req, res) => {
         }
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Contact', orgId, req.body.customFields);
         }
         const contact = await prisma_1.default.contact.create({
@@ -233,7 +233,7 @@ const updateContact = async (req, res) => {
         if (!currentContact)
             return res.status(404).json({ message: 'Contact not found' });
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Contact', currentContact.organisationId, updates.customFields);
         }
         const requester = req.user;

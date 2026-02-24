@@ -153,7 +153,7 @@ export const updateCampaign = async (req: Request, res: Response) => {
 
         // Process campaign if status is set to 'sent' or 'scheduled'
         if (req.body.status === 'sent' || req.body.status === 'scheduled') {
-            const { CampaignProcessor } = await import('../services/CampaignProcessor');
+            const { CampaignProcessor } = await import('../services/campaignProcessor');
             CampaignProcessor.processEmailCampaign(campaignId).catch(err => {
                 console.error('[CampaignController] Error triggering campaign processing:', err);
             });

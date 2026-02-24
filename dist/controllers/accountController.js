@@ -107,7 +107,7 @@ const createAccount = async (req, res) => {
             return res.status(400).json({ message: 'Organisation context required' });
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Account', orgId, req.body.customFields);
         }
         const accountData = {
@@ -202,7 +202,7 @@ const updateAccount = async (req, res) => {
             return res.status(404).json({ message: 'Account not found' });
         // Custom Field Validation
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/CustomFieldValidationService')));
+            const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Account', currentAccount.organisationId, updates.customFields);
         }
         const account = await prisma_1.default.account.update({

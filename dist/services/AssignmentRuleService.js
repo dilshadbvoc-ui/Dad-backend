@@ -123,4 +123,4 @@ class AssignmentRuleService {
     }
 }
 exports.AssignmentRuleService = AssignmentRuleService;
-//# sourceMappingURL=AssignmentRuleService.js.map
+//# sourceMappingURL=assignmentRuleService.js.map

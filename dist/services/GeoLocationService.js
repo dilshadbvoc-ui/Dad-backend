@@ -239,4 +239,4 @@ exports.GeoLocationService = {
     }
 };
 exports.default = exports.GeoLocationService;
-//# sourceMappingURL=GeoLocationService.js.map
+//# sourceMappingURL=geoLocationService.js.map

@@ -373,4 +373,4 @@ class CampaignProcessor {
     }
 }
 exports.CampaignProcessor = CampaignProcessor;
-//# sourceMappingURL=CampaignProcessor.js.map
+//# sourceMappingURL=campaignProcessor.js.map

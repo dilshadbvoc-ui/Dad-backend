@@ -71,7 +71,7 @@ export const createAccount = async (req: Request, res: Response) => {
 
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Account', orgId, req.body.customFields);
         }
 
@@ -169,7 +169,7 @@ export const updateAccount = async (req: Request, res: Response) => {
 
         // Custom Field Validation
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Account', currentAccount.organisationId, updates.customFields);
         }
 

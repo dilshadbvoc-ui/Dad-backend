@@ -123,7 +123,7 @@ const submitWebForm = async (req, res) => {
             cleanPhone = cleanPhone.slice(-10);
         }
         // Check for duplicates
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/DuplicateLeadService')));
+        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, formData.email, orgId);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
@@ -158,10 +158,10 @@ const submitWebForm = async (req, res) => {
             }
         });
         // 2. Trigger Distribution
-        const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/DistributionService')));
+        const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/distributionService')));
         await DistributionService.assignLead(lead, orgId);
         // 3. AI Scoring
-        const { LeadScoringService } = await Promise.resolve().then(() => __importStar(require('../services/LeadScoringService')));
+        const { LeadScoringService } = await Promise.resolve().then(() => __importStar(require('../services/leadScoringService')));
         LeadScoringService.scoreLead(lead.id).catch(console.error);
         res.status(201).json({
             message: 'Form submitted successfully',

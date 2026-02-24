@@ -88,7 +88,7 @@ export const submitWebForm = async (req: Request, res: Response) => {
         }
 
         // Check for duplicates
-        const { DuplicateLeadService } = await import('../services/DuplicateLeadService');
+        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, formData.email, orgId);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
@@ -131,11 +131,11 @@ export const submitWebForm = async (req: Request, res: Response) => {
         });
 
         // 2. Trigger Distribution
-        const { DistributionService } = await import('../services/DistributionService');
+        const { DistributionService } = await import('../services/distributionService');
         await DistributionService.assignLead(lead, orgId);
 
         // 3. AI Scoring
-        const { LeadScoringService } = await import('../services/LeadScoringService');
+        const { LeadScoringService } = await import('../services/leadScoringService');
         LeadScoringService.scoreLead(lead.id).catch(console.error);
 
         res.status(201).json({

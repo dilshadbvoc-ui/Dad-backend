@@ -83,4 +83,4 @@ class LicenseEnforcementService {
     }
 }
 exports.LicenseEnforcementService = LicenseEnforcementService;
-//# sourceMappingURL=LicenseEnforcementService.js.map
+//# sourceMappingURL=licenseEnforcementService.js.map

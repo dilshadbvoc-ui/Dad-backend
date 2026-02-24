@@ -98,7 +98,7 @@ export const createOpportunity = async (req: Request, res: Response) => {
 
         // Custom Field Validation
         if (req.body.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Opportunity', orgId, req.body.customFields);
         }
 
@@ -124,16 +124,16 @@ export const createOpportunity = async (req: Request, res: Response) => {
         res.status(201).json(opportunity);
 
         // Webhook
-        import('../services/WebhookService').then(({ WebhookService }) => {
+        import('../services/webhookService').then(({ WebhookService }) => {
             WebhookService.triggerEvent('opportunity.created', opportunity, orgId).catch(console.error);
         });
 
         // Trigger Sales Target Update if created as closed_won
         if (opportunity.stage === 'closed_won' && opportunity.ownerId) {
-            import('../services/SalesTargetService').then(({ SalesTargetService }) => {
+            import('../services/salesTargetService').then(({ SalesTargetService }) => {
                 SalesTargetService.updateProgressForUser(opportunity.ownerId!).catch(console.error);
             });
-            import('../services/GoalService').then(({ GoalService }) => {
+            import('../services/goalService').then(({ GoalService }) => {
                 GoalService.updateProgressForUser(opportunity.ownerId!, 'revenue').catch(console.error);
             });
         }
@@ -199,7 +199,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
         if (!currentOpp) return res.status(404).json({ message: 'Opportunity not found' });
 
         if (updates.customFields) {
-            const { CustomFieldValidationService } = await import('../services/CustomFieldValidationService');
+            const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, updates.customFields);
         }
 
@@ -238,7 +238,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
 
         // Trigger Sales Target Update when opportunity is closed won
         if ((req.body.stage === 'closed_won' || (opportunity.stage === 'closed_won' && req.body.amount)) && opportunity.ownerId) {
-            import('../services/SalesTargetService').then(({ SalesTargetService }) => {
+            import('../services/salesTargetService').then(({ SalesTargetService }) => {
                 SalesTargetService.updateProgressForUser(opportunity.ownerId!).catch(err => {
                     console.error('SalesTargetService error:', err);
                 });
@@ -247,13 +247,13 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             });
 
             // Goal Automation
-            import('../services/GoalService').then(({ GoalService }) => {
+            import('../services/goalService').then(({ GoalService }) => {
                 GoalService.updateProgressForUser(opportunity.ownerId!, 'revenue').catch(console.error);
             });
 
             // Meta Conversion API: Purchase
             if (req.body.amount && opportunity.amount > 0) {
-                import('../services/MetaConversionService').then(async ({ MetaConversionService }) => {
+                import('../services/metaConversionService').then(async ({ MetaConversionService }) => {
                     const oppWithContact = await prisma.opportunity.findUnique({
                         where: { id: oppId },
                         include: {
@@ -303,7 +303,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
         res.json(opportunity);
 
         // Webhook
-        import('../services/WebhookService').then(({ WebhookService }) => {
+        import('../services/webhookService').then(({ WebhookService }) => {
             WebhookService.triggerEvent('opportunity.updated', opportunity, opportunity.organisationId).catch(console.error);
         });
     } catch (error) {
