@@ -64,7 +64,7 @@ rm -rf node_modules
 
 # Use npm ci with production only to save space
 echo "📦 Installing production dependencies only..."
-npm ci --production --ignore-scripts
+npm ci --omit=dev --ignore-scripts
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
