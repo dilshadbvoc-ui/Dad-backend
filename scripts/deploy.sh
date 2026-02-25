@@ -3,6 +3,13 @@ set -e
 
 echo "🚀 Starting Deployment..."
 
+SKIP_BUILD=false
+for arg in "$@"; do
+    if [ "$arg" == "--skip-build" ]; then
+        SKIP_BUILD=true
+    fi
+done
+
 # Check disk space before starting
 AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
 AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
@@ -101,10 +108,14 @@ echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
 
-echo "🏗️ Building Backend..."
-# IMPORTANT: Clean dist entirely to avoid stale files with wrong casing
-rm -rf dist 
-NODE_OPTIONS=--max-old-space-size=1536 npm run build
+if [ "$SKIP_BUILD" = false ]; then
+    echo "🏗️ Building Backend..."
+    # IMPORTANT: Clean dist entirely to avoid stale files with wrong casing
+    rm -rf dist 
+    NODE_OPTIONS=--max-old-space-size=2560 npm run build
+else
+    echo "⏭️ Skipping build as requested (Dist already uploaded)"
+fi
 node copy-prisma.js
 
 # 2. Skip Frontend Build on Backend Server

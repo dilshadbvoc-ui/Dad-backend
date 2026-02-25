@@ -29,26 +29,20 @@ export const sendOneOffEmail = async (req: Request, res: Response) => {
         }
 
         // Send Email
-        const sent = await EmailService.sendEmail(to, subject, body);
+        const sent = await EmailService.sendEmail(
+            to,
+            subject,
+            body,
+            orgId,
+            user.id,
+            { leadId }
+        );
 
         if (!sent) {
             return ResponseHandler.serverError(res, 'Failed to send email');
         }
 
-        // Log Interaction
-        const interaction = await prisma.interaction.create({
-            data: {
-                type: InteractionType.email,
-                direction: 'outbound',
-                subject: `Email Sent: ${subject}`,
-                description: body, // Store body or snippet? Storing full body for now.
-                leadId: leadId,
-                createdById: user.id,
-                organisationId: orgId,
-            }
-        });
-
-        return ResponseHandler.success(res, interaction, 'Email sent successfully');
+        return ResponseHandler.success(res, null, 'Email sent successfully');
 
     } catch (error) {
         console.error('sendOneOffEmail Error:', error);
