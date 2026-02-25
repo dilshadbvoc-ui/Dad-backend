@@ -217,7 +217,7 @@ model Notification {
 model Lead {
   id                 String          @id @default(uuid())
   firstName          String
-  lastName           String
+  lastName           String?
   email              String?
   phone              String
   phoneCountryCode   String?         // e.g., "+1", "+91", "+44"

@@ -18,14 +18,20 @@ export const checkPlanLimits = (resource: 'leads' | 'contacts' | 'users' | 'stor
                 where: { id: orgId.toString() }
             });
 
-            if (!org || !org.subscription) {
-                return res.status(403).json({ message: 'No active subscription found.' });
+            if (!org) {
+                // If org not found, allow through (edge case)
+                return next();
             }
 
+            // If no subscription data, allow through with defaults
+            // (don't block users just because subscription field is missing)
             const subscription = org.subscription as any;
+            if (!subscription) {
+                return next();
+            }
 
-            // Check Subscription Status
-            if (subscription.status !== 'active' && subscription.status !== 'trial') {
+            // Check Subscription Status (only block if explicitly inactive/cancelled)
+            if (subscription.status && subscription.status !== 'active' && subscription.status !== 'trial') {
                 return res.status(403).json({ message: 'Subscription is not active.' });
             }
 

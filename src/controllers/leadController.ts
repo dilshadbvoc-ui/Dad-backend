@@ -37,7 +37,7 @@ export const getLeads = async (req: Request, res: Response) => {
             // Get user's role to determine visibility rules
             // Handle both UUID-based roles (new) and string-based roles (legacy)
             let roleName = '';
-            
+
             // Try to get role from Role table (UUID-based)
             const userRole = await prisma.role.findUnique({ where: { id: user.role } });
             if (userRole) {
@@ -45,11 +45,11 @@ export const getLeads = async (req: Request, res: Response) => {
             } else {
                 // Fallback to legacy string-based role
                 // Normalize: 'sales_rep' -> 'Sales Rep', 'manager' -> 'Manager'
-                roleName = user.role.split('_').map((word: string) => 
+                roleName = user.role.split('_').map((word: string) =>
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
             }
-            
+
             // Sales Reps: Only see leads assigned to them or created by them
             if (roleName === 'Sales Rep') {
                 andConditions.push({
@@ -174,13 +174,17 @@ export const createLead = async (req: Request, res: Response) => {
             });
         }
 
-        // Extract assignedTo before spreading
-        const { assignedTo, branchId, ...restBody } = req.body;
+        // Extract only known fields — do NOT spread req.body into Prisma
         const currentUser = (req as any).user;
+        const assignedTo = req.body.assignedTo;
+        const branchId = req.body.branchId;
 
         // For manual lead creation: creator owns the lead unless explicitly assigned to someone else
         // If assignedTo is provided, use it; otherwise assign to the creator
         const leadOwnerId = assignedTo || currentUser.id;
+
+        // Sanitize email: treat empty string as no email
+        const cleanEmail = email && email.trim() !== '' ? email.trim() : undefined;
 
         // Detect country from IP address if not provided
         let geoData = null;
@@ -203,11 +207,20 @@ export const createLead = async (req: Request, res: Response) => {
             await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
 
-        // Create
+        // Create — only pass explicitly known Lead fields (no blind spreading)
         const lead = await prisma.lead.create({
             data: {
-                ...restBody,
+                firstName: req.body.firstName || '',
+                lastName: req.body.lastName || undefined,
+                email: cleanEmail,
                 phone: cleanPhone,
+                company: req.body.company || undefined,
+                jobTitle: req.body.jobTitle || undefined,
+                address: req.body.address || undefined,
+                customFields: req.body.customFields || undefined,
+                tags: req.body.tags || undefined,
+                stage: req.body.stage || undefined,
+                sourceDetails: req.body.sourceDetails || undefined,
                 country: req.body.country || geoData?.country || undefined,
                 countryCode: req.body.countryCode || geoData?.countryCode || undefined,
                 phoneCountryCode: req.body.phoneCountryCode || geoData?.phoneCountryCode || undefined,
@@ -272,7 +285,7 @@ export const createLead = async (req: Request, res: Response) => {
                 entityId: lead.id,
                 actorId: (req as any).user.id,
                 organisationId: orgId,
-                details: { name: `${lead.firstName} ${lead.lastName}`, company: lead.company }
+                details: { name: `${lead.firstName} ${lead.lastName || ''}`.trim(), company: lead.company }
             });
         } catch (e) {
             console.error('Audit Log Error:', e);
@@ -334,30 +347,30 @@ export const getLeadById = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
 
         const where: any = { id: req.params.id, isDeleted: false };
-        
+
         // Organization scoping
         if (user.isSuperAdmin || isSuperAdmin(user)) {
             // Super admins can see any lead
         } else {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            
+
             // Apply role-based visibility for non-admins
             if (!isAdmin(user)) {
                 // Get user's role to determine visibility rules
                 // Handle both UUID-based roles (new) and string-based roles (legacy)
                 let roleName = '';
-                
+
                 const userRole = await prisma.role.findUnique({ where: { id: user.role } });
                 if (userRole) {
                     roleName = userRole.name;
                 } else {
                     // Fallback to legacy string-based role
-                    roleName = user.role.split('_').map((word: string) => 
+                    roleName = user.role.split('_').map((word: string) =>
                         word.charAt(0).toUpperCase() + word.slice(1)
                     ).join(' ');
                 }
-                
+
                 // Sales Reps: Only see leads assigned to them or created by them
                 if (roleName === 'Sales Rep') {
                     where.OR = [
@@ -554,7 +567,7 @@ export const updateLead = async (req: Request, res: Response) => {
                 entityId: leadId,
                 actorId: requester.id,
                 organisationId: currentLead.organisationId,
-                details: { name: `${currentLead.firstName} ${currentLead.lastName}`, updatedFields: Object.keys(updates) }
+                details: { name: `${currentLead.firstName} ${currentLead.lastName || ''}`.trim(), updatedFields: Object.keys(updates) }
             });
         } catch (e) {
             console.error('Audit Log Error:', e);
@@ -629,7 +642,7 @@ export const deleteLead = async (req: Request, res: Response) => {
                 entityId: leadId,
                 actorId: user.id,
                 organisationId: lead.organisationId,
-                details: { name: `${lead.firstName} ${lead.lastName}` }
+                details: { name: `${lead.firstName} ${lead.lastName || ''}`.trim() }
             });
         } catch (e) {
             console.error('Audit Log Error:', e);
@@ -842,7 +855,7 @@ export const convertLead = async (req: Request, res: Response) => {
                 // Create new Account
                 account = await tx.account.create({
                     data: {
-                        name: lead.company || `${lead.firstName} ${lead.lastName}`,
+                        name: lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
                         organisationId: orgId,
                         ownerId: user.id, // Assign to converter
                         type: 'customer',
@@ -859,7 +872,7 @@ export const convertLead = async (req: Request, res: Response) => {
             const contact = await tx.contact.create({
                 data: {
                     firstName: lead.firstName,
-                    lastName: lead.lastName,
+                    lastName: lead.lastName || '',
                     email: lead.email,
                     phones: lead.phone ? { mobile: lead.phone } : undefined,
                     jobTitle: lead.jobTitle,
@@ -876,7 +889,7 @@ export const convertLead = async (req: Request, res: Response) => {
             // 3. Create Opportunity
             const opportunity = await tx.opportunity.create({
                 data: {
-                    name: dealName || `Deal - ${lead.company || lead.lastName}`,
+                    name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
                     stage: 'new',
                     closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
@@ -906,7 +919,7 @@ export const convertLead = async (req: Request, res: Response) => {
                             quantity: leadProduct.quantity,
                             purchaseDate: new Date(),
                             status: 'active',
-                            notes: `Converted from lead: ${lead.firstName} ${lead.lastName}`
+                            notes: `Converted from lead: ${lead.firstName} ${lead.lastName || ''}`.trim()
                         }
                     });
                 }
@@ -960,7 +973,7 @@ export const convertLead = async (req: Request, res: Response) => {
                 actorId: user.id,
                 organisationId: orgId,
                 details: {
-                    name: `${lead.firstName} ${lead.lastName}`,
+                    name: `${lead.firstName} ${lead.lastName || ''}`.trim(),
                     company: lead.company,
                     accountId: result.account.id,
                     contactId: result.contact.id,

@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import prisma from '../config/prisma';
 import { InteractionType, InteractionDirection } from '../generated/client';
+import { GmailService } from './gmailService';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.ethereal.email',
@@ -14,7 +15,7 @@ const transporter = nodemailer.createTransport({
 
 export const EmailService = {
     /**
-     * Send an email
+     * Send an email — prefers user's Gmail if connected, falls back to SMTP
      */
     async sendEmail(
         to: string,
@@ -27,14 +28,32 @@ export const EmailService = {
         try {
             console.log(`[EmailService] Sending email to ${to} | Subject: ${subject}`);
 
-            const info = await transporter.sendMail({
-                from: '"PYPE" <no-reply@pype.com>',
-                to,
-                subject,
-                html
-            });
+            let sentViaGmail = false;
 
-            console.log('[EmailService] Message sent:', info.messageId);
+            // Try Gmail first if user is specified
+            if (createdById) {
+                try {
+                    const isGmailConnected = await GmailService.isConnected(createdById);
+                    if (isGmailConnected) {
+                        await GmailService.sendEmail(createdById, { to, subject, html });
+                        sentViaGmail = true;
+                        console.log('[EmailService] Sent via Gmail API');
+                    }
+                } catch (gmailErr) {
+                    console.warn('[EmailService] Gmail send failed, falling back to SMTP:', gmailErr);
+                }
+            }
+
+            // Fallback to SMTP
+            if (!sentViaGmail) {
+                const info = await transporter.sendMail({
+                    from: '"PYPE" <no-reply@pype.com>',
+                    to,
+                    subject,
+                    html
+                });
+                console.log('[EmailService] Message sent via SMTP:', info.messageId);
+            }
 
             // Save to Interactions
             if (organisationId) {
