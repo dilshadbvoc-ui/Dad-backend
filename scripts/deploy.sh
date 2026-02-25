@@ -103,7 +103,7 @@ echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
 echo "🏗️ Building Backend..."
-NODE_OPTIONS=--max-old-space-size=512 npm run build
+NODE_OPTIONS=--max-old-space-size=1536 npm run build
 node copy-prisma.js
 
 # 2. Skip Frontend Build on Backend Server

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "node --max-old-space-size=512 node_modules/typescript/bin/tsc",
+    "build": "node --max-old-space-size=1536 node_modules/typescript/bin/tsc",
     "lint": "eslint src/**/*.ts",
     "studio": "prisma studio --port 5555",
     "migrate": "npx prisma db push --accept-data-loss && npx prisma generate",
