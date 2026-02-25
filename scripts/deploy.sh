@@ -55,9 +55,24 @@ if [ -f .git/index.lock ]; then
     rm -f .git/index.lock
 fi
 
+# Preserve .env (not tracked in git for security)
+if [ -f .env ]; then
+    echo "🔐 Backing up .env..."
+    cp .env /tmp/.env.backup
+fi
+
 git fetch origin main
 git reset --hard origin/main
-git clean -fdx
+git clean -fdx -e .env
+
+# Restore .env if it was deleted
+if [ ! -f .env ] && [ -f /tmp/.env.backup ]; then
+    echo "🔐 Restoring .env from backup..."
+    cp /tmp/.env.backup .env
+    rm -f /tmp/.env.backup
+elif [ -f /tmp/.env.backup ]; then
+    rm -f /tmp/.env.backup
+fi
 
 # Always remove node_modules on low disk space servers
 echo "🧹 Removing node_modules to save space before reinstall..."
