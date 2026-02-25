@@ -104,7 +104,7 @@ npx prisma generate
 echo "🏗️ Building Backend..."
 # IMPORTANT: Clean dist entirely to avoid stale files with wrong casing
 rm -rf dist 
-NODE_OPTIONS=--max-old-space-size=2560 npm run build
+NODE_OPTIONS=--max-old-space-size=1536 npm run build
 node copy-prisma.js
 
 # 2. Skip Frontend Build on Backend Server
