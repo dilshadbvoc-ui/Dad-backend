@@ -30,8 +30,8 @@ if [ "$AVAILABLE_KB" -lt 2000000 ]; then
     AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
     echo "💾 Available disk space after cleanup: ${AVAILABLE_GB}GB"
     
-    if [ "$AVAILABLE_KB" -lt 1000000 ]; then
-        echo "❌ Still not enough disk space (less than 1GB). Manual intervention required!"
+    if [ "$AVAILABLE_KB" -lt 500000 ]; then
+        echo "❌ Still not enough disk space (less than 500MB). Manual intervention required!"
         echo "Please SSH into the server and run: rm -rf ~/backend/node_modules && npm cache clean --force"
         exit 1
     fi
