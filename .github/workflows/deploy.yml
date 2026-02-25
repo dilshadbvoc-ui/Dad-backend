@@ -16,11 +16,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: server/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Build Backend on Runner
         run: |
-          cd server
           npm install
           npm run build
 
@@ -31,25 +30,34 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "server/dist/*"
+          source: "dist/*"
           target: "~/backend/dist"
-          strip_components: 2
+          strip_components: 1
 
-      - name: Deploy to EC2
+      - name: Post-deployment on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          command_timeout: 10m
+          command_timeout: 40m
           script: |
             cd ~/backend || { echo "❌ Backend directory not found!"; exit 1; }
             
-            # Restore package files and scripts
-            git fetch origin main
-            git checkout main package.json package-lock.json scripts/ prisma/
+            # Remove stale git lock if it exists
+            [ -f .git/index.lock ] && rm -f .git/index.lock
             
-            # Aggressive cleanup and selective deploy
+            # 🔐 Backup .env before git operations
+            [ -f .env ] && cp .env .env.bak
+            
+            # Force clean state on server
+            git fetch origin main
+            git reset --hard origin/main
+            
+            # 🔓 Restore .env if it was backed up
+            [ -f .env.bak ] && mv .env.bak .env
+            
             chmod +x scripts/deploy.sh
+            # Use --skip-build because we already built on the runner
             ./scripts/deploy.sh --skip-build
