@@ -12,11 +12,17 @@ echo "💾 Available disk space: ${AVAILABLE_GB}GB"
 if [ "$AVAILABLE_KB" -lt 2000000 ]; then
     echo "⚠️  Low disk space detected (less than 2GB). Running emergency cleanup..."
     
-    # Clean npm cache
+    # Clean npm cache (aggressive)
+    echo "🧹 NUKING npm cache..."
+    rm -rf ~/.npm
     npm cache clean --force 2>/dev/null || true
     
     # Remove old PM2 logs
     pm2 flush 2>/dev/null || true
+    
+    # Clear journal logs (if sudo available)
+    echo "🧹 Vacuuming system logs..."
+    sudo journalctl --vacuum-time=1d 2>/dev/null || true
     
     # Remove old log files (older than 7 days)
     find ~/backend -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
@@ -25,14 +31,16 @@ if [ "$AVAILABLE_KB" -lt 2000000 ]; then
     sudo apt-get clean 2>/dev/null || true
     sudo apt-get autoclean 2>/dev/null || true
     
+    # Remove old kernels/packages
+    sudo apt-get autoremove -y 2>/dev/null || true
+    
     # Check space again
     AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
     AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
     echo "💾 Available disk space after cleanup: ${AVAILABLE_GB}GB"
     
-    if [ "$AVAILABLE_KB" -lt 500000 ]; then
-        echo "❌ Still not enough disk space (less than 500MB). Manual intervention required!"
-        echo "Please SSH into the server and run: rm -rf ~/backend/node_modules && npm cache clean --force"
+    if [ "$AVAILABLE_KB" -lt 300000 ]; then
+        echo "❌ Still not enough disk space (less than 300MB). Manual intervention required!"
         exit 1
     fi
 fi
