@@ -79,18 +79,8 @@ echo "🧹 Removing node_modules to save space before reinstall..."
 rm -rf node_modules
 
 # Remove duplicate uppercase service files (Linux is case-sensitive)
-echo "🔧 Removing duplicate uppercase service files..."
-rm -f src/services/WebhookService.ts
-rm -f src/services/GoalService.ts
-rm -f src/services/AssignmentRuleService.ts
-rm -f src/services/SalesTargetService.ts
-rm -f src/services/WhatsAppService.ts
-rm -f src/services/TaskService.ts
-rm -f src/services/NotificationService.ts
-
-# The repository now strictly tracks correctly cased files.
-# No need to manually rename files here, as it was causing TS1261 errors
-# by incorrectly capitalizing the second letter of files like emiService.ts -> eMIService.ts
+echo "🔧 Cleaning up duplicate service files..."
+find src/services -name "[A-Z]*.ts" -delete
 
 # Remove package-lock.json to force regeneration with correct versions
 echo "🔄 Regenerating package-lock.json..."
@@ -102,7 +92,10 @@ npm install --omit=dev --ignore-scripts
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
+
 echo "🏗️ Building Backend..."
+# IMPORTANT: Clean dist entirely to avoid stale files with wrong casing
+rm -rf dist 
 NODE_OPTIONS=--max-old-space-size=2560 npm run build
 node copy-prisma.js
 
