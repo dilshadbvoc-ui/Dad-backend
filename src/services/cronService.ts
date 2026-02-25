@@ -51,6 +51,15 @@ export const initCronJobs = () => {
         } catch (error) {
             console.error('[Cron] Error running license expiry check:', error);
         }
+
+        // EMI Overdue Detection
+        console.log('[Cron] Running EMI overdue status update...');
+        try {
+            const EMIService = (await import('./emiService')).default;
+            await EMIService.updateOverdueStatus();
+        } catch (error) {
+            console.error('[Cron] Error running EMI overdue update:', error);
+        }
     });
 
     console.log('[Cron] Daily lead rollover job scheduled.');

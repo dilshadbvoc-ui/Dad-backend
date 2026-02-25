@@ -7,6 +7,7 @@ exports.EmailService = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const prisma_1 = __importDefault(require("../config/prisma"));
 const client_1 = require("../generated/client");
+const gmailService_1 = require("./gmailService");
 const transporter = nodemailer_1.default.createTransport({
     host: process.env.SMTP_HOST || 'smtp.ethereal.email',
     port: Number(process.env.SMTP_PORT) || 587,
@@ -18,18 +19,36 @@ const transporter = nodemailer_1.default.createTransport({
 });
 exports.EmailService = {
     /**
-     * Send an email
+     * Send an email — prefers user's Gmail if connected, falls back to SMTP
      */
     async sendEmail(to, subject, html, organisationId, createdById, context) {
         try {
             console.log(`[EmailService] Sending email to ${to} | Subject: ${subject}`);
-            const info = await transporter.sendMail({
-                from: '"PYPE" <no-reply@pype.com>',
-                to,
-                subject,
-                html
-            });
-            console.log('[EmailService] Message sent:', info.messageId);
+            let sentViaGmail = false;
+            // Try Gmail first if user is specified
+            if (createdById) {
+                try {
+                    const isGmailConnected = await gmailService_1.GmailService.isConnected(createdById);
+                    if (isGmailConnected) {
+                        await gmailService_1.GmailService.sendEmail(createdById, { to, subject, html });
+                        sentViaGmail = true;
+                        console.log('[EmailService] Sent via Gmail API');
+                    }
+                }
+                catch (gmailErr) {
+                    console.warn('[EmailService] Gmail send failed, falling back to SMTP:', gmailErr);
+                }
+            }
+            // Fallback to SMTP
+            if (!sentViaGmail) {
+                const info = await transporter.sendMail({
+                    from: '"PYPE" <no-reply@pype.com>',
+                    to,
+                    subject,
+                    html
+                });
+                console.log('[EmailService] Message sent via SMTP:', info.messageId);
+            }
             // Save to Interactions
             if (organisationId) {
                 await prisma_1.default.interaction.create({

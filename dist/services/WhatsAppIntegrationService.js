@@ -193,7 +193,7 @@ exports.WhatsAppIntegrationService = {
                     cleanPhone = cleanPhone.slice(-10);
                 }
                 // Check for duplicates
-                const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./DuplicateLeadService')));
+                const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
                 const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, null, organisationId);
                 let leadToLink;
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
@@ -273,7 +273,7 @@ exports.WhatsAppIntegrationService = {
                 // Update campaign statistics if message was updated
                 if (updatedMessage.count > 0) {
                     // Import CampaignProcessor here to avoid circular dependency
-                    const { CampaignProcessor } = await Promise.resolve().then(() => __importStar(require('./CampaignProcessor')));
+                    const { CampaignProcessor } = await Promise.resolve().then(() => __importStar(require('./campaignProcessor')));
                     // Find the message to get its ID for campaign stats update
                     const message = await prisma_1.default.whatsAppMessage.findFirst({
                         where: { waMessageId: status.id },

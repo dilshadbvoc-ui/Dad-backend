@@ -57,8 +57,7 @@ exports.DuplicateLeadService = {
             // Check for existing lead
             const existingLead = await prisma_1.default.lead.findFirst({
                 where: {
-                    OR: conditions,
-                    isDeleted: false
+                    OR: conditions
                 },
                 include: {
                     assignedTo: {
@@ -105,6 +104,7 @@ exports.DuplicateLeadService = {
                 data: {
                     status: client_1.LeadStatus.re_enquiry,
                     isReEnquiry: true,
+                    isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
                     // Update source details to track re-enquiry
@@ -167,7 +167,7 @@ exports.DuplicateLeadService = {
      */
     async notifyOwner(lead, organisationId) {
         try {
-            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('./NotificationService')));
+            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('./notificationService')));
             const ownerId = lead.assignedToId || lead.assignedTo?.id;
             if (!ownerId) {
                 console.log(`[DuplicateLeadService] No owner to notify for lead ${lead.id}`);
@@ -185,7 +185,7 @@ exports.DuplicateLeadService = {
      */
     async notifyManager(lead, managerId, organisationId) {
         try {
-            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('./NotificationService')));
+            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('./notificationService')));
             const ownerName = lead.assignedTo
                 ? `${lead.assignedTo.firstName} ${lead.assignedTo.lastName}`
                 : 'Unknown';

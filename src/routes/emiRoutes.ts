@@ -1,4 +1,5 @@
 import express from 'express';
+import { protect } from '../middleware/authMiddleware';
 import {
   convertToEMI,
   getEMISchedule,
@@ -9,11 +10,11 @@ import {
 
 const router = express.Router();
 
-// EMI operations
-router.post('/opportunities/:id/emi/convert', convertToEMI);
-router.get('/opportunities/:id/emi', getEMISchedule);
-router.post('/emi/installments/:installmentId/pay', markInstallmentPaid);
-router.put('/emi/installments/:installmentId', updateInstallment);
-router.delete('/emi/installments/:installmentId', deleteInstallment);
+// EMI operations (all protected)
+router.post('/opportunities/:id/emi/convert', protect, convertToEMI as any);
+router.get('/opportunities/:id/emi', protect, getEMISchedule as any);
+router.post('/emi/installments/:installmentId/pay', protect, markInstallmentPaid as any);
+router.put('/emi/installments/:installmentId', protect, updateInstallment as any);
+router.delete('/emi/installments/:installmentId', protect, deleteInstallment as any);
 
 export default router;

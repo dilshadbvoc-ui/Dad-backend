@@ -42,8 +42,7 @@ export const DuplicateLeadService = {
             // Check for existing lead
             const existingLead = await prisma.lead.findFirst({
                 where: {
-                    OR: conditions,
-                    isDeleted: false
+                    OR: conditions
                 },
                 include: {
                     assignedTo: {
@@ -97,6 +96,7 @@ export const DuplicateLeadService = {
                 data: {
                     status: LeadStatus.re_enquiry,
                     isReEnquiry: true,
+                    isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
                     // Update source details to track re-enquiry

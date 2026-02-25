@@ -149,19 +149,7 @@ const bulkLeadOperations = async (req, res) => {
                             .replace(/\{firstName\}/g, lead.firstName)
                             .replace(/\{lastName\}/g, lead.lastName)
                             .replace(/\{fullName\}/g, `${lead.firstName} ${lead.lastName}`);
-                        await emailService_1.EmailService.sendEmail(lead.email, data.subject, personalizedContent);
-                        // Log interaction
-                        await prisma_1.default.interaction.create({
-                            data: {
-                                type: 'email',
-                                direction: 'outbound',
-                                subject: data.subject,
-                                description: personalizedContent,
-                                leadId: lead.id,
-                                createdById: userId,
-                                organisationId
-                            }
-                        });
+                        await emailService_1.EmailService.sendEmail(lead.email, data.subject, personalizedContent, organisationId, userId, { leadId: lead.id });
                     }
                     catch (error) {
                         logger_1.logger.error('Failed to send email to lead', error, 'BULK_EMAIL', userId, organisationId, { leadId: lead.id });

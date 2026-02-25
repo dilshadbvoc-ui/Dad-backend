@@ -79,7 +79,7 @@ const initCronJobs = () => {
         }
         console.log('[Cron] Running daily license expiry check...');
         try {
-            const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('./LicenseEnforcementService')));
+            const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('./licenseEnforcementService')));
             await LicenseEnforcementService.enforceExpiry();
         }
         catch (error) {
@@ -91,7 +91,7 @@ const initCronJobs = () => {
     node_cron_1.default.schedule('0 8 * * *', async () => {
         console.log('[Cron] Running daily task reminders...');
         try {
-            const { TaskReminderService } = await Promise.resolve().then(() => __importStar(require('./TaskReminderService')));
+            const { TaskReminderService } = await Promise.resolve().then(() => __importStar(require('./taskReminderService')));
             await TaskReminderService.sendDailyReminders();
         }
         catch (error) {
@@ -113,8 +113,8 @@ const initCronJobs = () => {
     node_cron_1.default.schedule('0 9 * * *', async () => {
         console.log('[Cron] Running daily organisation reports...');
         try {
-            const { ReportingService } = await Promise.resolve().then(() => __importStar(require('./ReportingService')));
-            const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./WhatsAppService')));
+            const { ReportingService } = await Promise.resolve().then(() => __importStar(require('./reportingService')));
+            const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./whatsAppService')));
             const organisations = await prisma_1.prisma.organisation.findMany({
                 where: { status: 'active' },
                 include: {
@@ -170,7 +170,7 @@ const initCronJobs = () => {
             if (pendingItems.length > 0) {
                 console.log(`[Cron] Found ${pendingItems.length} pending workflow items ready to execute.`);
                 // Dynamically import to avoid circular dependency issues if any
-                const { WorkflowEngine } = await Promise.resolve().then(() => __importStar(require('./WorkflowEngine')));
+                const { WorkflowEngine } = await Promise.resolve().then(() => __importStar(require('./workflowEngine')));
                 for (const item of pendingItems) {
                     // Fire and forget or sequential?
                     // Sequential to simplify load, or promise.all

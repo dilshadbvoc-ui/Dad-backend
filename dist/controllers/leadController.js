@@ -189,12 +189,15 @@ const createLead = async (req, res) => {
                 reEnquiryCount: updatedLead.reEnquiryCount
             });
         }
-        // Extract assignedTo before spreading
-        const { assignedTo, branchId, ...restBody } = req.body;
+        // Extract only known fields — do NOT spread req.body into Prisma
         const currentUser = req.user;
+        const assignedTo = req.body.assignedTo;
+        const branchId = req.body.branchId;
         // For manual lead creation: creator owns the lead unless explicitly assigned to someone else
         // If assignedTo is provided, use it; otherwise assign to the creator
         const leadOwnerId = assignedTo || currentUser.id;
+        // Sanitize email: treat empty string as no email
+        const cleanEmail = email && email.trim() !== '' ? email.trim() : undefined;
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
@@ -213,11 +216,20 @@ const createLead = async (req, res) => {
             const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
-        // Create
+        // Create — only pass explicitly known Lead fields (no blind spreading)
         const lead = await prisma_1.default.lead.create({
             data: {
-                ...restBody,
+                firstName: req.body.firstName || '',
+                lastName: req.body.lastName || undefined,
+                email: cleanEmail,
                 phone: cleanPhone,
+                company: req.body.company || undefined,
+                jobTitle: req.body.jobTitle || undefined,
+                address: req.body.address || undefined,
+                customFields: req.body.customFields || undefined,
+                tags: req.body.tags || undefined,
+                stage: req.body.stage || undefined,
+                sourceDetails: req.body.sourceDetails || undefined,
                 country: req.body.country || geoData?.country || undefined,
                 countryCode: req.body.countryCode || geoData?.countryCode || undefined,
                 phoneCountryCode: req.body.phoneCountryCode || geoData?.phoneCountryCode || undefined,
@@ -276,7 +288,7 @@ const createLead = async (req, res) => {
                 entityId: lead.id,
                 actorId: req.user.id,
                 organisationId: orgId,
-                details: { name: `${lead.firstName} ${lead.lastName}`, company: lead.company }
+                details: { name: `${lead.firstName} ${lead.lastName || ''}`.trim(), company: lead.company }
             });
         }
         catch (e) {
@@ -327,6 +339,23 @@ const createLead = async (req, res) => {
     }
     catch (error) {
         console.error('createLead Error:', error);
+        // Handle Prisma Unique Constraint Errors (e.g., P2002)
+        if (error.code === 'P2002') {
+            const target = error.meta?.target || [];
+            if (target.includes('phone')) {
+                return res.status(400).json({
+                    message: 'A lead with this phone number already exists in your organisation.'
+                });
+            }
+            if (target.includes('email')) {
+                return res.status(400).json({
+                    message: 'A lead with this email address already exists in your organisation.'
+                });
+            }
+            return res.status(400).json({
+                message: 'A lead with these details already exists in your organisation.'
+            });
+        }
         res.status(400).json({ message: error.message });
     }
 };
@@ -536,7 +565,7 @@ const updateLead = async (req, res) => {
                 entityId: leadId,
                 actorId: requester.id,
                 organisationId: currentLead.organisationId,
-                details: { name: `${currentLead.firstName} ${currentLead.lastName}`, updatedFields: Object.keys(updates) }
+                details: { name: `${currentLead.firstName} ${currentLead.lastName || ''}`.trim(), updatedFields: Object.keys(updates) }
             });
         }
         catch (e) {
@@ -605,7 +634,7 @@ const deleteLead = async (req, res) => {
                 entityId: leadId,
                 actorId: user.id,
                 organisationId: lead.organisationId,
-                details: { name: `${lead.firstName} ${lead.lastName}` }
+                details: { name: `${lead.firstName} ${lead.lastName || ''}`.trim() }
             });
         }
         catch (e) {
@@ -794,7 +823,7 @@ const convertLead = async (req, res) => {
                 // Create new Account
                 account = await tx.account.create({
                     data: {
-                        name: lead.company || `${lead.firstName} ${lead.lastName}`,
+                        name: lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
                         organisationId: orgId,
                         ownerId: user.id, // Assign to converter
                         type: 'customer',
@@ -810,7 +839,7 @@ const convertLead = async (req, res) => {
             const contact = await tx.contact.create({
                 data: {
                     firstName: lead.firstName,
-                    lastName: lead.lastName,
+                    lastName: lead.lastName || '',
                     email: lead.email,
                     phones: lead.phone ? { mobile: lead.phone } : undefined,
                     jobTitle: lead.jobTitle,
@@ -826,7 +855,7 @@ const convertLead = async (req, res) => {
             // 3. Create Opportunity
             const opportunity = await tx.opportunity.create({
                 data: {
-                    name: dealName || `Deal - ${lead.company || lead.lastName}`,
+                    name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
                     stage: 'new',
                     closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
@@ -854,7 +883,7 @@ const convertLead = async (req, res) => {
                             quantity: leadProduct.quantity,
                             purchaseDate: new Date(),
                             status: 'active',
-                            notes: `Converted from lead: ${lead.firstName} ${lead.lastName}`
+                            notes: `Converted from lead: ${lead.firstName} ${lead.lastName || ''}`.trim()
                         }
                     });
                 }
@@ -902,7 +931,7 @@ const convertLead = async (req, res) => {
                 actorId: user.id,
                 organisationId: orgId,
                 details: {
-                    name: `${lead.firstName} ${lead.lastName}`,
+                    name: `${lead.firstName} ${lead.lastName || ''}`.trim(),
                     company: lead.company,
                     accountId: result.account.id,
                     contactId: result.contact.id,

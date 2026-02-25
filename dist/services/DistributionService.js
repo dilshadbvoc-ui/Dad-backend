@@ -492,7 +492,7 @@ exports.DistributionService = {
             if (!user?.phone)
                 return;
             // Lazy load WhatsAppService
-            const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./WhatsAppService')));
+            const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./whatsAppService')));
             const waClient = await WhatsAppService.getClientForOrg(organisationId);
             if (!waClient)
                 return;

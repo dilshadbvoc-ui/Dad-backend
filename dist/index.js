@@ -289,6 +289,8 @@ app.use('/api/workflow', csrfProtection_1.verifyCSRFToken, workflowRoutes_1.defa
 app.use('/api/import', csrfProtection_1.verifyCSRFToken, importRoutes_1.default);
 app.use('/api/ai', aiRoutes_1.default); // Remove CSRF - already protected by auth
 app.use('/api/email', csrfProtection_1.verifyCSRFToken, emailRoutes_1.default);
+const gmailRoutes_1 = __importDefault(require("./routes/gmailRoutes"));
+app.use('/api/gmail', gmailRoutes_1.default);
 app.use('/api/search', searchRoutes_1.default);
 app.use('/api/reports', csrfProtection_1.verifyCSRFToken, reportRoutes_1.default);
 app.use('/api/profile', profileRoutes_1.default);

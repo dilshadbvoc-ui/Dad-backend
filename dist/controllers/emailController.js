@@ -8,7 +8,6 @@ const apiResponse_1 = require("../utils/apiResponse");
 const emailService_1 = require("../services/emailService");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const client_1 = require("../generated/client");
 const sendOneOffEmail = async (req, res) => {
     try {
         const { leadId, to, subject, body } = req.body;
@@ -28,23 +27,11 @@ const sendOneOffEmail = async (req, res) => {
             return apiResponse_1.ResponseHandler.notFound(res, 'Lead not found');
         }
         // Send Email
-        const sent = await emailService_1.EmailService.sendEmail(to, subject, body);
+        const sent = await emailService_1.EmailService.sendEmail(to, subject, body, orgId, user.id, { leadId });
         if (!sent) {
             return apiResponse_1.ResponseHandler.serverError(res, 'Failed to send email');
         }
-        // Log Interaction
-        const interaction = await prisma_1.default.interaction.create({
-            data: {
-                type: client_1.InteractionType.email,
-                direction: 'outbound',
-                subject: `Email Sent: ${subject}`,
-                description: body, // Store body or snippet? Storing full body for now.
-                leadId: leadId,
-                createdById: user.id,
-                organisationId: orgId,
-            }
-        });
-        return apiResponse_1.ResponseHandler.success(res, interaction, 'Email sent successfully');
+        return apiResponse_1.ResponseHandler.success(res, null, 'Email sent successfully');
     }
     catch (error) {
         console.error('sendOneOffEmail Error:', error);

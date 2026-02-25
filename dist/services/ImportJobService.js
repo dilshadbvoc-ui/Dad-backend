@@ -178,7 +178,7 @@ class ImportJobService {
                         delete leadData.ownerEmail;
                     }
                     // Check for duplicates using DuplicateLeadService
-                    const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./DuplicateLeadService')));
+                    const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
                     const duplicateCheck = await DuplicateLeadService.checkDuplicate(leadData.phone, leadData.email, job.organisationId);
                     if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                         // Handle as re-enquiry instead of creating duplicate

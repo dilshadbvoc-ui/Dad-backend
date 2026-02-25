@@ -335,8 +335,27 @@ export const createLead = async (req: Request, res: Response) => {
         }
 
         res.status(201).json(lead);
-    } catch (error) {
+    } catch (error: any) {
         console.error('createLead Error:', error);
+
+        // Handle Prisma Unique Constraint Errors (e.g., P2002)
+        if (error.code === 'P2002') {
+            const target = error.meta?.target || [];
+            if (target.includes('phone')) {
+                return res.status(400).json({
+                    message: 'A lead with this phone number already exists in your organisation.'
+                });
+            }
+            if (target.includes('email')) {
+                return res.status(400).json({
+                    message: 'A lead with this email address already exists in your organisation.'
+                });
+            }
+            return res.status(400).json({
+                message: 'A lead with these details already exists in your organisation.'
+            });
+        }
+
         res.status(400).json({ message: (error as Error).message });
     }
 };

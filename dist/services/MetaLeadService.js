@@ -109,7 +109,7 @@ exports.MetaLeadService = {
                 }
             });
             // Extract country information from Meta lead
-            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('./GeoLocationService')));
+            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('./geoLocationService')));
             const geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
             // Common Meta Field Names -> CRM Field Names
             const crmData = {
@@ -141,7 +141,7 @@ exports.MetaLeadService = {
                 }
             }
             // 5. Check for duplicate (by phone and org)
-            const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./DuplicateLeadService')));
+            const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
             const duplicateCheck = await DuplicateLeadService.checkDuplicate(crmData.phone, crmData.email, org.id);
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                 console.log(`[MetaLeadService] Duplicate lead detected. Handling as re-enquiry for lead ${duplicateCheck.existingLead.id}`);
