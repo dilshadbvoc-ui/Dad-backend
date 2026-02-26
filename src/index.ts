@@ -160,6 +160,7 @@ console.log('------------------------------------------------');
 console.log(`   STARTING SERVER (NODE_ENV=${process.env.NODE_ENV})      `);
 console.log(`   PORT env: ${process.env.PORT}`);
 console.log(`   Internal PORT: ${PORT}`);
+console.log(`   Environment Keys: ${Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('KEY') && !k.includes('TOKEN')).join(', ')}`);
 console.log('------------------------------------------------');
 
 app.use(compression()); // Enable gzip compression

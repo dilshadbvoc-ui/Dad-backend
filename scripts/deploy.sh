@@ -122,8 +122,9 @@ node copy-prisma.js
 # Frontend is deployed separately on Vercel
 echo "⏭️  Skipping frontend build (deployed separately on Vercel)"
 
-echo "▶️ Restarting Backend API..."
+echo "▶️ Starting Backend API..."
 cd "$BACKEND_DIR"
-pm2 start dist/index.js --name "crm-api" -- update-env || pm2 restart crm-api
+pm2 delete crm-api || true
+pm2 start dist/index.js --name "crm-api"
 
 echo "✅ Deployment Complete!"
