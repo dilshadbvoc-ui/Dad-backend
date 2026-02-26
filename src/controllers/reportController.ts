@@ -262,6 +262,9 @@ export const exportToExcel = async (req: Request, res: Response) => {
         const { type } = req.params;
         const user = (req as any).user;
         const orgId = getOrgId(user);
+        if (!orgId) {
+            return res.status(401).json({ message: 'Organisation not found' });
+        }
         const subordinateIds = await getSubordinateIds(user.id);
 
         const workbook = new ExcelJS.Workbook();
@@ -354,7 +357,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
             const users = await prisma.user.findMany({
                 where: {
                     id: { in: [...subordinateIds, user.id] },
-                    organisationId: orgId,
+                    organisationId: orgId as string,
                     isActive: true
                 },
                 select: { id: true, firstName: true, lastName: true, email: true }
@@ -371,7 +374,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
             for (const u of users) {
                 const sales = await prisma.opportunity.findMany({
-                    where: { ownerId: u.id, organisationId: orgId, stage: 'closed_won', isDeleted: false },
+                    where: { ownerId: u.id, organisationId: orgId as string, stage: 'closed_won', isDeleted: false },
                     select: { amount: true }
                 });
                 const totalRevenue = sales.reduce((sum, s) => sum + s.amount, 0);
@@ -519,18 +522,22 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
         const report = await Promise.all(teamsData.map(async (u) => {
             const leadStats = await prisma.lead.groupBy({
                 by: ['status'],
-                where: { assignedToId: u.id, organisationId: orgId, isDeleted: false },
+                where: { assignedToId: u.id, organisationId: orgId as string, isDeleted: false },
                 _count: true
             });
 
             const saleStats = await prisma.opportunity.aggregate({
-                where: { ownerId: u.id, organisationId: orgId, stage: 'closed_won', isDeleted: false },
+                where: { ownerId: u.id, organisationId: orgId as string, stage: 'closed_won', isDeleted: false },
                 _sum: { amount: true },
                 _count: true
             });
 
+            const wonStats = await prisma.opportunity.count({
+                where: { ownerId: u.id, organisationId: orgId as string, stage: 'closed_won', isDeleted: false },
+            });
+
             const lostStats = await prisma.lead.count({
-                where: { assignedToId: u.id, organisationId: orgId, status: 'lost', isDeleted: false }
+                where: { assignedToId: u.id, organisationId: orgId as string, status: 'lost', isDeleted: false }
             });
 
             return {
