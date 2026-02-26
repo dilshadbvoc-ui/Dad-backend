@@ -97,54 +97,77 @@ export const initCronJobs = () => {
         }
     });
 
-    // Run every day at 09:00 AM
-    cron.schedule('0 9 * * *', async () => {
-        console.log('[Cron] Running daily organisation reports...');
+    // Run every minute for Dynamic Daily Reports
+    cron.schedule('* * * * *', async () => {
         try {
-            const { ReportingService } = await import('./reportingService');
-            const { WhatsAppService } = await import('./whatsAppService');
+            const now = new Date();
+            const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
             const organisations = await prisma.organisation.findMany({
-                where: { status: 'active' },
-                include: {
-                    users: {
-                        where: { role: 'admin', isActive: true }
-                    }
+                where: {
+                    status: 'active',
+                    dailyReportTime: currentTime,
+                    isDeleted: false
                 }
             });
 
+            if (organisations.length === 0) return;
+
+            console.log(`[Cron] Found ${organisations.length} organisations with report time ${currentTime}`);
+
+            const { ReportingService } = await import('./reportingService');
+            const { WhatsAppService } = await import('./whatsAppService');
+
             for (const org of organisations) {
                 try {
+                    // 1. General Admin Report (Legacy logic)
+                    const admins = await prisma.user.findMany({
+                        where: { organisationId: org.id, role: 'admin', isActive: true }
+                    });
+
                     const stats = await ReportingService.getDailyStats(org.id);
-                    const report = ReportingService.formatWhatsAppReport(stats, org.name);
+                    const adminReport = ReportingService.formatWhatsAppReport(stats, org.name);
 
-                    // Find primary recipient
-                    // 1. Admin with phone
-                    // 2. Org contactPhone
-                    const adminWithPhone = org.users.find(u => u.phone);
-                    const targetPhone = adminWithPhone?.phone || org.contactPhone;
-
-                    if (targetPhone) {
-                        const waClient = await WhatsAppService.getClientForOrg(org.id);
-                        if (waClient) {
-                            console.log(`[Cron] Sending daily report to ${org.name} (${targetPhone})`);
-                            await waClient.sendTextMessage(targetPhone, report);
-                        } else {
-                            console.warn(`[Cron] WhatsApp not connected for ${org.name}, skipping report.`);
+                    // 2. Manager & Sales Manager Reports
+                    const managers = await prisma.user.findMany({
+                        where: {
+                            organisationId: org.id,
+                            role: { in: ['manager', 'sales_manager'] },
+                            isActive: true
                         }
-                    } else {
-                        console.warn(`[Cron] No contact phone found for organization ${org.name}`);
+                    });
+
+                    const waClient = await WhatsAppService.getClientForOrg(org.id);
+
+                    // Send to Admins
+                    for (const admin of admins) {
+                        const targetPhone = admin.phone || org.contactPhone;
+                        if (targetPhone && waClient) {
+                            console.log(`[Cron] Sending general report to ${org.name} admin: ${admin.firstName} (${targetPhone})`);
+                            await waClient.sendTextMessage(targetPhone, adminReport);
+                        }
+                    }
+
+                    // Send to Managers (Specific reports)
+                    for (const manager of managers) {
+                        const targetPhone = manager.phone;
+                        if (targetPhone && waClient) {
+                            const managerStats = await ReportingService.getManagerDailyStats(manager.id, org.id);
+                            const managerReport = ReportingService.formatManagerReport(managerStats, manager.firstName);
+                            console.log(`[Cron] Sending manager report to ${org.name} manager: ${manager.firstName} (${targetPhone})`);
+                            await waClient.sendTextMessage(targetPhone, managerReport);
+                        }
                     }
                 } catch (orgError) {
-                    console.error(`[Cron] Error generating report for ${org.name}:`, orgError);
+                    console.error(`[Cron] Error generating daily reports for ${org.name}:`, orgError);
                 }
             }
         } catch (error) {
-            console.error('[Cron] Error running daily reports:', error);
+            console.error('[Cron] Error running daily reports processor:', error);
         }
     });
 
-    console.log('[Cron] Daily organisation reports scheduled.');
+    console.log('[Cron] Dynamic daily reports processor scheduled.');
 
     // Run every minute for Workflow Queue
     cron.schedule('* * * * *', async () => {

@@ -141,6 +141,7 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   apiKey: 'apiKey',
   integrations: 'integrations',
   leadScoringConfig: 'leadScoringConfig',
+  dailyReportTime: 'dailyReportTime',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   isDeleted: 'isDeleted',
