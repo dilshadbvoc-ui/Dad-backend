@@ -143,7 +143,7 @@ app.use(passport.session());
 // Start Cron Jobs
 initCronJobs();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5001;
 
 // VERY EARLY Health Check for 502 Debugging
 app.get('/api/health', (req, res) => {

@@ -78,7 +78,7 @@ fi
 
 git fetch origin main
 git reset --hard origin/main
-git clean -fdx -e .env
+git clean -fdx -e .env -e dist
 
 # Restore .env if it was deleted
 if [ ! -f .env ] && [ -f /tmp/.env.backup ]; then
