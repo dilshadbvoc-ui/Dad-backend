@@ -47,7 +47,8 @@ export const getOpportunities = async (req: Request, res: Response) => {
             where,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } }
+                owner: { select: { firstName: true, lastName: true, profileImage: true } },
+                emiSchedule: { select: { id: true, status: true } }
             },
             skip,
             take: limit,
@@ -214,7 +215,18 @@ export const getOpportunityById = async (req: Request, res: Response) => {
                         }
                     }
                 },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } }
+                owner: { select: { firstName: true, lastName: true, profileImage: true } },
+                contacts: true,
+                emiSchedule: {
+                    include: {
+                        installments: {
+                            orderBy: { installmentNumber: 'asc' }
+                        }
+                    }
+                },
+                paymentRecords: {
+                    orderBy: { paymentDate: 'desc' }
+                }
             }
         });
 
