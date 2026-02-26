@@ -260,6 +260,7 @@ export const getSalesBook = async (req: Request, res: Response) => {
 export const exportToExcel = async (req: Request, res: Response) => {
     try {
         const { type } = req.params;
+        const { startDate, endDate, branchId, userId, stage, status } = req.query;
         const user = (req as any).user;
         const orgId = getOrgId(user);
         if (!orgId) {
@@ -267,17 +268,37 @@ export const exportToExcel = async (req: Request, res: Response) => {
         }
         const subordinateIds = await getSubordinateIds(user.id);
 
+        // Branch filter
+        const branchFilter = branchId ? { branchId: branchId as string } : {};
+
         const workbook = new ExcelJS.Workbook();
         workbook.creator = 'CRM Reports';
         workbook.created = new Date();
 
         if (type === 'leads') {
+            const where: any = {
+                organisationId: orgId as string,
+                isDeleted: false,
+                ...branchFilter
+            };
+
+            // Hierarchy restrictions
+            if (user.role !== 'admin' && user.role !== 'super_admin') {
+                where.assignedToId = { in: [...subordinateIds, user.id] };
+            } else if (userId) {
+                where.assignedToId = userId as string;
+            }
+
+            if (stage) where.stage = stage as string;
+            if (status) where.status = status as string;
+            if (startDate || endDate) {
+                where.createdAt = {};
+                if (startDate) where.createdAt.gte = new Date(startDate as string);
+                if (endDate) where.createdAt.lte = new Date(endDate as string);
+            }
+
             const leads = await prisma.lead.findMany({
-                where: {
-                    organisationId: orgId as string,
-                    assignedToId: { in: [...subordinateIds, user.id] },
-                    isDeleted: false
-                },
+                where,
                 include: {
                     assignedTo: { select: { firstName: true, lastName: true } }
                 }
@@ -317,10 +338,17 @@ export const exportToExcel = async (req: Request, res: Response) => {
             const where: any = {
                 organisationId: orgId as string,
                 stage: 'closed_won',
-                isDeleted: false
+                isDeleted: false,
+                ...branchFilter
             };
             if (user.role !== 'admin' && user.role !== 'super_admin') {
                 where.ownerId = { in: [...subordinateIds, user.id] };
+            }
+
+            if (startDate || endDate) {
+                where.updatedAt = {};
+                if (startDate) where.updatedAt.gte = new Date(startDate as string);
+                if (endDate) where.updatedAt.lte = new Date(endDate as string);
             }
 
             const sales = await prisma.opportunity.findMany({
@@ -353,15 +381,22 @@ export const exportToExcel = async (req: Request, res: Response) => {
             sheet.getRow(1).font = { bold: true };
             sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
         } else if (type === 'user-sales') {
-            // Reusing existing logic from getUserPerformance but for export
             const users = await prisma.user.findMany({
                 where: {
                     id: { in: [...subordinateIds, user.id] },
                     organisationId: orgId as string,
-                    isActive: true
+                    isActive: true,
+                    ...branchFilter
                 },
                 select: { id: true, firstName: true, lastName: true, email: true }
             });
+
+            const oppDateFilter: any = {};
+            if (startDate || endDate) {
+                oppDateFilter.updatedAt = {};
+                if (startDate) oppDateFilter.updatedAt.gte = new Date(startDate as string);
+                if (endDate) oppDateFilter.updatedAt.lte = new Date(endDate as string);
+            }
 
             const sheet = workbook.addWorksheet('User Sales Performance');
             sheet.columns = [
@@ -374,7 +409,13 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
             for (const u of users) {
                 const sales = await prisma.opportunity.findMany({
-                    where: { ownerId: u.id, organisationId: orgId as string, stage: 'closed_won', isDeleted: false },
+                    where: {
+                        ownerId: u.id,
+                        organisationId: orgId as string,
+                        stage: 'closed_won',
+                        isDeleted: false,
+                        ...oppDateFilter
+                    },
                     select: { amount: true }
                 });
                 const totalRevenue = sales.reduce((sum, s) => sum + s.amount, 0);
