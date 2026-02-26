@@ -9,13 +9,13 @@ export interface EnvValidationResult {
 export class EnvironmentValidator {
     private static readonly REQUIRED_VARS = [
         'DATABASE_URL',
-        'JWT_SECRET',
-        'META_APP_SECRET',
-        'META_WEBHOOK_SECRET',
-        'WHATSAPP_WEBHOOK_SECRET'
+        'JWT_SECRET'
     ];
 
-    private static readonly PRODUCTION_REQUIRED_VARS = [
+    private static readonly OPTIONAL_VARS = [
+        'META_APP_SECRET',
+        'META_WEBHOOK_SECRET',
+        'WHATSAPP_WEBHOOK_SECRET',
         'META_VERIFY_TOKEN',
         'WHATSAPP_VERIFY_TOKEN',
         'ALLOWED_ORIGINS'
@@ -33,7 +33,7 @@ export class EnvironmentValidator {
         // Check required variables
         for (const varName of this.REQUIRED_VARS) {
             const value = process.env[varName];
-            
+
             if (!value) {
                 errors.push(`Missing required environment variable: ${varName}`);
                 continue;
@@ -49,18 +49,33 @@ export class EnvironmentValidator {
             }
         }
 
-        // Production-specific checks
-        if (process.env.NODE_ENV === 'production') {
-            for (const varName of this.PRODUCTION_REQUIRED_VARS) {
-                const value = process.env[varName];
-                
-                if (!value) {
-                    errors.push(`Missing production environment variable: ${varName}`);
-                } else if (this.isDefaultValue(varName, value)) {
-                    errors.push(`Production environment variable ${varName} is using default/insecure value`);
-                }
+        // Check optional variables
+        for (const varName of this.OPTIONAL_VARS) {
+            const value = process.env[varName];
+
+            if (!value) {
+                warnings.push(`Missing optional environment variable: ${varName}`);
+                continue;
             }
 
+            // Validate secret strength if it's a secret
+            if (varName.includes('SECRET')) {
+                const secretValidation = this.validateSecret(varName, value);
+                // Errors for optional vars are treated as warnings
+                if (!secretValidation.isValid) {
+                    warnings.push(...secretValidation.errors);
+                }
+                warnings.push(...secretValidation.warnings);
+            }
+
+            // Check for default values in production
+            if (process.env.NODE_ENV === 'production' && this.isDefaultValue(varName, value)) {
+                warnings.push(`Optional variable ${varName} is using a default/insecure value in production`);
+            }
+        }
+
+        // Production-specific checks
+        if (process.env.NODE_ENV === 'production') {
             // Check HTTPS enforcement
             if (!process.env.FORCE_HTTPS && !process.env.HTTPS_ONLY) {
                 warnings.push('Consider setting FORCE_HTTPS=true for production');
@@ -129,7 +144,7 @@ export class EnvironmentValidator {
         };
 
         const defaults = defaultValues[name] || [];
-        return defaults.some(defaultVal => 
+        return defaults.some(defaultVal =>
             value.toLowerCase().includes(defaultVal.toLowerCase())
         );
     }
@@ -143,7 +158,7 @@ export class EnvironmentValidator {
 
         try {
             const parsed = new URL(url);
-            
+
             // Check protocol
             if (parsed.protocol !== 'postgresql:' && parsed.protocol !== 'postgres:') {
                 errors.push('Database URL must use postgresql:// protocol');
@@ -196,7 +211,7 @@ export class EnvironmentValidator {
      */
     private static calculateEntropy(str: string): number {
         const freq: Record<string, number> = {};
-        
+
         for (const char of str) {
             freq[char] = (freq[char] || 0) + 1;
         }
@@ -228,7 +243,7 @@ export class EnvironmentValidator {
         if (result.errors.length > 0) {
             console.error('❌ Environment Validation Errors:');
             result.errors.forEach(error => console.error(`  - ${error}`));
-            
+
             if (process.env.NODE_ENV === 'production') {
                 console.error('🚨 Exiting due to environment validation errors in production');
                 process.exit(1);
