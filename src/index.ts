@@ -143,11 +143,23 @@ app.use(passport.session());
 // Start Cron Jobs
 initCronJobs();
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3000;
+
+// VERY EARLY Health Check for 502 Debugging
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        uptime: process.uptime(),
+        port: PORT,
+        env: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+    });
+});
 
 console.log('------------------------------------------------');
 console.log(`   STARTING SERVER (NODE_ENV=${process.env.NODE_ENV})      `);
 console.log(`   PORT env: ${process.env.PORT}`);
+console.log(`   Internal PORT: ${PORT}`);
 console.log('------------------------------------------------');
 
 app.use(compression()); // Enable gzip compression
