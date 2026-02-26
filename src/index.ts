@@ -143,7 +143,7 @@ app.use(passport.session());
 // Start Cron Jobs
 initCronJobs();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 console.log('------------------------------------------------');
 console.log(`   STARTING SERVER (NODE_ENV=${process.env.NODE_ENV})      `);
