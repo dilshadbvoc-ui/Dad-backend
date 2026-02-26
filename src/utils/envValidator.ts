@@ -244,9 +244,9 @@ export class EnvironmentValidator {
             console.error('❌ Environment Validation Errors:');
             result.errors.forEach(error => console.error(`  - ${error}`));
 
-            if (process.env.NODE_ENV === 'production') {
-                console.error('🚨 WARNING: Environment validation failed in production. Continuing anyway for debug...');
-                // process.exit(1);
+            if (process.env.NODE_ENV === 'production' && result.errors.length > 0) {
+                console.error('🚨 Exiting due to CRITICAL environment validation errors in production');
+                process.exit(1);
             }
         }
 
