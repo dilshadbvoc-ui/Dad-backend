@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getLeadsReport, getUserPerformance, getSalesBook, exportToExcel } from '../controllers/reportController';
+import { getLeadsReport, getUserPerformance, getSalesBook, exportToExcel, getTeamPerformanceReport } from '../controllers/reportController';
 import { protect as authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -15,6 +15,9 @@ router.get('/user-performance', getUserPerformance);
 
 // Sales book with time period filter
 router.get('/sales-book', getSalesBook);
+
+// Team performance for managers
+router.get('/team-performance', getTeamPerformanceReport);
 
 // Export to Excel
 router.get('/export/:type', exportToExcel);

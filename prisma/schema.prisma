@@ -278,7 +278,7 @@ model Lead {
   convertedContacts  Contact[]       @relation("LeadToContact")
   convertedOpportunities Opportunity[] @relation("LeadToOpportunity")
 
-  @@unique([phone, organisationId])
+  @@unique([phone, organisationId, branchId])
   @@index([organisationId])
   @@index([assignedToId])
   @@index([status])

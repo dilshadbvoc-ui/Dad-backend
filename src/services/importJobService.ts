@@ -123,8 +123,8 @@ export class ImportJobService {
                     }
 
                     // Basic Validation
-                    if (!leadData.firstName || !leadData.lastName || (!leadData.phone && !leadData.email)) {
-                        throw new Error('Missing required fields (Name and at least Phone or Email)');
+                    if (!leadData.firstName || (!leadData.phone && !leadData.email)) {
+                        throw new Error('Missing required fields (First Name and at least Phone or Email)');
                     }
 
                     // Sanitize phone
@@ -156,7 +156,8 @@ export class ImportJobService {
                     const duplicateCheck = await DuplicateLeadService.checkDuplicate(
                         leadData.phone,
                         leadData.email,
-                        job.organisationId
+                        job.organisationId,
+                        branchId || undefined
                     );
 
                     if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {

@@ -363,3 +363,62 @@ export const exportToExcel = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Failed to export report' });
     }
 };
+
+export const getTeamPerformanceReport = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(403).json({ message: 'No org' });
+
+        const subordinateIds = await getSubordinateIds(user.id);
+        const teamIds = [user.id, ...subordinateIds];
+
+        const teamsData = await prisma.user.findMany({
+            where: { id: { in: teamIds } },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                _count: {
+                    select: {
+                        assignedLeads: true,
+                        ownedOpportunities: true
+                    }
+                }
+            }
+        });
+
+        // Detailed stats per user
+        const report = await Promise.all(teamsData.map(async (u) => {
+            const leadStats = await prisma.lead.groupBy({
+                by: ['status'],
+                where: { assignedToId: u.id, organisationId: orgId, isDeleted: false },
+                _count: true
+            });
+
+            const saleStats = await prisma.opportunity.aggregate({
+                where: { ownerId: u.id, organisationId: orgId, stage: 'closed_won', isDeleted: false },
+                _sum: { amount: true },
+                _count: true
+            });
+
+            const lostStats = await prisma.lead.count({
+                where: { assignedToId: u.id, organisationId: orgId, status: 'lost', isDeleted: false }
+            });
+
+            return {
+                userId: u.id,
+                name: `${u.firstName} ${u.lastName || ''}`.trim(),
+                totalLeads: u._count.assignedLeads,
+                totalSales: saleStats._sum.amount || 0,
+                salesCount: saleStats._count,
+                lostLeads: lostStats,
+                statusBreakdown: leadStats.map(s => ({ status: s.status, count: s._count }))
+            };
+        }));
+
+        res.json(report);
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};

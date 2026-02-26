@@ -45,11 +45,11 @@ class PaymentService {
     }
 
     const remaining = await this.calculateRemainingAmount(opportunityId);
-    
+
     if (amount > remaining) {
-      return { 
-        valid: false, 
-        error: `Payment amount ($${amount}) exceeds remaining balance ($${remaining})` 
+      return {
+        valid: false,
+        error: `Payment amount ($${amount}) exceeds remaining balance ($${remaining})`
       };
     }
 
@@ -138,6 +138,9 @@ class PaymentService {
       return { paymentRecord, updatedOpportunity };
     });
 
+    // Notify hierarchy
+    this.notifyHierarchyOfPayment(result.updatedOpportunity).catch(console.error);
+
     return {
       success: true,
       opportunity: result.updatedOpportunity,
@@ -214,12 +217,41 @@ class PaymentService {
       return { paymentRecord, updatedOpportunity };
     });
 
+    // Notify hierarchy
+    this.notifyHierarchyOfPayment(result.updatedOpportunity).catch(console.error);
+
     return {
       success: true,
       opportunity: result.updatedOpportunity,
       paymentRecord: result.paymentRecord,
       message: 'Partial payment recorded successfully'
     };
+  }
+
+  /**
+   * Notify hierarchy about payment
+   */
+  private async notifyHierarchyOfPayment(opportunity: any) {
+    try {
+      if (!opportunity.ownerId) return;
+
+      const { NotificationService } = await import('./notificationService');
+      const owner = await prisma.user.findUnique({
+        where: { id: opportunity.ownerId },
+        select: { firstName: true, lastName: true }
+      });
+
+      if (owner) {
+        await NotificationService.sendToHierarchy(
+          opportunity.ownerId,
+          'Payment Received! 💰',
+          `${owner.firstName} ${owner.lastName} received a payment of $${opportunity.amount} for deal "${opportunity.name}".`,
+          'success'
+        );
+      }
+    } catch (error) {
+      console.error('[PaymentService] Error notifying hierarchy of payment:', error);
+    }
   }
 
   /**

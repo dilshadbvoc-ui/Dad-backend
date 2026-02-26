@@ -86,6 +86,17 @@ export const initCronJobs = () => {
         }
     });
 
+    // Run every 15 minutes for Follow-up Reminders
+    cron.schedule('*/15 * * * *', async () => {
+        console.log('[Cron] Running upcoming follow-up check...');
+        try {
+            const { FollowUpNotificationService } = await import('./followUpNotificationService');
+            await FollowUpNotificationService.notifyUpcomingFollowUps();
+        } catch (error) {
+            console.error('[Cron] Error running follow-up reminders:', error);
+        }
+    });
+
     // Run every day at 09:00 AM
     cron.schedule('0 9 * * *', async () => {
         console.log('[Cron] Running daily organisation reports...');

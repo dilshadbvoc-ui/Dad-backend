@@ -143,20 +143,25 @@ export const createLead = async (req: Request, res: Response) => {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(400).json({ message: 'Organisation context required' });
 
+        const currentUser = (req as any).user;
+        const branchId = req.body.branchId || currentUser.branchId;
+        const assignedTo = req.body.assignedTo;
+        const { firstName, lastName, source, sourceDetails, company } = req.body;
+
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
+        const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId || undefined);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
             const reEnquiryData = {
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
                 phone: cleanPhone,
-                company: req.body.company,
-                source: req.body.source,
-                sourceDetails: req.body.sourceDetails
+                company: company,
+                source: source,
+                sourceDetails: sourceDetails
             };
 
             const updatedLead = await DuplicateLeadService.handleReEnquiry(
@@ -174,17 +179,11 @@ export const createLead = async (req: Request, res: Response) => {
             });
         }
 
-        // Extract only known fields — do NOT spread req.body into Prisma
-        const currentUser = (req as any).user;
-        const assignedTo = req.body.assignedTo;
-        const branchId = req.body.branchId;
-
-        // For manual lead creation: creator owns the lead unless explicitly assigned to someone else
-        // If assignedTo is provided, use it; otherwise assign to the creator
-        const leadOwnerId = assignedTo || currentUser.id;
-
         // Sanitize email: treat empty string as no email
         const cleanEmail = email && email.trim() !== '' ? email.trim() : undefined;
+
+        // Manual assignment owner logic
+        const leadOwnerId = assignedTo || currentUser.id;
 
         // Detect country from IP address if not provided
         let geoData = null;
@@ -703,7 +702,8 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                 }
 
                 // Check for duplicates
-                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId);
+                const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
+                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId, l.branchId || user.branchId || undefined);
 
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                     // Handle as re-enquiry
@@ -1236,7 +1236,7 @@ export const getReEnquiryLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
+        const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
         const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
 
         res.json({
@@ -1255,7 +1255,7 @@ export const getDuplicateLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
+        const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
         const duplicates = await DuplicateLeadService.findDuplicates(orgId);
 
         res.json({

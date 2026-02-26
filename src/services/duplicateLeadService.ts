@@ -24,7 +24,8 @@ export const DuplicateLeadService = {
     async checkDuplicate(
         phone: string,
         email: string | null | undefined,
-        organisationId: string
+        organisationId: string,
+        branchId?: string
     ): Promise<DuplicateCheckResult> {
         try {
             // Sanitize phone
@@ -39,11 +40,19 @@ export const DuplicateLeadService = {
                 conditions.push({ email, organisationId });
             }
 
+            // If branchId is provided, duplicates must be in the same branch
+            const where: any = {
+                OR: conditions,
+                isDeleted: false
+            };
+
+            if (branchId) {
+                where.branchId = branchId;
+            }
+
             // Check for existing lead
             const existingLead = await prisma.lead.findFirst({
-                where: {
-                    OR: conditions
-                },
+                where,
                 include: {
                     assignedTo: {
                         select: {

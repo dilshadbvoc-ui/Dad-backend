@@ -280,7 +280,7 @@ model Lead {
   branchId               String?
   branch                 Branch?           @relation(fields: [branchId], references: [id])
 
-  @@unique([phone, organisationId])
+  @@unique([phone, organisationId, branchId])
   @@index([organisationId])
   @@index([assignedToId])
   @@index([status])

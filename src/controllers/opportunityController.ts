@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
+import { NotificationService } from '../services/notificationService';
 
 // GET /api/opportunities
 export const getOpportunities = async (req: Request, res: Response) => {
@@ -285,7 +286,24 @@ export const updateOpportunity = async (req: Request, res: Response) => {
                 });
             }
 
+            // Hierarchy Notification on Sale Closure
+            try {
+                const owner = await prisma.user.findUnique({
+                    where: { id: opportunity.ownerId! },
+                    select: { reportsToId: true, firstName: true, lastName: true }
+                });
 
+                if (owner && owner.reportsToId) {
+                    await NotificationService.sendToHierarchy(
+                        opportunity.ownerId!,
+                        'Sale Closed! 🎉',
+                        `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}" for $${opportunity.amount}.`,
+                        'success'
+                    );
+                }
+            } catch (notifyErr) {
+                console.error('Hierarchy notification error:', notifyErr);
+            }
         }
 
         if (updates.stage && updates.stage !== currentOpp.stage) {

@@ -75477,7 +75477,7 @@ export namespace Prisma {
 
   export type LeadWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    phone_organisationId?: LeadPhoneOrganisationIdCompoundUniqueInput
+    phone_organisationId_branchId?: LeadPhoneOrganisationIdBranchIdCompoundUniqueInput
     AND?: LeadWhereInput | LeadWhereInput[]
     OR?: LeadWhereInput[]
     NOT?: LeadWhereInput | LeadWhereInput[]
@@ -75541,7 +75541,7 @@ export namespace Prisma {
     convertedContacts?: ContactListRelationFilter
     convertedOpportunities?: OpportunityListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
-  }, "id" | "phone_organisationId">
+  }, "id" | "phone_organisationId_branchId">
 
   export type LeadOrderByWithAggregationInput = {
     id?: SortOrder
@@ -90046,9 +90046,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type LeadPhoneOrganisationIdCompoundUniqueInput = {
+  export type LeadPhoneOrganisationIdBranchIdCompoundUniqueInput = {
     phone: string
     organisationId: string
+    branchId: string
   }
 
   export type LeadCountOrderByAggregateInput = {
