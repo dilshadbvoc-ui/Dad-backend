@@ -1,48 +1,62 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
+import { normalizeRole, isSuperAdmin as checkSuperAdmin } from '../utils/roleUtils';
 
 export const getAuditLogs = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
         const { entity, action, userId, startDate, endDate, page = 1, limit = 20 } = req.query;
 
-        // Base where clause - users see ALL activities within their organisation (no hierarchy restrictions)
+        const normalisedUserRole = normalizeRole(user.role);
+        const userIsSuperAdmin = checkSuperAdmin(user);
+        const isOrgAdmin = normalisedUserRole === 'admin';
+
         const where: any = {};
-        if (user.role === 'super_admin') {
-            // Super admin sees everything
-        } else if (user.organisationId) {
-            where.organisationId = user.organisationId;
 
-            // Hierarchy filtering for non-admins
-            if (user.role !== 'admin') {
-                const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-                const subordinateIds = await getSubordinateIds(user.id);
-
-                // Only see activities where actor is self or a subordinate
-                where.actorId = { in: subordinateIds };
+        // 1. ORGANISATION ISOLATION
+        if (!userIsSuperAdmin) {
+            if (!user.organisationId) {
+                return res.status(400).json({ message: 'Organisation not found' });
             }
+            where.organisationId = user.organisationId;
         } else {
-            return res.status(400).json({ message: 'Organisation not found' });
+            // Super Admin can view specific org if requested, otherwise defaults to all or their own
+            const targetOrgId = req.query.organisationId || user.organisationId;
+            if (targetOrgId) {
+                where.organisationId = String(targetOrgId);
+            }
         }
 
-        // Branch Isolation: Users can only see activities from actors in their branch (or system events)
-        if (user.branchId && user.role !== 'admin' && user.role !== 'super_admin') {
-            // Already filtered by actorId hierarchy above, but adding branch security for good measure
+        // 2. HIERARCHY FILTERING
+        // Only Admins and Super Admins see everyone in the org.
+        // Managers and Sales Reps are restricted to their subordinates (and themselves).
+        if (!userIsSuperAdmin && !isOrgAdmin) {
+            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
+            const subordinateIds = await getSubordinateIds(user.id);
+
+            // Limit actor to self or subordinates
+            where.actorId = { in: subordinateIds };
+        }
+
+        // 3. BRANCH ISOLATION (Optional but enforced for non-admins)
+        if (user.branchId && !isOrgAdmin && !userIsSuperAdmin) {
+            // Ensure they only see activities from their own branch
             where.actor = { branchId: user.branchId };
-        } else if (req.query.branchId && (user.role === 'admin' || user.role === 'super_admin')) {
-            // Admin filtering by specific branch
+        } else if (req.query.branchId && (isOrgAdmin || userIsSuperAdmin)) {
+            // Admins can explicitly filter by branch
             where.actor = { branchId: String(req.query.branchId) };
         }
 
-        // Filters
+        // 4. EXPLICIT FILTERS
         if (entity) where.entity = String(entity);
         if (action) where.action = String(action);
         if (userId) {
-            // If explicit userId is requested, ensure it's within the allowed hierarchy
-            if (where.actorId && where.actorId.in && !where.actorId.in.includes(String(userId))) {
+            const targetUserId = String(userId);
+            // Security Check: If requesting a specific user, ensure they are in the allowed hierarchy
+            if (where.actorId && where.actorId.in && !where.actorId.in.includes(targetUserId)) {
                 return res.status(403).json({ message: 'Not authorized to view logs for this user' });
             }
-            where.actorId = String(userId);
+            where.actorId = targetUserId;
         }
         if (startDate || endDate) {
             where.createdAt = {};
