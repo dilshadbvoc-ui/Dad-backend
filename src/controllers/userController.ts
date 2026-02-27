@@ -607,3 +607,42 @@ export const deactivateUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+export const activateUser = async (req: Request, res: Response) => {
+    try {
+        const currentUser = (req as any).user;
+        const orgId = getOrgId(currentUser);
+        const userId = req.params.id;
+
+        const where: any = { id: userId };
+        if (currentUser.role !== 'super_admin') {
+            if (!orgId) return res.status(403).json({ message: 'No org' });
+            where.organisationId = orgId;
+        }
+
+        const existing = await prisma.user.findFirst({ where });
+        if (!existing) return res.status(404).json({ message: 'User not found or access denied' });
+
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: { isActive: true }
+        });
+
+        // Audit Log
+        logAudit({
+            action: 'ACTIVATE_USER',
+            entity: 'User',
+            entityId: user.id,
+            actorId: (req as any).user.id,
+            organisationId: user.organisationId || (req as any).user.organisationId,
+            details: { email: user.email }
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _pw, ...sanitizedUser } = user;
+
+        res.json({ message: 'User activated', user: sanitizedUser });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
