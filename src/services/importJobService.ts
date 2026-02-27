@@ -181,15 +181,23 @@ export class ImportJobService {
                         continue;
                     }
 
-                    // Set assignedToId to uploader as fallback if not set by mapping
-                    if (!leadData.assignedToId) {
-                        leadData.assignedToId = job.createdById;
+                    // Determine initial assignedToId based on whether we're applying rules
+                    let initialAssignedToId = leadData.assignedToId; // From mapping (ownerEmail)
+                    
+                    if (!initialAssignedToId && !applyAssignmentRules) {
+                        // If no explicit owner and NOT applying rules, assign to uploader
+                        initialAssignedToId = job.createdById;
                     }
+                    // If applyAssignmentRules is true and no explicit owner, leave it undefined
+                    // The DistributionService will assign it after creation
+
+                    leadData.assignedToId = initialAssignedToId;
 
                     const createdLead = await prisma.lead.create({ data: leadData });
 
-                    // Assign Lead via Rules (only if flag is set, or if no explicit owner was mapped)
-                    if (applyAssignmentRules) {
+                    // Apply Assignment Rules if enabled (this will update the lead's assignedToId)
+                    if (applyAssignmentRules && !leadData.assignedToId) {
+                        // Only apply rules if no explicit owner was set via mapping
                         await DistributionService.assignLead(createdLead, job.organisationId);
                     }
 
