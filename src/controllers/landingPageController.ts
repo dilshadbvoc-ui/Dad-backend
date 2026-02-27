@@ -61,3 +61,24 @@ export const deleteLandingPage = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+export const getLandingPageBySlug = async (req: Request, res: Response) => {
+    try {
+        const { slug } = req.params;
+        
+        const page = await prisma.landingPage.findFirst({
+            where: { 
+                slug,
+                isDeleted: false
+            }
+        });
+
+        if (!page) {
+            return res.status(404).json({ message: 'Landing page not found' });
+        }
+
+        res.json(page);
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
