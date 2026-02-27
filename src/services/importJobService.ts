@@ -70,6 +70,16 @@ export class ImportJobService {
 
             for await (const row of processStream) {
                 try {
+                    // Sanitize row data to remove null bytes
+                    const sanitizedRow: any = {};
+                    for (const [key, value] of Object.entries(row)) {
+                        if (typeof value === 'string') {
+                            sanitizedRow[key] = value.replace(/\u0000/g, '');
+                        } else {
+                            sanitizedRow[key] = value;
+                        }
+                    }
+
                     const leadData: any = {
                         organisationId: job.organisationId,
                         assignedToId: applyAssignmentRules ? undefined : job.createdById,
@@ -95,7 +105,7 @@ export class ImportJobService {
                     // Map fields
                     for (const [csvHeader, crmField] of Object.entries(mapping)) {
                         if (!crmField) continue;
-                        const value = row[csvHeader];
+                        const value = sanitizedRow[csvHeader];
                         if (value === undefined || value === null || value === '') continue;
 
                         if (String(crmField) === 'fullName') {
@@ -218,7 +228,17 @@ export class ImportJobService {
 
                 } catch (err: any) {
                     failureCount++;
-                    errors.push({ row, error: err.message });
+                    // Sanitize error data to remove null bytes that PostgreSQL can't handle
+                    const sanitizedRowForError: any = {};
+                    for (const [key, value] of Object.entries(row)) {
+                        if (typeof value === 'string') {
+                            sanitizedRowForError[key] = value.replace(/\u0000/g, '');
+                        } else {
+                            sanitizedRowForError[key] = value;
+                        }
+                    }
+                    const sanitizedError = String(err.message || 'Unknown error').replace(/\u0000/g, '');
+                    errors.push({ row: sanitizedRowForError, error: sanitizedError });
                 }
 
                 // Update progress every 10 rows
@@ -264,12 +284,14 @@ export class ImportJobService {
 
         } catch (error: any) {
             console.error(`Job ${jobId} failed:`, error);
+            // Sanitize error message
+            const sanitizedErrorMessage = String(error.message || 'Unknown error').replace(/\u0000/g, '');
             await prisma.importJob.update({
                 where: { id: jobId },
                 data: {
                     status: 'failed',
                     completedAt: new Date(),
-                    errors: [{ error: error.message }]
+                    errors: [{ error: sanitizedErrorMessage }]
                 }
             });
         }
