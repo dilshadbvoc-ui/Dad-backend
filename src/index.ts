@@ -303,7 +303,7 @@ app.use('/api/public', publicRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/analytics', verifyCSRFToken, analyticsRoutes);
 app.use('/api/workflow', verifyCSRFToken, workflowRoutes);
-app.use('/api/import', verifyCSRFToken, importRoutes);
+app.use('/api/import', importRoutes); // No CSRF for file uploads
 app.use('/api/ai', aiRoutes); // Remove CSRF - already protected by auth
 app.use('/api/email', verifyCSRFToken, emailRoutes);
 import gmailRoutes from './routes/gmailRoutes';
