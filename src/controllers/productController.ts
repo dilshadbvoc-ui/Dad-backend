@@ -393,6 +393,7 @@ export const getSharedProduct = async (req: Request, res: Response) => {
         // Send Notification (if enabled)
         if (share.notificationsEnabled) {
             const { NotificationService } = await import('../services/notificationService');
+            const { getIO } = await import('../socket');
             const viewedAt = new Date();
             const time = viewedAt.toLocaleString('en-US', { 
                 timeZone: 'Asia/Kolkata',
@@ -404,28 +405,57 @@ export const getSharedProduct = async (req: Request, res: Response) => {
                 year: 'numeric'
             });
             let viewerName = 'A customer';
+            let leadInfo = null;
 
             // If leadId is provided, try to fetch lead details (with UUID validation)
             if (leadId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(leadId)) {
                 try {
                     const lead = await prisma.lead.findUnique({
                         where: { id: leadId },
-                        select: { firstName: true, lastName: true, company: true }
+                        select: { id: true, firstName: true, lastName: true, company: true, phone: true, email: true }
                     });
                     if (lead) {
                         viewerName = `${lead.firstName} ${lead.lastName}${lead.company ? ` from ${lead.company}` : ''}`;
+                        leadInfo = {
+                            id: lead.id,
+                            name: `${lead.firstName} ${lead.lastName}`,
+                            company: lead.company,
+                            phone: lead.phone,
+                            email: lead.email
+                        };
                     }
                 } catch (e) {
                     console.error('Error fetching lead for view tracking:', e);
                 }
             }
 
+            const notificationMessage = `${viewerName} viewed your product "${share.product.name}" at ${time}.`;
+
+            // Send database notification
             NotificationService.send(
                 share.createdById,
                 'Product Viewed',
-                `${viewerName} viewed your product "${share.product.name}" at ${time}.`,
+                notificationMessage,
                 'info'
             ).catch(console.error);
+
+            // Send real-time Socket.io notification
+            const io = getIO();
+            if (io) {
+                io.to(share.createdById).emit('product_view_notification', {
+                    type: 'product_view',
+                    title: 'Product Viewed',
+                    message: notificationMessage,
+                    productId: share.product.id,
+                    productName: share.product.name,
+                    shareSlug: share.slug,
+                    viewedAt: viewedAt.toISOString(),
+                    viewerName,
+                    lead: leadInfo,
+                    timestamp: Date.now()
+                });
+                console.log(`[Real-time] Product view notification sent to user ${share.createdById}`);
+            }
         }
 
         // Fetch lead data if leadId is provided
