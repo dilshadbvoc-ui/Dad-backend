@@ -339,19 +339,27 @@ export const getTopLeads = async (req: Request, res: Response) => {
                 isDeleted: false,
                 ...visibilityFilter
             },
-            orderBy: { leadScore: 'desc' },
-            take: 5,
+            orderBy: { potentialValue: 'desc' },
+            take: 10,
             select: {
                 id: true,
                 firstName: true,
                 lastName: true,
                 company: true,
                 email: true,
-                leadScore: true
+                leadScore: true,
+                potentialValue: true
             }
         });
 
-        res.json(topLeads);
+        // Format data for frontend chart (name and value)
+        const formattedLeads = topLeads.map(lead => ({
+            name: `${lead.firstName} ${lead.lastName || ''}`.trim() || lead.company || lead.email || 'Unknown',
+            value: lead.potentialValue || 0,
+            leadScore: lead.leadScore
+        }));
+
+        res.json(formattedLeads);
     } catch (error) {
         console.error('getTopLeads Error:', error);
         res.status(500).json({ message: (error as Error).message });
