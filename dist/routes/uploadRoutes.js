@@ -51,5 +51,28 @@ const uploadController_2 = require("../controllers/uploadController");
 router.post('/image', authMiddleware_1.protect, uploadImage.single('image'), uploadController_2.uploadGenericImage);
 // Route: POST /api/upload/document
 router.post('/document', authMiddleware_1.protect, uploadDocument.single('document'), uploadController_2.uploadDocument);
+// Error handling middleware for multer errors
+router.use((err, req, res, next) => {
+    if (err instanceof multer_1.default.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(413).json({
+                message: 'File size exceeds the 5MB limit. Please upload a smaller file.',
+                error: 'FILE_TOO_LARGE',
+                maxSize: '5MB'
+            });
+        }
+        return res.status(400).json({
+            message: err.message,
+            error: err.code
+        });
+    }
+    if (err) {
+        return res.status(400).json({
+            message: err.message || 'File upload failed',
+            error: 'UPLOAD_ERROR'
+        });
+    }
+    next();
+});
 exports.default = router;
 //# sourceMappingURL=uploadRoutes.js.map

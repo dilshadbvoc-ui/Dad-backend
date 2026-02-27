@@ -40,20 +40,24 @@ export const createPortalSession = async (req: Request, res: Response) => {
             where: { id: organisationId }
         });
 
-        if (!org || !org.subscription) {
-            return res.status(404).json({ message: 'Organisation or subscription not found' });
+        if (!org) {
+            return res.status(404).json({ message: 'Organisation not found' });
+        }
+
+        if (!org.subscription) {
+            return res.status(404).json({ message: 'No subscription found. Please subscribe to a plan first.' });
         }
 
         const subscription = org.subscription as any;
         if (!subscription.stripeCustomerId) {
-            return res.status(404).json({ message: 'Stripe Customer ID not found' });
+            return res.status(404).json({ message: 'Stripe customer not found. Please contact support.' });
         }
 
         const session = await StripeService.createPortalSession(subscription.stripeCustomerId);
         res.json({ url: session.url });
     } catch (error) {
         console.error('Error creating portal session:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error', error: (error as Error).message });
     }
 };
 

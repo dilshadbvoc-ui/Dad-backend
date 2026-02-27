@@ -302,7 +302,13 @@ export namespace $Enums {
   api: 'api',
   manual: 'manual',
   whatsapp: 'whatsapp',
-  meta_leadgen: 'meta_leadgen'
+  meta_leadgen: 'meta_leadgen',
+  cold_call: 'cold_call',
+  social_media: 'social_media',
+  email_campaign: 'email_campaign',
+  meta_ads: 'meta_ads',
+  google_ads: 'google_ads',
+  other: 'other'
 };
 
 export type LeadSource = (typeof LeadSource)[keyof typeof LeadSource]
@@ -39081,11 +39087,13 @@ export namespace Prisma {
   export type LicenseAvgAggregateOutputType = {
     maxUsers: number | null
     currentUsers: number | null
+    customPrice: number | null
   }
 
   export type LicenseSumAggregateOutputType = {
     maxUsers: number | null
     currentUsers: number | null
+    customPrice: number | null
   }
 
   export type LicenseMinAggregateOutputType = {
@@ -39099,6 +39107,7 @@ export namespace Prisma {
     renewalReminders: boolean | null
     cancellationReason: string | null
     cancelledAt: Date | null
+    customPrice: number | null
     organisationId: string | null
     planId: string | null
     activatedById: string | null
@@ -39118,6 +39127,7 @@ export namespace Prisma {
     renewalReminders: boolean | null
     cancellationReason: string | null
     cancelledAt: Date | null
+    customPrice: number | null
     organisationId: string | null
     planId: string | null
     activatedById: string | null
@@ -39138,6 +39148,7 @@ export namespace Prisma {
     renewalReminders: number
     cancellationReason: number
     cancelledAt: number
+    customPrice: number
     organisationId: number
     planId: number
     activatedById: number
@@ -39151,11 +39162,13 @@ export namespace Prisma {
   export type LicenseAvgAggregateInputType = {
     maxUsers?: true
     currentUsers?: true
+    customPrice?: true
   }
 
   export type LicenseSumAggregateInputType = {
     maxUsers?: true
     currentUsers?: true
+    customPrice?: true
   }
 
   export type LicenseMinAggregateInputType = {
@@ -39169,6 +39182,7 @@ export namespace Prisma {
     renewalReminders?: true
     cancellationReason?: true
     cancelledAt?: true
+    customPrice?: true
     organisationId?: true
     planId?: true
     activatedById?: true
@@ -39188,6 +39202,7 @@ export namespace Prisma {
     renewalReminders?: true
     cancellationReason?: true
     cancelledAt?: true
+    customPrice?: true
     organisationId?: true
     planId?: true
     activatedById?: true
@@ -39208,6 +39223,7 @@ export namespace Prisma {
     renewalReminders?: true
     cancellationReason?: true
     cancelledAt?: true
+    customPrice?: true
     organisationId?: true
     planId?: true
     activatedById?: true
@@ -39315,6 +39331,7 @@ export namespace Prisma {
     renewalReminders: boolean
     cancellationReason: string | null
     cancelledAt: Date | null
+    customPrice: number | null
     organisationId: string
     planId: string | null
     activatedById: string | null
@@ -39354,6 +39371,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: boolean
     cancelledAt?: boolean
+    customPrice?: boolean
     organisationId?: boolean
     planId?: boolean
     activatedById?: boolean
@@ -39378,6 +39396,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: boolean
     cancelledAt?: boolean
+    customPrice?: boolean
     organisationId?: boolean
     planId?: boolean
     activatedById?: boolean
@@ -39402,6 +39421,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: boolean
     cancelledAt?: boolean
+    customPrice?: boolean
     organisationId?: boolean
     planId?: boolean
     activatedById?: boolean
@@ -39443,6 +39463,7 @@ export namespace Prisma {
       renewalReminders: boolean
       cancellationReason: string | null
       cancelledAt: Date | null
+      customPrice: number | null
       organisationId: string
       planId: string | null
       activatedById: string | null
@@ -39857,6 +39878,7 @@ export namespace Prisma {
     readonly renewalReminders: FieldRef<"License", 'Boolean'>
     readonly cancellationReason: FieldRef<"License", 'String'>
     readonly cancelledAt: FieldRef<"License", 'DateTime'>
+    readonly customPrice: FieldRef<"License", 'Float'>
     readonly organisationId: FieldRef<"License", 'String'>
     readonly planId: FieldRef<"License", 'String'>
     readonly activatedById: FieldRef<"License", 'String'>
@@ -73650,6 +73672,7 @@ export namespace Prisma {
     renewalReminders: 'renewalReminders',
     cancellationReason: 'cancellationReason',
     cancelledAt: 'cancelledAt',
+    customPrice: 'customPrice',
     organisationId: 'organisationId',
     planId: 'planId',
     activatedById: 'activatedById',
@@ -78104,6 +78127,7 @@ export namespace Prisma {
     renewalReminders?: BoolFilter<"License"> | boolean
     cancellationReason?: StringNullableFilter<"License"> | string | null
     cancelledAt?: DateTimeNullableFilter<"License"> | Date | string | null
+    customPrice?: FloatNullableFilter<"License"> | number | null
     organisationId?: StringFilter<"License"> | string
     planId?: StringNullableFilter<"License"> | string | null
     activatedById?: StringNullableFilter<"License"> | string | null
@@ -78128,6 +78152,7 @@ export namespace Prisma {
     renewalReminders?: SortOrder
     cancellationReason?: SortOrderInput | SortOrder
     cancelledAt?: SortOrderInput | SortOrder
+    customPrice?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     planId?: SortOrderInput | SortOrder
     activatedById?: SortOrderInput | SortOrder
@@ -78155,6 +78180,7 @@ export namespace Prisma {
     renewalReminders?: BoolFilter<"License"> | boolean
     cancellationReason?: StringNullableFilter<"License"> | string | null
     cancelledAt?: DateTimeNullableFilter<"License"> | Date | string | null
+    customPrice?: FloatNullableFilter<"License"> | number | null
     organisationId?: StringFilter<"License"> | string
     planId?: StringNullableFilter<"License"> | string | null
     activatedById?: StringNullableFilter<"License"> | string | null
@@ -78179,6 +78205,7 @@ export namespace Prisma {
     renewalReminders?: SortOrder
     cancellationReason?: SortOrderInput | SortOrder
     cancelledAt?: SortOrderInput | SortOrder
+    customPrice?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     planId?: SortOrderInput | SortOrder
     activatedById?: SortOrderInput | SortOrder
@@ -78207,6 +78234,7 @@ export namespace Prisma {
     renewalReminders?: BoolWithAggregatesFilter<"License"> | boolean
     cancellationReason?: StringNullableWithAggregatesFilter<"License"> | string | null
     cancelledAt?: DateTimeNullableWithAggregatesFilter<"License"> | Date | string | null
+    customPrice?: FloatNullableWithAggregatesFilter<"License"> | number | null
     organisationId?: StringWithAggregatesFilter<"License"> | string
     planId?: StringNullableWithAggregatesFilter<"License"> | string | null
     activatedById?: StringNullableWithAggregatesFilter<"License"> | string | null
@@ -85445,6 +85473,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activatedBy?: UserCreateNestedOneWithoutActivatedLicensesInput
@@ -85465,6 +85494,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     planId?: string | null
     activatedById?: string | null
@@ -85485,6 +85515,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activatedBy?: UserUpdateOneWithoutActivatedLicensesNestedInput
@@ -85505,6 +85536,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85525,6 +85557,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     planId?: string | null
     activatedById?: string | null
@@ -85545,6 +85578,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -85561,6 +85595,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -91687,6 +91722,7 @@ export namespace Prisma {
     renewalReminders?: SortOrder
     cancellationReason?: SortOrder
     cancelledAt?: SortOrder
+    customPrice?: SortOrder
     organisationId?: SortOrder
     planId?: SortOrder
     activatedById?: SortOrder
@@ -91698,6 +91734,7 @@ export namespace Prisma {
   export type LicenseAvgOrderByAggregateInput = {
     maxUsers?: SortOrder
     currentUsers?: SortOrder
+    customPrice?: SortOrder
   }
 
   export type LicenseMaxOrderByAggregateInput = {
@@ -91711,6 +91748,7 @@ export namespace Prisma {
     renewalReminders?: SortOrder
     cancellationReason?: SortOrder
     cancelledAt?: SortOrder
+    customPrice?: SortOrder
     organisationId?: SortOrder
     planId?: SortOrder
     activatedById?: SortOrder
@@ -91730,6 +91768,7 @@ export namespace Prisma {
     renewalReminders?: SortOrder
     cancellationReason?: SortOrder
     cancelledAt?: SortOrder
+    customPrice?: SortOrder
     organisationId?: SortOrder
     planId?: SortOrder
     activatedById?: SortOrder
@@ -91741,6 +91780,7 @@ export namespace Prisma {
   export type LicenseSumOrderByAggregateInput = {
     maxUsers?: SortOrder
     currentUsers?: SortOrder
+    customPrice?: SortOrder
   }
 
   export type AssignmentRuleCountOrderByAggregateInput = {
@@ -104666,6 +104706,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activatedBy?: UserCreateNestedOneWithoutActivatedLicensesInput
@@ -104685,6 +104726,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     planId?: string | null
     activatedById?: string | null
     cancelledById?: string | null
@@ -106743,6 +106785,7 @@ export namespace Prisma {
     renewalReminders?: BoolFilter<"License"> | boolean
     cancellationReason?: StringNullableFilter<"License"> | string | null
     cancelledAt?: DateTimeNullableFilter<"License"> | Date | string | null
+    customPrice?: FloatNullableFilter<"License"> | number | null
     organisationId?: StringFilter<"License"> | string
     planId?: StringNullableFilter<"License"> | string | null
     activatedById?: StringNullableFilter<"License"> | string | null
@@ -109213,6 +109256,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     cancelledBy?: UserCreateNestedOneWithoutCancelledLicensesInput
@@ -109232,6 +109276,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     planId?: string | null
     cancelledById?: string | null
@@ -109261,6 +109306,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activatedBy?: UserCreateNestedOneWithoutActivatedLicensesInput
@@ -109280,6 +109326,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     planId?: string | null
     activatedById?: string | null
@@ -135252,6 +135299,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     activatedBy?: UserCreateNestedOneWithoutActivatedLicensesInput
@@ -135271,6 +135319,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     activatedById?: string | null
     cancelledById?: string | null
@@ -161069,6 +161118,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     planId?: string | null
     activatedById?: string | null
     cancelledById?: string | null
@@ -162513,6 +162563,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activatedBy?: UserUpdateOneWithoutActivatedLicensesNestedInput
@@ -162532,6 +162583,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -162551,6 +162603,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164718,6 +164771,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     planId?: string | null
     cancelledById?: string | null
@@ -164737,6 +164791,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     planId?: string | null
     activatedById?: string | null
@@ -167043,6 +167098,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cancelledBy?: UserUpdateOneWithoutCancelledLicensesNestedInput
@@ -167062,6 +167118,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167081,6 +167138,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167100,6 +167158,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activatedBy?: UserUpdateOneWithoutActivatedLicensesNestedInput
@@ -167119,6 +167178,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167138,6 +167198,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     planId?: NullableStringFieldUpdateOperationsInput | string | null
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173601,6 +173662,7 @@ export namespace Prisma {
     renewalReminders?: boolean
     cancellationReason?: string | null
     cancelledAt?: Date | string | null
+    customPrice?: number | null
     organisationId: string
     activatedById?: string | null
     cancelledById?: string | null
@@ -173620,6 +173682,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activatedBy?: UserUpdateOneWithoutActivatedLicensesNestedInput
@@ -173639,6 +173702,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173658,6 +173722,7 @@ export namespace Prisma {
     renewalReminders?: BoolFieldUpdateOperationsInput | boolean
     cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    customPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     organisationId?: StringFieldUpdateOperationsInput | string
     activatedById?: NullableStringFieldUpdateOperationsInput | string | null
     cancelledById?: NullableStringFieldUpdateOperationsInput | string | null

@@ -176,6 +176,60 @@ export const cancelLicense = async (req: Request, res: Response) => {
     }
 };
 
+export const setCustomPrice = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        
+        // Only super admin can set custom pricing
+        if (!user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Only super admin can set custom pricing' });
+        }
+
+        const { customPrice } = req.body;
+        const licenseId = req.params.id;
+
+        // Validate custom price
+        if (customPrice !== null && (typeof customPrice !== 'number' || customPrice < 0)) {
+            return res.status(400).json({ message: 'Invalid custom price' });
+        }
+
+        const license = await prisma.license.update({
+            where: { id: licenseId },
+            data: { customPrice: customPrice },
+            include: {
+                organisation: { select: { id: true, name: true } },
+                plan: { select: { id: true, name: true, price: true } }
+            }
+        });
+
+        // Audit Log
+        try {
+            const { logAudit } = await import('../utils/auditLogger');
+            await logAudit({
+                organisationId: license.organisationId,
+                actorId: user.id,
+                action: 'SET_CUSTOM_PRICE',
+                entity: 'License',
+                entityId: licenseId,
+                details: {
+                    customPrice,
+                    planPrice: license.plan?.price,
+                    organisationName: license.organisation.name
+                }
+            });
+        } catch (e) {
+            console.error('Audit Log Error:', e);
+        }
+
+        res.json({
+            message: customPrice === null ? 'Custom pricing removed' : 'Custom pricing set successfully',
+            license
+        });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 export const checkLicenseValidity = async (req: Request, res: Response) => {
     try {
         const orgId = getOrgId((req as any).user);

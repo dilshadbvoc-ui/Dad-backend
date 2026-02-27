@@ -61,23 +61,27 @@ const getAuditLogs = async (req, res) => {
                 where.organisationId = String(targetOrgId);
             }
         }
-        // 2. HIERARCHY FILTERING
-        // Only Admins and Super Admins see everyone in the org.
-        // Managers and Sales Reps are restricted to their subordinates (and themselves).
-        if (!userIsSuperAdmin && !isOrgAdmin) {
+        // 2. HIERARCHY FILTERING - Users should not see activities from people above them
+        if (!userIsSuperAdmin) {
             const { getSubordinateIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
             const subordinateIds = await getSubordinateIds(user.id);
-            // Limit actor to self or subordinates
+            // Limit actor to self or subordinates (not superiors)
             where.actorId = { in: subordinateIds };
         }
         // 3. BRANCH ISOLATION (Optional but enforced for non-admins)
         if (user.branchId && !isOrgAdmin && !userIsSuperAdmin) {
             // Ensure they only see activities from their own branch
-            where.actor = { branchId: user.branchId };
+            where.actor = {
+                ...where.actor,
+                branchId: user.branchId
+            };
         }
         else if (req.query.branchId && (isOrgAdmin || userIsSuperAdmin)) {
             // Admins can explicitly filter by branch
-            where.actor = { branchId: String(req.query.branchId) };
+            where.actor = {
+                ...where.actor,
+                branchId: String(req.query.branchId)
+            };
         }
         // 4. EXPLICIT FILTERS
         if (entity)
@@ -111,7 +115,8 @@ const getAuditLogs = async (req, res) => {
                         id: true,
                         firstName: true,
                         lastName: true,
-                        email: true
+                        email: true,
+                        role: true
                     }
                 }
             }

@@ -12,5 +12,6 @@ router.get('/current', authMiddleware_1.protect, licenseController_1.getCurrentL
 router.get('/check', authMiddleware_1.protect, licenseController_1.checkLicenseValidity);
 router.post('/activate', authMiddleware_1.protect, licenseController_1.activateLicense);
 router.post('/:id/cancel', authMiddleware_1.protect, licenseController_1.cancelLicense);
+router.patch('/:id/custom-price', authMiddleware_1.protect, licenseController_1.setCustomPrice);
 exports.default = router;
 //# sourceMappingURL=licenseRoutes.js.map

@@ -825,6 +825,7 @@ model License {
   renewalReminders   Boolean           @default(true)
   cancellationReason String?
   cancelledAt        DateTime?
+  customPrice        Float? // Super admin can override plan price with custom amount
   organisationId     String
   planId             String?
   activatedById      String?
@@ -1162,6 +1163,12 @@ enum LeadSource {
   manual
   whatsapp
   meta_leadgen
+  cold_call
+  social_media
+  email_campaign
+  meta_ads
+  google_ads
+  other
 }
 
 enum LeadStatus {

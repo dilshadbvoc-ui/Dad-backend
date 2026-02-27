@@ -683,6 +683,7 @@ const createBulkLeads = async (req, res) => {
     try {
         const leadsData = req.body;
         const user = req.user;
+        console.log('[createBulkLeads] Received:', leadsData.length, 'leads');
         if (!Array.isArray(leadsData) || leadsData.length === 0) {
             return res.status(400).json({ message: 'Invalid input' });
         }
@@ -746,8 +747,10 @@ const createBulkLeads = async (req, res) => {
                     branchId: l.branchId || user.branchId, // Support explicit branch or inherit from user
                     source: l.source || client_1.LeadSource.import,
                     status: l.status || client_1.LeadStatus.new,
-                    leadScore: l.leadScore || 0
+                    leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
+                    stage: l.stage || undefined
                 };
+                console.log('[createBulkLeads] Creating lead:', data.firstName, data.phone);
                 const lead = await prisma_1.default.lead.create({ data });
                 // AI Scoring
                 Promise.resolve().then(() => __importStar(require('../services/leadScoringService'))).then(({ LeadScoringService }) => {
@@ -756,10 +759,12 @@ const createBulkLeads = async (req, res) => {
                 createdCount++;
             }
             catch (error) {
+                console.error('[createBulkLeads] Error creating lead:', error.message, 'Lead data:', l);
                 errors.push({ lead: l, error: error.message });
                 duplicateCount++;
             }
         }
+        console.log('[createBulkLeads] Results:', { created: createdCount, reEnquiries: reEnquiryCount, duplicates: duplicateCount, errors: errors.length });
         res.status(201).json({
             message: `Bulk import completed`,
             created: createdCount,

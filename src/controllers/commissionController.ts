@@ -25,9 +25,31 @@ export const createCommission = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
+        // Handle "self" userId - convert to actual user ID
+        let targetUserId = req.body.userId;
+        if (!targetUserId || targetUserId === 'self') {
+            targetUserId = user.id;
+        }
+
+        // Validate that the user exists
+        const targetUser = await prisma.user.findUnique({
+            where: { id: targetUserId }
+        });
+
+        if (!targetUser) {
+            return res.status(400).json({ message: 'Invalid user ID' });
+        }
+
         const commission = await prisma.commission.create({
             data: {
-                ...req.body,
+                userId: targetUserId,
+                amount: req.body.amount,
+                currency: req.body.currency || 'INR',
+                status: req.body.status || 'pending',
+                type: req.body.type,
+                description: req.body.description,
+                dealId: req.body.dealId,
+                date: req.body.date ? new Date(req.body.date) : new Date(),
                 organisationId: orgId,
                 createdById: user.id
             }

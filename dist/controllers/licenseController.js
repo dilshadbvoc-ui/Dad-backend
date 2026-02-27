@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkLicenseValidity = exports.cancelLicense = exports.activateLicense = exports.getCurrentLicense = exports.getLicenses = void 0;
+exports.checkLicenseValidity = exports.setCustomPrice = exports.cancelLicense = exports.activateLicense = exports.getCurrentLicense = exports.getLicenses = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const getLicenses = async (req, res) => {
@@ -206,6 +206,56 @@ const cancelLicense = async (req, res) => {
     }
 };
 exports.cancelLicense = cancelLicense;
+const setCustomPrice = async (req, res) => {
+    try {
+        const user = req.user;
+        // Only super admin can set custom pricing
+        if (!user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Only super admin can set custom pricing' });
+        }
+        const { customPrice } = req.body;
+        const licenseId = req.params.id;
+        // Validate custom price
+        if (customPrice !== null && (typeof customPrice !== 'number' || customPrice < 0)) {
+            return res.status(400).json({ message: 'Invalid custom price' });
+        }
+        const license = await prisma_1.default.license.update({
+            where: { id: licenseId },
+            data: { customPrice: customPrice },
+            include: {
+                organisation: { select: { id: true, name: true } },
+                plan: { select: { id: true, name: true, price: true } }
+            }
+        });
+        // Audit Log
+        try {
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
+                organisationId: license.organisationId,
+                actorId: user.id,
+                action: 'SET_CUSTOM_PRICE',
+                entity: 'License',
+                entityId: licenseId,
+                details: {
+                    customPrice,
+                    planPrice: license.plan?.price,
+                    organisationName: license.organisation.name
+                }
+            });
+        }
+        catch (e) {
+            console.error('Audit Log Error:', e);
+        }
+        res.json({
+            message: customPrice === null ? 'Custom pricing removed' : 'Custom pricing set successfully',
+            license
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.setCustomPrice = setCustomPrice;
 const checkLicenseValidity = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);

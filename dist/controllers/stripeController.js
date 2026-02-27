@@ -39,19 +39,22 @@ const createPortalSession = async (req, res) => {
         const org = await prisma_1.default.organisation.findUnique({
             where: { id: organisationId }
         });
-        if (!org || !org.subscription) {
-            return res.status(404).json({ message: 'Organisation or subscription not found' });
+        if (!org) {
+            return res.status(404).json({ message: 'Organisation not found' });
+        }
+        if (!org.subscription) {
+            return res.status(404).json({ message: 'No subscription found. Please subscribe to a plan first.' });
         }
         const subscription = org.subscription;
         if (!subscription.stripeCustomerId) {
-            return res.status(404).json({ message: 'Stripe Customer ID not found' });
+            return res.status(404).json({ message: 'Stripe customer not found. Please contact support.' });
         }
         const session = await stripeService_1.StripeService.createPortalSession(subscription.stripeCustomerId);
         res.json({ url: session.url });
     }
     catch (error) {
         console.error('Error creating portal session:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
 exports.createPortalSession = createPortalSession;

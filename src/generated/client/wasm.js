@@ -637,6 +637,7 @@ exports.Prisma.LicenseScalarFieldEnum = {
   renewalReminders: 'renewalReminders',
   cancellationReason: 'cancellationReason',
   cancelledAt: 'cancelledAt',
+  customPrice: 'customPrice',
   organisationId: 'organisationId',
   planId: 'planId',
   activatedById: 'activatedById',
@@ -1174,7 +1175,13 @@ exports.LeadSource = exports.$Enums.LeadSource = {
   api: 'api',
   manual: 'manual',
   whatsapp: 'whatsapp',
-  meta_leadgen: 'meta_leadgen'
+  meta_leadgen: 'meta_leadgen',
+  cold_call: 'cold_call',
+  social_media: 'social_media',
+  email_campaign: 'email_campaign',
+  meta_ads: 'meta_ads',
+  google_ads: 'google_ads',
+  other: 'other'
 };
 
 exports.LeadStatus = exports.$Enums.LeadStatus = {
