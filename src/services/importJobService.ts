@@ -254,7 +254,12 @@ export class ImportJobService {
                 }
             }
 
-            // Final Update
+            // Final Update - sanitize errors one more time to be safe
+            const sanitizedErrors = errors.map(err => ({
+                row: typeof err.row === 'object' ? JSON.parse(JSON.stringify(err.row).replace(/\u0000/g, '')) : err.row,
+                error: typeof err.error === 'string' ? err.error.replace(/\u0000/g, '') : String(err.error).replace(/\u0000/g, '')
+            }));
+
             await prisma.importJob.update({
                 where: { id: jobId },
                 data: {
@@ -263,7 +268,7 @@ export class ImportJobService {
                     progress: totalLines,
                     successCount,
                     failureCount,
-                    errors: errors.length > 0 ? errors : undefined
+                    errors: sanitizedErrors.length > 0 ? sanitizedErrors : undefined
                 }
             });
 
