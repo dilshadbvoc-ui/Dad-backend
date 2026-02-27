@@ -100,8 +100,7 @@ export class AssignmentRuleService {
             // Fetch eligible users
             const where: any = {
                 organisationId,
-                isActive: true,
-                isDeleted: false
+                isActive: true
             };
 
             if (rule.targetRole) {

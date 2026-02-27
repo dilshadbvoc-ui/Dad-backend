@@ -195,14 +195,34 @@ class ImportJobService {
                         successCount++;
                         continue;
                     }
-                    // Set assignedToId to uploader as fallback if not set by mapping
-                    if (!leadData.assignedToId) {
-                        leadData.assignedToId = job.createdById;
+                    // Determine initial assignedToId based on whether we're applying rules
+                    let initialAssignedToId = leadData.assignedToId; // From mapping (ownerEmail)
+                    console.log(`[ImportJob ${jobId}] Processing lead: ${leadData.firstName} ${leadData.lastName}`);
+                    console.log(`[ImportJob ${jobId}] applyAssignmentRules: ${applyAssignmentRules}`);
+                    console.log(`[ImportJob ${jobId}] initialAssignedToId from mapping: ${initialAssignedToId}`);
+                    if (!initialAssignedToId && !applyAssignmentRules) {
+                        // If no explicit owner and NOT applying rules, assign to uploader
+                        initialAssignedToId = job.createdById;
+                        console.log(`[ImportJob ${jobId}] No rules, assigning to uploader: ${initialAssignedToId}`);
                     }
+                    // If applyAssignmentRules is true and no explicit owner, leave it undefined
+                    // The DistributionService will assign it after creation
+                    leadData.assignedToId = initialAssignedToId;
+                    console.log(`[ImportJob ${jobId}] Creating lead with assignedToId: ${leadData.assignedToId}`);
                     const createdLead = await prisma_1.default.lead.create({ data: leadData });
-                    // Assign Lead via Rules (only if flag is set, or if no explicit owner was mapped)
-                    if (applyAssignmentRules) {
+                    console.log(`[ImportJob ${jobId}] Lead created with ID: ${createdLead.id}, assignedToId: ${createdLead.assignedToId}`);
+                    // Apply Assignment Rules if enabled (this will update the lead's assignedToId)
+                    if (applyAssignmentRules && !leadData.assignedToId) {
+                        // Only apply rules if no explicit owner was set via mapping
+                        console.log(`[ImportJob ${jobId}] Applying assignment rules for lead ${createdLead.id}`);
                         await distributionService_1.DistributionService.assignLead(createdLead, job.organisationId);
+                        console.log(`[ImportJob ${jobId}] Assignment rules applied for lead ${createdLead.id}`);
+                    }
+                    else if (applyAssignmentRules && leadData.assignedToId) {
+                        console.log(`[ImportJob ${jobId}] Skipping assignment rules - explicit owner set: ${leadData.assignedToId}`);
+                    }
+                    else {
+                        console.log(`[ImportJob ${jobId}] Skipping assignment rules - applyAssignmentRules is false`);
                     }
                     successCount++;
                 }

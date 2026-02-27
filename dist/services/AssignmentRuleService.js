@@ -97,8 +97,7 @@ class AssignmentRuleService {
             // Fetch eligible users
             const where = {
                 organisationId,
-                isActive: true,
-                isDeleted: false
+                isActive: true
             };
             if (rule.targetRole) {
                 where.role = rule.targetRole;
