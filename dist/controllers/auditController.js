@@ -1,40 +1,97 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAuditLogs = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
+const roleUtils_1 = require("../utils/roleUtils");
 const getAuditLogs = async (req, res) => {
     try {
         const user = req.user;
         const { entity, action, userId, startDate, endDate, page = 1, limit = 20 } = req.query;
-        // Base where clause - users see ALL activities within their organisation (no hierarchy restrictions)
+        const normalisedUserRole = (0, roleUtils_1.normalizeRole)(user.role);
+        const userIsSuperAdmin = (0, roleUtils_1.isSuperAdmin)(user);
+        const isOrgAdmin = normalisedUserRole === 'admin';
         const where = {};
-        if (user.organisationId) {
+        // 1. ORGANISATION ISOLATION
+        if (!userIsSuperAdmin) {
+            if (!user.organisationId) {
+                return res.status(400).json({ message: 'Organisation not found' });
+            }
             where.organisationId = user.organisationId;
         }
-        else if (user.role !== 'super_admin') {
-            return res.status(400).json({ message: 'Organisation not found' });
+        else {
+            // Super Admin can view specific org if requested, otherwise defaults to all or their own
+            const targetOrgId = req.query.organisationId || user.organisationId;
+            if (targetOrgId) {
+                where.organisationId = String(targetOrgId);
+            }
         }
-        // Branch Isolation: Users can only see activities from actors in their branch (or system events)
-        if (user.branchId) {
-            where.OR = [
-                { actor: { branchId: user.branchId } },
-                { actorId: null } // System events
-            ];
+        // 2. HIERARCHY FILTERING
+        // Only Admins and Super Admins see everyone in the org.
+        // Managers and Sales Reps are restricted to their subordinates (and themselves).
+        if (!userIsSuperAdmin && !isOrgAdmin) {
+            const { getSubordinateIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
+            const subordinateIds = await getSubordinateIds(user.id);
+            // Limit actor to self or subordinates
+            where.actorId = { in: subordinateIds };
         }
-        else if (req.query.branchId) {
-            // Admin filtering by specific branch
+        // 3. BRANCH ISOLATION (Optional but enforced for non-admins)
+        if (user.branchId && !isOrgAdmin && !userIsSuperAdmin) {
+            // Ensure they only see activities from their own branch
+            where.actor = { branchId: user.branchId };
+        }
+        else if (req.query.branchId && (isOrgAdmin || userIsSuperAdmin)) {
+            // Admins can explicitly filter by branch
             where.actor = { branchId: String(req.query.branchId) };
         }
-        // Filters
+        // 4. EXPLICIT FILTERS
         if (entity)
             where.entity = String(entity);
         if (action)
             where.action = String(action);
-        if (userId)
-            where.actorId = String(userId);
+        if (userId) {
+            const targetUserId = String(userId);
+            // Security Check: If requesting a specific user, ensure they are in the allowed hierarchy
+            if (where.actorId && where.actorId.in && !where.actorId.in.includes(targetUserId)) {
+                return res.status(403).json({ message: 'Not authorized to view logs for this user' });
+            }
+            where.actorId = targetUserId;
+        }
         if (startDate || endDate) {
             where.createdAt = {};
             if (startDate)

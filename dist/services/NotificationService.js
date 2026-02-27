@@ -71,6 +71,23 @@ class NotificationService {
         const promises = users.map(user => this.send(user.id, title, message, type));
         await Promise.all(promises);
     }
+    static async sendToHierarchy(startUserId, title, message, type = 'info') {
+        try {
+            const user = await prisma_1.default.user.findUnique({
+                where: { id: startUserId },
+                select: { reportsToId: true }
+            });
+            if (user && user.reportsToId) {
+                const managerId = user.reportsToId;
+                await this.send(managerId, title, message, type);
+                // Recursive call for next level
+                await this.sendToHierarchy(managerId, title, message, type);
+            }
+        }
+        catch (error) {
+            console.error('[NotificationService] Error sending to hierarchy:', error);
+        }
+    }
 }
 exports.NotificationService = NotificationService;
 //# sourceMappingURL=notificationService.js.map

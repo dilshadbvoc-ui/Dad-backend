@@ -7630,6 +7630,7 @@ export namespace Prisma {
     currency: string | null
     userIdCounter: number | null
     apiKey: string | null
+    dailyReportTime: string | null
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
@@ -7652,6 +7653,7 @@ export namespace Prisma {
     currency: string | null
     userIdCounter: number | null
     apiKey: string | null
+    dailyReportTime: string | null
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
@@ -7677,6 +7679,7 @@ export namespace Prisma {
     apiKey: number
     integrations: number
     leadScoringConfig: number
+    dailyReportTime: number
     createdAt: number
     updatedAt: number
     isDeleted: number
@@ -7717,6 +7720,7 @@ export namespace Prisma {
     currency?: true
     userIdCounter?: true
     apiKey?: true
+    dailyReportTime?: true
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
@@ -7739,6 +7743,7 @@ export namespace Prisma {
     currency?: true
     userIdCounter?: true
     apiKey?: true
+    dailyReportTime?: true
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
@@ -7764,6 +7769,7 @@ export namespace Prisma {
     apiKey?: true
     integrations?: true
     leadScoringConfig?: true
+    dailyReportTime?: true
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
@@ -7878,6 +7884,7 @@ export namespace Prisma {
     apiKey: string | null
     integrations: JsonValue | null
     leadScoringConfig: JsonValue | null
+    dailyReportTime: string
     createdAt: Date
     updatedAt: Date
     isDeleted: boolean
@@ -7924,6 +7931,7 @@ export namespace Prisma {
     apiKey?: boolean
     integrations?: boolean
     leadScoringConfig?: boolean
+    dailyReportTime?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
@@ -7995,6 +8003,7 @@ export namespace Prisma {
     apiKey?: boolean
     integrations?: boolean
     leadScoringConfig?: boolean
+    dailyReportTime?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
@@ -8022,6 +8031,7 @@ export namespace Prisma {
     apiKey?: boolean
     integrations?: boolean
     leadScoringConfig?: boolean
+    dailyReportTime?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
@@ -8144,6 +8154,7 @@ export namespace Prisma {
       apiKey: string | null
       integrations: Prisma.JsonValue | null
       leadScoringConfig: Prisma.JsonValue | null
+      dailyReportTime: string
       createdAt: Date
       updatedAt: Date
       isDeleted: boolean
@@ -8604,6 +8615,7 @@ export namespace Prisma {
     readonly apiKey: FieldRef<"Organisation", 'String'>
     readonly integrations: FieldRef<"Organisation", 'Json'>
     readonly leadScoringConfig: FieldRef<"Organisation", 'Json'>
+    readonly dailyReportTime: FieldRef<"Organisation", 'String'>
     readonly createdAt: FieldRef<"Organisation", 'DateTime'>
     readonly updatedAt: FieldRef<"Organisation", 'DateTime'>
     readonly isDeleted: FieldRef<"Organisation", 'Boolean'>
@@ -73070,6 +73082,7 @@ export namespace Prisma {
     apiKey: 'apiKey',
     integrations: 'integrations',
     leadScoringConfig: 'leadScoringConfig',
+    dailyReportTime: 'dailyReportTime',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isDeleted: 'isDeleted',
@@ -74556,6 +74569,7 @@ export namespace Prisma {
     apiKey?: StringNullableFilter<"Organisation"> | string | null
     integrations?: JsonNullableFilter<"Organisation">
     leadScoringConfig?: JsonNullableFilter<"Organisation">
+    dailyReportTime?: StringFilter<"Organisation"> | string
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     isDeleted?: BoolFilter<"Organisation"> | boolean
@@ -74626,6 +74640,7 @@ export namespace Prisma {
     apiKey?: SortOrderInput | SortOrder
     integrations?: SortOrderInput | SortOrder
     leadScoringConfig?: SortOrderInput | SortOrder
+    dailyReportTime?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -74699,6 +74714,7 @@ export namespace Prisma {
     apiKey?: StringNullableFilter<"Organisation"> | string | null
     integrations?: JsonNullableFilter<"Organisation">
     leadScoringConfig?: JsonNullableFilter<"Organisation">
+    dailyReportTime?: StringFilter<"Organisation"> | string
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     isDeleted?: BoolFilter<"Organisation"> | boolean
@@ -74769,6 +74785,7 @@ export namespace Prisma {
     apiKey?: SortOrderInput | SortOrder
     integrations?: SortOrderInput | SortOrder
     leadScoringConfig?: SortOrderInput | SortOrder
+    dailyReportTime?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -74804,6 +74821,7 @@ export namespace Prisma {
     apiKey?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     integrations?: JsonNullableWithAggregatesFilter<"Organisation">
     leadScoringConfig?: JsonNullableWithAggregatesFilter<"Organisation">
+    dailyReportTime?: StringWithAggregatesFilter<"Organisation"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     isDeleted?: BoolWithAggregatesFilter<"Organisation"> | boolean
@@ -75477,7 +75495,7 @@ export namespace Prisma {
 
   export type LeadWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    phone_organisationId?: LeadPhoneOrganisationIdCompoundUniqueInput
+    phone_organisationId_branchId?: LeadPhoneOrganisationIdBranchIdCompoundUniqueInput
     AND?: LeadWhereInput | LeadWhereInput[]
     OR?: LeadWhereInput[]
     NOT?: LeadWhereInput | LeadWhereInput[]
@@ -75541,7 +75559,7 @@ export namespace Prisma {
     convertedContacts?: ContactListRelationFilter
     convertedOpportunities?: OpportunityListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
-  }, "id" | "phone_organisationId">
+  }, "id" | "phone_organisationId_branchId">
 
   export type LeadOrderByWithAggregationInput = {
     id?: SortOrder
@@ -81373,6 +81391,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -81443,6 +81462,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -81513,6 +81533,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -81583,6 +81604,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -81653,6 +81675,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -81680,6 +81703,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -81707,6 +81731,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -89517,6 +89542,7 @@ export namespace Prisma {
     apiKey?: SortOrder
     integrations?: SortOrder
     leadScoringConfig?: SortOrder
+    dailyReportTime?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -89548,6 +89574,7 @@ export namespace Prisma {
     currency?: SortOrder
     userIdCounter?: SortOrder
     apiKey?: SortOrder
+    dailyReportTime?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -89570,6 +89597,7 @@ export namespace Prisma {
     currency?: SortOrder
     userIdCounter?: SortOrder
     apiKey?: SortOrder
+    dailyReportTime?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -90046,9 +90074,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type LeadPhoneOrganisationIdCompoundUniqueInput = {
+  export type LeadPhoneOrganisationIdBranchIdCompoundUniqueInput = {
     phone: string
     organisationId: string
+    branchId: string
   }
 
   export type LeadCountOrderByAggregateInput = {
@@ -109903,6 +109932,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -109972,6 +110002,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -112017,6 +112048,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -112086,6 +112118,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -113360,6 +113393,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -113429,6 +113463,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -113966,6 +114001,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -114035,6 +114071,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -114841,6 +114878,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -114910,6 +114948,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -116155,6 +116194,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -116224,6 +116264,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -116918,6 +116959,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -116987,6 +117029,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -118140,6 +118183,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -118209,6 +118253,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -119117,6 +119162,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -119186,6 +119232,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -120133,6 +120180,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -120202,6 +120250,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -120941,6 +120990,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -121010,6 +121060,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -121898,6 +121949,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -121967,6 +122019,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -122740,6 +122793,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -122809,6 +122863,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -123275,6 +123330,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -123344,6 +123400,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -124018,6 +124075,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -124087,6 +124145,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -124316,6 +124375,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -124385,6 +124445,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -125033,6 +125094,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -125102,6 +125164,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -125832,6 +125895,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -125901,6 +125965,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -126956,6 +127021,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -127025,6 +127091,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -127889,6 +127956,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -127958,6 +128026,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -128642,6 +128711,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -128711,6 +128781,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -129441,6 +129512,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -129510,6 +129582,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -130145,6 +130218,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -130214,6 +130288,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -130844,6 +130919,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -130913,6 +130989,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -131209,6 +131286,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -131278,6 +131356,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -131762,6 +131841,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -131831,6 +131911,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -132146,6 +132227,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -132215,6 +132297,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -132526,6 +132609,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -132595,6 +132679,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -132847,6 +132932,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -132916,6 +133002,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -133220,6 +133307,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -133289,6 +133377,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -133415,6 +133504,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -133484,6 +133574,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -133616,6 +133707,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -133685,6 +133777,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -133937,6 +134030,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -134006,6 +134100,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -134280,6 +134375,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -134349,6 +134445,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -135592,6 +135689,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -135661,6 +135759,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -136171,6 +136270,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -136240,6 +136340,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -136728,6 +136829,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -136797,6 +136899,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -137488,6 +137591,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -137557,6 +137661,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -138263,6 +138368,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -138332,6 +138438,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -139006,6 +139113,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -139075,6 +139183,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -139654,6 +139763,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -139723,6 +139833,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -140186,6 +140297,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -140255,6 +140367,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -140834,6 +140947,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -140903,6 +141017,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -141522,6 +141637,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -141591,6 +141707,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -141923,6 +142040,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -141992,6 +142110,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -142541,6 +142660,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -142610,6 +142730,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -143051,6 +143172,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -143120,6 +143242,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -143394,6 +143517,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -143463,6 +143587,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -144087,6 +144212,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -144156,6 +144282,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -144430,6 +144557,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -144499,6 +144627,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -144751,6 +144880,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -144820,6 +144950,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -145094,6 +145225,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -145163,6 +145295,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -145415,6 +145548,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -145484,6 +145618,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -145758,6 +145893,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -145827,6 +145963,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -146268,6 +146405,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -146337,6 +146475,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -146422,6 +146561,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -146491,6 +146631,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -148103,6 +148244,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -148172,6 +148314,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -148446,6 +148589,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -148515,6 +148659,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -148584,6 +148729,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -148653,6 +148799,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -149119,6 +149266,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -149188,6 +149336,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -149478,6 +149627,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -149547,6 +149697,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -149815,6 +149966,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -149884,6 +150036,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -150142,6 +150295,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -150211,6 +150365,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -150479,6 +150634,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -150548,6 +150704,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -150806,6 +150963,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -150875,6 +151033,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -151201,6 +151360,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -151270,6 +151430,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -151544,6 +151705,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -151613,6 +151775,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -152118,6 +152281,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -152187,6 +152351,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -152883,6 +153048,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -152952,6 +153118,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -153409,6 +153576,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -153478,6 +153646,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -153736,6 +153905,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -153805,6 +153975,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -154073,6 +154244,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -154142,6 +154314,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -154400,6 +154573,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -154469,6 +154643,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -154737,6 +154912,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -154806,6 +154982,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -155064,6 +155241,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -155133,6 +155311,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -155793,6 +155972,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -155862,6 +156042,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -156738,6 +156919,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -156807,6 +156989,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -157150,6 +157333,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -157219,6 +157403,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -157288,6 +157473,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -157357,6 +157543,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -158341,6 +158528,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -158410,6 +158598,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -158796,6 +158985,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -158865,6 +159055,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -158950,6 +159141,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -159019,6 +159211,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -159157,6 +159350,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -159226,6 +159420,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -159422,6 +159617,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -159491,6 +159687,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -159991,6 +160188,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -160060,6 +160258,7 @@ export namespace Prisma {
     apiKey?: string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -160446,6 +160645,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -160515,6 +160715,7 @@ export namespace Prisma {
     apiKey?: NullableStringFieldUpdateOperationsInput | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean

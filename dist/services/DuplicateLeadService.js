@@ -43,7 +43,7 @@ exports.DuplicateLeadService = {
     /**
      * Check for duplicate leads by phone, email, or WhatsApp
      */
-    async checkDuplicate(phone, email, organisationId) {
+    async checkDuplicate(phone, email, organisationId, branchId) {
         try {
             // Sanitize phone
             const cleanPhone = phone.toString().replace(/\D/g, '');
@@ -54,11 +54,17 @@ exports.DuplicateLeadService = {
             if (email) {
                 conditions.push({ email, organisationId });
             }
+            // If branchId is provided, duplicates must be in the same branch
+            const where = {
+                OR: conditions,
+                isDeleted: false
+            };
+            if (branchId) {
+                where.branchId = branchId;
+            }
             // Check for existing lead
             const existingLead = await prisma_1.default.lead.findFirst({
-                where: {
-                    OR: conditions
-                },
+                where,
                 include: {
                     assignedTo: {
                         select: {

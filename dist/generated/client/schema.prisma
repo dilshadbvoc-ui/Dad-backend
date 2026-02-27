@@ -28,6 +28,7 @@ model Organisation {
   apiKey            String?
   integrations      Json?
   leadScoringConfig Json?
+  dailyReportTime   String             @default("09:00") // Time to send daily business report (HH:mm)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   isDeleted         Boolean            @default(false)
@@ -280,7 +281,7 @@ model Lead {
   branchId               String?
   branch                 Branch?           @relation(fields: [branchId], references: [id])
 
-  @@unique([phone, organisationId])
+  @@unique([phone, organisationId, branchId])
   @@index([organisationId])
   @@index([assignedToId])
   @@index([status])

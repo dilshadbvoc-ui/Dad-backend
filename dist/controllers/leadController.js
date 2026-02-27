@@ -71,8 +71,16 @@ const getLeads = async (req, res) => {
             // Get user's role to determine visibility rules
             // Handle both UUID-based roles (new) and string-based roles (legacy)
             let roleName = '';
-            // Try to get role from Role table (UUID-based)
-            const userRole = await prisma_1.default.role.findUnique({ where: { id: user.role } });
+            // Try to get role from Role table (UUID-based or roleKey)
+            let userRole = await prisma_1.default.role.findFirst({
+                where: {
+                    OR: [
+                        { id: user.role },
+                        { roleKey: user.role, organisationId: user.organisationId },
+                        { roleKey: user.role, organisationId: null }
+                    ]
+                }
+            });
             if (userRole) {
                 roleName = userRole.name;
             }
@@ -166,19 +174,23 @@ const createLead = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
+        const currentUser = req.user;
+        const branchId = req.body.branchId || currentUser.branchId;
+        const assignedTo = req.body.assignedTo;
+        const { firstName, lastName, source, sourceDetails, company } = req.body;
         // Check for duplicates using DuplicateLeadService
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
+        const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId || undefined);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
             const reEnquiryData = {
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
                 phone: cleanPhone,
-                company: req.body.company,
-                source: req.body.source,
-                sourceDetails: req.body.sourceDetails
+                company: company,
+                source: source,
+                sourceDetails: sourceDetails
             };
             const updatedLead = await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, reEnquiryData, orgId);
             return res.status(200).json({
@@ -189,15 +201,10 @@ const createLead = async (req, res) => {
                 reEnquiryCount: updatedLead.reEnquiryCount
             });
         }
-        // Extract only known fields — do NOT spread req.body into Prisma
-        const currentUser = req.user;
-        const assignedTo = req.body.assignedTo;
-        const branchId = req.body.branchId;
-        // For manual lead creation: creator owns the lead unless explicitly assigned to someone else
-        // If assignedTo is provided, use it; otherwise assign to the creator
-        const leadOwnerId = assignedTo || currentUser.id;
         // Sanitize email: treat empty string as no email
         const cleanEmail = email && email.trim() !== '' ? email.trim() : undefined;
+        // Manual assignment owner logic
+        const leadOwnerId = assignedTo || currentUser.id;
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
@@ -378,7 +385,15 @@ const getLeadById = async (req, res) => {
                 // Get user's role to determine visibility rules
                 // Handle both UUID-based roles (new) and string-based roles (legacy)
                 let roleName = '';
-                const userRole = await prisma_1.default.role.findUnique({ where: { id: user.role } });
+                const userRole = await prisma_1.default.role.findFirst({
+                    where: {
+                        OR: [
+                            { id: user.role },
+                            { roleKey: user.role, organisationId: user.organisationId },
+                            { roleKey: user.role, organisationId: null }
+                        ]
+                    }
+                });
                 if (userRole) {
                     roleName = userRole.name;
                 }
@@ -493,8 +508,24 @@ const updateLead = async (req, res) => {
             if (requester.branchId)
                 whereObj.branchId = requester.branchId;
         }
-        // Remove products from updates as it's handled separately
-        const { products, ...leadUpdates } = updates;
+        // List of allowed fields to prevent relation/schema mismatches crashing Prisma
+        const allowedFields = [
+            'firstName', 'lastName', 'email', 'phone', 'company', 'jobTitle', 'address',
+            'status', 'source', 'sourceDetails', 'stage', 'tags', 'potentialValue',
+            'nextFollowUp', 'customFields', 'isHotLead', 'lostReason', 'notes',
+            'country', 'countryCode', 'phoneCountryCode', 'city', 'state', 'zip'
+        ];
+        const leadUpdates = {};
+        allowedFields.forEach(field => {
+            if (updates[field] !== undefined) {
+                leadUpdates[field] = updates[field];
+            }
+        });
+        // Add special handling for relation IDs if they are strings (Prisma connect is handled above)
+        if (updates.assignedToId)
+            leadUpdates.assignedToId = updates.assignedToId;
+        if (updates.branchId)
+            leadUpdates.branchId = updates.branchId;
         // Update Lead Basic Info
         const [lead] = await prisma_1.default.$transaction([
             prisma_1.default.lead.update({
@@ -584,6 +615,7 @@ const updateLead = async (req, res) => {
         }
     }
     catch (error) {
+        console.error('[updateLead] Error:', error);
         res.status(400).json({ message: error.message });
     }
 };
@@ -673,7 +705,8 @@ const createBulkLeads = async (req, res) => {
                     cleanPhone = cleanPhone.slice(-10);
                 }
                 // Check for duplicates
-                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId);
+                const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
+                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId, l.branchId || user.branchId || undefined);
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                     // Handle as re-enquiry
                     await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
@@ -1076,7 +1109,15 @@ const submitExplanation = async (req, res) => {
             // Check if user is manager of previousOwner
             // Ideally we check hierarchy properly.
             // For MVP, if user is admin or has subordinates including previousOwner
-            const userRole = await prisma_1.default.role.findUnique({ where: { id: user.role } });
+            const userRole = await prisma_1.default.role.findFirst({
+                where: {
+                    OR: [
+                        { id: user.role },
+                        { roleKey: user.role, organisationId: user.organisationId },
+                        { roleKey: user.role, organisationId: null }
+                    ]
+                }
+            });
             if (userRole && userRole.name === 'Sales Rep') {
                 return res.status(403).json({ message: 'Sales reps cannot submit manager explanations' });
             }
@@ -1117,6 +1158,7 @@ const getPendingFollowUpsCount = async (req, res) => {
         res.json({ count });
     }
     catch (error) {
+        console.error('[getPendingFollowUpsCount] Error:', error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -1144,6 +1186,7 @@ const generateAIResponse = async (req, res) => {
         res.json({ draft: completion.choices[0].message.content });
     }
     catch (error) {
+        console.error('[generateAIResponse] Error:', error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -1153,8 +1196,8 @@ const getReEnquiryLeads = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
-            return res.status(400).json({ message: 'No org' });
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
+            return res.status(403).json({ message: 'No organisation context' });
+        const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
         const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
         res.json({
             leads: reEnquiryLeads,
@@ -1172,8 +1215,8 @@ const getDuplicateLeads = async (req, res) => {
     try {
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
-            return res.status(400).json({ message: 'No org' });
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
+            return res.status(403).json({ message: 'No organisation context' });
+        const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
         const duplicates = await DuplicateLeadService.findDuplicates(orgId);
         res.json({
             duplicates,

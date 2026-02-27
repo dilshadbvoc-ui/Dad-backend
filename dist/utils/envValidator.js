@@ -28,17 +28,29 @@ class EnvironmentValidator {
                 warnings.push(...secretValidation.warnings);
             }
         }
+        // Check optional variables
+        for (const varName of this.OPTIONAL_VARS) {
+            const value = process.env[varName];
+            if (!value) {
+                warnings.push(`Missing optional environment variable: ${varName}`);
+                continue;
+            }
+            // Validate secret strength if it's a secret
+            if (varName.includes('SECRET')) {
+                const secretValidation = this.validateSecret(varName, value);
+                // Errors for optional vars are treated as warnings
+                if (!secretValidation.isValid) {
+                    warnings.push(...secretValidation.errors);
+                }
+                warnings.push(...secretValidation.warnings);
+            }
+            // Check for default values in production
+            if (process.env.NODE_ENV === 'production' && this.isDefaultValue(varName, value)) {
+                warnings.push(`Optional variable ${varName} is using a default/insecure value in production`);
+            }
+        }
         // Production-specific checks
         if (process.env.NODE_ENV === 'production') {
-            for (const varName of this.PRODUCTION_REQUIRED_VARS) {
-                const value = process.env[varName];
-                if (!value) {
-                    errors.push(`Missing production environment variable: ${varName}`);
-                }
-                else if (this.isDefaultValue(varName, value)) {
-                    errors.push(`Production environment variable ${varName} is using default/insecure value`);
-                }
-            }
             // Check HTTPS enforcement
             if (!process.env.FORCE_HTTPS && !process.env.HTTPS_ONLY) {
                 warnings.push('Consider setting FORCE_HTTPS=true for production');
@@ -177,8 +189,8 @@ class EnvironmentValidator {
         if (result.errors.length > 0) {
             console.error('❌ Environment Validation Errors:');
             result.errors.forEach(error => console.error(`  - ${error}`));
-            if (process.env.NODE_ENV === 'production') {
-                console.error('🚨 Exiting due to environment validation errors in production');
+            if (process.env.NODE_ENV === 'production' && result.errors.length > 0) {
+                console.error('🚨 Exiting due to CRITICAL environment validation errors in production');
                 process.exit(1);
             }
         }
@@ -194,12 +206,12 @@ class EnvironmentValidator {
 exports.EnvironmentValidator = EnvironmentValidator;
 EnvironmentValidator.REQUIRED_VARS = [
     'DATABASE_URL',
-    'JWT_SECRET',
+    'JWT_SECRET'
+];
+EnvironmentValidator.OPTIONAL_VARS = [
     'META_APP_SECRET',
     'META_WEBHOOK_SECRET',
-    'WHATSAPP_WEBHOOK_SECRET'
-];
-EnvironmentValidator.PRODUCTION_REQUIRED_VARS = [
+    'WHATSAPP_WEBHOOK_SECRET',
     'META_VERIFY_TOKEN',
     'WHATSAPP_VERIFY_TOKEN',
     'ALLOWED_ORIGINS'

@@ -158,10 +158,22 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 // Start Cron Jobs
 (0, cronService_1.initCronJobs)();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
+// VERY EARLY Health Check for 502 Debugging
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        uptime: process.uptime(),
+        port: PORT,
+        env: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+    });
+});
 console.log('------------------------------------------------');
 console.log(`   STARTING SERVER (NODE_ENV=${process.env.NODE_ENV})      `);
 console.log(`   PORT env: ${process.env.PORT}`);
+console.log(`   Internal PORT: ${PORT}`);
+console.log(`   Environment Keys: ${Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('KEY') && !k.includes('TOKEN')).join(', ')}`);
 console.log('------------------------------------------------');
 app.use((0, compression_1.default)()); // Enable gzip compression
 // Apply rate limiting

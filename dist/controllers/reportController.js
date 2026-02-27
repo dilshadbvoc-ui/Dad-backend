@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
+exports.getTeamPerformanceReport = exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const exceljs_1 = __importDefault(require("exceljs"));
@@ -251,19 +251,44 @@ exports.getSalesBook = getSalesBook;
 const exportToExcel = async (req, res) => {
     try {
         const { type } = req.params;
+        const { startDate, endDate, branchId, userId, stage, status } = req.query;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!orgId) {
+            return res.status(401).json({ message: 'Organisation not found' });
+        }
         const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        // Branch filter
+        const branchFilter = branchId ? { branchId: branchId } : {};
         const workbook = new exceljs_1.default.Workbook();
         workbook.creator = 'CRM Reports';
         workbook.created = new Date();
         if (type === 'leads') {
+            const where = {
+                organisationId: orgId,
+                isDeleted: false,
+                ...branchFilter
+            };
+            // Hierarchy restrictions
+            if (user.role !== 'admin' && user.role !== 'super_admin') {
+                where.assignedToId = { in: [...subordinateIds, user.id] };
+            }
+            else if (userId) {
+                where.assignedToId = userId;
+            }
+            if (stage)
+                where.stage = stage;
+            if (status)
+                where.status = status;
+            if (startDate || endDate) {
+                where.createdAt = {};
+                if (startDate)
+                    where.createdAt.gte = new Date(startDate);
+                if (endDate)
+                    where.createdAt.lte = new Date(endDate);
+            }
             const leads = await prisma_1.default.lead.findMany({
-                where: {
-                    organisationId: orgId,
-                    assignedToId: { in: [...subordinateIds, user.id] },
-                    isDeleted: false
-                },
+                where,
                 include: {
                     assignedTo: { select: { firstName: true, lastName: true } }
                 }
@@ -293,7 +318,6 @@ const exportToExcel = async (req, res) => {
                     createdAt: lead.createdAt.toLocaleDateString()
                 });
             });
-            // Style header
             sheet.getRow(1).font = { bold: true };
             sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
         }
@@ -301,10 +325,18 @@ const exportToExcel = async (req, res) => {
             const where = {
                 organisationId: orgId,
                 stage: 'closed_won',
-                isDeleted: false
+                isDeleted: false,
+                ...branchFilter
             };
             if (user.role !== 'admin' && user.role !== 'super_admin') {
                 where.ownerId = { in: [...subordinateIds, user.id] };
+            }
+            if (startDate || endDate) {
+                where.updatedAt = {};
+                if (startDate)
+                    where.updatedAt.gte = new Date(startDate);
+                if (endDate)
+                    where.updatedAt.lte = new Date(endDate);
             }
             const sales = await prisma_1.default.opportunity.findMany({
                 where,
@@ -333,6 +365,140 @@ const exportToExcel = async (req, res) => {
             sheet.getRow(1).font = { bold: true };
             sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
         }
+        else if (type === 'user-sales') {
+            const users = await prisma_1.default.user.findMany({
+                where: {
+                    id: { in: [...subordinateIds, user.id] },
+                    organisationId: orgId,
+                    isActive: true,
+                    ...branchFilter
+                },
+                select: { id: true, firstName: true, lastName: true, email: true }
+            });
+            const oppDateFilter = {};
+            if (startDate || endDate) {
+                oppDateFilter.updatedAt = {};
+                if (startDate)
+                    oppDateFilter.updatedAt.gte = new Date(startDate);
+                if (endDate)
+                    oppDateFilter.updatedAt.lte = new Date(endDate);
+            }
+            const sheet = workbook.addWorksheet('User Sales Performance');
+            sheet.columns = [
+                { header: 'Sales Rep', key: 'name', width: 25 },
+                { header: 'Email', key: 'email', width: 30 },
+                { header: 'Total Revenue', key: 'revenue', width: 15 },
+                { header: 'Deals Won', key: 'deals', width: 12 },
+                { header: 'Avg Deal Size', key: 'avgDeal', width: 15 }
+            ];
+            for (const u of users) {
+                const sales = await prisma_1.default.opportunity.findMany({
+                    where: {
+                        ownerId: u.id,
+                        organisationId: orgId,
+                        stage: 'closed_won',
+                        isDeleted: false,
+                        ...oppDateFilter
+                    },
+                    select: { amount: true }
+                });
+                const totalRevenue = sales.reduce((sum, s) => sum + s.amount, 0);
+                const avgDealSize = sales.length > 0 ? totalRevenue / sales.length : 0;
+                sheet.addRow({
+                    name: `${u.firstName} ${u.lastName}`,
+                    email: u.email,
+                    revenue: totalRevenue,
+                    deals: sales.length,
+                    avgDeal: avgDealSize
+                });
+            }
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+        }
+        else if (type === 'campaigns') {
+            const campaigns = await prisma_1.default.campaign.findMany({
+                where: { organisationId: orgId, isDeleted: false },
+                orderBy: { createdAt: 'desc' }
+            });
+            const sheet = workbook.addWorksheet('Email Campaigns');
+            sheet.columns = [
+                { header: 'Campaign Name', key: 'name', width: 30 },
+                { header: 'Subject', key: 'subject', width: 40 },
+                { header: 'Status', key: 'status', width: 12 },
+                { header: 'Date Created', key: 'createdAt', width: 15 }
+            ];
+            campaigns.forEach((c) => {
+                sheet.addRow({
+                    name: c.name,
+                    subject: c.subject,
+                    status: c.status,
+                    createdAt: c.createdAt.toLocaleDateString()
+                });
+            });
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+        }
+        else if (type === 'check-ins') {
+            const checkIns = await prisma_1.default.checkIn.findMany({
+                where: { organisationId: orgId },
+                include: {
+                    user: { select: { firstName: true, lastName: true } },
+                    lead: { select: { firstName: true, lastName: true } },
+                    account: { select: { name: true } }
+                },
+                orderBy: { createdAt: 'desc' }
+            });
+            const sheet = workbook.addWorksheet('Field Force Activity');
+            sheet.columns = [
+                { header: 'Agent', key: 'agent', width: 25 },
+                { header: 'Type', key: 'type', width: 15 },
+                { header: 'Related To', key: 'related', width: 30 },
+                { header: 'Address', key: 'address', width: 40 },
+                { header: 'Time', key: 'time', width: 20 },
+                { header: 'Notes', key: 'notes', width: 40 }
+            ];
+            checkIns.forEach((c) => {
+                const related = c.lead ? `Lead: ${c.lead.firstName} ${c.lead.lastName}` : (c.account ? `Account: ${c.account.name}` : '');
+                sheet.addRow({
+                    agent: c.user ? `${c.user.firstName} ${c.user.lastName}` : 'Unknown',
+                    type: c.type,
+                    related,
+                    address: c.address || '',
+                    time: c.createdAt.toLocaleString(),
+                    notes: c.notes || ''
+                });
+            });
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+        }
+        else if (type === 'tasks') {
+            const tasks = await prisma_1.default.task.findMany({
+                where: { organisationId: orgId, isDeleted: false },
+                include: {
+                    assignedTo: { select: { firstName: true, lastName: true } }
+                },
+                orderBy: { createdAt: 'desc' }
+            });
+            const sheet = workbook.addWorksheet('Follow Ups');
+            sheet.columns = [
+                { header: 'Subject', key: 'subject', width: 30 },
+                { header: 'Status', key: 'status', width: 12 },
+                { header: 'Priority', key: 'priority', width: 12 },
+                { header: 'Due Date', key: 'dueDate', width: 15 },
+                { header: 'Assigned To', key: 'assignedTo', width: 20 }
+            ];
+            tasks.forEach((t) => {
+                sheet.addRow({
+                    subject: t.subject,
+                    status: t.status,
+                    priority: t.priority,
+                    dueDate: t.dueDate ? t.dueDate.toLocaleDateString() : 'N/A',
+                    assignedTo: t.assignedTo ? `${t.assignedTo.firstName} ${t.assignedTo.lastName}` : 'Unassigned'
+                });
+            });
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+        }
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=${type}_report_${Date.now()}.xlsx`);
         await workbook.xlsx.write(res);
@@ -344,4 +510,61 @@ const exportToExcel = async (req, res) => {
     }
 };
 exports.exportToExcel = exportToExcel;
+const getTeamPerformanceReport = async (req, res) => {
+    try {
+        const user = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!orgId)
+            return res.status(403).json({ message: 'No org' });
+        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        const teamIds = [user.id, ...subordinateIds];
+        const teamsData = await prisma_1.default.user.findMany({
+            where: { id: { in: teamIds } },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                _count: {
+                    select: {
+                        assignedLeads: true,
+                        ownedOpportunities: true
+                    }
+                }
+            }
+        });
+        // Detailed stats per user
+        const report = await Promise.all(teamsData.map(async (u) => {
+            const leadStats = await prisma_1.default.lead.groupBy({
+                by: ['status'],
+                where: { assignedToId: u.id, organisationId: orgId, isDeleted: false },
+                _count: true
+            });
+            const saleStats = await prisma_1.default.opportunity.aggregate({
+                where: { ownerId: u.id, organisationId: orgId, stage: 'closed_won', isDeleted: false },
+                _sum: { amount: true },
+                _count: true
+            });
+            const wonStats = await prisma_1.default.opportunity.count({
+                where: { ownerId: u.id, organisationId: orgId, stage: 'closed_won', isDeleted: false },
+            });
+            const lostStats = await prisma_1.default.lead.count({
+                where: { assignedToId: u.id, organisationId: orgId, status: 'lost', isDeleted: false }
+            });
+            return {
+                userId: u.id,
+                name: `${u.firstName} ${u.lastName || ''}`.trim(),
+                totalLeads: u._count.assignedLeads,
+                totalSales: saleStats._sum.amount || 0,
+                salesCount: saleStats._count,
+                lostLeads: lostStats,
+                statusBreakdown: leadStats.map(s => ({ status: s.status, count: s._count }))
+            };
+        }));
+        res.json(report);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.getTeamPerformanceReport = getTeamPerformanceReport;
 //# sourceMappingURL=reportController.js.map

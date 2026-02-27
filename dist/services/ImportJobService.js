@@ -152,8 +152,8 @@ class ImportJobService {
                         }
                     }
                     // Basic Validation
-                    if (!leadData.firstName || !leadData.lastName || (!leadData.phone && !leadData.email)) {
-                        throw new Error('Missing required fields (Name and at least Phone or Email)');
+                    if (!leadData.firstName || (!leadData.phone && !leadData.email)) {
+                        throw new Error('Missing required fields (First Name and at least Phone or Email)');
                     }
                     // Sanitize phone
                     if (leadData.phone) {
@@ -179,7 +179,7 @@ class ImportJobService {
                     }
                     // Check for duplicates using DuplicateLeadService
                     const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
-                    const duplicateCheck = await DuplicateLeadService.checkDuplicate(leadData.phone, leadData.email, job.organisationId);
+                    const duplicateCheck = await DuplicateLeadService.checkDuplicate(leadData.phone, leadData.email, job.organisationId, branchId || undefined);
                     if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                         // Handle as re-enquiry instead of creating duplicate
                         await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {

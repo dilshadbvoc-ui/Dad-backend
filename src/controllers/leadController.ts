@@ -38,8 +38,17 @@ export const getLeads = async (req: Request, res: Response) => {
             // Handle both UUID-based roles (new) and string-based roles (legacy)
             let roleName = '';
 
-            // Try to get role from Role table (UUID-based)
-            const userRole = await prisma.role.findUnique({ where: { id: user.role } });
+            // Try to get role from Role table (UUID-based or roleKey)
+            let userRole = await prisma.role.findFirst({
+                where: {
+                    OR: [
+                        { id: user.role },
+                        { roleKey: user.role, organisationId: user.organisationId },
+                        { roleKey: user.role, organisationId: null }
+                    ]
+                }
+            });
+
             if (userRole) {
                 roleName = userRole.name;
             } else {
@@ -379,7 +388,16 @@ export const getLeadById = async (req: Request, res: Response) => {
                 // Handle both UUID-based roles (new) and string-based roles (legacy)
                 let roleName = '';
 
-                const userRole = await prisma.role.findUnique({ where: { id: user.role } });
+                const userRole = await prisma.role.findFirst({
+                    where: {
+                        OR: [
+                            { id: user.role },
+                            { roleKey: user.role, organisationId: user.organisationId },
+                            { roleKey: user.role, organisationId: null }
+                        ]
+                    }
+                });
+
                 if (userRole) {
                     roleName = userRole.name;
                 } else {
@@ -502,8 +520,24 @@ export const updateLead = async (req: Request, res: Response) => {
             if (requester.branchId) whereObj.branchId = requester.branchId;
         }
 
-        // Remove products from updates as it's handled separately
-        const { products, ...leadUpdates } = updates;
+        // List of allowed fields to prevent relation/schema mismatches crashing Prisma
+        const allowedFields = [
+            'firstName', 'lastName', 'email', 'phone', 'company', 'jobTitle', 'address',
+            'status', 'source', 'sourceDetails', 'stage', 'tags', 'potentialValue',
+            'nextFollowUp', 'customFields', 'isHotLead', 'lostReason', 'notes',
+            'country', 'countryCode', 'phoneCountryCode', 'city', 'state', 'zip'
+        ];
+
+        const leadUpdates: any = {};
+        allowedFields.forEach(field => {
+            if (updates[field] !== undefined) {
+                leadUpdates[field] = updates[field];
+            }
+        });
+
+        // Add special handling for relation IDs if they are strings (Prisma connect is handled above)
+        if (updates.assignedToId) leadUpdates.assignedToId = updates.assignedToId;
+        if (updates.branchId) leadUpdates.branchId = updates.branchId;
 
         // Update Lead Basic Info
         const [lead] = await prisma.$transaction([
@@ -606,6 +640,7 @@ export const updateLead = async (req: Request, res: Response) => {
         }
 
     } catch (error) {
+        console.error('[updateLead] Error:', error);
         res.status(400).json({ message: (error as Error).message });
     }
 };
@@ -1150,7 +1185,15 @@ export const submitExplanation = async (req: Request, res: Response) => {
             // Check if user is manager of previousOwner
             // Ideally we check hierarchy properly.
             // For MVP, if user is admin or has subordinates including previousOwner
-            const userRole = await prisma.role.findUnique({ where: { id: user.role } });
+            const userRole = await prisma.role.findFirst({
+                where: {
+                    OR: [
+                        { id: user.role },
+                        { roleKey: user.role, organisationId: user.organisationId },
+                        { roleKey: user.role, organisationId: null }
+                    ]
+                }
+            });
             if (userRole && userRole.name === 'Sales Rep') {
                 return res.status(403).json({ message: 'Sales reps cannot submit manager explanations' });
             }
@@ -1193,6 +1236,7 @@ export const getPendingFollowUpsCount = async (req: Request, res: Response) => {
         const count = await prisma.lead.count({ where });
         res.json({ count });
     } catch (error) {
+        console.error('[getPendingFollowUpsCount] Error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };
@@ -1224,6 +1268,7 @@ export const generateAIResponse = async (req: Request, res: Response) => {
         res.json({ draft: completion.choices[0].message.content });
 
     } catch (error) {
+        console.error('[generateAIResponse] Error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };
@@ -1234,7 +1279,7 @@ export const generateAIResponse = async (req: Request, res: Response) => {
 export const getReEnquiryLeads = async (req: Request, res: Response) => {
     try {
         const orgId = getOrgId((req as any).user);
-        if (!orgId) return res.status(400).json({ message: 'No org' });
+        if (!orgId) return res.status(403).json({ message: 'No organisation context' });
 
         const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
         const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
@@ -1253,7 +1298,7 @@ export const getReEnquiryLeads = async (req: Request, res: Response) => {
 export const getDuplicateLeads = async (req: Request, res: Response) => {
     try {
         const orgId = getOrgId((req as any).user);
-        if (!orgId) return res.status(400).json({ message: 'No org' });
+        if (!orgId) return res.status(403).json({ message: 'No organisation context' });
 
         const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
         const duplicates = await DuplicateLeadService.findDuplicates(orgId);

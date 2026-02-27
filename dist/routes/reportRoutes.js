@@ -12,6 +12,8 @@ router.get('/leads', reportController_1.getLeadsReport);
 router.get('/user-performance', reportController_1.getUserPerformance);
 // Sales book with time period filter
 router.get('/sales-book', reportController_1.getSalesBook);
+// Team performance for managers
+router.get('/team-performance', reportController_1.getTeamPerformanceReport);
 // Export to Excel
 router.get('/export/:type', reportController_1.exportToExcel);
 exports.default = router;
