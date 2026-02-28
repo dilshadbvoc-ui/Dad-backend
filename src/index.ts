@@ -340,6 +340,8 @@ import checkInRoutes from './routes/checkInRoutes';
 app.use('/api/checkins', checkInRoutes);
 app.use('/api/calendar', eventRoutes);
 app.use('/api/tasks', taskRoutes);
+import followUpRoutes from './routes/followUpRoutes';
+app.use('/api/follow-ups', followUpRoutes);
 
 // Commerce
 app.use('/api/products', productRoutes);
