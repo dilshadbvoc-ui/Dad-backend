@@ -32,27 +32,30 @@ export const getFollowUps = async (req: Request, res: Response) => {
         }
 
         // 2. Hierarchy Visibility - Show follow-ups for user and subordinates
-        const subordinateIds = await getSubordinateIds(user.id);
-        const visibleUserIds = [...subordinateIds, user.id];
-        
-        const visibilityConditions = [
-            // Tasks assigned to user or subordinates
-            { assignedToId: { in: visibleUserIds } },
-            // Tasks created by user
-            { createdById: user.id },
-            // Tasks related to leads assigned to user or subordinates
-            { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
-            // Tasks related to contacts owned by user or subordinates
-            { contact: { ownerId: { in: visibleUserIds } } },
-            // Tasks related to accounts owned by user or subordinates
-            { account: { ownerId: { in: visibleUserIds } } },
-            // Tasks related to opportunities owned by user or subordinates
-            { opportunity: { ownerId: { in: visibleUserIds } } }
-        ];
-        
-        // Use AND to combine with other filters
-        if (!where.AND) where.AND = [];
-        (where.AND as any[]).push({ OR: visibilityConditions });
+        // Admins and super admins see all tasks in their org (already filtered above)
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
+            const subordinateIds = await getSubordinateIds(user.id);
+            const visibleUserIds = [...subordinateIds, user.id];
+            
+            const visibilityConditions = [
+                // Tasks assigned to user or subordinates
+                { assignedToId: { in: visibleUserIds } },
+                // Tasks created by user
+                { createdById: user.id },
+                // Tasks related to leads assigned to user or subordinates
+                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                // Tasks related to contacts owned by user or subordinates
+                { contact: { ownerId: { in: visibleUserIds } } },
+                // Tasks related to accounts owned by user or subordinates
+                { account: { ownerId: { in: visibleUserIds } } },
+                // Tasks related to opportunities owned by user or subordinates
+                { opportunity: { ownerId: { in: visibleUserIds } } }
+            ];
+            
+            // Use AND to combine with other filters
+            if (!where.AND) where.AND = [];
+            (where.AND as any[]).push({ OR: visibilityConditions });
+        }
 
         if (search) {
             const searchConditions = [
