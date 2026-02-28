@@ -13,6 +13,8 @@ export const getFollowUps = async (req: Request, res: Response) => {
         const skip = (page - 1) * limit;
         const user = (req as any).user;
 
+        console.log('[getFollowUps] User:', user.id, user.role, user.email);
+
         const where: Prisma.TaskWhereInput = { 
             isDeleted: false,
             // Only show tasks with due dates (follow-ups)
@@ -28,7 +30,6 @@ export const getFollowUps = async (req: Request, res: Response) => {
             const orgId = getOrgId(user);
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId) where.branchId = user.branchId;
         }
 
         // 2. Hierarchy Visibility - Show follow-ups for user and subordinates
@@ -36,6 +37,8 @@ export const getFollowUps = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = await getSubordinateIds(user.id);
             const visibleUserIds = [...subordinateIds, user.id];
+            
+            console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
             
             const visibilityConditions = [
                 // Tasks assigned to user or subordinates
@@ -72,7 +75,11 @@ export const getFollowUps = async (req: Request, res: Response) => {
             where.status = status as any;
         }
 
+        console.log('[getFollowUps] Query where:', JSON.stringify(where, null, 2));
+
         const count = await prisma.task.count({ where });
+        console.log('[getFollowUps] Count:', count);
+        
         const tasks = await prisma.task.findMany({
             where,
             include: {
@@ -91,6 +98,8 @@ export const getFollowUps = async (req: Request, res: Response) => {
             take: limit,
             orderBy: { dueDate: 'asc' } // Sort by due date ascending (earliest first)
         });
+
+        console.log('[getFollowUps] Tasks found:', tasks.length);
 
         // Transform tasks to include relatedTo
         const transformedTasks = tasks.map(task => {
