@@ -45,11 +45,15 @@ export const getFollowUps = async (req: Request, res: Response) => {
             console.log('[getFollowUps] Subordinate IDs:', subordinateIds);
             console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
             
-            // ULTRA SIMPLIFIED: Show tasks created by OR assigned to visible users
-            // This is the most permissive approach - if user created it or it's assigned to them, show it
+            // Show tasks if:
+            // 1. Created by user/subordinates (ALWAYS show what you created)
+            // 2. Assigned to user/subordinates
+            // 3. Unassigned (null) but created by user/subordinates
             where.OR = [
                 { createdById: { in: visibleUserIds } },
-                { assignedToId: { in: visibleUserIds } }
+                { assignedToId: { in: visibleUserIds } },
+                // Handle unassigned tasks created by visible users
+                { AND: [{ assignedToId: null }, { createdById: { in: visibleUserIds } }] }
             ];
         }
 
@@ -68,7 +72,7 @@ export const getFollowUps = async (req: Request, res: Response) => {
             where.status = status as any;
         }
 
-        console.log('[getFollowUps] Query where:', JSON.stringify(where, null, 2));
+        console.log('[getFollowUps] Final query where:', JSON.stringify(where, null, 2));
 
         const count = await prisma.task.count({ where });
         console.log('[getFollowUps] Count:', count);
