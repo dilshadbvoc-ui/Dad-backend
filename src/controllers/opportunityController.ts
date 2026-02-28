@@ -181,6 +181,39 @@ export const createOpportunity = async (req: Request, res: Response) => {
                     }).catch(console.error);
                 });
             }
+
+            // Hierarchy Notification on Sale Closure with Payment
+            try {
+                const { paymentType, paidAmount } = req.body;
+                
+                // Only send notification if payment is recorded
+                if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
+                    const owner = await prisma.user.findUnique({
+                        where: { id: opportunity.ownerId! },
+                        select: { reportsToId: true, firstName: true, lastName: true }
+                    });
+
+                    if (owner && owner.reportsToId) {
+                        let paymentMessage = '';
+                        if (paymentType === 'paid') {
+                            paymentMessage = `Full payment of ₹${opportunity.amount.toLocaleString('en-IN')} received.`;
+                        } else if (paymentType === 'partial') {
+                            paymentMessage = `Partial payment of ₹${paidAmount?.toLocaleString('en-IN')} received (Total: ₹${opportunity.amount.toLocaleString('en-IN')}).`;
+                        } else if (paymentType === 'emi') {
+                            paymentMessage = `EMI payment plan initiated for ₹${opportunity.amount.toLocaleString('en-IN')}.`;
+                        }
+
+                        await NotificationService.sendToHierarchy(
+                            opportunity.ownerId!,
+                            'Sale Closed with Payment! 🎉💰',
+                            `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}". ${paymentMessage}`,
+                            'success'
+                        );
+                    }
+                }
+            } catch (notifyErr) {
+                console.error('Hierarchy notification error:', notifyErr);
+            }
         }
     } catch (error) {
         res.status(400).json({ message: (error as Error).message });
@@ -370,20 +403,34 @@ export const updateOpportunity = async (req: Request, res: Response) => {
                 });
             }
 
-            // Hierarchy Notification on Sale Closure
+            // Hierarchy Notification on Sale Closure with Payment
             try {
-                const owner = await prisma.user.findUnique({
-                    where: { id: opportunity.ownerId! },
-                    select: { reportsToId: true, firstName: true, lastName: true }
-                });
+                const { paymentType, paidAmount } = req.body;
+                
+                // Only send notification if payment is recorded
+                if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
+                    const owner = await prisma.user.findUnique({
+                        where: { id: opportunity.ownerId! },
+                        select: { reportsToId: true, firstName: true, lastName: true }
+                    });
 
-                if (owner && owner.reportsToId) {
-                    await NotificationService.sendToHierarchy(
-                        opportunity.ownerId!,
-                        'Sale Closed! 🎉',
-                        `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}" for $${opportunity.amount}.`,
-                        'success'
-                    );
+                    if (owner && owner.reportsToId) {
+                        let paymentMessage = '';
+                        if (paymentType === 'paid') {
+                            paymentMessage = `Full payment of ₹${opportunity.amount.toLocaleString('en-IN')} received.`;
+                        } else if (paymentType === 'partial') {
+                            paymentMessage = `Partial payment of ₹${paidAmount?.toLocaleString('en-IN')} received (Total: ₹${opportunity.amount.toLocaleString('en-IN')}).`;
+                        } else if (paymentType === 'emi') {
+                            paymentMessage = `EMI payment plan initiated for ₹${opportunity.amount.toLocaleString('en-IN')}.`;
+                        }
+
+                        await NotificationService.sendToHierarchy(
+                            opportunity.ownerId!,
+                            'Sale Closed with Payment! 🎉💰',
+                            `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}". ${paymentMessage}`,
+                            'success'
+                        );
+                    }
                 }
             } catch (notifyErr) {
                 console.error('Hierarchy notification error:', notifyErr);
