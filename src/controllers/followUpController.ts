@@ -43,27 +43,12 @@ export const getFollowUps = async (req: Request, res: Response) => {
             console.log('[getFollowUps] Subordinate IDs:', subordinateIds);
             console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
             
-            // Simplified visibility: Show tasks if ANY of these conditions are met
-            const visibilityConditions = [
-                // Tasks assigned to user or subordinates (including null assignments if created by user)
-                { assignedToId: { in: visibleUserIds } },
-                // Tasks created by user (ALWAYS show tasks user created)
+            // ULTRA SIMPLIFIED: Show tasks created by OR assigned to visible users
+            // This is the most permissive approach - if user created it or it's assigned to them, show it
+            where.OR = [
                 { createdById: { in: visibleUserIds } },
-                // Tasks with no assignment but created by visible users
-                { AND: [{ assignedToId: null }, { createdById: { in: visibleUserIds } }] },
-                // Tasks related to leads assigned to user or subordinates
-                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
-                // Tasks related to contacts owned by user or subordinates
-                { contact: { ownerId: { in: visibleUserIds } } },
-                // Tasks related to accounts owned by user or subordinates
-                { account: { ownerId: { in: visibleUserIds } } },
-                // Tasks related to opportunities owned by user or subordinates
-                { opportunity: { ownerId: { in: visibleUserIds } } }
+                { assignedToId: { in: visibleUserIds } }
             ];
-            
-            // Use AND to combine with other filters
-            if (!where.AND) where.AND = [];
-            (where.AND as any[]).push({ OR: visibilityConditions });
         }
 
         if (search) {
