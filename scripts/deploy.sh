@@ -115,6 +115,12 @@ if [ "$SKIP_BUILD" = false ]; then
     NODE_OPTIONS=--max-old-space-size=2560 npm run build
 else
     echo "⏭️ Skipping build as requested (Dist already uploaded)"
+    # Verify dist folder exists
+    if [ ! -d "dist" ] || [ ! -f "dist/index.js" ]; then
+        echo "❌ ERROR: dist folder not found or incomplete. Building now..."
+        rm -rf dist
+        NODE_OPTIONS=--max-old-space-size=2560 npm run build
+    fi
 fi
 node copy-prisma.js
 
