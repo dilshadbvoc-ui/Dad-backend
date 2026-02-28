@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/authMiddleware';
 import prisma from '../config/prisma';
+import { getVisibleUserIds } from '../utils/hierarchyUtils';
 
 export const createCheckIn = async (req: AuthRequest, res: Response) => {
     try {
@@ -71,13 +72,20 @@ export const createCheckIn = async (req: AuthRequest, res: Response) => {
 export const getCheckIns = async (req: AuthRequest, res: Response) => {
     try {
         const organisationId = req.user?.organisationId;
-        const { date, userId } = req.query;
+        const userId = req.user?.id;
+        const { date, userId: queryUserId } = req.query;
 
-        if (!organisationId) {
+        if (!organisationId || !userId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        const where: any = { organisationId };
+        // Get visible user IDs based on hierarchy (self, subordinates, branch members)
+        const visibleUserIds = await getVisibleUserIds(userId);
+
+        const where: any = { 
+            organisationId,
+            userId: { in: visibleUserIds } // Only show check-ins from visible users
+        };
 
         if (date) {
             const startDate = new Date(date as string);
@@ -91,8 +99,14 @@ export const getCheckIns = async (req: AuthRequest, res: Response) => {
             };
         }
 
-        if (userId) {
-            where.userId = userId as string;
+        // If specific user is requested, ensure they're in visible users
+        if (queryUserId) {
+            if (visibleUserIds.includes(queryUserId as string)) {
+                where.userId = queryUserId as string;
+            } else {
+                // User not in hierarchy, return empty result
+                return res.json([]);
+            }
         }
 
         const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
