@@ -32,6 +32,7 @@ import emailListRoutes from './routes/emailListRoutes';
 import interactionRoutes from './routes/interactionRoutes';
 import eventRoutes from './routes/eventRoutes';
 import taskRoutes from './routes/taskRoutes';
+import followUpRoutes from './routes/followUpRoutes';
 import workflowRoutes from './routes/workflowRoutes';
 import productRoutes from './routes/productRoutes';
 import quoteRoutes from './routes/quoteRoutes';
@@ -340,7 +341,6 @@ import checkInRoutes from './routes/checkInRoutes';
 app.use('/api/checkins', checkInRoutes);
 app.use('/api/calendar', eventRoutes);
 app.use('/api/tasks', taskRoutes);
-import followUpRoutes from './routes/followUpRoutes';
 app.use('/api/follow-ups', followUpRoutes);
 
 // Commerce
