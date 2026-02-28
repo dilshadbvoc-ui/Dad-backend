@@ -28,6 +28,7 @@ export const getFollowUps = async (req: Request, res: Response) => {
             }
         } else {
             const orgId = getOrgId(user);
+            console.log('[getFollowUps] Org ID:', orgId);
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
         }
@@ -36,8 +37,10 @@ export const getFollowUps = async (req: Request, res: Response) => {
         // Admins and super admins see all tasks in their org (already filtered above)
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = await getSubordinateIds(user.id);
-            const visibleUserIds = [...subordinateIds, user.id];
+            const visibleUserIds = [...new Set([...subordinateIds, user.id])]; // Remove duplicates
             
+            console.log('[getFollowUps] User ID:', user.id);
+            console.log('[getFollowUps] Subordinate IDs:', subordinateIds);
             console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
             
             // Simplified visibility: Show tasks if ANY of these conditions are met
