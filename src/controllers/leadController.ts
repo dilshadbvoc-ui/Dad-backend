@@ -512,7 +512,7 @@ export const updateLead = async (req: Request, res: Response) => {
             await CustomFieldValidationService.validateFields('Lead', currentLead.organisationId, updates.customFields);
         }
 
-        const whereObj: any = { id: leadId };
+        const whereObj: any = { id: leadId, isDeleted: false };
         if (requester.role !== 'super_admin') {
             const orgId = getOrgId(requester);
             if (!orgId) return res.status(403).json({ message: 'No org' });
