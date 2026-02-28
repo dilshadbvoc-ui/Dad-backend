@@ -126,3 +126,74 @@ export const getFollowUps = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+
+// PUT /api/follow-ups/:id - Update a follow-up task
+export const updateFollowUp = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const user = (req as any).user;
+        const { status, dueDate, subject, description, priority, assignedToId } = req.body;
+
+        // Check if task exists and user has permission
+        const task = await prisma.task.findUnique({
+            where: { id },
+            include: { createdBy: true, assignedTo: true }
+        });
+
+        if (!task) {
+            return res.status(404).json({ message: 'Follow-up not found' });
+        }
+
+        // Permission check: user must be creator, assignee, admin, or super_admin
+        const isCreator = task.createdById === user.id;
+        const isAssignee = task.assignedToId === user.id;
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+
+        if (!isCreator && !isAssignee && !isAdmin) {
+            return res.status(403).json({ message: 'Not authorized to update this follow-up' });
+        }
+
+        // Update the task
+        const updatedTask = await prisma.task.update({
+            where: { id },
+            data: {
+                ...(status && { status }),
+                ...(dueDate && { dueDate: new Date(dueDate) }),
+                ...(subject && { subject }),
+                ...(description !== undefined && { description }),
+                ...(priority && { priority }),
+                ...(assignedToId !== undefined && { assignedToId })
+            },
+            include: {
+                assignedTo: { select: { firstName: true, lastName: true, email: true } },
+                createdBy: { select: { firstName: true, lastName: true, email: true } },
+                lead: { 
+                    where: { isDeleted: false },
+                    select: { id: true, firstName: true, lastName: true, company: true } 
+                },
+                contact: { select: { id: true, firstName: true, lastName: true } },
+                account: { select: { id: true, name: true } },
+                opportunity: { select: { id: true, name: true } },
+            }
+        });
+
+        // Transform response
+        let relatedTo = null;
+        let onModel = null;
+
+        if (updatedTask.lead) { relatedTo = updatedTask.lead; onModel = 'Lead'; }
+        else if (updatedTask.contact) { relatedTo = updatedTask.contact; onModel = 'Contact'; }
+        else if (updatedTask.account) { relatedTo = updatedTask.account; onModel = 'Account'; }
+        else if (updatedTask.opportunity) { relatedTo = updatedTask.opportunity; onModel = 'Opportunity'; }
+
+        res.json({
+            ...updatedTask,
+            relatedTo,
+            onModel
+        });
+    } catch (error) {
+        console.error('[updateFollowUp] Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
