@@ -30,9 +30,9 @@ export const authLimiter = rateLimit({
 // WhatsApp API rate limiting (more restrictive)
 export const whatsappLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
-    max: 80, // WhatsApp allows 80 messages per minute per phone number
+    max: 500, // Increased from 80 to allow more internal operations
     message: {
-        error: 'WhatsApp rate limit exceeded. Maximum 80 messages per minute.',
+        error: 'WhatsApp rate limit exceeded. Please try again in a moment.',
         retryAfter: '1 minute'
     },
     standardHeaders: true,
@@ -42,9 +42,9 @@ export const whatsappLimiter = rateLimit({
 // Meta API rate limiting
 export const metaLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 200, // Meta API allows 200 calls per hour per app
+    max: 1000, // Increased from 200 to allow more internal operations
     message: {
-        error: 'Meta API rate limit exceeded. Maximum 200 calls per hour.',
+        error: 'Meta API rate limit exceeded. Please try again later.',
         retryAfter: '1 hour'
     },
     standardHeaders: true,
@@ -54,7 +54,7 @@ export const metaLimiter = rateLimit({
 // Webhook rate limiting (prevent DoS attacks)
 export const webhookLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
-    max: 100, // Allow 100 webhook calls per minute per IP
+    max: 1000, // Increased from 100 to allow more webhook traffic
     message: {
         error: 'Webhook rate limit exceeded.',
         retryAfter: '1 minute'
@@ -66,9 +66,9 @@ export const webhookLimiter = rateLimit({
 // Campaign sending rate limiting
 export const campaignLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // Maximum 10 campaigns per hour per organization
+    max: 100, // Increased from 10 to allow more campaign operations
     message: {
-        error: 'Campaign rate limit exceeded. Maximum 10 campaigns per hour.',
+        error: 'Campaign rate limit exceeded. Please try again later.',
         retryAfter: '1 hour'
     },
     standardHeaders: true,
