@@ -71,7 +71,11 @@ export const getTasks = async (req: Request, res: Response) => {
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
                 // Include all potential relations to reconstruct 'relatedTo'
-                lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+                // Filter out deleted leads
+                lead: { 
+                    where: { isDeleted: false },
+                    select: { id: true, firstName: true, lastName: true, company: true } 
+                },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
                 opportunity: { select: { id: true, name: true } },
@@ -192,7 +196,10 @@ export const getTaskById = async (req: Request, res: Response) => {
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true } },
-                lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+                lead: { 
+                    where: { isDeleted: false },
+                    select: { id: true, firstName: true, lastName: true, company: true } 
+                },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
                 opportunity: { select: { id: true, name: true } },

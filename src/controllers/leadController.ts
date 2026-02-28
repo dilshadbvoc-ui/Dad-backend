@@ -1229,7 +1229,8 @@ export const getPendingFollowUpsCount = async (req: Request, res: Response) => {
 
         const where: any = {
             nextFollowUp: { lte: endOfToday },
-            status: { not: LeadStatus.converted }
+            status: { not: LeadStatus.converted },
+            isDeleted: false
         };
 
         if (user.role !== 'super_admin') {
