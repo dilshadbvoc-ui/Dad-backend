@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId } from '../utils/hierarchyUtils';
+import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { ResponseHandler } from '../utils/apiResponse';
 import { logger } from '../utils/logger';
 
@@ -44,11 +44,40 @@ export const globalSearch = async (req: Request, res: Response) => {
     const searchTerm = query.trim();
     const results: SearchResult[] = [];
 
-    // Search Leads
+    // Get visible user IDs based on hierarchy (includes user, subordinates, and branch members)
+    const visibleUserIds = await getVisibleUserIds(userId);
+
+    // Get user's branch for additional filtering
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { branchId: true, role: true }
+    });
+
+    // Check if user is admin (admins can see all data in their organization)
+    const userRole = await prisma.role.findFirst({
+      where: {
+        OR: [
+          { id: currentUser?.role },
+          { roleKey: currentUser?.role, organisationId: organisationId },
+          { roleKey: currentUser?.role, organisationId: null }
+        ]
+      }
+    });
+
+    const isUserAdmin = userRole?.name === 'Admin' || userRole?.roleKey === 'admin';
+
+    // Build branch filter - only apply if user has a branch and is not admin
+    const branchFilter = !isUserAdmin && currentUser?.branchId 
+      ? { branchId: currentUser.branchId }
+      : {};
+
+    // Search Leads - filtered by hierarchy and branch
     const leads = await prisma.lead.findMany({
       where: {
         organisationId,
         isDeleted: false,
+        assignedToId: { in: visibleUserIds }, // Only show leads assigned to visible users
+        ...branchFilter, // Add branch filter
         OR: [
           { firstName: { contains: searchTerm, mode: 'insensitive' } },
           { lastName: { contains: searchTerm, mode: 'insensitive' } },
@@ -77,11 +106,13 @@ export const globalSearch = async (req: Request, res: Response) => {
       });
     });
 
-    // Search Contacts
+    // Search Contacts - filtered by hierarchy and branch
     const contacts = await prisma.contact.findMany({
       where: {
         organisationId,
         isDeleted: false,
+        ownerId: { in: visibleUserIds }, // Only show contacts owned by visible users
+        ...branchFilter, // Add branch filter
         OR: [
           { firstName: { contains: searchTerm, mode: 'insensitive' } },
           { lastName: { contains: searchTerm, mode: 'insensitive' } },
@@ -109,11 +140,13 @@ export const globalSearch = async (req: Request, res: Response) => {
       });
     });
 
-    // Search Accounts
+    // Search Accounts - filtered by hierarchy and branch
     const accounts = await prisma.account.findMany({
       where: {
         organisationId,
         isDeleted: false,
+        ownerId: { in: visibleUserIds }, // Only show accounts owned by visible users
+        ...branchFilter, // Add branch filter
         OR: [
           { name: { contains: searchTerm, mode: 'insensitive' } },
           { industry: { contains: searchTerm, mode: 'insensitive' } },
@@ -141,11 +174,13 @@ export const globalSearch = async (req: Request, res: Response) => {
       });
     });
 
-    // Search Opportunities
+    // Search Opportunities - filtered by hierarchy and branch
     const opportunities = await prisma.opportunity.findMany({
       where: {
         organisationId,
         isDeleted: false,
+        ownerId: { in: visibleUserIds }, // Only show opportunities owned by visible users
+        ...branchFilter, // Add branch filter
         OR: [
           { name: { contains: searchTerm, mode: 'insensitive' } },
           { description: { contains: searchTerm, mode: 'insensitive' } },
@@ -174,11 +209,13 @@ export const globalSearch = async (req: Request, res: Response) => {
       });
     });
 
-    // Search Tasks
+    // Search Tasks - filtered by hierarchy and branch
     const tasks = await prisma.task.findMany({
       where: {
         organisationId,
         isDeleted: false,
+        assignedToId: { in: visibleUserIds }, // Only show tasks assigned to visible users
+        ...branchFilter, // Add branch filter
         OR: [
           { subject: { contains: searchTerm, mode: 'insensitive' } },
           { description: { contains: searchTerm, mode: 'insensitive' } }
@@ -272,13 +309,42 @@ export const searchSuggestions = async (req: Request, res: Response) => {
     const searchTerm = query.trim();
     const suggestions: string[] = [];
 
-    // Get suggestions from different entities
+    // Get visible user IDs based on hierarchy
+    const visibleUserIds = await getVisibleUserIds(userId);
+
+    // Get user's branch for additional filtering
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { branchId: true, role: true }
+    });
+
+    // Check if user is admin
+    const userRole = await prisma.role.findFirst({
+      where: {
+        OR: [
+          { id: currentUser?.role },
+          { roleKey: currentUser?.role, organisationId: organisationId },
+          { roleKey: currentUser?.role, organisationId: null }
+        ]
+      }
+    });
+
+    const isUserAdmin = userRole?.name === 'Admin' || userRole?.roleKey === 'admin';
+
+    // Build branch filter
+    const branchFilter = !isUserAdmin && currentUser?.branchId 
+      ? { branchId: currentUser.branchId }
+      : {};
+
+    // Get suggestions from different entities - filtered by hierarchy and branch
     const [leadSuggestions, contactSuggestions, accountSuggestions] = await Promise.all([
       // Lead name suggestions
       prisma.lead.findMany({
         where: {
           organisationId,
           isDeleted: false,
+          assignedToId: { in: visibleUserIds }, // Only show leads assigned to visible users
+          ...branchFilter, // Add branch filter
           OR: [
             { firstName: { startsWith: searchTerm, mode: 'insensitive' } },
             { lastName: { startsWith: searchTerm, mode: 'insensitive' } },
@@ -293,6 +359,8 @@ export const searchSuggestions = async (req: Request, res: Response) => {
       prisma.contact.findMany({
         where: {
           organisationId,
+          ownerId: { in: visibleUserIds }, // Only show contacts owned by visible users
+          ...branchFilter, // Add branch filter
           OR: [
             { firstName: { startsWith: searchTerm, mode: 'insensitive' } },
             { lastName: { startsWith: searchTerm, mode: 'insensitive' } }
@@ -306,6 +374,8 @@ export const searchSuggestions = async (req: Request, res: Response) => {
       prisma.account.findMany({
         where: {
           organisationId,
+          ownerId: { in: visibleUserIds }, // Only show accounts owned by visible users
+          ...branchFilter, // Add branch filter
           name: { startsWith: searchTerm, mode: 'insensitive' }
         },
         select: { name: true },
