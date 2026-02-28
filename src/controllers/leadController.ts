@@ -493,8 +493,9 @@ export const updateLead = async (req: Request, res: Response) => {
             });
         }
 
-        // Track Follow-up Change
+        // Track Follow-up Change and Create Task
         if (updates.nextFollowUp) {
+            // Create interaction log
             await prisma.interaction.create({
                 data: {
                     leadId: leadId,
@@ -505,6 +506,43 @@ export const updateLead = async (req: Request, res: Response) => {
                     organisationId: currentLead.organisationId
                 }
             });
+
+            // Auto-create a follow-up task
+            const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
+            const dueDate = new Date(updates.nextFollowUp);
+            dueDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+            // Check if a task already exists for this lead on this date
+            const existingTask = await prisma.task.findFirst({
+                where: {
+                    leadId: leadId,
+                    dueDate: dueDate,
+                    isDeleted: false,
+                    subject: { contains: 'Follow up' }
+                }
+            });
+
+            // Only create if no existing task
+            if (!existingTask) {
+                await prisma.task.create({
+                    data: {
+                        subject: `Follow up with ${leadName}`,
+                        description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
+                        status: 'not_started',
+                        priority: 'medium',
+                        dueDate: dueDate,
+                        createdBy: { connect: { id: requester.id } },
+                        organisation: { connect: { id: currentLead.organisationId } },
+                        lead: { connect: { id: leadId } },
+                        // Assign to the lead's assigned user, or the current user if no assignment
+                        ...(currentLead.assignedToId 
+                            ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
+                            : { assignedTo: { connect: { id: requester.id } } }
+                        ),
+                        ...(currentLead.branchId ? { branch: { connect: { id: currentLead.branchId } } } : {})
+                    }
+                });
+            }
         }
 
         if (updates.customFields) {
