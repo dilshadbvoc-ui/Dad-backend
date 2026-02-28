@@ -41,7 +41,7 @@ export class FollowUpNotificationService {
                         gte: thirtyMinsFromNow,
                         lte: fortyFiveMinsFromNow
                     },
-                    status: { notIn: ['completed', 'cancelled'] },
+                    status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false
                 },
                 include: {
@@ -54,6 +54,7 @@ export class FollowUpNotificationService {
                         }
                     },
                     lead: {
+                        where: { isDeleted: false },
                         select: {
                             id: true,
                             firstName: true,
@@ -156,7 +157,7 @@ export class FollowUpNotificationService {
                         gte: startOfDay,
                         lte: endOfDay
                     },
-                    status: { notIn: ['completed', 'cancelled'] },
+                    status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false
                 },
                 include: {
@@ -169,6 +170,7 @@ export class FollowUpNotificationService {
                         }
                     },
                     lead: {
+                        where: { isDeleted: false },
                         select: {
                             id: true,
                             firstName: true,
