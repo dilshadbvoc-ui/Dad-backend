@@ -555,7 +555,7 @@ export const updateLead = async (req: Request, res: Response) => {
             const orgId = getOrgId(requester);
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
-            if (requester.branchId) whereObj.branchId = requester.branchId;
+            // Don't filter by branchId on update - users can update leads across branches if they have access
         }
 
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
