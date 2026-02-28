@@ -135,12 +135,11 @@ export const createTask = async (req: Request, res: Response) => {
 
         const { relatedTo, onModel } = req.body;
 
-        // Normalize dueDate to start of day to ensure consistent date comparisons
-        let normalizedDueDate: string | undefined = undefined;
+        // Keep the exact time for dueDate (don't normalize to midnight)
+        // This allows users to set specific follow-up times
+        let dueDateISO: string | undefined = undefined;
         if (req.body.dueDate) {
-            const date = new Date(req.body.dueDate);
-            date.setHours(0, 0, 0, 0); // Set to midnight
-            normalizedDueDate = date.toISOString();
+            dueDateISO = new Date(req.body.dueDate).toISOString();
         }
 
         const data: Prisma.TaskCreateInput = {
@@ -148,7 +147,7 @@ export const createTask = async (req: Request, res: Response) => {
             description: req.body.description,
             status: req.body.status || 'not_started',
             priority: req.body.priority || 'medium',
-            dueDate: normalizedDueDate,
+            dueDate: dueDateISO,
 
             createdBy: { connect: { id: user.id } },
         };
@@ -243,11 +242,10 @@ export const updateTask = async (req: Request, res: Response) => {
         const { id } = req.params;
         const updates = { ...req.body };
 
-        // Normalize dueDate to start of day to ensure consistent date comparisons
+        // Keep the exact time for dueDate (don't normalize to midnight)
+        // This allows users to set specific follow-up times
         if (updates.dueDate) {
-            const date = new Date(updates.dueDate);
-            date.setHours(0, 0, 0, 0); // Set to midnight
-            updates.dueDate = date.toISOString();
+            updates.dueDate = new Date(updates.dueDate).toISOString();
         }
 
         // Handle Relation Updates
