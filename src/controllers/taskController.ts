@@ -52,7 +52,7 @@ export const getTasks = async (req: Request, res: Response) => {
             const subordinateIds = await getSubordinateIds(user.id);
             const visibleUserIds = [...subordinateIds, user.id];
             
-            where.OR = [
+            const visibilityConditions = [
                 // Tasks assigned to user or subordinates
                 { assignedToId: { in: visibleUserIds } },
                 // Tasks created by user
@@ -66,13 +66,21 @@ export const getTasks = async (req: Request, res: Response) => {
                 // Tasks related to opportunities owned by user or subordinates
                 { opportunity: { ownerId: { in: visibleUserIds } } }
             ];
+            
+            // Use AND to combine with other filters
+            if (!where.AND) where.AND = [];
+            (where.AND as any[]).push({ OR: visibilityConditions });
         }
 
         if (search) {
-            where.OR = [
+            const searchConditions = [
                 { subject: { contains: search, mode: 'insensitive' } },
                 { description: { contains: search, mode: 'insensitive' } }
             ];
+            
+            // Use AND to combine with other filters
+            if (!where.AND) where.AND = [];
+            (where.AND as any[]).push({ OR: searchConditions });
         }
 
         if (status && status !== 'all') {
