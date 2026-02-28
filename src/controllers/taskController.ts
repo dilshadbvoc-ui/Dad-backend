@@ -44,11 +44,28 @@ export const getTasks = async (req: Request, res: Response) => {
             if (user.branchId) where.branchId = user.branchId;
         }
 
-        // 2. Hierarchy Visibility
+        // 2. Hierarchy Visibility - Show tasks if:
+        // - Assigned to user or subordinates
+        // - Created by user
+        // - Related to leads/contacts/accounts/opportunities assigned to user or subordinates
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = await getSubordinateIds(user.id);
-            // Include self in tasks
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = [...subordinateIds, user.id];
+            
+            where.OR = [
+                // Tasks assigned to user or subordinates
+                { assignedToId: { in: visibleUserIds } },
+                // Tasks created by user
+                { createdById: user.id },
+                // Tasks related to leads assigned to user or subordinates
+                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                // Tasks related to contacts assigned to user or subordinates
+                { contact: { assignedToId: { in: visibleUserIds } } },
+                // Tasks related to accounts assigned to user or subordinates
+                { account: { assignedToId: { in: visibleUserIds } } },
+                // Tasks related to opportunities assigned to user or subordinates
+                { opportunity: { assignedToId: { in: visibleUserIds } } }
+            ];
         }
 
         if (search) {
