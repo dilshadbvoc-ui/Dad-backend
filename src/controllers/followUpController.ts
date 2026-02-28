@@ -37,9 +37,11 @@ export const getFollowUps = async (req: Request, res: Response) => {
         // Admins and super admins see all tasks in their org (already filtered above)
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = await getSubordinateIds(user.id);
-            const visibleUserIds = [...new Set([...subordinateIds, user.id])]; // Remove duplicates
+            // ALWAYS include the user themselves, even if getSubordinateIds fails
+            const visibleUserIds = [...new Set([user.id, ...subordinateIds])];
             
             console.log('[getFollowUps] User ID:', user.id);
+            console.log('[getFollowUps] User ID type:', typeof user.id);
             console.log('[getFollowUps] Subordinate IDs:', subordinateIds);
             console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
             
