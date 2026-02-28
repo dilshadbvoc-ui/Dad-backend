@@ -40,11 +40,14 @@ export const getFollowUps = async (req: Request, res: Response) => {
             
             console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
             
+            // Simplified visibility: Show tasks if ANY of these conditions are met
             const visibilityConditions = [
-                // Tasks assigned to user or subordinates
+                // Tasks assigned to user or subordinates (including null assignments if created by user)
                 { assignedToId: { in: visibleUserIds } },
-                // Tasks created by user
-                { createdById: user.id },
+                // Tasks created by user (ALWAYS show tasks user created)
+                { createdById: { in: visibleUserIds } },
+                // Tasks with no assignment but created by visible users
+                { AND: [{ assignedToId: null }, { createdById: { in: visibleUserIds } }] },
                 // Tasks related to leads assigned to user or subordinates
                 { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
                 // Tasks related to contacts owned by user or subordinates
