@@ -78,6 +78,12 @@ fi
 
 git fetch origin main
 git reset --hard origin/main
+
+# Remove node_modules BEFORE git clean to avoid conflicts
+echo "🧹 Removing node_modules to save space before reinstall..."
+rm -rf node_modules || find node_modules -type f -delete 2>/dev/null || true
+rm -rf node_modules || true
+
 git clean -fdx -e .env -e dist
 
 # Restore .env if it was deleted
@@ -88,10 +94,6 @@ if [ ! -f .env ] && [ -f /tmp/.env.backup ]; then
 elif [ -f /tmp/.env.backup ]; then
     rm -f /tmp/.env.backup
 fi
-
-# Always remove node_modules on low disk space servers
-echo "🧹 Removing node_modules to save space before reinstall..."
-rm -rf node_modules
 
 # Remove duplicate uppercase service files (Linux is case-sensitive)
 echo "🔧 Cleaning up duplicate service files..."
