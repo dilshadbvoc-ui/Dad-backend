@@ -20,12 +20,14 @@ interface ReEnquiryData {
 export const DuplicateLeadService = {
     /**
      * Check for duplicate leads by phone, email, or WhatsApp
+     * IMPORTANT: Only considers it a duplicate if the lead is in the SAME branch
+     * Same lead in different branches = NEW lead (not a re-enquiry)
      */
     async checkDuplicate(
         phone: string,
         email: string | null | undefined,
         organisationId: string,
-        branchId?: string
+        branchId?: string | null
     ): Promise<DuplicateCheckResult> {
         try {
             // Sanitize phone
@@ -40,17 +42,33 @@ export const DuplicateLeadService = {
                 conditions.push({ email, organisationId });
             }
 
-            // If branchId is provided, duplicates must be in the same branch
+            // CRITICAL: Duplicates must be in the same branch
+            // If no branchId provided, we can't determine duplicates accurately
             const where: any = {
                 OR: conditions,
-                isDeleted: false
+                isDeleted: false,
+                organisationId
             };
 
+            // ALWAYS filter by branch if branchId is provided
+            // This ensures same lead in different branches = NEW lead
             if (branchId) {
                 where.branchId = branchId;
+            } else {
+                // If no branchId, only check leads without branch assignment
+                // This handles cases where branch is not set
+                where.branchId = null;
             }
 
-            // Check for existing lead
+            console.log('[DuplicateLeadService] Checking duplicate with:', {
+                phone: cleanPhone,
+                email,
+                organisationId,
+                branchId,
+                where
+            });
+
+            // Check for existing lead IN THE SAME BRANCH
             const existingLead = await prisma.lead.findFirst({
                 where,
                 include: {
@@ -60,6 +78,12 @@ export const DuplicateLeadService = {
                             firstName: true,
                             lastName: true,
                             email: true
+                        }
+                    },
+                    branch: {
+                        select: {
+                            id: true,
+                            name: true
                         }
                     }
                 }
@@ -74,6 +98,12 @@ export const DuplicateLeadService = {
                     matchedBy = 'phone';
                 }
 
+                console.log('[DuplicateLeadService] Duplicate found:', {
+                    leadId: existingLead.id,
+                    branch: existingLead.branch?.name,
+                    matchedBy
+                });
+
                 return {
                     isDuplicate: true,
                     existingLead,
@@ -81,6 +111,7 @@ export const DuplicateLeadService = {
                 };
             }
 
+            console.log('[DuplicateLeadService] No duplicate found in same branch');
             return { isDuplicate: false };
         } catch (error) {
             console.error('[DuplicateLeadService] Error checking duplicate:', error);
