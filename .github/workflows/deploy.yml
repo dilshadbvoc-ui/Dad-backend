@@ -70,6 +70,26 @@ jobs:
           command_timeout: 40m
           script: |
             cd ~/backend || { echo "❌ Backend directory not found!"; exit 1; }
-            chmod +x scripts/deploy.sh
-            # Use --skip-build because we already built on the runner
-            ./scripts/deploy.sh --skip-build
+            
+            # Install dependencies if needed
+            if [ ! -d "node_modules" ]; then
+              echo "📦 Installing dependencies..."
+              npm install --ignore-scripts
+            fi
+            
+            # Generate Prisma client if needed
+            if [ ! -d "node_modules/.prisma" ] || [ ! -d "src/generated/client" ]; then
+              echo "🗄️ Generating Prisma client..."
+              npx prisma generate
+            fi
+            
+            # Copy Prisma client to dist
+            if [ -f "copy-prisma.js" ]; then
+              node copy-prisma.js
+            fi
+            
+            # Restart PM2
+            echo "▶️ Restarting Backend API..."
+            pm2 restart crm-api || pm2 start dist/index.js --name "crm-api"
+            
+            echo "✅ Deployment Complete!"
