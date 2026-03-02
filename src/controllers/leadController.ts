@@ -868,7 +868,7 @@ export const createBulkLeads = async (req: Request, res: Response) => {
 
 export const bulkAssignLeads = async (req: Request, res: Response) => {
     try {
-        const { leadIds, assignedTo } = req.body;
+        const { leadIds, assignedTo, reason } = req.body;
         const requester = (req as any).user;
 
         if (requester.role !== 'super_admin' && requester.role !== 'admin') {
@@ -878,10 +878,32 @@ export const bulkAssignLeads = async (req: Request, res: Response) => {
             }
         }
 
+        // Fetch current leads to track old owners
+        const currentLeads = await prisma.lead.findMany({
+            where: { id: { in: leadIds } },
+            select: { id: true, assignedToId: true }
+        });
+
+        // Update leads
         const result = await prisma.lead.updateMany({
             where: { id: { in: leadIds } },
             data: { assignedToId: assignedTo }
         });
+
+        // Create history records for each lead
+        const historyRecords = currentLeads.map(lead => ({
+            leadId: lead.id,
+            oldOwnerId: lead.assignedToId,
+            newOwnerId: assignedTo,
+            changedById: requester.id,
+            reason: reason || 'Bulk Assignment'
+        }));
+
+        if (historyRecords.length > 0) {
+            await prisma.leadHistory.createMany({
+                data: historyRecords
+            });
+        }
 
         res.json({ message: 'Assigned successfully', count: result.count });
     } catch (error) {

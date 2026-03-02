@@ -76,9 +76,23 @@ export const DistributionService = {
 
                     // 4. If user found, assign and save
                     if (assignedUserId) {
+                        // Get the old owner before updating
+                        const oldOwnerId = lead.assignedToId;
+                        
                         await prisma.lead.update({
                             where: { id: lead.id },
                             data: { assignedToId: assignedUserId }
+                        });
+
+                        // Create history record
+                        await prisma.leadHistory.create({
+                            data: {
+                                leadId: lead.id,
+                                oldOwnerId: oldOwnerId,
+                                newOwnerId: assignedUserId,
+                                changedById: assignedUserId, // System assignment
+                                reason: `Auto-assigned via rule: ${rule.name}`
+                            }
                         });
 
                         // Increment quota tracker
@@ -95,10 +109,25 @@ export const DistributionService = {
                     console.log('[DistributionService] No eligible users found (all at quota). Escalating to manager...');
                     const managerId = await this.findManagerForRule(rule);
                     if (managerId) {
+                        // Get the old owner before updating
+                        const oldOwnerId = lead.assignedToId;
+                        
                         await prisma.lead.update({
                             where: { id: lead.id },
                             data: { assignedToId: managerId }
                         });
+                        
+                        // Create history record
+                        await prisma.leadHistory.create({
+                            data: {
+                                leadId: lead.id,
+                                oldOwnerId: oldOwnerId,
+                                newOwnerId: managerId,
+                                changedById: managerId, // System assignment
+                                reason: `Escalated to manager - all users at quota (Rule: ${rule.name})`
+                            }
+                        });
+                        
                         // Don't increment quota for manager - they'll manually reassign
                         console.log(`[DistributionService] Escalated to manager ${managerId} for manual assignment`);
                         return managerId;
