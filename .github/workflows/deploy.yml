@@ -21,6 +21,7 @@ jobs:
       - name: Build Backend on Runner
         run: |
           npm install
+          npx prisma generate
           npm run build
 
       - name: Pre-deployment - Sync source on EC2
@@ -54,9 +55,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          source: "dist/*"
-          target: "~/backend/dist"
-          strip_components: 1
+          source: "dist"
+          target: "~/backend/"
+          overwrite: true
+          rm: true
 
       - name: Post-deployment - Restart on EC2
         uses: appleboy/ssh-action@v1.0.3
