@@ -164,3 +164,249 @@ export const deleteInstallment = async (req: Request, res: Response) => {
     });
   }
 };
+
+/**
+ * Get all EMI schedules with filtering
+ */
+export const getEMISchedules = async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
+    const { status } = req.query;
+
+    const where: any = {
+      organisationId: user.organisationId,
+      isDeleted: false
+    };
+
+    // Filter by status if provided
+    if (status && status !== 'all') {
+      where.status = status;
+    }
+
+    // Branch filtering for non-admins
+    if (user.role !== 'super_admin' && user.role !== 'admin' && user.branchId) {
+      where.branchId = user.branchId;
+    }
+
+    const prisma = (await import('../config/prisma')).default;
+    
+    const schedules = await prisma.eMISchedule.findMany({
+      where,
+      include: {
+        opportunity: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        installments: {
+          orderBy: {
+            installmentNumber: 'asc'
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      schedules
+    });
+  } catch (error: any) {
+    console.error('Error fetching EMI schedules:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to fetch EMI schedules'
+    });
+  }
+};
+
+/**
+ * Record payment for an installment (supports partial payments)
+ */
+export const recordInstallmentPayment = async (req: Request, res: Response) => {
+  try {
+    const { scheduleId, installmentId } = req.params;
+    const { amount } = req.body;
+    const userId = (req as any).user?.id;
+    const organisationId = (req as any).user?.organisationId;
+
+    if (!userId || !organisationId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized'
+      });
+    }
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Valid payment amount is required'
+      });
+    }
+
+    const prisma = (await import('../config/prisma')).default;
+
+    // Get the installment
+    const installment = await prisma.eMIInstallment.findUnique({
+      where: { id: installmentId },
+      include: { schedule: true }
+    });
+
+    if (!installment || installment.scheduleId !== scheduleId) {
+      return res.status(404).json({
+        success: false,
+        error: 'Installment not found'
+      });
+    }
+
+    const remainingAmount = installment.amount - installment.paidAmount;
+    if (amount > remainingAmount) {
+      return res.status(400).json({
+        success: false,
+        error: `Payment amount cannot exceed remaining amount of ₹${remainingAmount}`
+      });
+    }
+
+    // Update installment
+    const newPaidAmount = installment.paidAmount + amount;
+    const newStatus = newPaidAmount >= installment.amount ? 'paid' : installment.status;
+
+    const updatedInstallment = await prisma.eMIInstallment.update({
+      where: { id: installmentId },
+      data: {
+        paidAmount: newPaidAmount,
+        status: newStatus,
+        paidDate: newStatus === 'paid' ? new Date() : installment.paidDate
+      }
+    });
+
+    // Update schedule totals
+    const schedule = await prisma.eMISchedule.findUnique({
+      where: { id: scheduleId },
+      include: { installments: true }
+    });
+
+    if (schedule) {
+      const totalPaid = schedule.installments.reduce((sum, inst) => sum + inst.paidAmount, 0);
+      const remaining = schedule.totalAmount - totalPaid;
+      const allPaid = schedule.installments.every(inst => inst.status === 'paid');
+
+      await prisma.eMISchedule.update({
+        where: { id: scheduleId },
+        data: {
+          paidAmount: totalPaid,
+          remainingAmount: remaining,
+          status: allPaid ? 'completed' : schedule.status
+        }
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      installment: updatedInstallment,
+      message: 'Payment recorded successfully'
+    });
+  } catch (error: any) {
+    console.error('Error recording payment:', error);
+    res.status(400).json({
+      success: false,
+      error: error.message || 'Failed to record payment'
+    });
+  }
+};
+
+/**
+ * Mark installment as missed and carry forward amount to next installment
+ */
+export const markInstallmentMissed = async (req: Request, res: Response) => {
+  try {
+    const { scheduleId, installmentId } = req.params;
+    const userId = (req as any).user?.id;
+    const organisationId = (req as any).user?.organisationId;
+
+    if (!userId || !organisationId) {
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized'
+      });
+    }
+
+    const prisma = (await import('../config/prisma')).default;
+
+    // Get the installment and schedule
+    const installment = await prisma.eMIInstallment.findUnique({
+      where: { id: installmentId },
+      include: {
+        schedule: {
+          include: {
+            installments: {
+              orderBy: { installmentNumber: 'asc' }
+            }
+          }
+        }
+      }
+    });
+
+    if (!installment || installment.scheduleId !== scheduleId) {
+      return res.status(404).json({
+        success: false,
+        error: 'Installment not found'
+      });
+    }
+
+    if (installment.status === 'paid') {
+      return res.status(400).json({
+        success: false,
+        error: 'Cannot mark a paid installment as missed'
+      });
+    }
+
+    // Calculate unpaid amount
+    const unpaidAmount = installment.amount - installment.paidAmount;
+
+    // Mark current installment as missed
+    await prisma.eMIInstallment.update({
+      where: { id: installmentId },
+      data: { status: 'missed' }
+    });
+
+    // Find next pending installment
+    const nextInstallment = installment.schedule.installments.find(
+      inst => inst.installmentNumber > installment.installmentNumber && 
+              inst.status !== 'paid' && 
+              inst.status !== 'missed'
+    );
+
+    if (nextInstallment) {
+      // Carry forward the unpaid amount to next installment
+      await prisma.eMIInstallment.update({
+        where: { id: nextInstallment.id },
+        data: {
+          amount: nextInstallment.amount + unpaidAmount
+        }
+      });
+    } else {
+      // No next installment, mark schedule as defaulted
+      await prisma.eMISchedule.update({
+        where: { id: scheduleId },
+        data: { status: 'defaulted' }
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: nextInstallment 
+        ? `Installment marked as missed. ₹${unpaidAmount.toLocaleString('en-IN')} carried forward to next installment.`
+        : 'Installment marked as missed. EMI schedule marked as defaulted.'
+    });
+  } catch (error: any) {
+    console.error('Error marking installment as missed:', error);
+    res.status(400).json({
+      success: false,
+      error: error.message || 'Failed to mark installment as missed'
+    });
+  }
+};
