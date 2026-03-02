@@ -106,6 +106,11 @@ rm -f package-lock.json
 # Use npm install with production only to save space
 echo "📦 Installing production dependencies only..."
 npm install --omit=dev --ignore-scripts
+
+# Install Prisma CLI separately (needed for migrations)
+echo "🔧 Installing Prisma CLI..."
+npm install prisma --save-dev --no-save
+
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
 npx prisma generate
