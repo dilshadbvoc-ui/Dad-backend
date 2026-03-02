@@ -248,8 +248,24 @@ export const getOpportunityById = async (req: Request, res: Response) => {
                         }
                     }
                 },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } },
+                owner: { select: { firstName: true, lastName: true, profileImage: true, email: true } },
                 contacts: true,
+                lead: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        assignedTo: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                profileImage: true,
+                                email: true
+                            }
+                        }
+                    }
+                },
                 emiSchedule: {
                     include: {
                         installments: {
