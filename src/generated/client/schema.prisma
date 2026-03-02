@@ -1567,6 +1567,7 @@ enum EMIStatus {
   active
   completed
   cancelled
+  defaulted
 }
 
 model EMIInstallment {
@@ -1574,6 +1575,7 @@ model EMIInstallment {
   scheduleId        String
   installmentNumber Int
   amount            Float
+  paidAmount        Float             @default(0)
   dueDate           DateTime
   status            InstallmentStatus @default(pending)
   paidDate          DateTime?
@@ -1594,6 +1596,7 @@ enum InstallmentStatus {
   paid
   overdue
   cancelled
+  missed
 }
 
 model PaymentRecord {

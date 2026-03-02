@@ -1119,6 +1119,7 @@ exports.Prisma.EMIInstallmentScalarFieldEnum = {
   scheduleId: 'scheduleId',
   installmentNumber: 'installmentNumber',
   amount: 'amount',
+  paidAmount: 'paidAmount',
   dueDate: 'dueDate',
   status: 'status',
   paidDate: 'paidDate',
@@ -1239,14 +1240,16 @@ exports.TargetScope = exports.$Enums.TargetScope = {
 exports.EMIStatus = exports.$Enums.EMIStatus = {
   active: 'active',
   completed: 'completed',
-  cancelled: 'cancelled'
+  cancelled: 'cancelled',
+  defaulted: 'defaulted'
 };
 
 exports.InstallmentStatus = exports.$Enums.InstallmentStatus = {
   pending: 'pending',
   paid: 'paid',
   overdue: 'overdue',
-  cancelled: 'cancelled'
+  cancelled: 'cancelled',
+  missed: 'missed'
 };
 
 exports.PaymentType = exports.$Enums.PaymentType = {

@@ -393,7 +393,8 @@ export type TargetScope = (typeof TargetScope)[keyof typeof TargetScope]
 export const EMIStatus: {
   active: 'active',
   completed: 'completed',
-  cancelled: 'cancelled'
+  cancelled: 'cancelled',
+  defaulted: 'defaulted'
 };
 
 export type EMIStatus = (typeof EMIStatus)[keyof typeof EMIStatus]
@@ -403,7 +404,8 @@ export const InstallmentStatus: {
   pending: 'pending',
   paid: 'paid',
   overdue: 'overdue',
-  cancelled: 'cancelled'
+  cancelled: 'cancelled',
+  missed: 'missed'
 };
 
 export type InstallmentStatus = (typeof InstallmentStatus)[keyof typeof InstallmentStatus]
@@ -70957,11 +70959,13 @@ export namespace Prisma {
   export type EMIInstallmentAvgAggregateOutputType = {
     installmentNumber: number | null
     amount: number | null
+    paidAmount: number | null
   }
 
   export type EMIInstallmentSumAggregateOutputType = {
     installmentNumber: number | null
     amount: number | null
+    paidAmount: number | null
   }
 
   export type EMIInstallmentMinAggregateOutputType = {
@@ -70969,6 +70973,7 @@ export namespace Prisma {
     scheduleId: string | null
     installmentNumber: number | null
     amount: number | null
+    paidAmount: number | null
     dueDate: Date | null
     status: $Enums.InstallmentStatus | null
     paidDate: Date | null
@@ -70982,6 +70987,7 @@ export namespace Prisma {
     scheduleId: string | null
     installmentNumber: number | null
     amount: number | null
+    paidAmount: number | null
     dueDate: Date | null
     status: $Enums.InstallmentStatus | null
     paidDate: Date | null
@@ -70995,6 +71001,7 @@ export namespace Prisma {
     scheduleId: number
     installmentNumber: number
     amount: number
+    paidAmount: number
     dueDate: number
     status: number
     paidDate: number
@@ -71008,11 +71015,13 @@ export namespace Prisma {
   export type EMIInstallmentAvgAggregateInputType = {
     installmentNumber?: true
     amount?: true
+    paidAmount?: true
   }
 
   export type EMIInstallmentSumAggregateInputType = {
     installmentNumber?: true
     amount?: true
+    paidAmount?: true
   }
 
   export type EMIInstallmentMinAggregateInputType = {
@@ -71020,6 +71029,7 @@ export namespace Prisma {
     scheduleId?: true
     installmentNumber?: true
     amount?: true
+    paidAmount?: true
     dueDate?: true
     status?: true
     paidDate?: true
@@ -71033,6 +71043,7 @@ export namespace Prisma {
     scheduleId?: true
     installmentNumber?: true
     amount?: true
+    paidAmount?: true
     dueDate?: true
     status?: true
     paidDate?: true
@@ -71046,6 +71057,7 @@ export namespace Prisma {
     scheduleId?: true
     installmentNumber?: true
     amount?: true
+    paidAmount?: true
     dueDate?: true
     status?: true
     paidDate?: true
@@ -71146,6 +71158,7 @@ export namespace Prisma {
     scheduleId: string
     installmentNumber: number
     amount: number
+    paidAmount: number
     dueDate: Date
     status: $Enums.InstallmentStatus
     paidDate: Date | null
@@ -71178,6 +71191,7 @@ export namespace Prisma {
     scheduleId?: boolean
     installmentNumber?: boolean
     amount?: boolean
+    paidAmount?: boolean
     dueDate?: boolean
     status?: boolean
     paidDate?: boolean
@@ -71194,6 +71208,7 @@ export namespace Prisma {
     scheduleId?: boolean
     installmentNumber?: boolean
     amount?: boolean
+    paidAmount?: boolean
     dueDate?: boolean
     status?: boolean
     paidDate?: boolean
@@ -71208,6 +71223,7 @@ export namespace Prisma {
     scheduleId?: boolean
     installmentNumber?: boolean
     amount?: boolean
+    paidAmount?: boolean
     dueDate?: boolean
     status?: boolean
     paidDate?: boolean
@@ -71236,6 +71252,7 @@ export namespace Prisma {
       scheduleId: string
       installmentNumber: number
       amount: number
+      paidAmount: number
       dueDate: Date
       status: $Enums.InstallmentStatus
       paidDate: Date | null
@@ -71641,6 +71658,7 @@ export namespace Prisma {
     readonly scheduleId: FieldRef<"EMIInstallment", 'String'>
     readonly installmentNumber: FieldRef<"EMIInstallment", 'Int'>
     readonly amount: FieldRef<"EMIInstallment", 'Float'>
+    readonly paidAmount: FieldRef<"EMIInstallment", 'Float'>
     readonly dueDate: FieldRef<"EMIInstallment", 'DateTime'>
     readonly status: FieldRef<"EMIInstallment", 'InstallmentStatus'>
     readonly paidDate: FieldRef<"EMIInstallment", 'DateTime'>
@@ -74241,6 +74259,7 @@ export namespace Prisma {
     scheduleId: 'scheduleId',
     installmentNumber: 'installmentNumber',
     amount: 'amount',
+    paidAmount: 'paidAmount',
     dueDate: 'dueDate',
     status: 'status',
     paidDate: 'paidDate',
@@ -81227,6 +81246,7 @@ export namespace Prisma {
     scheduleId?: StringFilter<"EMIInstallment"> | string
     installmentNumber?: IntFilter<"EMIInstallment"> | number
     amount?: FloatFilter<"EMIInstallment"> | number
+    paidAmount?: FloatFilter<"EMIInstallment"> | number
     dueDate?: DateTimeFilter<"EMIInstallment"> | Date | string
     status?: EnumInstallmentStatusFilter<"EMIInstallment"> | $Enums.InstallmentStatus
     paidDate?: DateTimeNullableFilter<"EMIInstallment"> | Date | string | null
@@ -81242,6 +81262,7 @@ export namespace Prisma {
     scheduleId?: SortOrder
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
     paidDate?: SortOrderInput | SortOrder
@@ -81260,6 +81281,7 @@ export namespace Prisma {
     scheduleId?: StringFilter<"EMIInstallment"> | string
     installmentNumber?: IntFilter<"EMIInstallment"> | number
     amount?: FloatFilter<"EMIInstallment"> | number
+    paidAmount?: FloatFilter<"EMIInstallment"> | number
     dueDate?: DateTimeFilter<"EMIInstallment"> | Date | string
     status?: EnumInstallmentStatusFilter<"EMIInstallment"> | $Enums.InstallmentStatus
     paidDate?: DateTimeNullableFilter<"EMIInstallment"> | Date | string | null
@@ -81275,6 +81297,7 @@ export namespace Prisma {
     scheduleId?: SortOrder
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
     paidDate?: SortOrderInput | SortOrder
@@ -81296,6 +81319,7 @@ export namespace Prisma {
     scheduleId?: StringWithAggregatesFilter<"EMIInstallment"> | string
     installmentNumber?: IntWithAggregatesFilter<"EMIInstallment"> | number
     amount?: FloatWithAggregatesFilter<"EMIInstallment"> | number
+    paidAmount?: FloatWithAggregatesFilter<"EMIInstallment"> | number
     dueDate?: DateTimeWithAggregatesFilter<"EMIInstallment"> | Date | string
     status?: EnumInstallmentStatusWithAggregatesFilter<"EMIInstallment"> | $Enums.InstallmentStatus
     paidDate?: DateTimeNullableWithAggregatesFilter<"EMIInstallment"> | Date | string | null
@@ -88865,6 +88889,7 @@ export namespace Prisma {
     id?: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -88880,6 +88905,7 @@ export namespace Prisma {
     scheduleId: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -88893,6 +88919,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -88908,6 +88935,7 @@ export namespace Prisma {
     scheduleId?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -88922,6 +88950,7 @@ export namespace Prisma {
     scheduleId: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -88934,6 +88963,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -88947,6 +88977,7 @@ export namespace Prisma {
     scheduleId?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -93409,6 +93440,7 @@ export namespace Prisma {
     scheduleId?: SortOrder
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
     paidDate?: SortOrder
@@ -93420,6 +93452,7 @@ export namespace Prisma {
   export type EMIInstallmentAvgOrderByAggregateInput = {
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
   }
 
   export type EMIInstallmentMaxOrderByAggregateInput = {
@@ -93427,6 +93460,7 @@ export namespace Prisma {
     scheduleId?: SortOrder
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
     paidDate?: SortOrder
@@ -93440,6 +93474,7 @@ export namespace Prisma {
     scheduleId?: SortOrder
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
     dueDate?: SortOrder
     status?: SortOrder
     paidDate?: SortOrder
@@ -93451,6 +93486,7 @@ export namespace Prisma {
   export type EMIInstallmentSumOrderByAggregateInput = {
     installmentNumber?: SortOrder
     amount?: SortOrder
+    paidAmount?: SortOrder
   }
 
   export type EnumInstallmentStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -159529,6 +159565,7 @@ export namespace Prisma {
     id?: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -159542,6 +159579,7 @@ export namespace Prisma {
     id?: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -159811,6 +159849,7 @@ export namespace Prisma {
     scheduleId?: StringFilter<"EMIInstallment"> | string
     installmentNumber?: IntFilter<"EMIInstallment"> | number
     amount?: FloatFilter<"EMIInstallment"> | number
+    paidAmount?: FloatFilter<"EMIInstallment"> | number
     dueDate?: DateTimeFilter<"EMIInstallment"> | Date | string
     status?: EnumInstallmentStatusFilter<"EMIInstallment"> | $Enums.InstallmentStatus
     paidDate?: DateTimeNullableFilter<"EMIInstallment"> | Date | string | null
@@ -160008,6 +160047,7 @@ export namespace Prisma {
     id?: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -160022,6 +160062,7 @@ export namespace Prisma {
     scheduleId: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -160453,6 +160494,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -160467,6 +160509,7 @@ export namespace Prisma {
     scheduleId?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -175414,6 +175457,7 @@ export namespace Prisma {
     id?: string
     installmentNumber: number
     amount: number
+    paidAmount?: number
     dueDate: Date | string
     status?: $Enums.InstallmentStatus
     paidDate?: Date | string | null
@@ -175426,6 +175470,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -175439,6 +175484,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -175452,6 +175498,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     installmentNumber?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    paidAmount?: FloatFieldUpdateOperationsInput | number
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumInstallmentStatusFieldUpdateOperationsInput | $Enums.InstallmentStatus
     paidDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
