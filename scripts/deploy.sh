@@ -103,13 +103,9 @@ find src/services -name "[A-Z]*.ts" -delete
 echo "🔄 Regenerating package-lock.json..."
 rm -f package-lock.json
 
-# Use npm install with production only to save space
-echo "📦 Installing production dependencies only..."
-npm install --omit=dev --ignore-scripts
-
-# Install Prisma CLI separately (needed for migrations)
-echo "🔧 Installing Prisma CLI..."
-npm install prisma --save-dev --no-save
+# Install all dependencies (Prisma CLI is needed for migrations)
+echo "📦 Installing dependencies..."
+npm install --ignore-scripts
 
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
