@@ -174,18 +174,12 @@ export const getEMISchedules = async (req: Request, res: Response) => {
     const { status } = req.query;
 
     const where: any = {
-      organisationId: user.organisationId,
-      isDeleted: false
+      organisationId: user.organisationId
     };
 
     // Filter by status if provided
     if (status && status !== 'all') {
       where.status = status;
-    }
-
-    // Branch filtering for non-admins
-    if (user.role !== 'super_admin' && user.role !== 'admin' && user.branchId) {
-      where.branchId = user.branchId;
     }
 
     const prisma = (await import('../config/prisma')).default;
