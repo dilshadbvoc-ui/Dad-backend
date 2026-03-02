@@ -475,9 +475,9 @@ export const updateLead = async (req: Request, res: Response) => {
                 };
             }
 
-            // Remap for Prisma
-            updates.assignedTo = { connect: { id: targetUserId } };
-            delete updates.assignedToId; // Clean up
+            // Remap for Prisma - store the ID directly
+            updates.assignedToId = targetUserId;
+            delete updates.assignedTo; // Clean up the relation object
         }
 
         // Track Status Change
