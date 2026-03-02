@@ -12,13 +12,15 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
