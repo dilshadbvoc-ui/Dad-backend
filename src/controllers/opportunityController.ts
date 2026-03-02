@@ -275,21 +275,24 @@ export const updateOpportunity = async (req: Request, res: Response) => {
         const updates = { ...req.body };
         const oppId = req.params.id;
 
+        // Extract payment-related fields that are not part of the Opportunity model
+        const { paymentType, paidAmount, installments, ...opportunityUpdates } = updates;
+
         // Handle Relation Updates
-        if (updates.account && typeof updates.account === 'string') {
-            updates.account = { connect: { id: updates.account } };
+        if (opportunityUpdates.account && typeof opportunityUpdates.account === 'string') {
+            opportunityUpdates.account = { connect: { id: opportunityUpdates.account } };
         }
-        if (updates.owner && typeof updates.owner === 'string') {
-            updates.owner = { connect: { id: updates.owner } };
+        if (opportunityUpdates.owner && typeof opportunityUpdates.owner === 'string') {
+            opportunityUpdates.owner = { connect: { id: opportunityUpdates.owner } };
         }
 
         // Fetch first for validation and existence
         const currentOpp = await prisma.opportunity.findUnique({ where: { id: oppId } });
         if (!currentOpp) return res.status(404).json({ message: 'Opportunity not found' });
 
-        if (updates.customFields) {
+        if (opportunityUpdates.customFields) {
             const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
-            await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, updates.customFields);
+            await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, opportunityUpdates.customFields);
         }
 
         const requester = (req as any).user;
@@ -303,7 +306,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
 
         const opportunity = await prisma.opportunity.update({
             where: whereObj,
-            data: updates,
+            data: opportunityUpdates,
             include: {
                 account: { select: { name: true } },
                 owner: { select: { firstName: true, lastName: true, profileImage: true } }
