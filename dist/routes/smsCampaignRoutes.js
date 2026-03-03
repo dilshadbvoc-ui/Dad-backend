@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, smsCampaignController_1.createSMSCamp
 router.put('/:id', authMiddleware_1.protect, smsCampaignController_1.updateSMSCampaign);
 router.delete('/:id', authMiddleware_1.protect, smsCampaignController_1.deleteSMSCampaign);
 exports.default = router;
-//# sourceMappingURL=smsCampaignRoutes.js.map

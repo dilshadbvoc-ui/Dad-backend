@@ -1,75 +1,60 @@
 #!/bin/bash
 
-# Database Backup Script for PYPE
-# This script creates automated backups of the PostgreSQL database
+# Database Backup Script
+# This script creates daily backups of the PostgreSQL database
 
 # Configuration
-BACKUP_DIR="./backups"
+BACKUP_DIR="$HOME/database-backups"
 DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="$BACKUP_DIR/pype_backup_$DATE.sql"
-RETENTION_DAYS=30
+BACKUP_FILE="$BACKUP_DIR/backup_$DATE.sql"
+RETENTION_DAYS=7
 
-# Database connection from .env
-DATABASE_URL="postgresql://postgres:troy1998@pypecrm.cj0mo4q44gde.ap-south-1.rds.amazonaws.com:5432/mern_crm?sslmode=require"
+# Database connection details from .env
+DB_HOST="pypecrm.cj0mo4q44gde.ap-south-1.rds.amazonaws.com"
+DB_PORT="5432"
+DB_NAME="dadcrm"
+DB_USER="postgres"
+DB_PASSWORD="troy1996"
 
 # Create backup directory if it doesn't exist
 mkdir -p "$BACKUP_DIR"
 
-echo "========================================="
-echo "PYPE Database Backup"
-echo "========================================="
-echo "Date: $(date)"
-echo "Backup file: $BACKUP_FILE"
-echo ""
+echo "Starting database backup at $(date)"
 
-# Create backup
-echo "Creating backup..."
-pg_dump "$DATABASE_URL" > "$BACKUP_FILE"
+# Create backup using pg_dump
+PGPASSWORD="$DB_PASSWORD" pg_dump \
+  -h "$DB_HOST" \
+  -p "$DB_PORT" \
+  -U "$DB_USER" \
+  -d "$DB_NAME" \
+  -F c \
+  -f "$BACKUP_FILE" \
+  --no-owner \
+  --no-acl
 
+# Check if backup was successful
 if [ $? -eq 0 ]; then
-    echo "✅ Backup created successfully!"
+    echo "✅ Backup completed successfully: $BACKUP_FILE"
     
-    # Compress backup
-    echo "Compressing backup..."
+    # Compress the backup
     gzip "$BACKUP_FILE"
+    echo "✅ Backup compressed: ${BACKUP_FILE}.gz"
     
-    if [ $? -eq 0 ]; then
-        echo "✅ Backup compressed successfully!"
-        BACKUP_FILE="$BACKUP_FILE.gz"
-        
-        # Get file size
-        SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
-        echo "Backup size: $SIZE"
-    else
-        echo "⚠️  Compression failed, keeping uncompressed backup"
-    fi
+    # Get backup size
+    BACKUP_SIZE=$(du -h "${BACKUP_FILE}.gz" | cut -f1)
+    echo "📦 Backup size: $BACKUP_SIZE"
     
-    # Delete old backups
-    echo ""
-    echo "Cleaning up old backups (older than $RETENTION_DAYS days)..."
-    find "$BACKUP_DIR" -name "pype_backup_*.sql.gz" -type f -mtime +$RETENTION_DAYS -delete
-    find "$BACKUP_DIR" -name "pype_backup_*.sql" -type f -mtime +$RETENTION_DAYS -delete
+    # Remove old backups (older than RETENTION_DAYS)
+    echo "🧹 Cleaning up old backups (older than $RETENTION_DAYS days)..."
+    find "$BACKUP_DIR" -name "backup_*.sql.gz" -type f -mtime +$RETENTION_DAYS -delete
     
-    # List current backups
-    echo ""
-    echo "Current backups:"
-    ls -lh "$BACKUP_DIR"/pype_backup_* 2>/dev/null || echo "No backups found"
-    
-    echo ""
-    echo "========================================="
-    echo "✅ Backup completed successfully!"
-    echo "========================================="
+    # List remaining backups
+    echo "📋 Available backups:"
+    ls -lh "$BACKUP_DIR"/backup_*.sql.gz 2>/dev/null || echo "No backups found"
     
 else
     echo "❌ Backup failed!"
     exit 1
 fi
 
-# Optional: Upload to S3 or cloud storage
-# Uncomment and configure if you want cloud backups
-# aws s3 cp "$BACKUP_FILE" s3://your-backup-bucket/mern-crm/
-
-echo ""
-echo "To restore from this backup, run:"
-echo "gunzip -c $BACKUP_FILE | psql \$DATABASE_URL"
-echo ""
+echo "Backup completed at $(date)"

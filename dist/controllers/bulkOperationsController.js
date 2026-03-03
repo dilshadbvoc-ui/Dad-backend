@@ -549,4 +549,3 @@ const bulkOpportunityOperations = async (req, res) => {
     }
 };
 exports.bulkOpportunityOperations = bulkOpportunityOperations;
-//# sourceMappingURL=bulkOperationsController.js.map

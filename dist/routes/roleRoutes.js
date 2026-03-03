@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, roleController_1.createRole);
 router.put('/:id', authMiddleware_1.protect, roleController_1.updateRole);
 router.delete('/:id', authMiddleware_1.protect, roleController_1.deleteRole);
 exports.default = router;
-//# sourceMappingURL=roleRoutes.js.map

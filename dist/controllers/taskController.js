@@ -56,17 +56,41 @@ const getTasks = async (req, res) => {
             if (user.branchId)
                 where.branchId = user.branchId;
         }
-        // 2. Hierarchy Visibility
+        // 2. Hierarchy Visibility - Show tasks if:
+        // - Assigned to user or subordinates
+        // - Created by user
+        // - Related to leads/contacts/accounts/opportunities owned by user or subordinates
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            // Include self in tasks
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = [...subordinateIds, user.id];
+            const visibilityConditions = [
+                // Tasks assigned to user or subordinates
+                { assignedToId: { in: visibleUserIds } },
+                // Tasks created by user
+                { createdById: user.id },
+                // Tasks related to leads assigned to user or subordinates
+                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                // Tasks related to contacts owned by user or subordinates
+                { contact: { ownerId: { in: visibleUserIds } } },
+                // Tasks related to accounts owned by user or subordinates
+                { account: { ownerId: { in: visibleUserIds } } },
+                // Tasks related to opportunities owned by user or subordinates
+                { opportunity: { ownerId: { in: visibleUserIds } } }
+            ];
+            // Use AND to combine with other filters
+            if (!where.AND)
+                where.AND = [];
+            where.AND.push({ OR: visibilityConditions });
         }
         if (search) {
-            where.OR = [
+            const searchConditions = [
                 { subject: { contains: search, mode: 'insensitive' } },
                 { description: { contains: search, mode: 'insensitive' } }
             ];
+            // Use AND to combine with other filters
+            if (!where.AND)
+                where.AND = [];
+            where.AND.push({ OR: searchConditions });
         }
         if (status && status !== 'all') {
             // Check enum validity or use string? TaskStatus is enum.
@@ -80,7 +104,11 @@ const getTasks = async (req, res) => {
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
                 // Include all potential relations to reconstruct 'relatedTo'
-                lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+                // Filter out deleted leads
+                lead: {
+                    where: { isDeleted: false },
+                    select: { id: true, firstName: true, lastName: true, company: true }
+                },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
                 opportunity: { select: { id: true, name: true } },
@@ -111,19 +139,18 @@ const createTask = async (req, res) => {
             return res.status(400).json({ message: 'User must belong to an organization to create tasks' });
         }
         const { relatedTo, onModel } = req.body;
-        // Normalize dueDate to start of day to ensure consistent date comparisons
-        let normalizedDueDate = undefined;
+        // Keep the exact time for dueDate (don't normalize to midnight)
+        // This allows users to set specific follow-up times
+        let dueDateISO = undefined;
         if (req.body.dueDate) {
-            const date = new Date(req.body.dueDate);
-            date.setHours(0, 0, 0, 0); // Set to midnight
-            normalizedDueDate = date.toISOString();
+            dueDateISO = new Date(req.body.dueDate).toISOString();
         }
         const data = {
             subject: req.body.subject,
             description: req.body.description,
             status: req.body.status || 'not_started',
             priority: req.body.priority || 'medium',
-            dueDate: normalizedDueDate,
+            dueDate: dueDateISO,
             createdBy: { connect: { id: user.id } },
         };
         // Only connect organization if user has one
@@ -194,7 +221,10 @@ const getTaskById = async (req, res) => {
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true } },
-                lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+                lead: {
+                    where: { isDeleted: false },
+                    select: { id: true, firstName: true, lastName: true, company: true }
+                },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
                 opportunity: { select: { id: true, name: true } },
@@ -213,11 +243,10 @@ const updateTask = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = { ...req.body };
-        // Normalize dueDate to start of day to ensure consistent date comparisons
+        // Keep the exact time for dueDate (don't normalize to midnight)
+        // This allows users to set specific follow-up times
         if (updates.dueDate) {
-            const date = new Date(updates.dueDate);
-            date.setHours(0, 0, 0, 0); // Set to midnight
-            updates.dueDate = date.toISOString();
+            updates.dueDate = new Date(updates.dueDate).toISOString();
         }
         // Handle Relation Updates
         if (updates.assignedTo && typeof updates.assignedTo === 'string') {
@@ -309,4 +338,3 @@ const deleteTask = async (req, res) => {
     }
 };
 exports.deleteTask = deleteTask;
-//# sourceMappingURL=taskController.js.map

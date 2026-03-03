@@ -245,4 +245,3 @@ const uploadDocument = async (req, res) => {
     }
 };
 exports.uploadDocument = uploadDocument;
-//# sourceMappingURL=uploadController.js.map

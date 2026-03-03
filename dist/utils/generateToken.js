@@ -10,4 +10,3 @@ const generateToken = (id) => {
     });
 };
 exports.default = generateToken;
-//# sourceMappingURL=generateToken.js.map

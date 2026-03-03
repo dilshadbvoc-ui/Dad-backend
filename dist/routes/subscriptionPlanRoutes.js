@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, subscriptionPlanController_1.createPl
 router.put('/:id', authMiddleware_1.protect, subscriptionPlanController_1.updatePlan);
 router.delete('/:id', authMiddleware_1.protect, subscriptionPlanController_1.deletePlan);
 exports.default = router;
-//# sourceMappingURL=subscriptionPlanRoutes.js.map

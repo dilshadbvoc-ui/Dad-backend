@@ -76,4 +76,3 @@ const changePassword = async (req, res) => {
     }
 };
 exports.changePassword = changePassword;
-//# sourceMappingURL=profileController.js.map

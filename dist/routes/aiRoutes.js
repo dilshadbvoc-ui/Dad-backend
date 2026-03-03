@@ -12,4 +12,3 @@ router.use(authMiddleware_1.protect);
 // Apply rate limiting to prevent abuse
 router.post('/generate', rateLimiter_1.generalLimiter, aiController_1.generateContent);
 exports.default = router;
-//# sourceMappingURL=aiRoutes.js.map

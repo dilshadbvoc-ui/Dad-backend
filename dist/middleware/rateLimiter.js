@@ -8,18 +8,20 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // General API rate limiting
 exports.generalLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // Limit each IP to 1000 requests per windowMs
+    max: 100000, // Limit each IP to 100000 requests per windowMs (very high limit for production use)
     message: {
         error: 'Too many requests from this IP, please try again later.',
         retryAfter: '15 minutes'
     },
     standardHeaders: true,
     legacyHeaders: false,
+    // Skip rate limiting for health checks
+    skip: (req) => req.path === '/api/health',
 });
 // Strict rate limiting for authentication endpoints
 exports.authLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: process.env.NODE_ENV === 'development' ? 100 : 20, // Limit each IP to 20 (100 in dev) login attempts per windowMs
+    max: 10000, // Limit each IP to 10000 login attempts per windowMs (very high for production)
     message: {
         error: 'Too many authentication attempts, please try again later.',
         retryAfter: '15 minutes'
@@ -31,9 +33,9 @@ exports.authLimiter = (0, express_rate_limit_1.default)({
 // WhatsApp API rate limiting (more restrictive)
 exports.whatsappLimiter = (0, express_rate_limit_1.default)({
     windowMs: 60 * 1000, // 1 minute
-    max: 80, // WhatsApp allows 80 messages per minute per phone number
+    max: 500, // Increased from 80 to allow more internal operations
     message: {
-        error: 'WhatsApp rate limit exceeded. Maximum 80 messages per minute.',
+        error: 'WhatsApp rate limit exceeded. Please try again in a moment.',
         retryAfter: '1 minute'
     },
     standardHeaders: true,
@@ -42,9 +44,9 @@ exports.whatsappLimiter = (0, express_rate_limit_1.default)({
 // Meta API rate limiting
 exports.metaLimiter = (0, express_rate_limit_1.default)({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 200, // Meta API allows 200 calls per hour per app
+    max: 1000, // Increased from 200 to allow more internal operations
     message: {
-        error: 'Meta API rate limit exceeded. Maximum 200 calls per hour.',
+        error: 'Meta API rate limit exceeded. Please try again later.',
         retryAfter: '1 hour'
     },
     standardHeaders: true,
@@ -53,7 +55,7 @@ exports.metaLimiter = (0, express_rate_limit_1.default)({
 // Webhook rate limiting (prevent DoS attacks)
 exports.webhookLimiter = (0, express_rate_limit_1.default)({
     windowMs: 60 * 1000, // 1 minute
-    max: 100, // Allow 100 webhook calls per minute per IP
+    max: 1000, // Increased from 100 to allow more webhook traffic
     message: {
         error: 'Webhook rate limit exceeded.',
         retryAfter: '1 minute'
@@ -64,12 +66,11 @@ exports.webhookLimiter = (0, express_rate_limit_1.default)({
 // Campaign sending rate limiting
 exports.campaignLimiter = (0, express_rate_limit_1.default)({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 10, // Maximum 10 campaigns per hour per organization
+    max: 100, // Increased from 10 to allow more campaign operations
     message: {
-        error: 'Campaign rate limit exceeded. Maximum 10 campaigns per hour.',
+        error: 'Campaign rate limit exceeded. Please try again later.',
         retryAfter: '1 hour'
     },
     standardHeaders: true,
     legacyHeaders: false,
 });
-//# sourceMappingURL=rateLimiter.js.map

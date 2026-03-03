@@ -9,4 +9,3 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.get('/', authMiddleware_1.protect, auditController_1.getAuditLogs);
 exports.default = router;
-//# sourceMappingURL=auditRoutes.js.map

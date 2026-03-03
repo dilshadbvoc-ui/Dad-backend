@@ -14,4 +14,3 @@ router.post('/activate', authMiddleware_1.protect, licenseController_1.activateL
 router.post('/:id/cancel', authMiddleware_1.protect, licenseController_1.cancelLicense);
 router.patch('/:id/custom-price', authMiddleware_1.protect, licenseController_1.setCustomPrice);
 exports.default = router;
-//# sourceMappingURL=licenseRoutes.js.map

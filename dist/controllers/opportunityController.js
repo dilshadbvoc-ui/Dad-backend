@@ -206,6 +206,33 @@ const createOpportunity = async (req, res) => {
                     }).catch(console.error);
                 });
             }
+            // Hierarchy Notification on Sale Closure with Payment
+            try {
+                const { paymentType, paidAmount } = req.body;
+                // Only send notification if payment is recorded
+                if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
+                    const owner = await prisma_1.default.user.findUnique({
+                        where: { id: opportunity.ownerId },
+                        select: { reportsToId: true, firstName: true, lastName: true }
+                    });
+                    if (owner && owner.reportsToId) {
+                        let paymentMessage = '';
+                        if (paymentType === 'paid') {
+                            paymentMessage = `Full payment of ₹${opportunity.amount.toLocaleString('en-IN')} received.`;
+                        }
+                        else if (paymentType === 'partial') {
+                            paymentMessage = `Partial payment of ₹${paidAmount?.toLocaleString('en-IN')} received (Total: ₹${opportunity.amount.toLocaleString('en-IN')}).`;
+                        }
+                        else if (paymentType === 'emi') {
+                            paymentMessage = `EMI payment plan initiated for ₹${opportunity.amount.toLocaleString('en-IN')}.`;
+                        }
+                        await notificationService_1.NotificationService.sendToHierarchy(opportunity.ownerId, 'Sale Closed with Payment! 🎉💰', `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}". ${paymentMessage}`, 'success');
+                    }
+                }
+            }
+            catch (notifyErr) {
+                console.error('Hierarchy notification error:', notifyErr);
+            }
         }
     }
     catch (error) {
@@ -241,8 +268,24 @@ const getOpportunityById = async (req, res) => {
                         }
                     }
                 },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } },
+                owner: { select: { firstName: true, lastName: true, profileImage: true, email: true } },
                 contacts: true,
+                lead: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        assignedTo: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                profileImage: true,
+                                email: true
+                            }
+                        }
+                    }
+                },
                 emiSchedule: {
                     include: {
                         installments: {
@@ -268,20 +311,22 @@ const updateOpportunity = async (req, res) => {
     try {
         const updates = { ...req.body };
         const oppId = req.params.id;
+        // Extract payment-related fields that are not part of the Opportunity model
+        const { paymentType, paidAmount, installments, ...opportunityUpdates } = updates;
         // Handle Relation Updates
-        if (updates.account && typeof updates.account === 'string') {
-            updates.account = { connect: { id: updates.account } };
+        if (opportunityUpdates.account && typeof opportunityUpdates.account === 'string') {
+            opportunityUpdates.account = { connect: { id: opportunityUpdates.account } };
         }
-        if (updates.owner && typeof updates.owner === 'string') {
-            updates.owner = { connect: { id: updates.owner } };
+        if (opportunityUpdates.owner && typeof opportunityUpdates.owner === 'string') {
+            opportunityUpdates.owner = { connect: { id: opportunityUpdates.owner } };
         }
         // Fetch first for validation and existence
         const currentOpp = await prisma_1.default.opportunity.findUnique({ where: { id: oppId } });
         if (!currentOpp)
             return res.status(404).json({ message: 'Opportunity not found' });
-        if (updates.customFields) {
+        if (opportunityUpdates.customFields) {
             const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
-            await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, updates.customFields);
+            await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, opportunityUpdates.customFields);
         }
         const requester = req.user;
         const whereObj = { id: oppId };
@@ -295,7 +340,7 @@ const updateOpportunity = async (req, res) => {
         }
         const opportunity = await prisma_1.default.opportunity.update({
             where: whereObj,
-            data: updates,
+            data: opportunityUpdates,
             include: {
                 account: { select: { name: true } },
                 owner: { select: { firstName: true, lastName: true, profileImage: true } }
@@ -389,14 +434,28 @@ const updateOpportunity = async (req, res) => {
                     }
                 });
             }
-            // Hierarchy Notification on Sale Closure
+            // Hierarchy Notification on Sale Closure with Payment
             try {
-                const owner = await prisma_1.default.user.findUnique({
-                    where: { id: opportunity.ownerId },
-                    select: { reportsToId: true, firstName: true, lastName: true }
-                });
-                if (owner && owner.reportsToId) {
-                    await notificationService_1.NotificationService.sendToHierarchy(opportunity.ownerId, 'Sale Closed! 🎉', `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}" for $${opportunity.amount}.`, 'success');
+                const { paymentType, paidAmount } = req.body;
+                // Only send notification if payment is recorded
+                if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
+                    const owner = await prisma_1.default.user.findUnique({
+                        where: { id: opportunity.ownerId },
+                        select: { reportsToId: true, firstName: true, lastName: true }
+                    });
+                    if (owner && owner.reportsToId) {
+                        let paymentMessage = '';
+                        if (paymentType === 'paid') {
+                            paymentMessage = `Full payment of ₹${opportunity.amount.toLocaleString('en-IN')} received.`;
+                        }
+                        else if (paymentType === 'partial') {
+                            paymentMessage = `Partial payment of ₹${paidAmount?.toLocaleString('en-IN')} received (Total: ₹${opportunity.amount.toLocaleString('en-IN')}).`;
+                        }
+                        else if (paymentType === 'emi') {
+                            paymentMessage = `EMI payment plan initiated for ₹${opportunity.amount.toLocaleString('en-IN')}.`;
+                        }
+                        await notificationService_1.NotificationService.sendToHierarchy(opportunity.ownerId, 'Sale Closed with Payment! 🎉💰', `${owner.firstName} ${owner.lastName} closed a deal "${opportunity.name}". ${paymentMessage}`, 'success');
+                    }
                 }
             }
             catch (notifyErr) {
@@ -471,4 +530,3 @@ const deleteOpportunity = async (req, res) => {
     }
 };
 exports.deleteOpportunity = deleteOpportunity;
-//# sourceMappingURL=opportunityController.js.map

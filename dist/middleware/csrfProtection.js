@@ -56,6 +56,10 @@ class CSRFProtection {
             if (req.path.includes('/webhook')) {
                 return next();
             }
+            // Skip CSRF for file uploads (multipart/form-data)
+            if (req.path.includes('/import') || req.headers['content-type']?.includes('multipart/form-data')) {
+                return next();
+            }
             const session = req.session;
             const sessionToken = session?.csrfToken;
             const headerToken = req.headers[CSRFProtection.CSRF_HEADER_NAME.toLowerCase()];
@@ -105,4 +109,3 @@ CSRFProtection.CSRF_COOKIE_NAME = 'csrf-token';
 exports.setCSRFToken = CSRFProtection.setToken();
 exports.verifyCSRFToken = CSRFProtection.verifyToken();
 exports.getCSRFToken = CSRFProtection.getTokenEndpoint();
-//# sourceMappingURL=csrfProtection.js.map

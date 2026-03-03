@@ -259,4 +259,3 @@ const deleteCustomField = async (req, res) => {
     }
 };
 exports.deleteCustomField = deleteCustomField;
-//# sourceMappingURL=customFieldController.js.map

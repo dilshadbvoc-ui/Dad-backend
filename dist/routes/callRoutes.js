@@ -35,4 +35,3 @@ router.route('/lead/:leadId').get(authMiddleware_1.protect, callController_1.get
 // Recording retrieval
 router.route('/recording/:filename').get(authMiddleware_1.protect, callController_1.getRecording);
 exports.default = router;
-//# sourceMappingURL=callRoutes.js.map

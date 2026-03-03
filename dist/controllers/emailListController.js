@@ -158,4 +158,3 @@ const deleteEmailList = async (req, res) => {
     }
 };
 exports.deleteEmailList = deleteEmailList;
-//# sourceMappingURL=emailListController.js.map

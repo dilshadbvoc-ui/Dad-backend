@@ -10,4 +10,3 @@ const router = express_1.default.Router();
 router.route('/').get(authMiddleware_1.protect, callSettingsController_1.getCallSettings);
 router.route('/').put(authMiddleware_1.protect, callSettingsController_1.updateCallSettings);
 exports.default = router;
-//# sourceMappingURL=callSettingsRoutes.js.map

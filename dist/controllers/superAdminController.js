@@ -359,4 +359,3 @@ const getOrganisationStats = async (req, res) => {
     }
 };
 exports.getOrganisationStats = getOrganisationStats;
-//# sourceMappingURL=superAdminController.js.map

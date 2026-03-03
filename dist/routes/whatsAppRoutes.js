@@ -29,4 +29,3 @@ router.get('/webhook', whatsAppController_1.verifyWebhook);
 router.post('/webhook', whatsAppController_1.handleWebhook);
 router.post('/upload-media', authMiddleware_1.protect, upload.single('file'), whatsAppController_1.uploadMedia);
 exports.default = router;
-//# sourceMappingURL=whatsAppRoutes.js.map

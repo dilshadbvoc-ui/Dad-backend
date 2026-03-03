@@ -16,4 +16,3 @@ router.route('/:id')
     .put(webhookController_1.updateWebhook)
     .delete(webhookController_1.deleteWebhook);
 exports.default = router;
-//# sourceMappingURL=webhookRoutes.js.map

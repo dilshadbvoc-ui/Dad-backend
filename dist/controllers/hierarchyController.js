@@ -94,4 +94,3 @@ const updateReportsTo = async (req, res) => {
     }
 };
 exports.updateReportsTo = updateReportsTo;
-//# sourceMappingURL=hierarchyController.js.map

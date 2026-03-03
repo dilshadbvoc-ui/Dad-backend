@@ -13,4 +13,3 @@ router.put('/:id', authMiddleware_1.protect, goalController_1.updateGoal);
 router.post('/:id/recalculate', authMiddleware_1.protect, goalController_1.recalculateGoal);
 router.delete('/:id', authMiddleware_1.protect, goalController_1.deleteGoal);
 exports.default = router;
-//# sourceMappingURL=goalRoutes.js.map

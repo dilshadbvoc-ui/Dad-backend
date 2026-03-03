@@ -42,4 +42,3 @@ function isSuperAdmin(user) {
 function isAdmin(user) {
     return checkRole(user, ['admin', 'super_admin']);
 }
-//# sourceMappingURL=roleUtils.js.map

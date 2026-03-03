@@ -96,4 +96,3 @@ const createCampaign = async (req, res) => {
     }
 };
 exports.createCampaign = createCampaign;
-//# sourceMappingURL=marketingController.js.map

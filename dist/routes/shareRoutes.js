@@ -10,4 +10,3 @@ const router = express_1.default.Router();
 // /api/share/:slug
 router.get('/:slug', productController_1.getSharedProduct);
 exports.default = router;
-//# sourceMappingURL=shareRoutes.js.map

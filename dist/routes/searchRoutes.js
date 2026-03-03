@@ -16,4 +16,3 @@ router.get('/suggestions', searchController_1.searchSuggestions);
 // Recent searches for user
 router.get('/recent', searchController_1.recentSearches);
 exports.default = router;
-//# sourceMappingURL=searchRoutes.js.map

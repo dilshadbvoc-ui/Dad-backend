@@ -11,4 +11,3 @@ router.get('/', authMiddleware_1.protect, profileController_1.getProfile);
 router.put('/', authMiddleware_1.protect, profileController_1.updateProfile);
 router.post('/change-password', authMiddleware_1.protect, profileController_1.changePassword);
 exports.default = router;
-//# sourceMappingURL=profileRoutes.js.map

@@ -223,4 +223,3 @@ const deleteWhatsAppCampaign = async (req, res) => {
     }
 };
 exports.deleteWhatsAppCampaign = deleteWhatsAppCampaign;
-//# sourceMappingURL=whatsAppCampaignController.js.map

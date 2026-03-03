@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, commissionController_1.createCommissi
 router.put('/:id', authMiddleware_1.protect, commissionController_1.updateCommission);
 router.delete('/:id', authMiddleware_1.protect, commissionController_1.deleteCommission);
 exports.default = router;
-//# sourceMappingURL=commissionRoutes.js.map

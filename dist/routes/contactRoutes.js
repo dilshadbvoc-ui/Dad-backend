@@ -14,4 +14,3 @@ router.get('/:id', authMiddleware_1.protect, contactController_1.getContactById)
 router.put('/:id', authMiddleware_1.protect, contactController_1.updateContact);
 router.delete('/:id', authMiddleware_1.protect, contactController_1.deleteContact);
 exports.default = router;
-//# sourceMappingURL=contactRoutes.js.map

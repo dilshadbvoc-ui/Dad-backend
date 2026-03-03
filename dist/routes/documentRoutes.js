@@ -20,4 +20,3 @@ router.put('/:id', documentController_1.updateDocument);
 // Delete document (soft delete)
 router.delete('/:id', documentController_1.deleteDocument);
 exports.default = router;
-//# sourceMappingURL=documentRoutes.js.map

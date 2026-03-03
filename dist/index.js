@@ -65,6 +65,7 @@ const emailListRoutes_1 = __importDefault(require("./routes/emailListRoutes"));
 const interactionRoutes_1 = __importDefault(require("./routes/interactionRoutes"));
 const eventRoutes_1 = __importDefault(require("./routes/eventRoutes"));
 const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
+const followUpRoutes_1 = __importDefault(require("./routes/followUpRoutes"));
 const workflowRoutes_1 = __importDefault(require("./routes/workflowRoutes"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const quoteRoutes_1 = __importDefault(require("./routes/quoteRoutes"));
@@ -298,7 +299,7 @@ app.use('/api/public', publicRoutes_1.default);
 app.use('/api/auth', authRoutes_1.default);
 app.use('/api/analytics', csrfProtection_1.verifyCSRFToken, analyticsRoutes_1.default);
 app.use('/api/workflow', csrfProtection_1.verifyCSRFToken, workflowRoutes_1.default);
-app.use('/api/import', csrfProtection_1.verifyCSRFToken, importRoutes_1.default);
+app.use('/api/import', importRoutes_1.default); // No CSRF for file uploads
 app.use('/api/ai', aiRoutes_1.default); // Remove CSRF - already protected by auth
 app.use('/api/email', csrfProtection_1.verifyCSRFToken, emailRoutes_1.default);
 const gmailRoutes_1 = __importDefault(require("./routes/gmailRoutes"));
@@ -328,6 +329,7 @@ const checkInRoutes_1 = __importDefault(require("./routes/checkInRoutes"));
 app.use('/api/checkins', checkInRoutes_1.default);
 app.use('/api/calendar', eventRoutes_1.default);
 app.use('/api/tasks', taskRoutes_1.default);
+app.use('/api/follow-ups', followUpRoutes_1.default);
 // Commerce
 app.use('/api/products', productRoutes_1.default);
 app.use('/api/quotes', quoteRoutes_1.default);
@@ -441,4 +443,3 @@ httpServer.listen(PORT, async () => {
 });
 // Forced restart v2
 // restart 
-//# sourceMappingURL=index.js.map

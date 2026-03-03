@@ -40,4 +40,3 @@ const debugPermissions = async () => {
     }
 };
 debugPermissions();
-//# sourceMappingURL=debug-permissions.js.map

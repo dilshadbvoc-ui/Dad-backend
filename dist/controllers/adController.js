@@ -229,4 +229,3 @@ const uploadAdImage = async (req, res) => {
     }
 };
 exports.uploadAdImage = uploadAdImage;
-//# sourceMappingURL=adController.js.map

@@ -8,8 +8,8 @@ const landingPageController_1 = require("../controllers/landingPageController");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.get('/', authMiddleware_1.protect, landingPageController_1.getLandingPages);
+router.get('/slug/:slug', landingPageController_1.getLandingPageBySlug); // Public route - no auth required
 router.post('/', authMiddleware_1.protect, landingPageController_1.createLandingPage);
 router.put('/:id', authMiddleware_1.protect, landingPageController_1.updateLandingPage);
 router.delete('/:id', authMiddleware_1.protect, landingPageController_1.deleteLandingPage);
 exports.default = router;
-//# sourceMappingURL=landingPageRoutes.js.map

@@ -225,4 +225,3 @@ exports.default = {
     verifySuperAdminSecret: exports.verifySuperAdminSecret,
     lockSystem: exports.lockSystem
 };
-//# sourceMappingURL=superAdminProtection.js.map

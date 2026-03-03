@@ -88,4 +88,3 @@ const deleteCommission = async (req, res) => {
     }
 };
 exports.deleteCommission = deleteCommission;
-//# sourceMappingURL=commissionController.js.map

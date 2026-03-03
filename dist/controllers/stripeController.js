@@ -74,4 +74,3 @@ const handleWebhook = async (req, res) => {
     }
 };
 exports.handleWebhook = handleWebhook;
-//# sourceMappingURL=stripeController.js.map

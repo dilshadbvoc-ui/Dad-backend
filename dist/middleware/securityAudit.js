@@ -266,4 +266,3 @@ SecurityAuditMiddleware.sensitiveEndpoints = [
 // Export middleware functions
 exports.auditSecurity = SecurityAuditMiddleware.auditRequest();
 exports.detectBruteForce = SecurityAuditMiddleware.detectBruteForce();
-//# sourceMappingURL=securityAudit.js.map

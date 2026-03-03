@@ -137,4 +137,3 @@ const getAuditLogs = async (req, res) => {
     }
 };
 exports.getAuditLogs = getAuditLogs;
-//# sourceMappingURL=auditController.js.map

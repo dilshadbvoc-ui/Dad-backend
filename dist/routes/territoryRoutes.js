@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, territoryController_1.createTerritory
 router.put('/:id', authMiddleware_1.protect, territoryController_1.updateTerritory);
 router.delete('/:id', authMiddleware_1.protect, territoryController_1.deleteTerritory);
 exports.default = router;
-//# sourceMappingURL=territoryRoutes.js.map

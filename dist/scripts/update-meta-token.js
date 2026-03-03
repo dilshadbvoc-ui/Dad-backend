@@ -37,4 +37,3 @@ const updateMetaToken = async () => {
     }
 };
 updateMetaToken();
-//# sourceMappingURL=update-meta-token.js.map

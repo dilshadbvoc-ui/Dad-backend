@@ -15,4 +15,3 @@ router.post('/webhook/status', telephonyController_1.handleStatusWebhook);
 const telephonyController_2 = require("../controllers/telephonyController");
 router.post('/outbound', authMiddleware_1.protect, telephonyController_2.makeOutboundCall);
 exports.default = router;
-//# sourceMappingURL=telephonyRoutes.js.map

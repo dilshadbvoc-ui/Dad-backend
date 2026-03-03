@@ -95,6 +95,16 @@ class ImportJobService {
             const applyAssignmentRules = metadata.applyAssignmentRules || false;
             for await (const row of processStream) {
                 try {
+                    // Sanitize row data to remove null bytes
+                    const sanitizedRow = {};
+                    for (const [key, value] of Object.entries(row)) {
+                        if (typeof value === 'string') {
+                            sanitizedRow[key] = value.replace(/\u0000/g, '');
+                        }
+                        else {
+                            sanitizedRow[key] = value;
+                        }
+                    }
                     const leadData = {
                         organisationId: job.organisationId,
                         assignedToId: applyAssignmentRules ? undefined : job.createdById,
@@ -118,7 +128,7 @@ class ImportJobService {
                     for (const [csvHeader, crmField] of Object.entries(mapping)) {
                         if (!crmField)
                             continue;
-                        const value = row[csvHeader];
+                        const value = sanitizedRow[csvHeader];
                         if (value === undefined || value === null || value === '')
                             continue;
                         if (String(crmField) === 'fullName') {
@@ -228,7 +238,18 @@ class ImportJobService {
                 }
                 catch (err) {
                     failureCount++;
-                    errors.push({ row, error: err.message });
+                    // Sanitize error data to remove null bytes that PostgreSQL can't handle
+                    const sanitizedRowForError = {};
+                    for (const [key, value] of Object.entries(row)) {
+                        if (typeof value === 'string') {
+                            sanitizedRowForError[key] = value.replace(/\u0000/g, '');
+                        }
+                        else {
+                            sanitizedRowForError[key] = value;
+                        }
+                    }
+                    const sanitizedError = String(err.message || 'Unknown error').replace(/\u0000/g, '');
+                    errors.push({ row: sanitizedRowForError, error: sanitizedError });
                 }
                 // Update progress every 10 rows
                 if ((successCount + failureCount) % 10 === 0) {
@@ -242,7 +263,11 @@ class ImportJobService {
                     });
                 }
             }
-            // Final Update
+            // Final Update - sanitize errors one more time to be safe
+            const sanitizedErrors = errors.map(err => ({
+                row: typeof err.row === 'object' ? JSON.parse(JSON.stringify(err.row).replace(/\u0000/g, '')) : err.row,
+                error: typeof err.error === 'string' ? err.error.replace(/\u0000/g, '') : String(err.error).replace(/\u0000/g, '')
+            }));
             await prisma_1.default.importJob.update({
                 where: { id: jobId },
                 data: {
@@ -251,7 +276,7 @@ class ImportJobService {
                     progress: totalLines,
                     successCount,
                     failureCount,
-                    errors: errors.length > 0 ? errors : undefined
+                    errors: sanitizedErrors.length > 0 ? sanitizedErrors : undefined
                 }
             });
             // Audit the import completion
@@ -270,16 +295,17 @@ class ImportJobService {
         }
         catch (error) {
             console.error(`Job ${jobId} failed:`, error);
+            // Sanitize error message
+            const sanitizedErrorMessage = String(error.message || 'Unknown error').replace(/\u0000/g, '');
             await prisma_1.default.importJob.update({
                 where: { id: jobId },
                 data: {
                     status: 'failed',
                     completedAt: new Date(),
-                    errors: [{ error: error.message }]
+                    errors: [{ error: sanitizedErrorMessage }]
                 }
             });
         }
     }
 }
 exports.ImportJobService = ImportJobService;
-//# sourceMappingURL=importJobService.js.map

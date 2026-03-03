@@ -40,4 +40,3 @@ async function createDefaultRule() {
     }
 }
 createDefaultRule();
-//# sourceMappingURL=create_default_rule.js.map

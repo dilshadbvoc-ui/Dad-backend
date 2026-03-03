@@ -32,4 +32,3 @@ router.get('/roles', authMiddleware_1.protect, roleController_1.getGlobalRoles);
 router.post('/roles', authMiddleware_1.protect, roleController_1.upsertGlobalRole);
 router.get('/stats', authMiddleware_1.protect, superAdminController_1.getOrganisationStats);
 exports.default = router;
-//# sourceMappingURL=superAdminRoutes.js.map

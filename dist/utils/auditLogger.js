@@ -26,4 +26,3 @@ const logAudit = async (params) => {
     }
 };
 exports.logAudit = logAudit;
-//# sourceMappingURL=auditLogger.js.map

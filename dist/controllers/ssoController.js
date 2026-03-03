@@ -96,4 +96,3 @@ const ssoCallback = (req, res, next) => {
     })(req, res, next);
 };
 exports.ssoCallback = ssoCallback;
-//# sourceMappingURL=ssoController.js.map

@@ -284,4 +284,3 @@ const checkLicenseValidity = async (req, res) => {
     }
 };
 exports.checkLicenseValidity = checkLicenseValidity;
-//# sourceMappingURL=licenseController.js.map

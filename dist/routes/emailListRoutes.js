@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, emailListController_1.createEmailList
 router.get('/:id', authMiddleware_1.protect, emailListController_1.getEmailListById);
 router.delete('/:id', authMiddleware_1.protect, emailListController_1.deleteEmailList);
 exports.default = router;
-//# sourceMappingURL=emailListRoutes.js.map

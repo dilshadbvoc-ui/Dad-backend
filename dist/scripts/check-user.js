@@ -32,4 +32,3 @@ const checkUser = async () => {
     }
 };
 checkUser();
-//# sourceMappingURL=check-user.js.map

@@ -41,11 +41,14 @@ class EMIService {
       }
     }
 
-    // Validate all dates are in the future
-    const now = new Date();
+    // Validate all dates are today or in the future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
     for (const installment of installments) {
-      if (new Date(installment.dueDate) <= now) {
-        return { valid: false, error: 'All installment due dates must be in the future' };
+      const dueDate = new Date(installment.dueDate);
+      dueDate.setHours(0, 0, 0, 0);
+      if (dueDate < today) {
+        return { valid: false, error: 'All installment due dates must be today or in the future' };
       }
     }
 

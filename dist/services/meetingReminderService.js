@@ -122,4 +122,3 @@ const checkUserMeetingReminders = async (userId) => {
     return upcomingMeetings;
 };
 exports.checkUserMeetingReminders = checkUserMeetingReminders;
-//# sourceMappingURL=meetingReminderService.js.map

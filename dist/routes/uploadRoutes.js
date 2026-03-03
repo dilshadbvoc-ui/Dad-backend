@@ -75,4 +75,3 @@ router.use((err, req, res, next) => {
     next();
 });
 exports.default = router;
-//# sourceMappingURL=uploadRoutes.js.map

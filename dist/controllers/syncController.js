@@ -55,4 +55,3 @@ const syncData = async (req, res) => {
     }
 };
 exports.syncData = syncData;
-//# sourceMappingURL=syncController.js.map

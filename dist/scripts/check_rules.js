@@ -25,4 +25,3 @@ async function checkRules() {
     }
 }
 checkRules();
-//# sourceMappingURL=check_rules.js.map

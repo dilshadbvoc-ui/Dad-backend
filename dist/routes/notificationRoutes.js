@@ -11,4 +11,3 @@ router.get('/', authMiddleware_1.protect, notificationController_1.getNotificati
 router.put('/:id/read', authMiddleware_1.protect, notificationController_1.markAsRead);
 router.put('/read-all', authMiddleware_1.protect, notificationController_1.markAllAsRead);
 exports.default = router;
-//# sourceMappingURL=notificationRoutes.js.map

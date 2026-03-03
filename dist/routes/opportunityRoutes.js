@@ -13,4 +13,3 @@ router.get('/:id', authMiddleware_1.protect, opportunityController_1.getOpportun
 router.put('/:id', authMiddleware_1.protect, opportunityController_1.updateOpportunity);
 router.delete('/:id', authMiddleware_1.protect, opportunityController_1.deleteOpportunity);
 exports.default = router;
-//# sourceMappingURL=opportunityRoutes.js.map

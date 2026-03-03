@@ -616,4 +616,3 @@ const getSubordinates = async (req, res) => {
     }
 };
 exports.getSubordinates = getSubordinates;
-//# sourceMappingURL=salesTargetController.js.map

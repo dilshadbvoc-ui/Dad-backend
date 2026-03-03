@@ -11,4 +11,3 @@ const router = express_1.default.Router();
 router.use(authMiddleware_1.protect);
 router.post('/send', rateLimiter_1.generalLimiter, emailController_1.sendOneOffEmail);
 exports.default = router;
-//# sourceMappingURL=emailRoutes.js.map

@@ -466,9 +466,9 @@ const updateLead = async (req, res) => {
                     reason: req.body.reason || 'Manual Assignment'
                 };
             }
-            // Remap for Prisma
-            updates.assignedTo = { connect: { id: targetUserId } };
-            delete updates.assignedToId; // Clean up
+            // Remap for Prisma - store the ID directly
+            updates.assignedToId = targetUserId;
+            delete updates.assignedTo; // Clean up the relation object
         }
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
@@ -482,8 +482,9 @@ const updateLead = async (req, res) => {
                 details: { oldStatus: currentLead.status, newStatus: updates.status }
             });
         }
-        // Track Follow-up Change
+        // Track Follow-up Change and Create Task
         if (updates.nextFollowUp) {
+            // Create interaction log
             await prisma_1.default.interaction.create({
                 data: {
                     leadId: leadId,
@@ -494,19 +495,51 @@ const updateLead = async (req, res) => {
                     organisationId: currentLead.organisationId
                 }
             });
+            // Auto-create a follow-up task
+            const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
+            const dueDate = new Date(updates.nextFollowUp);
+            dueDate.setHours(0, 0, 0, 0); // Normalize to start of day
+            // Check if a task already exists for this lead on this date
+            const existingTask = await prisma_1.default.task.findFirst({
+                where: {
+                    leadId: leadId,
+                    dueDate: dueDate,
+                    isDeleted: false,
+                    subject: { contains: 'Follow up' }
+                }
+            });
+            // Only create if no existing task
+            if (!existingTask) {
+                await prisma_1.default.task.create({
+                    data: {
+                        subject: `Follow up with ${leadName}`,
+                        description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
+                        status: 'not_started',
+                        priority: 'medium',
+                        dueDate: dueDate,
+                        createdBy: { connect: { id: requester.id } },
+                        organisation: { connect: { id: currentLead.organisationId } },
+                        lead: { connect: { id: leadId } },
+                        // Assign to the lead's assigned user, or the current user if no assignment
+                        ...(currentLead.assignedToId
+                            ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
+                            : { assignedTo: { connect: { id: requester.id } } }),
+                        ...(currentLead.branchId ? { branch: { connect: { id: currentLead.branchId } } } : {})
+                    }
+                });
+            }
         }
         if (updates.customFields) {
             const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Lead', currentLead.organisationId, updates.customFields);
         }
-        const whereObj = { id: leadId };
+        const whereObj = { id: leadId, isDeleted: false };
         if (requester.role !== 'super_admin') {
             const orgId = (0, hierarchyUtils_1.getOrgId)(requester);
             if (!orgId)
                 return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
-            if (requester.branchId)
-                whereObj.branchId = requester.branchId;
+            // Don't filter by branchId on update - users can update leads across branches if they have access
         }
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
         const allowedFields = [
@@ -780,7 +813,7 @@ const createBulkLeads = async (req, res) => {
 exports.createBulkLeads = createBulkLeads;
 const bulkAssignLeads = async (req, res) => {
     try {
-        const { leadIds, assignedTo } = req.body;
+        const { leadIds, assignedTo, reason } = req.body;
         const requester = req.user;
         if (requester.role !== 'super_admin' && requester.role !== 'admin') {
             const allowedIds = await (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
@@ -788,10 +821,29 @@ const bulkAssignLeads = async (req, res) => {
                 return res.status(403).json({ message: 'Forbidden assignment' });
             }
         }
+        // Fetch current leads to track old owners
+        const currentLeads = await prisma_1.default.lead.findMany({
+            where: { id: { in: leadIds } },
+            select: { id: true, assignedToId: true }
+        });
+        // Update leads
         const result = await prisma_1.default.lead.updateMany({
             where: { id: { in: leadIds } },
             data: { assignedToId: assignedTo }
         });
+        // Create history records for each lead
+        const historyRecords = currentLeads.map(lead => ({
+            leadId: lead.id,
+            oldOwnerId: lead.assignedToId,
+            newOwnerId: assignedTo,
+            changedById: requester.id,
+            reason: reason || 'Bulk Assignment'
+        }));
+        if (historyRecords.length > 0) {
+            await prisma_1.default.leadHistory.createMany({
+                data: historyRecords
+            });
+        }
         res.json({ message: 'Assigned successfully', count: result.count });
     }
     catch (error) {
@@ -1149,7 +1201,8 @@ const getPendingFollowUpsCount = async (req, res) => {
         const endOfToday = new Date(now.setHours(23, 59, 59, 999));
         const where = {
             nextFollowUp: { lte: endOfToday },
-            status: { not: client_1.LeadStatus.converted }
+            status: { not: client_1.LeadStatus.converted },
+            isDeleted: false
         };
         if (user.role !== 'super_admin') {
             const orgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -1234,4 +1287,3 @@ const getDuplicateLeads = async (req, res) => {
     }
 };
 exports.getDuplicateLeads = getDuplicateLeads;
-//# sourceMappingURL=leadController.js.map

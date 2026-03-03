@@ -14,4 +14,3 @@ router.route('/:id')
     .put(authMiddleware_1.protect, branchController_1.updateBranch)
     .delete(authMiddleware_1.protect, branchController_1.deleteBranch);
 exports.default = router;
-//# sourceMappingURL=branchRoutes.js.map

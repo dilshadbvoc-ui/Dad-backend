@@ -18,4 +18,3 @@ router.post('/leads/:leadId/quick-log', authMiddleware_1.protect, interactionCon
 // Update interaction with recording (for mobile app)
 router.put('/interactions/:id/recording', authMiddleware_1.protect, interactionController_1.updateInteractionRecording);
 exports.default = router;
-//# sourceMappingURL=interactionRoutes.js.map

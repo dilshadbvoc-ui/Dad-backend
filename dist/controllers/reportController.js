@@ -567,4 +567,3 @@ const getTeamPerformanceReport = async (req, res) => {
     }
 };
 exports.getTeamPerformanceReport = getTeamPerformanceReport;
-//# sourceMappingURL=reportController.js.map

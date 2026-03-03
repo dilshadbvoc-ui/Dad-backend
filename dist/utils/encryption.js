@@ -56,4 +56,3 @@ const decrypt = (text) => {
     }
 };
 exports.decrypt = decrypt;
-//# sourceMappingURL=encryption.js.map

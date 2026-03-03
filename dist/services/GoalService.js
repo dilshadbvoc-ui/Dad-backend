@@ -103,4 +103,3 @@ class GoalService {
     }
 }
 exports.GoalService = GoalService;
-//# sourceMappingURL=goalService.js.map

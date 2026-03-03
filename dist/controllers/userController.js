@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivateUser = exports.inviteUser = exports.createUser = exports.updateUser = exports.getUserById = exports.getMyTeam = exports.getUsers = exports.getUserStats = void 0;
+exports.activateUser = exports.deactivateUser = exports.inviteUser = exports.createUser = exports.updateUser = exports.getUserById = exports.getMyTeam = exports.getUsers = exports.getUserStats = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const logger_1 = require("../utils/logger");
 const prisma_1 = __importDefault(require("../config/prisma"));
@@ -584,4 +584,39 @@ const deactivateUser = async (req, res) => {
     }
 };
 exports.deactivateUser = deactivateUser;
-//# sourceMappingURL=userController.js.map
+const activateUser = async (req, res) => {
+    try {
+        const currentUser = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(currentUser);
+        const userId = req.params.id;
+        const where = { id: userId };
+        if (currentUser.role !== 'super_admin') {
+            if (!orgId)
+                return res.status(403).json({ message: 'No org' });
+            where.organisationId = orgId;
+        }
+        const existing = await prisma_1.default.user.findFirst({ where });
+        if (!existing)
+            return res.status(404).json({ message: 'User not found or access denied' });
+        const user = await prisma_1.default.user.update({
+            where: { id: userId },
+            data: { isActive: true }
+        });
+        // Audit Log
+        (0, auditLogger_1.logAudit)({
+            action: 'ACTIVATE_USER',
+            entity: 'User',
+            entityId: user.id,
+            actorId: req.user.id,
+            organisationId: user.organisationId || req.user.organisationId,
+            details: { email: user.email }
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _pw, ...sanitizedUser } = user;
+        res.json({ message: 'User activated', user: sanitizedUser });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.activateUser = activateUser;

@@ -71,25 +71,88 @@ const createCase = async (req, res) => {
         // Generate case number
         const count = await prisma_1.default.case.count({ where: { organisationId: orgId } });
         const caseNumber = `CASE-${String(count + 1).padStart(5, '0')}`;
+        // Get user's direct manager for automatic assignment
+        const currentUser = await prisma_1.default.user.findUnique({
+            where: { id: user.id },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                reportsToId: true,
+                reportsTo: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        reportsToId: true
+                    }
+                }
+            }
+        });
+        // Assign to direct manager if exists, otherwise leave unassigned
+        const assignedToId = req.body.assignedTo || req.body.assignedToId || currentUser?.reportsToId || undefined;
         const newCase = await prisma_1.default.case.create({
             data: {
                 ...req.body,
                 caseNumber,
                 organisationId: orgId,
                 createdById: user.id,
-                // Ensure relations are connected properly if provided
                 contactId: req.body.contact || req.body.contactId || undefined,
                 accountId: req.body.account || req.body.accountId || undefined,
-                assignedToId: req.body.assignedTo || req.body.assignedToId || undefined
+                assignedToId
+            },
+            include: {
+                createdBy: {
+                    select: { firstName: true, lastName: true }
+                }
             }
         });
+        // Create notification for direct manager
+        if (assignedToId) {
+            await prisma_1.default.notification.create({
+                data: {
+                    title: 'New Support Case Assigned',
+                    message: `${currentUser?.firstName} ${currentUser?.lastName} created a new support case: ${newCase.subject}`,
+                    type: 'info',
+                    relatedResource: 'case',
+                    relatedId: newCase.id,
+                    recipientId: assignedToId,
+                    organisationId: orgId
+                }
+            });
+        }
+        // Notify all managers up the hierarchy chain
+        const managersToNotify = [];
+        let currentManagerId = currentUser?.reportsTo?.reportsToId; // Start from manager's manager
+        while (currentManagerId) {
+            managersToNotify.push(currentManagerId);
+            const manager = await prisma_1.default.user.findUnique({
+                where: { id: currentManagerId },
+                select: { reportsToId: true }
+            });
+            currentManagerId = manager?.reportsToId || null;
+        }
+        // Create notifications for all managers in the chain
+        if (managersToNotify.length > 0) {
+            await prisma_1.default.notification.createMany({
+                data: managersToNotify.map(managerId => ({
+                    title: 'New Support Case Created',
+                    message: `${currentUser?.firstName} ${currentUser?.lastName} created a support case: ${newCase.subject} (Priority: ${newCase.priority})`,
+                    type: 'info',
+                    relatedResource: 'case',
+                    relatedId: newCase.id,
+                    recipientId: managerId,
+                    organisationId: orgId
+                }))
+            });
+        }
         await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
             action: 'CREATE_CASE',
             entity: 'Case',
             entityId: newCase.id,
-            details: { caseNumber: newCase.caseNumber }
+            details: { caseNumber: newCase.caseNumber, assignedTo: assignedToId }
         });
         res.status(201).json(newCase);
     }
@@ -152,6 +215,16 @@ const updateCase = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation not found' });
+        // Get the old case data to check for changes
+        const oldCase = await prisma_1.default.case.findUnique({
+            where: { id },
+            select: {
+                status: true,
+                assignedToId: true,
+                subject: true,
+                priority: true
+            }
+        });
         const supportCase = await prisma_1.default.case.update({
             where: {
                 id,
@@ -159,6 +232,41 @@ const updateCase = async (req, res) => {
             },
             data: updates
         });
+        // Send notification if assignee changed
+        if (updates.assignedToId && updates.assignedToId !== oldCase?.assignedToId) {
+            await prisma_1.default.notification.create({
+                data: {
+                    title: 'Support Case Assigned to You',
+                    message: `A support case has been assigned to you: ${oldCase?.subject}`,
+                    type: 'info',
+                    relatedResource: 'case',
+                    relatedId: supportCase.id,
+                    recipientId: updates.assignedToId,
+                    organisationId: orgId
+                }
+            });
+        }
+        // Send notification if status changed to resolved
+        if (updates.status === 'resolved' && oldCase?.status !== 'resolved') {
+            // Notify the case creator
+            const caseWithCreator = await prisma_1.default.case.findUnique({
+                where: { id },
+                select: { createdById: true }
+            });
+            if (caseWithCreator?.createdById) {
+                await prisma_1.default.notification.create({
+                    data: {
+                        title: 'Support Case Resolved',
+                        message: `Your support case has been resolved: ${oldCase?.subject}`,
+                        type: 'success',
+                        relatedResource: 'case',
+                        relatedId: supportCase.id,
+                        recipientId: caseWithCreator.createdById,
+                        organisationId: orgId
+                    }
+                });
+            }
+        }
         await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
             actorId: user.id,
@@ -206,4 +314,3 @@ const deleteCase = async (req, res) => {
     }
 };
 exports.deleteCase = deleteCase;
-//# sourceMappingURL=caseController.js.map

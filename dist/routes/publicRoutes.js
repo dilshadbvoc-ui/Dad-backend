@@ -31,4 +31,3 @@ router.post('/meta/webhook', (req, res) => {
     res.sendStatus(200);
 });
 exports.default = router;
-//# sourceMappingURL=publicRoutes.js.map

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCheckIns = exports.createCheckIn = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
+const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const createCheckIn = async (req, res) => {
     try {
         const { type, notes, photoUrl, leadId, contactId, accountId, location } = req.body;
@@ -69,11 +70,17 @@ exports.createCheckIn = createCheckIn;
 const getCheckIns = async (req, res) => {
     try {
         const organisationId = req.user?.organisationId;
-        const { date, userId } = req.query;
-        if (!organisationId) {
+        const userId = req.user?.id;
+        const { date, userId: queryUserId } = req.query;
+        if (!organisationId || !userId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        const where = { organisationId };
+        // Get visible user IDs based on hierarchy (self, subordinates, branch members)
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(userId);
+        const where = {
+            organisationId,
+            userId: { in: visibleUserIds } // Only show check-ins from visible users
+        };
         if (date) {
             const startDate = new Date(date);
             startDate.setHours(0, 0, 0, 0);
@@ -84,8 +91,15 @@ const getCheckIns = async (req, res) => {
                 lte: endDate
             };
         }
-        if (userId) {
-            where.userId = userId;
+        // If specific user is requested, ensure they're in visible users
+        if (queryUserId) {
+            if (visibleUserIds.includes(queryUserId)) {
+                where.userId = queryUserId;
+            }
+            else {
+                // User not in hierarchy, return empty result
+                return res.json([]);
+            }
         }
         const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
         const offset = req.query.offset ? parseInt(req.query.offset) : undefined;
@@ -109,4 +123,3 @@ const getCheckIns = async (req, res) => {
     }
 };
 exports.getCheckIns = getCheckIns;
-//# sourceMappingURL=checkInController.js.map

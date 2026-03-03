@@ -13,4 +13,3 @@ router.get('/:id', authMiddleware_1.protect, campaignController_1.getCampaignByI
 router.put('/:id', authMiddleware_1.protect, campaignController_1.updateCampaign);
 router.delete('/:id', authMiddleware_1.protect, campaignController_1.deleteCampaign);
 exports.default = router;
-//# sourceMappingURL=campaignRoutes.js.map

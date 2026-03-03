@@ -72,4 +72,3 @@ const getPublicSystemSettings = async (req, res) => {
     }
 };
 exports.getPublicSystemSettings = getPublicSystemSettings;
-//# sourceMappingURL=systemSettingsController.js.map

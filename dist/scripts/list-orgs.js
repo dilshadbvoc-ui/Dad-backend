@@ -31,4 +31,3 @@ main()
     .finally(async () => {
     await prisma.$disconnect();
 });
-//# sourceMappingURL=list-orgs.js.map

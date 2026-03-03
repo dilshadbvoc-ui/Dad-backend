@@ -13,4 +13,3 @@ router.post('/', authMiddleware_1.protect, rateLimiter_1.campaignLimiter, whatsA
 router.put('/:id', authMiddleware_1.protect, whatsAppCampaignController_1.updateWhatsAppCampaign);
 router.delete('/:id', authMiddleware_1.protect, whatsAppCampaignController_1.deleteWhatsAppCampaign);
 exports.default = router;
-//# sourceMappingURL=whatsAppCampaignRoutes.js.map

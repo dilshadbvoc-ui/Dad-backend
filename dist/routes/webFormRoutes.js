@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, webFormController_1.createWebForm);
 router.put('/:id', authMiddleware_1.protect, webFormController_1.updateWebForm);
 router.delete('/:id', authMiddleware_1.protect, webFormController_1.deleteWebForm);
 exports.default = router;
-//# sourceMappingURL=webFormRoutes.js.map

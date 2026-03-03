@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteLandingPage = exports.updateLandingPage = exports.createLandingPage = exports.getLandingPages = void 0;
+exports.getLandingPageBySlug = exports.deleteLandingPage = exports.updateLandingPage = exports.createLandingPage = exports.getLandingPages = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const getLandingPages = async (req, res) => {
@@ -69,4 +69,22 @@ const deleteLandingPage = async (req, res) => {
     }
 };
 exports.deleteLandingPage = deleteLandingPage;
-//# sourceMappingURL=landingPageController.js.map
+const getLandingPageBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const page = await prisma_1.default.landingPage.findFirst({
+            where: {
+                slug,
+                isDeleted: false
+            }
+        });
+        if (!page) {
+            return res.status(404).json({ message: 'Landing page not found' });
+        }
+        res.json(page);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.getLandingPageBySlug = getLandingPageBySlug;

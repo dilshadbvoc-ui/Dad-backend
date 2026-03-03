@@ -391,4 +391,3 @@ const getMe = async (req, res) => {
     }
 };
 exports.getMe = getMe;
-//# sourceMappingURL=authController.js.map

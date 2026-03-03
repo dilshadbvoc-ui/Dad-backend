@@ -83,4 +83,3 @@ const getOrgId = (user) => {
     return null;
 };
 exports.getOrgId = getOrgId;
-//# sourceMappingURL=hierarchyUtils.js.map

@@ -588,4 +588,3 @@ const permanentlyDeleteOrganisation = async (req, res) => {
     }
 };
 exports.permanentlyDeleteOrganisation = permanentlyDeleteOrganisation;
-//# sourceMappingURL=organisationController.js.map

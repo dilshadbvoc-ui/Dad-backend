@@ -39,4 +39,3 @@ const sendOneOffEmail = async (req, res) => {
     }
 };
 exports.sendOneOffEmail = sendOneOffEmail;
-//# sourceMappingURL=emailController.js.map

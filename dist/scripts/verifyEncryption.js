@@ -32,4 +32,3 @@ const runVerification = () => {
     console.log('SUCCESS: Backward compatibility (plain text) working.');
 };
 runVerification();
-//# sourceMappingURL=verifyEncryption.js.map

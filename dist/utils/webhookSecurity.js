@@ -51,4 +51,3 @@ class WebhookSecurity {
     }
 }
 exports.WebhookSecurity = WebhookSecurity;
-//# sourceMappingURL=webhookSecurity.js.map

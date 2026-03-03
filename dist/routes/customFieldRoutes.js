@@ -12,4 +12,3 @@ router.post('/', authMiddleware_1.protect, customFieldController_1.createCustomF
 router.put('/:id', authMiddleware_1.protect, customFieldController_1.updateCustomField);
 router.delete('/:id', authMiddleware_1.protect, customFieldController_1.deleteCustomField);
 exports.default = router;
-//# sourceMappingURL=customFieldRoutes.js.map

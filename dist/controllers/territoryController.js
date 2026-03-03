@@ -147,4 +147,3 @@ const deleteTerritory = async (req, res) => {
     }
 };
 exports.deleteTerritory = deleteTerritory;
-//# sourceMappingURL=territoryController.js.map

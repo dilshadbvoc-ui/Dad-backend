@@ -372,4 +372,3 @@ const deleteQuote = async (req, res) => {
     }
 };
 exports.deleteQuote = deleteQuote;
-//# sourceMappingURL=quoteController.js.map

@@ -614,4 +614,3 @@ const verifyWebhook = async (req, res) => {
     }
 };
 exports.verifyWebhook = verifyWebhook;
-//# sourceMappingURL=whatsAppController.js.map
