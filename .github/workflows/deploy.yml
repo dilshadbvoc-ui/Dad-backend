@@ -47,6 +47,9 @@ jobs:
             
             # 🔓 Restore .env if it was backed up
             [ -f .env.bak ] && mv .env.bak .env
+            
+            # Clean up dist folder before copy to ensure no stale files exist
+            rm -rf dist
 
       - name: Copy Build to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -58,7 +61,6 @@ jobs:
           source: "dist"
           target: "~/backend/"
           overwrite: true
-          rm: true
 
       - name: Post-deployment - Restart on EC2
         uses: appleboy/ssh-action@v1.0.3
