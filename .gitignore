@@ -25,3 +25,4 @@ dist-ssr
 *.sw?
 lint_results.txt
 .env
+node_modules/
