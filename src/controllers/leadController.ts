@@ -535,7 +535,7 @@ export const updateLead = async (req: Request, res: Response) => {
                         organisation: { connect: { id: currentLead.organisationId } },
                         lead: { connect: { id: leadId } },
                         // Assign to the lead's assigned user, or the current user if no assignment
-                        ...(currentLead.assignedToId 
+                        ...(currentLead.assignedToId
                             ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
                             : { assignedTo: { connect: { id: requester.id } } }
                         ),
@@ -996,7 +996,7 @@ export const convertLead = async (req: Request, res: Response) => {
                     firstName: lead.firstName,
                     lastName: lead.lastName || '',
                     email: lead.email,
-                    phones: lead.phone ? { mobile: lead.phone } : undefined,
+                    phones: lead.phone ? [{ type: 'mobile', number: lead.phone }] : [],
                     jobTitle: lead.jobTitle,
                     organisationId: orgId,
                     ownerId: user.id,
