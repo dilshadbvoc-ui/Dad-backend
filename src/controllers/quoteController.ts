@@ -96,9 +96,8 @@ export const createQuote = async (req: Request, res: Response) => {
             totalDiscount: Number(req.body.totalDiscount),
             totalTax: Number(req.body.totalTax),
             grandTotal: Number(req.body.grandTotal),
-            validUntil: req.body.validUntil, // Date string
             status: req.body.status || 'draft',
-
+            validUntil: req.body.validUntil ? new Date(req.body.validUntil).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             organisation: { connect: { id: orgId } },
             createdBy: { connect: { id: user.id } },
         };
@@ -180,6 +179,10 @@ export const updateQuote = async (req: Request, res: Response) => {
         const updates = { ...req.body };
         const lineItemsData = updates.lineItems;
         delete updates.lineItems; // Handle separately
+
+        if (updates.validUntil) {
+            updates.validUntil = new Date(updates.validUntil).toISOString();
+        }
 
         const requester = (req as any).user;
         const orgId = getOrgId(requester);
