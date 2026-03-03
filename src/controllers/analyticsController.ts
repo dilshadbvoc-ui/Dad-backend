@@ -91,7 +91,8 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             wonTotal,
             lostTotal,
             activeOpportunitiesCount,
-            totalOpportunitiesCount
+            totalOpportunitiesCount,
+            revenueThisMonthResult
         ] = await Promise.all([
             // Leads
             prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, ...visibilityFilter } }),
@@ -177,12 +178,25 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
             // Active and Total Opportunities
             prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] }, ...oppVisibilityFilter } }),
-            prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } })
+            prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } }),
+
+            // Revenue this month (closed_won in current month)
+            prisma.opportunity.aggregate({
+                where: {
+                    ...combinedFilter,
+                    stage: 'closed_won',
+                    isDeleted: false,
+                    closeDate: { gte: startOfMonth },
+                    ...oppVisibilityFilter
+                },
+                _sum: { amount: true }
+            })
         ]);
 
         const totalRevenue = revenueResult._sum.amount || 0;
         const pipelineValue = pipelineResult._sum.amount || 0;
         const prevRevenue = prevRevenueResult._sum.amount || 0;
+        const revenueThisMonth = revenueThisMonthResult._sum.amount || 0;
         const currentWinRate = totalClosedCurrent > 0 ? (wonCurrent / totalClosedCurrent) * 100 : 0;
 
         const calculateTrend = (curr: number, prev: number) => {
@@ -195,6 +209,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             totalLeads,
             activeOpportunities: activeOpportunitiesCount,
             salesRevenue: totalRevenue,
+            revenueThisMonth,
             winRate: Math.round(currentWinRate),
 
             // Trends
