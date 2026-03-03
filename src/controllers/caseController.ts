@@ -24,8 +24,11 @@ export const getCases = async (req: Request, res: Response) => {
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const subordinateIds = await getSubordinateIds(user.id);
-            // Show cases assigned to self OR subordinates
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            // Show cases assigned to self OR subordinates, AND cases created by the user
+            where.OR = [
+                { assignedToId: { in: [...subordinateIds, user.id] } },
+                { createdById: user.id }
+            ];
         }
 
         if (search) {
@@ -79,9 +82,9 @@ export const createCase = async (req: Request, res: Response) => {
         // Get user's direct manager for automatic assignment
         const currentUser = await prisma.user.findUnique({
             where: { id: user.id },
-            select: { 
-                id: true, 
-                firstName: true, 
+            select: {
+                id: true,
+                firstName: true,
                 lastName: true,
                 reportsToId: true,
                 reportsTo: {
@@ -198,7 +201,7 @@ export const getCaseById = async (req: Request, res: Response) => {
         }
 
         // Hierarchy check
-        if (user.role !== 'super_admin' && user.role !== 'admin' && supportCase.assignedToId !== user.id) {
+        if (user.role !== 'super_admin' && user.role !== 'admin' && supportCase.assignedToId !== user.id && supportCase.createdById !== user.id) {
             const subordinateIds = await getSubordinateIds(user.id);
             if (!subordinateIds.includes(supportCase.assignedToId || '')) {
                 return res.status(403).json({ message: 'Not authorized to view this case' });
@@ -232,8 +235,8 @@ export const updateCase = async (req: Request, res: Response) => {
         // Get the old case data to check for changes
         const oldCase = await prisma.case.findUnique({
             where: { id },
-            select: { 
-                status: true, 
+            select: {
+                status: true,
                 assignedToId: true,
                 subject: true,
                 priority: true
