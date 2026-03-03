@@ -58,6 +58,7 @@ import superAdminRoutes from './routes/superAdminRoutes';
 import salesTargetRoutes from './routes/salesTargetRoutes';
 import callRoutes from './routes/callRoutes';
 import callSettingsRoutes from './routes/callSettingsRoutes';
+import backupRoutes from './routes/backupRoutes';
 import reportRoutes from './routes/reportRoutes';
 import importRoutes from './routes/importRoutes';
 import aiRoutes from './routes/aiRoutes';
@@ -390,6 +391,7 @@ app.use('/api/bulk', bulkRoutes);
 app.use('/api/plans', subscriptionPlanRoutes);
 app.use('/api/licenses', licenseRoutes);
 app.use('/api/super-admin', superAdminRoutes);
+app.use('/api/backup', backupRoutes);
 
 import auditRoutes from './routes/auditRoutes';
 app.use('/api/audit-logs', auditRoutes);

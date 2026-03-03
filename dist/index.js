@@ -90,6 +90,7 @@ const superAdminRoutes_1 = __importDefault(require("./routes/superAdminRoutes"))
 const salesTargetRoutes_1 = __importDefault(require("./routes/salesTargetRoutes"));
 const callRoutes_1 = __importDefault(require("./routes/callRoutes"));
 const callSettingsRoutes_1 = __importDefault(require("./routes/callSettingsRoutes"));
+const backupRoutes_1 = __importDefault(require("./routes/backupRoutes"));
 const reportRoutes_1 = __importDefault(require("./routes/reportRoutes"));
 const importRoutes_1 = __importDefault(require("./routes/importRoutes"));
 const aiRoutes_1 = __importDefault(require("./routes/aiRoutes"));
@@ -371,6 +372,7 @@ app.use('/api/bulk', bulkRoutes_1.default);
 app.use('/api/plans', subscriptionPlanRoutes_1.default);
 app.use('/api/licenses', licenseRoutes_1.default);
 app.use('/api/super-admin', superAdminRoutes_1.default);
+app.use('/api/backup', backupRoutes_1.default);
 const auditRoutes_1 = __importDefault(require("./routes/auditRoutes"));
 app.use('/api/audit-logs', auditRoutes_1.default);
 const timelineRoutes_1 = __importDefault(require("./routes/timelineRoutes"));

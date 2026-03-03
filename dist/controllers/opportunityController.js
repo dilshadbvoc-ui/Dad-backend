@@ -176,15 +176,23 @@ const createOpportunity = async (req, res) => {
                 });
             }
             else if (paymentType === 'emi') {
-                Promise.resolve().then(() => __importStar(require('../services/emiService'))).then(async (m) => {
-                    await prisma_1.default.opportunity.update({
-                        where: { id: oppId },
-                        data: { paymentStatus: 'partial' }
-                    });
-                    if (installments && installments.length > 0) {
-                        await m.default.convertToEMI(oppId, installments, orgId);
+                (async () => {
+                    try {
+                        // First update payment status
+                        await prisma_1.default.opportunity.update({
+                            where: { id: oppId },
+                            data: { paymentStatus: 'partial' }
+                        });
+                        // Then convert to EMI
+                        if (installments && installments.length > 0) {
+                            const { default: EMIService } = await Promise.resolve().then(() => __importStar(require('../services/emiService')));
+                            await EMIService.convertToEMI(oppId, installments, orgId);
+                        }
                     }
-                });
+                    catch (error) {
+                        console.error('Error in EMI conversion:', error);
+                    }
+                })();
             }
             Promise.resolve().then(() => __importStar(require('../services/salesTargetService'))).then(({ SalesTargetService }) => {
                 SalesTargetService.updateProgressForUser(opportunity.ownerId).catch(console.error);
@@ -381,16 +389,23 @@ const updateOpportunity = async (req, res) => {
                 });
             }
             else if (paymentType === 'emi') {
-                Promise.resolve().then(() => __importStar(require('../services/emiService'))).then(async (m) => {
-                    // Ensure status is partial for EMI conversion
-                    await prisma_1.default.opportunity.update({
-                        where: { id: oppId },
-                        data: { paymentStatus: 'partial' }
-                    });
-                    if (installments && installments.length > 0) {
-                        await m.default.convertToEMI(oppId, installments, orgId);
+                (async () => {
+                    try {
+                        // First update payment status
+                        await prisma_1.default.opportunity.update({
+                            where: { id: oppId },
+                            data: { paymentStatus: 'partial' }
+                        });
+                        // Then convert to EMI
+                        if (installments && installments.length > 0) {
+                            const { default: EMIService } = await Promise.resolve().then(() => __importStar(require('../services/emiService')));
+                            await EMIService.convertToEMI(oppId, installments, orgId);
+                        }
                     }
-                });
+                    catch (error) {
+                        console.error('Error in EMI conversion:', error);
+                    }
+                })();
             }
             Promise.resolve().then(() => __importStar(require('../services/salesTargetService'))).then(({ SalesTargetService }) => {
                 SalesTargetService.updateProgressForUser(opportunity.ownerId).catch(err => {
