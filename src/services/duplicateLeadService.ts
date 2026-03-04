@@ -13,6 +13,7 @@ interface ReEnquiryData {
     email?: string;
     phone: string;
     company?: string;
+    enquiryAbout?: string;
     source?: string;
     sourceDetails?: any;
 }

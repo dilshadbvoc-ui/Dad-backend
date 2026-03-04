@@ -31,7 +31,7 @@ class TaskReminderService {
                 },
                 include: {
                     assignedTo: {
-                        select: { id: true, firstName: true, lastName: true }
+                        select: { id: true, firstName: true, lastName: true, reportsToId: true, organisationId: true }
                     }
                 }
             });
@@ -43,6 +43,22 @@ class TaskReminderService {
                 const title = isOverdue ? '⚠️ Overdue Task' : '📅 Task Due Today';
                 const message = `Task: "${task.subject}" is ${isOverdue ? 'overdue' : 'due today'}. Please review.`;
                 await notificationService_1.NotificationService.send(task.assignedToId, title, message, 'reminder').catch(err => console.error(`[TaskReminderService] Failed to notify user ${task.assignedToId}:`, err));
+                if (isOverdue) {
+                    // Notify Manager
+                    if (task.assignedTo?.reportsToId) {
+                        await notificationService_1.NotificationService.send(task.assignedTo.reportsToId, '⚠️ Team Member Overdue Task', `${task.assignedTo.firstName} ${task.assignedTo.lastName} has an overdue task: "${task.subject}".`, 'warning').catch(err => console.error(`[TaskReminderService] Failed to notify manager ${task.assignedTo?.reportsToId}:`, err));
+                    }
+                    // Notify Admins
+                    if (task.assignedTo?.organisationId) {
+                        const admins = await prisma_1.default.user.findMany({
+                            where: { organisationId: task.assignedTo.organisationId, role: 'admin', isActive: true },
+                            select: { id: true }
+                        });
+                        for (const admin of admins) {
+                            await notificationService_1.NotificationService.send(admin.id, '⚠️ Unresolved Overdue Task', `${task.assignedTo.firstName} ${task.assignedTo.lastName} requires attention for overdue task: "${task.subject}".`, 'warning').catch(err => console.error(`[TaskReminderService] Failed to notify admin ${admin.id}:`, err));
+                        }
+                    }
+                }
             }
             return pendingTasks.length;
         }

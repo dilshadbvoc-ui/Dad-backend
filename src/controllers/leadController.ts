@@ -64,7 +64,12 @@ export const getLeads = async (req: Request, res: Response) => {
                 andConditions.push({
                     OR: [
                         { assignedToId: user.id }, // Directly assigned to this user
-                        { createdById: user.id } // Created by user
+                        {
+                            AND: [
+                                { createdById: user.id }, // Created by user
+                                { assignedToId: null }    // But not reassigned to someone else
+                            ]
+                        }
                     ]
                 });
             } else {
@@ -74,7 +79,12 @@ export const getLeads = async (req: Request, res: Response) => {
                     OR: [
                         { assignedToId: user.id }, // Directly assigned to this user
                         { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } }, // Assigned to subordinates
-                        { createdById: user.id } // Created by user
+                        {
+                            AND: [
+                                { createdById: user.id }, // Created by user
+                                { assignedToId: null }    // But not reassigned to someone else
+                            ]
+                        }
                     ]
                 });
             }
@@ -155,7 +165,7 @@ export const createLead = async (req: Request, res: Response) => {
         const currentUser = (req as any).user;
         const branchId = req.body.branchId || currentUser.branchId;
         const assignedTo = req.body.assignedTo;
-        const { firstName, lastName, source, sourceDetails, company } = req.body;
+        const { firstName, lastName, source, sourceDetails, company, enquiryAbout } = req.body;
 
         // Check for duplicates using DuplicateLeadService
         const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
@@ -169,6 +179,7 @@ export const createLead = async (req: Request, res: Response) => {
                 email: email,
                 phone: cleanPhone,
                 company: company,
+                enquiryAbout: enquiryAbout,
                 source: source,
                 sourceDetails: sourceDetails
             };
@@ -223,6 +234,7 @@ export const createLead = async (req: Request, res: Response) => {
                 email: cleanEmail,
                 phone: cleanPhone,
                 company: req.body.company || undefined,
+                enquiryAbout: req.body.enquiryAbout || undefined,
                 jobTitle: req.body.jobTitle || undefined,
                 address: req.body.address || undefined,
                 customFields: req.body.customFields || undefined,
@@ -411,7 +423,7 @@ export const getLeadById = async (req: Request, res: Response) => {
                 if (roleName === 'Sales Rep') {
                     where.OR = [
                         { assignedToId: user.id },
-                        { createdById: user.id }
+                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
                     ];
                 } else {
                     // Managers: Only see leads assigned to them or their direct subordinates
@@ -419,7 +431,7 @@ export const getLeadById = async (req: Request, res: Response) => {
                     where.OR = [
                         { assignedToId: user.id },
                         { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } },
-                        { createdById: user.id }
+                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
                     ];
                 }
             }
@@ -534,10 +546,12 @@ export const updateLead = async (req: Request, res: Response) => {
                         createdBy: { connect: { id: requester.id } },
                         organisation: { connect: { id: currentLead.organisationId } },
                         lead: { connect: { id: leadId } },
-                        // Assign to the lead's assigned user, or the current user if no assignment
-                        ...(currentLead.assignedToId
-                            ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
-                            : { assignedTo: { connect: { id: requester.id } } }
+                        // Assign to the newly assigned user, the existing assigned user, or the requester
+                        ...(updates.assignedToId
+                            ? { assignedTo: { connect: { id: updates.assignedToId } } }
+                            : currentLead.assignedToId
+                                ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
+                                : { assignedTo: { connect: { id: requester.id } } }
                         ),
                         ...(currentLead.branchId ? { branch: { connect: { id: currentLead.branchId } } } : {})
                     }
@@ -560,7 +574,7 @@ export const updateLead = async (req: Request, res: Response) => {
 
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
         const allowedFields = [
-            'firstName', 'lastName', 'email', 'phone', 'company', 'jobTitle', 'address',
+            'firstName', 'lastName', 'email', 'phone', 'company', 'enquiryAbout', 'jobTitle', 'address',
             'status', 'source', 'sourceDetails', 'stage', 'tags', 'potentialValue',
             'nextFollowUp', 'customFields', 'isHotLead', 'lostReason', 'notes',
             'country', 'countryCode', 'phoneCountryCode', 'city', 'state', 'zip'
@@ -790,6 +804,7 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                             email: l.email,
                             phone: cleanPhone,
                             company: l.company,
+                            enquiryAbout: l.enquiryAbout,
                             source: l.source || 'import',
                             sourceDetails: l.sourceDetails
                         },

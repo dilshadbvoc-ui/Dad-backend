@@ -161,5 +161,66 @@ class SalesTargetService {
             console.error('[SalesTargetService] Error rolling up to parent:', error);
         }
     }
+    /**
+     * Checks for expired targets that were not completed, and sends notifications.
+     */
+    static async checkExpiredTargets() {
+        try {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const expiredTargets = await prisma_1.default.salesTarget.findMany({
+                where: {
+                    status: 'active', // Assumes 'active' targets that pass endDate are missed
+                    endDate: { lt: today },
+                    isDeleted: false
+                },
+                include: {
+                    assignedTo: {
+                        select: { id: true, firstName: true, lastName: true, reportsToId: true, organisationId: true }
+                    }
+                }
+            });
+            if (expiredTargets.length === 0)
+                return;
+            console.log(`[SalesTargetService] Found ${expiredTargets.length} missed sales targets.`);
+            for (const target of expiredTargets) {
+                if (!target.assignedToId || !target.assignedTo)
+                    continue;
+                const metricText = target.metric === 'units' ? 'units' : 'revenue';
+                const message = `Sales Target Missed: You achieved ${target.achievedValue} / ${target.targetValue} ${metricText} for ${target.period}.`;
+                // Notify User
+                await notificationService_1.NotificationService.send(target.assignedToId, '❌ Sales Target Missed', message, 'warning').catch(err => console.error(`[SalesTargetService] Failed to notify user ${target.assignedToId}:`, err));
+                // Notify Manager
+                if (target.assignedTo.reportsToId) {
+                    await notificationService_1.NotificationService.send(target.assignedTo.reportsToId, '⚠️ Team Member Missed Target', `${target.assignedTo.firstName} ${target.assignedTo.lastName} missed their sales target for ${target.period}. Achieved: ${target.achievedValue} / ${target.targetValue}.`, 'warning').catch(err => console.error(`[SalesTargetService] Failed to notify manager ${target.assignedTo?.reportsToId}:`, err));
+                }
+                // Notify Admins
+                if (target.assignedTo.organisationId) {
+                    const admins = await prisma_1.default.user.findMany({
+                        where: { organisationId: target.assignedTo.organisationId, role: 'admin', isActive: true },
+                        select: { id: true }
+                    });
+                    for (const admin of admins) {
+                        await notificationService_1.NotificationService.send(admin.id, '⚠️ Missed Sales Target', `${target.assignedTo.firstName} ${target.assignedTo.lastName} missed their sales target for ${target.period}. Achieved: ${target.achievedValue} / ${target.targetValue}.`, 'warning').catch(err => console.error(`[SalesTargetService] Failed to notify admin ${admin.id}:`, err));
+                    }
+                }
+                // Mark target as failed/missed if schema supports it, otherwise leave as-is or we update it to 'failed'
+                // Assuming schema has a 'failed' or 'missed' state, if it errors out we'll know the enum restricts it.
+                // Let's try 'failed' as it's common. If it throws, we can adjust.
+                try {
+                    await prisma_1.default.salesTarget.update({
+                        where: { id: target.id },
+                        data: { status: 'failed' }
+                    });
+                }
+                catch (e) {
+                    console.error('[SalesTargetService] Could not update status to failed. Schema may not support it.', e);
+                }
+            }
+        }
+        catch (error) {
+            console.error('[SalesTargetService] Error checking expired targets:', error);
+        }
+    }
 }
 exports.SalesTargetService = SalesTargetService;

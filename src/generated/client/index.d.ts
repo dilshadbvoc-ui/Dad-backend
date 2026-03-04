@@ -14625,6 +14625,7 @@ export namespace Prisma {
     country: string | null
     countryCode: string | null
     company: string | null
+    enquiryAbout: string | null
     jobTitle: string | null
     source: $Enums.LeadSource | null
     leadScore: number | null
@@ -14666,6 +14667,7 @@ export namespace Prisma {
     country: string | null
     countryCode: string | null
     company: string | null
+    enquiryAbout: string | null
     jobTitle: string | null
     source: $Enums.LeadSource | null
     leadScore: number | null
@@ -14707,6 +14709,7 @@ export namespace Prisma {
     country: number
     countryCode: number
     company: number
+    enquiryAbout: number
     jobTitle: number
     address: number
     source: number
@@ -14771,6 +14774,7 @@ export namespace Prisma {
     country?: true
     countryCode?: true
     company?: true
+    enquiryAbout?: true
     jobTitle?: true
     source?: true
     leadScore?: true
@@ -14812,6 +14816,7 @@ export namespace Prisma {
     country?: true
     countryCode?: true
     company?: true
+    enquiryAbout?: true
     jobTitle?: true
     source?: true
     leadScore?: true
@@ -14853,6 +14858,7 @@ export namespace Prisma {
     country?: true
     countryCode?: true
     company?: true
+    enquiryAbout?: true
     jobTitle?: true
     address?: true
     source?: true
@@ -14986,6 +14992,7 @@ export namespace Prisma {
     country: string | null
     countryCode: string | null
     company: string | null
+    enquiryAbout: string | null
     jobTitle: string | null
     address: JsonValue | null
     source: $Enums.LeadSource
@@ -15051,6 +15058,7 @@ export namespace Prisma {
     country?: boolean
     countryCode?: boolean
     company?: boolean
+    enquiryAbout?: boolean
     jobTitle?: boolean
     address?: boolean
     source?: boolean
@@ -15116,6 +15124,7 @@ export namespace Prisma {
     country?: boolean
     countryCode?: boolean
     company?: boolean
+    enquiryAbout?: boolean
     jobTitle?: boolean
     address?: boolean
     source?: boolean
@@ -15168,6 +15177,7 @@ export namespace Prisma {
     country?: boolean
     countryCode?: boolean
     company?: boolean
+    enquiryAbout?: boolean
     jobTitle?: boolean
     address?: boolean
     source?: boolean
@@ -15266,6 +15276,7 @@ export namespace Prisma {
       country: string | null
       countryCode: string | null
       company: string | null
+      enquiryAbout: string | null
       jobTitle: string | null
       address: Prisma.JsonValue | null
       source: $Enums.LeadSource
@@ -15720,6 +15731,7 @@ export namespace Prisma {
     readonly country: FieldRef<"Lead", 'String'>
     readonly countryCode: FieldRef<"Lead", 'String'>
     readonly company: FieldRef<"Lead", 'String'>
+    readonly enquiryAbout: FieldRef<"Lead", 'String'>
     readonly jobTitle: FieldRef<"Lead", 'String'>
     readonly address: FieldRef<"Lead", 'Json'>
     readonly source: FieldRef<"Lead", 'LeadSource'>
@@ -73211,6 +73223,7 @@ export namespace Prisma {
     country: 'country',
     countryCode: 'countryCode',
     company: 'company',
+    enquiryAbout: 'enquiryAbout',
     jobTitle: 'jobTitle',
     address: 'address',
     source: 'source',
@@ -75417,6 +75430,7 @@ export namespace Prisma {
     country?: StringNullableFilter<"Lead"> | string | null
     countryCode?: StringNullableFilter<"Lead"> | string | null
     company?: StringNullableFilter<"Lead"> | string | null
+    enquiryAbout?: StringNullableFilter<"Lead"> | string | null
     jobTitle?: StringNullableFilter<"Lead"> | string | null
     address?: JsonNullableFilter<"Lead">
     source?: EnumLeadSourceFilter<"Lead"> | $Enums.LeadSource
@@ -75481,6 +75495,7 @@ export namespace Prisma {
     country?: SortOrderInput | SortOrder
     countryCode?: SortOrderInput | SortOrder
     company?: SortOrderInput | SortOrder
+    enquiryAbout?: SortOrderInput | SortOrder
     jobTitle?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     source?: SortOrder
@@ -75549,6 +75564,7 @@ export namespace Prisma {
     country?: StringNullableFilter<"Lead"> | string | null
     countryCode?: StringNullableFilter<"Lead"> | string | null
     company?: StringNullableFilter<"Lead"> | string | null
+    enquiryAbout?: StringNullableFilter<"Lead"> | string | null
     jobTitle?: StringNullableFilter<"Lead"> | string | null
     address?: JsonNullableFilter<"Lead">
     source?: EnumLeadSourceFilter<"Lead"> | $Enums.LeadSource
@@ -75613,6 +75629,7 @@ export namespace Prisma {
     country?: SortOrderInput | SortOrder
     countryCode?: SortOrderInput | SortOrder
     company?: SortOrderInput | SortOrder
+    enquiryAbout?: SortOrderInput | SortOrder
     jobTitle?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     source?: SortOrder
@@ -75667,6 +75684,7 @@ export namespace Prisma {
     country?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     countryCode?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     company?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    enquiryAbout?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     jobTitle?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     address?: JsonNullableWithAggregatesFilter<"Lead">
     source?: EnumLeadSourceWithAggregatesFilter<"Lead"> | $Enums.LeadSource
@@ -82440,6 +82458,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -82498,6 +82517,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -82556,6 +82576,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -82614,6 +82635,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -82672,6 +82694,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -82718,6 +82741,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -82758,6 +82782,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -90156,6 +90181,7 @@ export namespace Prisma {
     country?: SortOrder
     countryCode?: SortOrder
     company?: SortOrder
+    enquiryAbout?: SortOrder
     jobTitle?: SortOrder
     address?: SortOrder
     source?: SortOrder
@@ -90210,6 +90236,7 @@ export namespace Prisma {
     country?: SortOrder
     countryCode?: SortOrder
     company?: SortOrder
+    enquiryAbout?: SortOrder
     jobTitle?: SortOrder
     source?: SortOrder
     leadScore?: SortOrder
@@ -90251,6 +90278,7 @@ export namespace Prisma {
     country?: SortOrder
     countryCode?: SortOrder
     company?: SortOrder
+    enquiryAbout?: SortOrder
     jobTitle?: SortOrder
     source?: SortOrder
     leadScore?: SortOrder
@@ -104616,6 +104644,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -104673,6 +104702,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -106754,6 +106784,7 @@ export namespace Prisma {
     country?: StringNullableFilter<"Lead"> | string | null
     countryCode?: StringNullableFilter<"Lead"> | string | null
     company?: StringNullableFilter<"Lead"> | string | null
+    enquiryAbout?: StringNullableFilter<"Lead"> | string | null
     jobTitle?: StringNullableFilter<"Lead"> | string | null
     address?: JsonNullableFilter<"Lead">
     source?: EnumLeadSourceFilter<"Lead"> | $Enums.LeadSource
@@ -108816,6 +108847,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -108873,6 +108905,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -108940,6 +108973,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -108997,6 +109031,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -109064,6 +109099,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -109121,6 +109157,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -118046,6 +118083,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -118103,6 +118141,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -118832,6 +118871,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -118889,6 +118929,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -119956,6 +119997,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -120013,6 +120055,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -120706,6 +120749,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -120763,6 +120807,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -121641,6 +121686,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -121698,6 +121744,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -122427,6 +122474,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -122484,6 +122532,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -123641,6 +123690,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -123698,6 +123748,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -123834,6 +123885,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -123891,6 +123943,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -126907,6 +126960,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -126964,6 +127018,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -127830,6 +127885,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -127887,6 +127943,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -128597,6 +128654,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -128654,6 +128712,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -129386,6 +129445,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -129443,6 +129503,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -130104,6 +130165,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -130161,6 +130223,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -130793,6 +130856,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -130850,6 +130914,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -131580,6 +131645,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -131637,6 +131703,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -141997,6 +142064,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -142054,6 +142122,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -142611,6 +142680,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -142668,6 +142738,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -146960,6 +147031,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -147017,6 +147089,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -147645,6 +147718,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -147702,6 +147776,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -149133,6 +149208,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -149190,6 +149266,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -151926,6 +152003,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -151983,6 +152061,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -152508,6 +152587,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -152565,6 +152645,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -155645,6 +155726,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -155702,6 +155784,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -156388,6 +156471,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -156445,6 +156529,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -158065,6 +158150,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -158122,6 +158208,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -161114,6 +161201,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -162445,6 +162533,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -162502,6 +162591,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -162559,6 +162649,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -164641,6 +164732,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -164686,6 +164778,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -164731,6 +164824,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -166554,6 +166648,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166611,6 +166706,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166668,6 +166764,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166713,6 +166810,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166770,6 +166868,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166827,6 +166926,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166872,6 +166972,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166929,6 +167030,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -166986,6 +167088,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -173503,6 +173606,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -173560,6 +173664,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -173617,6 +173722,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -173877,6 +173983,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -173946,6 +174053,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -174003,6 +174111,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -174060,6 +174169,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -174420,6 +174530,7 @@ export namespace Prisma {
     country?: string | null
     countryCode?: string | null
     company?: string | null
+    enquiryAbout?: string | null
     jobTitle?: string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: $Enums.LeadSource
@@ -174817,6 +174928,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -174874,6 +174986,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
@@ -174931,6 +175044,7 @@ export namespace Prisma {
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
     jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableJsonNullValueInput | InputJsonValue
     source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource

@@ -52,6 +52,14 @@ export const initCronJobs = () => {
             console.error('[Cron] Error running license expiry check:', error);
         }
 
+        console.log('[Cron] Running daily sales target expiration check...');
+        try {
+            const { SalesTargetService } = await import('./salesTargetService');
+            await SalesTargetService.checkExpiredTargets();
+        } catch (error) {
+            console.error('[Cron] Error running sales target expiration check:', error);
+        }
+
         // EMI Overdue Detection
         console.log('[Cron] Running EMI overdue status update...');
         try {

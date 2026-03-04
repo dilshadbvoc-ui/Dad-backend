@@ -94,7 +94,12 @@ const getLeads = async (req, res) => {
                 andConditions.push({
                     OR: [
                         { assignedToId: user.id }, // Directly assigned to this user
-                        { createdById: user.id } // Created by user
+                        {
+                            AND: [
+                                { createdById: user.id }, // Created by user
+                                { assignedToId: null } // But not reassigned to someone else
+                            ]
+                        }
                     ]
                 });
             }
@@ -105,7 +110,12 @@ const getLeads = async (req, res) => {
                     OR: [
                         { assignedToId: user.id }, // Directly assigned to this user
                         { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } }, // Assigned to subordinates
-                        { createdById: user.id } // Created by user
+                        {
+                            AND: [
+                                { createdById: user.id }, // Created by user
+                                { assignedToId: null } // But not reassigned to someone else
+                            ]
+                        }
                     ]
                 });
             }
@@ -177,7 +187,7 @@ const createLead = async (req, res) => {
         const currentUser = req.user;
         const branchId = req.body.branchId || currentUser.branchId;
         const assignedTo = req.body.assignedTo;
-        const { firstName, lastName, source, sourceDetails, company } = req.body;
+        const { firstName, lastName, source, sourceDetails, company, enquiryAbout } = req.body;
         // Check for duplicates using DuplicateLeadService
         const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId || undefined);
@@ -189,6 +199,7 @@ const createLead = async (req, res) => {
                 email: email,
                 phone: cleanPhone,
                 company: company,
+                enquiryAbout: enquiryAbout,
                 source: source,
                 sourceDetails: sourceDetails
             };
@@ -231,6 +242,7 @@ const createLead = async (req, res) => {
                 email: cleanEmail,
                 phone: cleanPhone,
                 company: req.body.company || undefined,
+                enquiryAbout: req.body.enquiryAbout || undefined,
                 jobTitle: req.body.jobTitle || undefined,
                 address: req.body.address || undefined,
                 customFields: req.body.customFields || undefined,
@@ -405,7 +417,7 @@ const getLeadById = async (req, res) => {
                 if (roleName === 'Sales Rep') {
                     where.OR = [
                         { assignedToId: user.id },
-                        { createdById: user.id }
+                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
                     ];
                 }
                 else {
@@ -414,7 +426,7 @@ const getLeadById = async (req, res) => {
                     where.OR = [
                         { assignedToId: user.id },
                         { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } },
-                        { createdById: user.id }
+                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
                     ];
                 }
             }
@@ -520,10 +532,12 @@ const updateLead = async (req, res) => {
                         createdBy: { connect: { id: requester.id } },
                         organisation: { connect: { id: currentLead.organisationId } },
                         lead: { connect: { id: leadId } },
-                        // Assign to the lead's assigned user, or the current user if no assignment
-                        ...(currentLead.assignedToId
-                            ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
-                            : { assignedTo: { connect: { id: requester.id } } }),
+                        // Assign to the newly assigned user, the existing assigned user, or the requester
+                        ...(updates.assignedToId
+                            ? { assignedTo: { connect: { id: updates.assignedToId } } }
+                            : currentLead.assignedToId
+                                ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
+                                : { assignedTo: { connect: { id: requester.id } } }),
                         ...(currentLead.branchId ? { branch: { connect: { id: currentLead.branchId } } } : {})
                     }
                 });
@@ -543,7 +557,7 @@ const updateLead = async (req, res) => {
         }
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
         const allowedFields = [
-            'firstName', 'lastName', 'email', 'phone', 'company', 'jobTitle', 'address',
+            'firstName', 'lastName', 'email', 'phone', 'company', 'enquiryAbout', 'jobTitle', 'address',
             'status', 'source', 'sourceDetails', 'stage', 'tags', 'potentialValue',
             'nextFollowUp', 'customFields', 'isHotLead', 'lostReason', 'notes',
             'country', 'countryCode', 'phoneCountryCode', 'city', 'state', 'zip'
@@ -749,6 +763,7 @@ const createBulkLeads = async (req, res) => {
                         email: l.email,
                         phone: cleanPhone,
                         company: l.company,
+                        enquiryAbout: l.enquiryAbout,
                         source: l.source || 'import',
                         sourceDetails: l.sourceDetails
                     }, orgId);
@@ -931,7 +946,7 @@ const convertLead = async (req, res) => {
                     firstName: lead.firstName,
                     lastName: lead.lastName || '',
                     email: lead.email,
-                    phones: lead.phone ? { mobile: lead.phone } : undefined,
+                    phones: lead.phone ? [{ type: 'mobile', number: lead.phone }] : [],
                     jobTitle: lead.jobTitle,
                     organisationId: orgId,
                     ownerId: user.id,

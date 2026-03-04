@@ -102,7 +102,7 @@ const getDashboardStats = async (req, res) => {
         const startOfLastMonth = new Date(startOfMonth);
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
         // Group independent queries to run concurrently
-        const [totalLeads, newLeads, convertedLeads, revenueResult, pipelineResult, totalContacts, totalAccounts, prevLeads, prevRevenueResult, totalClosedCurrent, wonCurrent, wonTotal, lostTotal, activeOpportunitiesCount, totalOpportunitiesCount] = await Promise.all([
+        const [totalLeads, newLeads, convertedLeads, revenueResult, pipelineResult, totalContacts, totalAccounts, prevLeads, prevRevenueResult, totalClosedCurrent, wonCurrent, wonTotal, lostTotal, activeOpportunitiesCount, totalOpportunitiesCount, revenueThisMonthResult] = await Promise.all([
             // Leads
             prisma_1.default.lead.count({ where: { ...combinedFilter, isDeleted: false, ...visibilityFilter } }),
             prisma_1.default.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'new', ...visibilityFilter } }),
@@ -178,11 +178,23 @@ const getDashboardStats = async (req, res) => {
             }),
             // Active and Total Opportunities
             prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] }, ...oppVisibilityFilter } }),
-            prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } })
+            prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } }),
+            // Revenue this month (closed_won in current month)
+            prisma_1.default.opportunity.aggregate({
+                where: {
+                    ...combinedFilter,
+                    stage: 'closed_won',
+                    isDeleted: false,
+                    closeDate: { gte: startOfMonth },
+                    ...oppVisibilityFilter
+                },
+                _sum: { amount: true }
+            })
         ]);
         const totalRevenue = revenueResult._sum.amount || 0;
         const pipelineValue = pipelineResult._sum.amount || 0;
         const prevRevenue = prevRevenueResult._sum.amount || 0;
+        const revenueThisMonth = revenueThisMonthResult._sum.amount || 0;
         const currentWinRate = totalClosedCurrent > 0 ? (wonCurrent / totalClosedCurrent) * 100 : 0;
         const calculateTrend = (curr, prev) => {
             if (prev === 0)
@@ -194,6 +206,7 @@ const getDashboardStats = async (req, res) => {
             totalLeads,
             activeOpportunities: activeOpportunitiesCount,
             salesRevenue: totalRevenue,
+            revenueThisMonth,
             winRate: Math.round(currentWinRate),
             // Trends
             trends: {
