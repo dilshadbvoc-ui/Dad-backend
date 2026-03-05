@@ -216,36 +216,15 @@ export const assignTarget = async (req: Request, res: Response) => {
             });
 
             if (shouldDistribute) {
-                // 1. Create SELF-CHILD for the manager (for personal sales)
-                // We'll calculate share simply as equal share for now
-                const totalMembers = directReports.length + 1;
+                // Distribute strictly to Reports (no personal slice for manager)
+                const totalMembers = directReports.length;
                 const baseValue = Math.floor(targetValue / totalMembers);
                 const remainder = targetValue - (baseValue * totalMembers);
 
-                // Manager's Personal Target gets the remainder
-                const managerPersonalValue = baseValue + remainder;
+                for (let i = 0; i < directReports.length; i++) {
+                    const report = directReports[i];
+                    const reportValue = i === 0 ? baseValue + remainder : baseValue;
 
-                const selfChild = await prisma.salesTarget.create({
-                    data: {
-                        targetValue: managerPersonalValue,
-                        period,
-                        metric,
-                        startDate,
-                        endDate,
-                        assignedToId: assignToUserId,
-                        assignedById: user.id,
-                        parentTargetId: mainTarget.id,
-                        organisationId: userOrgId,
-                        autoDistributed: false, // Leaf
-                        productId: productId || null,
-                        scope: 'INDIVIDUAL',
-                        opportunityType: opportunityType || null
-                    }
-                });
-                childTargets.push(selfChild);
-
-                // 2. Distribute to Reports
-                for (const report of directReports) {
                     const existingSubTarget = await prisma.salesTarget.findFirst({
                         where: {
                             assignedToId: report.id,
@@ -264,7 +243,7 @@ export const assignTarget = async (req: Request, res: Response) => {
                         // distributeToSubordinates will handle creating the report's target and ITS children
                         await distributeToSubordinates(
                             report.id,
-                            baseValue,
+                            reportValue,
                             period,
                             startDate,
                             endDate,
@@ -383,36 +362,19 @@ const distributeToSubordinates = async (
     });
 
     if (hasReports) {
-        // Distribute to self (Personal) and Children
+        // Distribute strictly to children
+        const totalMembers = directReports.length;
         const baseValue = Math.floor(targetValue / totalMembers);
         const remainder = targetValue - (baseValue * totalMembers);
 
-        // Self Personal Child gets the remainder
-        const managerPersonalValue = baseValue + remainder;
-
-        await prisma.salesTarget.create({
-            data: {
-                targetValue: managerPersonalValue,
-                period,
-                metric,
-                startDate,
-                endDate,
-                assignedToId: userId,
-                assignedById: assignerId,
-                parentTargetId: myTarget.id,
-                organisationId,
-                autoDistributed: false, // Leaf
-                productId: productId || null,
-                scope: 'INDIVIDUAL',
-                opportunityType: opportunityType || null
-            }
-        });
-
         // Distribute to reports
-        for (const report of directReports) {
+        for (let i = 0; i < directReports.length; i++) {
+            const report = directReports[i];
+            const reportValue = i === 0 ? baseValue + remainder : baseValue;
+
             await distributeToSubordinates(
                 report.id,
-                baseValue,
+                reportValue,
                 period,
                 startDate,
                 endDate,
