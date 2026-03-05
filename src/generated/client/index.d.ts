@@ -39,6 +39,11 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  */
 export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
 /**
+ * Model CallRecording
+ * 
+ */
+export type CallRecording = $Result.DefaultSelection<Prisma.$CallRecordingPayload>
+/**
  * Model Account
  * 
  */
@@ -641,6 +646,16 @@ export class PrismaClient<
     * ```
     */
   get lead(): Prisma.LeadDelegate<ExtArgs>;
+
+  /**
+   * `prisma.callRecording`: Exposes CRUD operations for the **CallRecording** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CallRecordings
+    * const callRecordings = await prisma.callRecording.findMany()
+    * ```
+    */
+  get callRecording(): Prisma.CallRecordingDelegate<ExtArgs>;
 
   /**
    * `prisma.account`: Exposes CRUD operations for the **Account** model.
@@ -1587,6 +1602,7 @@ export namespace Prisma {
     Team: 'Team',
     Notification: 'Notification',
     Lead: 'Lead',
+    CallRecording: 'CallRecording',
     Account: 'Account',
     Contact: 'Contact',
     Opportunity: 'Opportunity',
@@ -1652,7 +1668,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord"
+      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "callRecording" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2003,6 +2019,76 @@ export namespace Prisma {
           count: {
             args: Prisma.LeadCountArgs<ExtArgs>
             result: $Utils.Optional<LeadCountAggregateOutputType> | number
+          }
+        }
+      }
+      CallRecording: {
+        payload: Prisma.$CallRecordingPayload<ExtArgs>
+        fields: Prisma.CallRecordingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CallRecordingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CallRecordingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>
+          }
+          findFirst: {
+            args: Prisma.CallRecordingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CallRecordingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>
+          }
+          findMany: {
+            args: Prisma.CallRecordingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>[]
+          }
+          create: {
+            args: Prisma.CallRecordingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>
+          }
+          createMany: {
+            args: Prisma.CallRecordingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CallRecordingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>[]
+          }
+          delete: {
+            args: Prisma.CallRecordingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>
+          }
+          update: {
+            args: Prisma.CallRecordingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>
+          }
+          deleteMany: {
+            args: Prisma.CallRecordingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CallRecordingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.CallRecordingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CallRecordingPayload>
+          }
+          aggregate: {
+            args: Prisma.CallRecordingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCallRecording>
+          }
+          groupBy: {
+            args: Prisma.CallRecordingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CallRecordingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CallRecordingCountArgs<ExtArgs>
+            result: $Utils.Optional<CallRecordingCountAggregateOutputType> | number
           }
         }
       }
@@ -6663,6 +6749,7 @@ export namespace Prisma {
     convertedAccounts: number
     convertedContacts: number
     convertedOpportunities: number
+    callRecordings: number
   }
 
   export type LeadCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6678,6 +6765,7 @@ export namespace Prisma {
     convertedAccounts?: boolean | LeadCountOutputTypeCountConvertedAccountsArgs
     convertedContacts?: boolean | LeadCountOutputTypeCountConvertedContactsArgs
     convertedOpportunities?: boolean | LeadCountOutputTypeCountConvertedOpportunitiesArgs
+    callRecordings?: boolean | LeadCountOutputTypeCountCallRecordingsArgs
   }
 
   // Custom InputTypes
@@ -6773,6 +6861,13 @@ export namespace Prisma {
    */
   export type LeadCountOutputTypeCountConvertedOpportunitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OpportunityWhereInput
+  }
+
+  /**
+   * LeadCountOutputType without action
+   */
+  export type LeadCountOutputTypeCountCallRecordingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CallRecordingWhereInput
   }
 
 
@@ -15110,6 +15205,7 @@ export namespace Prisma {
     convertedAccounts?: boolean | Lead$convertedAccountsArgs<ExtArgs>
     convertedContacts?: boolean | Lead$convertedContactsArgs<ExtArgs>
     convertedOpportunities?: boolean | Lead$convertedOpportunitiesArgs<ExtArgs>
+    callRecordings?: boolean | Lead$callRecordingsArgs<ExtArgs>
     branch?: boolean | Lead$branchArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lead"]>
@@ -15232,6 +15328,7 @@ export namespace Prisma {
     convertedAccounts?: boolean | Lead$convertedAccountsArgs<ExtArgs>
     convertedContacts?: boolean | Lead$convertedContactsArgs<ExtArgs>
     convertedOpportunities?: boolean | Lead$convertedOpportunitiesArgs<ExtArgs>
+    callRecordings?: boolean | Lead$callRecordingsArgs<ExtArgs>
     branch?: boolean | Lead$branchArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -15264,6 +15361,7 @@ export namespace Prisma {
       convertedAccounts: Prisma.$AccountPayload<ExtArgs>[]
       convertedContacts: Prisma.$ContactPayload<ExtArgs>[]
       convertedOpportunities: Prisma.$OpportunityPayload<ExtArgs>[]
+      callRecordings: Prisma.$CallRecordingPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -15692,6 +15790,7 @@ export namespace Prisma {
     convertedAccounts<T extends Lead$convertedAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$convertedAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany"> | Null>
     convertedContacts<T extends Lead$convertedContactsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$convertedContactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany"> | Null>
     convertedOpportunities<T extends Lead$convertedOpportunitiesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$convertedOpportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findMany"> | Null>
+    callRecordings<T extends Lead$callRecordingsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$callRecordingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "findMany"> | Null>
     branch<T extends Lead$branchArgs<ExtArgs> = {}>(args?: Subset<T, Lead$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -16384,6 +16483,26 @@ export namespace Prisma {
   }
 
   /**
+   * Lead.callRecordings
+   */
+  export type Lead$callRecordingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    where?: CallRecordingWhereInput
+    orderBy?: CallRecordingOrderByWithRelationInput | CallRecordingOrderByWithRelationInput[]
+    cursor?: CallRecordingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CallRecordingScalarFieldEnum | CallRecordingScalarFieldEnum[]
+  }
+
+  /**
    * Lead.branch
    */
   export type Lead$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16410,6 +16529,1009 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: LeadInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CallRecording
+   */
+
+  export type AggregateCallRecording = {
+    _count: CallRecordingCountAggregateOutputType | null
+    _avg: CallRecordingAvgAggregateOutputType | null
+    _sum: CallRecordingSumAggregateOutputType | null
+    _min: CallRecordingMinAggregateOutputType | null
+    _max: CallRecordingMaxAggregateOutputType | null
+  }
+
+  export type CallRecordingAvgAggregateOutputType = {
+    duration: number | null
+  }
+
+  export type CallRecordingSumAggregateOutputType = {
+    duration: number | null
+  }
+
+  export type CallRecordingMinAggregateOutputType = {
+    id: string | null
+    leadId: string | null
+    duration: number | null
+    fileUrl: string | null
+    callType: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CallRecordingMaxAggregateOutputType = {
+    id: string | null
+    leadId: string | null
+    duration: number | null
+    fileUrl: string | null
+    callType: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CallRecordingCountAggregateOutputType = {
+    id: number
+    leadId: number
+    duration: number
+    fileUrl: number
+    callType: number
+    timestamp: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CallRecordingAvgAggregateInputType = {
+    duration?: true
+  }
+
+  export type CallRecordingSumAggregateInputType = {
+    duration?: true
+  }
+
+  export type CallRecordingMinAggregateInputType = {
+    id?: true
+    leadId?: true
+    duration?: true
+    fileUrl?: true
+    callType?: true
+    timestamp?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CallRecordingMaxAggregateInputType = {
+    id?: true
+    leadId?: true
+    duration?: true
+    fileUrl?: true
+    callType?: true
+    timestamp?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CallRecordingCountAggregateInputType = {
+    id?: true
+    leadId?: true
+    duration?: true
+    fileUrl?: true
+    callType?: true
+    timestamp?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CallRecordingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CallRecording to aggregate.
+     */
+    where?: CallRecordingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CallRecordings to fetch.
+     */
+    orderBy?: CallRecordingOrderByWithRelationInput | CallRecordingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CallRecordingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CallRecordings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CallRecordings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CallRecordings
+    **/
+    _count?: true | CallRecordingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CallRecordingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CallRecordingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CallRecordingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CallRecordingMaxAggregateInputType
+  }
+
+  export type GetCallRecordingAggregateType<T extends CallRecordingAggregateArgs> = {
+        [P in keyof T & keyof AggregateCallRecording]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCallRecording[P]>
+      : GetScalarType<T[P], AggregateCallRecording[P]>
+  }
+
+
+
+
+  export type CallRecordingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CallRecordingWhereInput
+    orderBy?: CallRecordingOrderByWithAggregationInput | CallRecordingOrderByWithAggregationInput[]
+    by: CallRecordingScalarFieldEnum[] | CallRecordingScalarFieldEnum
+    having?: CallRecordingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CallRecordingCountAggregateInputType | true
+    _avg?: CallRecordingAvgAggregateInputType
+    _sum?: CallRecordingSumAggregateInputType
+    _min?: CallRecordingMinAggregateInputType
+    _max?: CallRecordingMaxAggregateInputType
+  }
+
+  export type CallRecordingGroupByOutputType = {
+    id: string
+    leadId: string
+    duration: number
+    fileUrl: string
+    callType: string
+    timestamp: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: CallRecordingCountAggregateOutputType | null
+    _avg: CallRecordingAvgAggregateOutputType | null
+    _sum: CallRecordingSumAggregateOutputType | null
+    _min: CallRecordingMinAggregateOutputType | null
+    _max: CallRecordingMaxAggregateOutputType | null
+  }
+
+  type GetCallRecordingGroupByPayload<T extends CallRecordingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CallRecordingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CallRecordingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CallRecordingGroupByOutputType[P]>
+            : GetScalarType<T[P], CallRecordingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CallRecordingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadId?: boolean
+    duration?: boolean
+    fileUrl?: boolean
+    callType?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["callRecording"]>
+
+  export type CallRecordingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadId?: boolean
+    duration?: boolean
+    fileUrl?: boolean
+    callType?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["callRecording"]>
+
+  export type CallRecordingSelectScalar = {
+    id?: boolean
+    leadId?: boolean
+    duration?: boolean
+    fileUrl?: boolean
+    callType?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CallRecordingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+  export type CallRecordingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+
+  export type $CallRecordingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CallRecording"
+    objects: {
+      lead: Prisma.$LeadPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      leadId: string
+      duration: number
+      fileUrl: string
+      callType: string
+      timestamp: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["callRecording"]>
+    composites: {}
+  }
+
+  type CallRecordingGetPayload<S extends boolean | null | undefined | CallRecordingDefaultArgs> = $Result.GetResult<Prisma.$CallRecordingPayload, S>
+
+  type CallRecordingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<CallRecordingFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: CallRecordingCountAggregateInputType | true
+    }
+
+  export interface CallRecordingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CallRecording'], meta: { name: 'CallRecording' } }
+    /**
+     * Find zero or one CallRecording that matches the filter.
+     * @param {CallRecordingFindUniqueArgs} args - Arguments to find a CallRecording
+     * @example
+     * // Get one CallRecording
+     * const callRecording = await prisma.callRecording.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CallRecordingFindUniqueArgs>(args: SelectSubset<T, CallRecordingFindUniqueArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one CallRecording that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {CallRecordingFindUniqueOrThrowArgs} args - Arguments to find a CallRecording
+     * @example
+     * // Get one CallRecording
+     * const callRecording = await prisma.callRecording.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CallRecordingFindUniqueOrThrowArgs>(args: SelectSubset<T, CallRecordingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first CallRecording that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingFindFirstArgs} args - Arguments to find a CallRecording
+     * @example
+     * // Get one CallRecording
+     * const callRecording = await prisma.callRecording.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CallRecordingFindFirstArgs>(args?: SelectSubset<T, CallRecordingFindFirstArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first CallRecording that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingFindFirstOrThrowArgs} args - Arguments to find a CallRecording
+     * @example
+     * // Get one CallRecording
+     * const callRecording = await prisma.callRecording.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CallRecordingFindFirstOrThrowArgs>(args?: SelectSubset<T, CallRecordingFindFirstOrThrowArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more CallRecordings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CallRecordings
+     * const callRecordings = await prisma.callRecording.findMany()
+     * 
+     * // Get first 10 CallRecordings
+     * const callRecordings = await prisma.callRecording.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const callRecordingWithIdOnly = await prisma.callRecording.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CallRecordingFindManyArgs>(args?: SelectSubset<T, CallRecordingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a CallRecording.
+     * @param {CallRecordingCreateArgs} args - Arguments to create a CallRecording.
+     * @example
+     * // Create one CallRecording
+     * const CallRecording = await prisma.callRecording.create({
+     *   data: {
+     *     // ... data to create a CallRecording
+     *   }
+     * })
+     * 
+     */
+    create<T extends CallRecordingCreateArgs>(args: SelectSubset<T, CallRecordingCreateArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many CallRecordings.
+     * @param {CallRecordingCreateManyArgs} args - Arguments to create many CallRecordings.
+     * @example
+     * // Create many CallRecordings
+     * const callRecording = await prisma.callRecording.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CallRecordingCreateManyArgs>(args?: SelectSubset<T, CallRecordingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CallRecordings and returns the data saved in the database.
+     * @param {CallRecordingCreateManyAndReturnArgs} args - Arguments to create many CallRecordings.
+     * @example
+     * // Create many CallRecordings
+     * const callRecording = await prisma.callRecording.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CallRecordings and only return the `id`
+     * const callRecordingWithIdOnly = await prisma.callRecording.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CallRecordingCreateManyAndReturnArgs>(args?: SelectSubset<T, CallRecordingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a CallRecording.
+     * @param {CallRecordingDeleteArgs} args - Arguments to delete one CallRecording.
+     * @example
+     * // Delete one CallRecording
+     * const CallRecording = await prisma.callRecording.delete({
+     *   where: {
+     *     // ... filter to delete one CallRecording
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CallRecordingDeleteArgs>(args: SelectSubset<T, CallRecordingDeleteArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one CallRecording.
+     * @param {CallRecordingUpdateArgs} args - Arguments to update one CallRecording.
+     * @example
+     * // Update one CallRecording
+     * const callRecording = await prisma.callRecording.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CallRecordingUpdateArgs>(args: SelectSubset<T, CallRecordingUpdateArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more CallRecordings.
+     * @param {CallRecordingDeleteManyArgs} args - Arguments to filter CallRecordings to delete.
+     * @example
+     * // Delete a few CallRecordings
+     * const { count } = await prisma.callRecording.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CallRecordingDeleteManyArgs>(args?: SelectSubset<T, CallRecordingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CallRecordings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CallRecordings
+     * const callRecording = await prisma.callRecording.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CallRecordingUpdateManyArgs>(args: SelectSubset<T, CallRecordingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one CallRecording.
+     * @param {CallRecordingUpsertArgs} args - Arguments to update or create a CallRecording.
+     * @example
+     * // Update or create a CallRecording
+     * const callRecording = await prisma.callRecording.upsert({
+     *   create: {
+     *     // ... data to create a CallRecording
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CallRecording we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CallRecordingUpsertArgs>(args: SelectSubset<T, CallRecordingUpsertArgs<ExtArgs>>): Prisma__CallRecordingClient<$Result.GetResult<Prisma.$CallRecordingPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of CallRecordings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingCountArgs} args - Arguments to filter CallRecordings to count.
+     * @example
+     * // Count the number of CallRecordings
+     * const count = await prisma.callRecording.count({
+     *   where: {
+     *     // ... the filter for the CallRecordings we want to count
+     *   }
+     * })
+    **/
+    count<T extends CallRecordingCountArgs>(
+      args?: Subset<T, CallRecordingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CallRecordingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CallRecording.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CallRecordingAggregateArgs>(args: Subset<T, CallRecordingAggregateArgs>): Prisma.PrismaPromise<GetCallRecordingAggregateType<T>>
+
+    /**
+     * Group by CallRecording.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CallRecordingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CallRecordingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CallRecordingGroupByArgs['orderBy'] }
+        : { orderBy?: CallRecordingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CallRecordingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCallRecordingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CallRecording model
+   */
+  readonly fields: CallRecordingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CallRecording.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CallRecordingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    lead<T extends LeadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeadDefaultArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CallRecording model
+   */ 
+  interface CallRecordingFieldRefs {
+    readonly id: FieldRef<"CallRecording", 'String'>
+    readonly leadId: FieldRef<"CallRecording", 'String'>
+    readonly duration: FieldRef<"CallRecording", 'Int'>
+    readonly fileUrl: FieldRef<"CallRecording", 'String'>
+    readonly callType: FieldRef<"CallRecording", 'String'>
+    readonly timestamp: FieldRef<"CallRecording", 'DateTime'>
+    readonly createdAt: FieldRef<"CallRecording", 'DateTime'>
+    readonly updatedAt: FieldRef<"CallRecording", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CallRecording findUnique
+   */
+  export type CallRecordingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * Filter, which CallRecording to fetch.
+     */
+    where: CallRecordingWhereUniqueInput
+  }
+
+  /**
+   * CallRecording findUniqueOrThrow
+   */
+  export type CallRecordingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * Filter, which CallRecording to fetch.
+     */
+    where: CallRecordingWhereUniqueInput
+  }
+
+  /**
+   * CallRecording findFirst
+   */
+  export type CallRecordingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * Filter, which CallRecording to fetch.
+     */
+    where?: CallRecordingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CallRecordings to fetch.
+     */
+    orderBy?: CallRecordingOrderByWithRelationInput | CallRecordingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CallRecordings.
+     */
+    cursor?: CallRecordingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CallRecordings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CallRecordings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CallRecordings.
+     */
+    distinct?: CallRecordingScalarFieldEnum | CallRecordingScalarFieldEnum[]
+  }
+
+  /**
+   * CallRecording findFirstOrThrow
+   */
+  export type CallRecordingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * Filter, which CallRecording to fetch.
+     */
+    where?: CallRecordingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CallRecordings to fetch.
+     */
+    orderBy?: CallRecordingOrderByWithRelationInput | CallRecordingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CallRecordings.
+     */
+    cursor?: CallRecordingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CallRecordings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CallRecordings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CallRecordings.
+     */
+    distinct?: CallRecordingScalarFieldEnum | CallRecordingScalarFieldEnum[]
+  }
+
+  /**
+   * CallRecording findMany
+   */
+  export type CallRecordingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * Filter, which CallRecordings to fetch.
+     */
+    where?: CallRecordingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CallRecordings to fetch.
+     */
+    orderBy?: CallRecordingOrderByWithRelationInput | CallRecordingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CallRecordings.
+     */
+    cursor?: CallRecordingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CallRecordings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CallRecordings.
+     */
+    skip?: number
+    distinct?: CallRecordingScalarFieldEnum | CallRecordingScalarFieldEnum[]
+  }
+
+  /**
+   * CallRecording create
+   */
+  export type CallRecordingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CallRecording.
+     */
+    data: XOR<CallRecordingCreateInput, CallRecordingUncheckedCreateInput>
+  }
+
+  /**
+   * CallRecording createMany
+   */
+  export type CallRecordingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CallRecordings.
+     */
+    data: CallRecordingCreateManyInput | CallRecordingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CallRecording createManyAndReturn
+   */
+  export type CallRecordingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many CallRecordings.
+     */
+    data: CallRecordingCreateManyInput | CallRecordingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CallRecording update
+   */
+  export type CallRecordingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CallRecording.
+     */
+    data: XOR<CallRecordingUpdateInput, CallRecordingUncheckedUpdateInput>
+    /**
+     * Choose, which CallRecording to update.
+     */
+    where: CallRecordingWhereUniqueInput
+  }
+
+  /**
+   * CallRecording updateMany
+   */
+  export type CallRecordingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CallRecordings.
+     */
+    data: XOR<CallRecordingUpdateManyMutationInput, CallRecordingUncheckedUpdateManyInput>
+    /**
+     * Filter which CallRecordings to update
+     */
+    where?: CallRecordingWhereInput
+  }
+
+  /**
+   * CallRecording upsert
+   */
+  export type CallRecordingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CallRecording to update in case it exists.
+     */
+    where: CallRecordingWhereUniqueInput
+    /**
+     * In case the CallRecording found by the `where` argument doesn't exist, create a new CallRecording with this data.
+     */
+    create: XOR<CallRecordingCreateInput, CallRecordingUncheckedCreateInput>
+    /**
+     * In case the CallRecording was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CallRecordingUpdateInput, CallRecordingUncheckedUpdateInput>
+  }
+
+  /**
+   * CallRecording delete
+   */
+  export type CallRecordingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
+    /**
+     * Filter which CallRecording to delete.
+     */
+    where: CallRecordingWhereUniqueInput
+  }
+
+  /**
+   * CallRecording deleteMany
+   */
+  export type CallRecordingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CallRecordings to delete
+     */
+    where?: CallRecordingWhereInput
+  }
+
+  /**
+   * CallRecording without action
+   */
+  export type CallRecordingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CallRecording
+     */
+    select?: CallRecordingSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CallRecordingInclude<ExtArgs> | null
   }
 
 
@@ -73263,6 +74385,20 @@ export namespace Prisma {
   export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
 
 
+  export const CallRecordingScalarFieldEnum: {
+    id: 'id',
+    leadId: 'leadId',
+    duration: 'duration',
+    fileUrl: 'fileUrl',
+    callType: 'callType',
+    timestamp: 'timestamp',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CallRecordingScalarFieldEnum = (typeof CallRecordingScalarFieldEnum)[keyof typeof CallRecordingScalarFieldEnum]
+
+
   export const AccountScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -75482,6 +76618,7 @@ export namespace Prisma {
     convertedAccounts?: AccountListRelationFilter
     convertedContacts?: ContactListRelationFilter
     convertedOpportunities?: OpportunityListRelationFilter
+    callRecordings?: CallRecordingListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
   }
 
@@ -75547,6 +76684,7 @@ export namespace Prisma {
     convertedAccounts?: AccountOrderByRelationAggregateInput
     convertedContacts?: ContactOrderByRelationAggregateInput
     convertedOpportunities?: OpportunityOrderByRelationAggregateInput
+    callRecordings?: CallRecordingOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
   }
 
@@ -75616,6 +76754,7 @@ export namespace Prisma {
     convertedAccounts?: AccountListRelationFilter
     convertedContacts?: ContactListRelationFilter
     convertedOpportunities?: OpportunityListRelationFilter
+    callRecordings?: CallRecordingListRelationFilter
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
   }, "id" | "phone_organisationId_branchId">
 
@@ -75719,6 +76858,78 @@ export namespace Prisma {
     pipelineId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     potentialValue?: FloatWithAggregatesFilter<"Lead"> | number
     branchId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+  }
+
+  export type CallRecordingWhereInput = {
+    AND?: CallRecordingWhereInput | CallRecordingWhereInput[]
+    OR?: CallRecordingWhereInput[]
+    NOT?: CallRecordingWhereInput | CallRecordingWhereInput[]
+    id?: StringFilter<"CallRecording"> | string
+    leadId?: StringFilter<"CallRecording"> | string
+    duration?: IntFilter<"CallRecording"> | number
+    fileUrl?: StringFilter<"CallRecording"> | string
+    callType?: StringFilter<"CallRecording"> | string
+    timestamp?: DateTimeFilter<"CallRecording"> | Date | string
+    createdAt?: DateTimeFilter<"CallRecording"> | Date | string
+    updatedAt?: DateTimeFilter<"CallRecording"> | Date | string
+    lead?: XOR<LeadRelationFilter, LeadWhereInput>
+  }
+
+  export type CallRecordingOrderByWithRelationInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    duration?: SortOrder
+    fileUrl?: SortOrder
+    callType?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lead?: LeadOrderByWithRelationInput
+  }
+
+  export type CallRecordingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CallRecordingWhereInput | CallRecordingWhereInput[]
+    OR?: CallRecordingWhereInput[]
+    NOT?: CallRecordingWhereInput | CallRecordingWhereInput[]
+    leadId?: StringFilter<"CallRecording"> | string
+    duration?: IntFilter<"CallRecording"> | number
+    fileUrl?: StringFilter<"CallRecording"> | string
+    callType?: StringFilter<"CallRecording"> | string
+    timestamp?: DateTimeFilter<"CallRecording"> | Date | string
+    createdAt?: DateTimeFilter<"CallRecording"> | Date | string
+    updatedAt?: DateTimeFilter<"CallRecording"> | Date | string
+    lead?: XOR<LeadRelationFilter, LeadWhereInput>
+  }, "id">
+
+  export type CallRecordingOrderByWithAggregationInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    duration?: SortOrder
+    fileUrl?: SortOrder
+    callType?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CallRecordingCountOrderByAggregateInput
+    _avg?: CallRecordingAvgOrderByAggregateInput
+    _max?: CallRecordingMaxOrderByAggregateInput
+    _min?: CallRecordingMinOrderByAggregateInput
+    _sum?: CallRecordingSumOrderByAggregateInput
+  }
+
+  export type CallRecordingScalarWhereWithAggregatesInput = {
+    AND?: CallRecordingScalarWhereWithAggregatesInput | CallRecordingScalarWhereWithAggregatesInput[]
+    OR?: CallRecordingScalarWhereWithAggregatesInput[]
+    NOT?: CallRecordingScalarWhereWithAggregatesInput | CallRecordingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CallRecording"> | string
+    leadId?: StringWithAggregatesFilter<"CallRecording"> | string
+    duration?: IntWithAggregatesFilter<"CallRecording"> | number
+    fileUrl?: StringWithAggregatesFilter<"CallRecording"> | string
+    callType?: StringWithAggregatesFilter<"CallRecording"> | string
+    timestamp?: DateTimeWithAggregatesFilter<"CallRecording"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"CallRecording"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CallRecording"> | Date | string
   }
 
   export type AccountWhereInput = {
@@ -82504,6 +83715,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -82564,6 +83776,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUpdateInput = {
@@ -82622,6 +83835,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -82682,6 +83896,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadCreateManyInput = {
@@ -82817,6 +84032,82 @@ export namespace Prisma {
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CallRecordingCreateInput = {
+    id?: string
+    duration?: number
+    fileUrl: string
+    callType?: string
+    timestamp?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lead: LeadCreateNestedOneWithoutCallRecordingsInput
+  }
+
+  export type CallRecordingUncheckedCreateInput = {
+    id?: string
+    leadId: string
+    duration?: number
+    fileUrl: string
+    callType?: string
+    timestamp?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CallRecordingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lead?: LeadUpdateOneRequiredWithoutCallRecordingsNestedInput
+  }
+
+  export type CallRecordingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadId?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CallRecordingCreateManyInput = {
+    id?: string
+    leadId: string
+    duration?: number
+    fileUrl: string
+    callType?: string
+    timestamp?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CallRecordingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CallRecordingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadId?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateInput = {
@@ -90161,7 +91452,17 @@ export namespace Prisma {
     none?: LeadProductWhereInput
   }
 
+  export type CallRecordingListRelationFilter = {
+    every?: CallRecordingWhereInput
+    some?: CallRecordingWhereInput
+    none?: CallRecordingWhereInput
+  }
+
   export type LeadProductOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CallRecordingOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -90352,6 +91653,52 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type LeadRelationFilter = {
+    is?: LeadWhereInput
+    isNot?: LeadWhereInput
+  }
+
+  export type CallRecordingCountOrderByAggregateInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    duration?: SortOrder
+    fileUrl?: SortOrder
+    callType?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CallRecordingAvgOrderByAggregateInput = {
+    duration?: SortOrder
+  }
+
+  export type CallRecordingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    duration?: SortOrder
+    fileUrl?: SortOrder
+    callType?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CallRecordingMinOrderByAggregateInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    duration?: SortOrder
+    fileUrl?: SortOrder
+    callType?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CallRecordingSumOrderByAggregateInput = {
+    duration?: SortOrder
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -90730,11 +92077,6 @@ export namespace Prisma {
     taxRate?: SortOrder
     minQuantity?: SortOrder
     maxQuantity?: SortOrder
-  }
-
-  export type LeadRelationFilter = {
-    is?: LeadWhereInput
-    isNot?: LeadWhereInput
   }
 
   export type ProductRelationFilter = {
@@ -98199,6 +99541,13 @@ export namespace Prisma {
     connect?: OpportunityWhereUniqueInput | OpportunityWhereUniqueInput[]
   }
 
+  export type CallRecordingCreateNestedManyWithoutLeadInput = {
+    create?: XOR<CallRecordingCreateWithoutLeadInput, CallRecordingUncheckedCreateWithoutLeadInput> | CallRecordingCreateWithoutLeadInput[] | CallRecordingUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CallRecordingCreateOrConnectWithoutLeadInput | CallRecordingCreateOrConnectWithoutLeadInput[]
+    createMany?: CallRecordingCreateManyLeadInputEnvelope
+    connect?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+  }
+
   export type BranchCreateNestedOneWithoutLeadsInput = {
     create?: XOR<BranchCreateWithoutLeadsInput, BranchUncheckedCreateWithoutLeadsInput>
     connectOrCreate?: BranchCreateOrConnectWithoutLeadsInput
@@ -98286,6 +99635,13 @@ export namespace Prisma {
     connectOrCreate?: OpportunityCreateOrConnectWithoutLeadInput | OpportunityCreateOrConnectWithoutLeadInput[]
     createMany?: OpportunityCreateManyLeadInputEnvelope
     connect?: OpportunityWhereUniqueInput | OpportunityWhereUniqueInput[]
+  }
+
+  export type CallRecordingUncheckedCreateNestedManyWithoutLeadInput = {
+    create?: XOR<CallRecordingCreateWithoutLeadInput, CallRecordingUncheckedCreateWithoutLeadInput> | CallRecordingCreateWithoutLeadInput[] | CallRecordingUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CallRecordingCreateOrConnectWithoutLeadInput | CallRecordingCreateOrConnectWithoutLeadInput[]
+    createMany?: CallRecordingCreateManyLeadInputEnvelope
+    connect?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
   }
 
   export type EnumLeadSourceFieldUpdateOperationsInput = {
@@ -98524,6 +99880,20 @@ export namespace Prisma {
     deleteMany?: OpportunityScalarWhereInput | OpportunityScalarWhereInput[]
   }
 
+  export type CallRecordingUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<CallRecordingCreateWithoutLeadInput, CallRecordingUncheckedCreateWithoutLeadInput> | CallRecordingCreateWithoutLeadInput[] | CallRecordingUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CallRecordingCreateOrConnectWithoutLeadInput | CallRecordingCreateOrConnectWithoutLeadInput[]
+    upsert?: CallRecordingUpsertWithWhereUniqueWithoutLeadInput | CallRecordingUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: CallRecordingCreateManyLeadInputEnvelope
+    set?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    disconnect?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    delete?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    connect?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    update?: CallRecordingUpdateWithWhereUniqueWithoutLeadInput | CallRecordingUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: CallRecordingUpdateManyWithWhereWithoutLeadInput | CallRecordingUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: CallRecordingScalarWhereInput | CallRecordingScalarWhereInput[]
+  }
+
   export type BranchUpdateOneWithoutLeadsNestedInput = {
     create?: XOR<BranchCreateWithoutLeadsInput, BranchUncheckedCreateWithoutLeadsInput>
     connectOrCreate?: BranchCreateOrConnectWithoutLeadsInput
@@ -98699,6 +100069,34 @@ export namespace Prisma {
     update?: OpportunityUpdateWithWhereUniqueWithoutLeadInput | OpportunityUpdateWithWhereUniqueWithoutLeadInput[]
     updateMany?: OpportunityUpdateManyWithWhereWithoutLeadInput | OpportunityUpdateManyWithWhereWithoutLeadInput[]
     deleteMany?: OpportunityScalarWhereInput | OpportunityScalarWhereInput[]
+  }
+
+  export type CallRecordingUncheckedUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<CallRecordingCreateWithoutLeadInput, CallRecordingUncheckedCreateWithoutLeadInput> | CallRecordingCreateWithoutLeadInput[] | CallRecordingUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CallRecordingCreateOrConnectWithoutLeadInput | CallRecordingCreateOrConnectWithoutLeadInput[]
+    upsert?: CallRecordingUpsertWithWhereUniqueWithoutLeadInput | CallRecordingUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: CallRecordingCreateManyLeadInputEnvelope
+    set?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    disconnect?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    delete?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    connect?: CallRecordingWhereUniqueInput | CallRecordingWhereUniqueInput[]
+    update?: CallRecordingUpdateWithWhereUniqueWithoutLeadInput | CallRecordingUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: CallRecordingUpdateManyWithWhereWithoutLeadInput | CallRecordingUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: CallRecordingScalarWhereInput | CallRecordingScalarWhereInput[]
+  }
+
+  export type LeadCreateNestedOneWithoutCallRecordingsInput = {
+    create?: XOR<LeadCreateWithoutCallRecordingsInput, LeadUncheckedCreateWithoutCallRecordingsInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutCallRecordingsInput
+    connect?: LeadWhereUniqueInput
+  }
+
+  export type LeadUpdateOneRequiredWithoutCallRecordingsNestedInput = {
+    create?: XOR<LeadCreateWithoutCallRecordingsInput, LeadUncheckedCreateWithoutCallRecordingsInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutCallRecordingsInput
+    upsert?: LeadUpsertWithoutCallRecordingsInput
+    connect?: LeadWhereUniqueInput
+    update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutCallRecordingsInput, LeadUpdateWithoutCallRecordingsInput>, LeadUncheckedUpdateWithoutCallRecordingsInput>
   }
 
   export type AccountCreatetagsInput = {
@@ -104689,6 +106087,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -104748,6 +106147,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutOrganisationInput = {
@@ -108892,6 +110292,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -108951,6 +110352,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutAssignedToInput = {
@@ -109018,6 +110420,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -109077,6 +110480,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutPreviousOwnerInput = {
@@ -109144,6 +110548,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -109203,6 +110608,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutCreatedByInput = {
@@ -116002,6 +117408,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CallRecordingCreateWithoutLeadInput = {
+    id?: string
+    duration?: number
+    fileUrl: string
+    callType?: string
+    timestamp?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CallRecordingUncheckedCreateWithoutLeadInput = {
+    id?: string
+    duration?: number
+    fileUrl: string
+    callType?: string
+    timestamp?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CallRecordingCreateOrConnectWithoutLeadInput = {
+    where: CallRecordingWhereUniqueInput
+    create: XOR<CallRecordingCreateWithoutLeadInput, CallRecordingUncheckedCreateWithoutLeadInput>
+  }
+
+  export type CallRecordingCreateManyLeadInputEnvelope = {
+    data: CallRecordingCreateManyLeadInput | CallRecordingCreateManyLeadInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchCreateWithoutLeadsInput = {
     id?: string
     name: string
@@ -117009,6 +118445,36 @@ export namespace Prisma {
     data: XOR<OpportunityUpdateManyMutationInput, OpportunityUncheckedUpdateManyWithoutLeadInput>
   }
 
+  export type CallRecordingUpsertWithWhereUniqueWithoutLeadInput = {
+    where: CallRecordingWhereUniqueInput
+    update: XOR<CallRecordingUpdateWithoutLeadInput, CallRecordingUncheckedUpdateWithoutLeadInput>
+    create: XOR<CallRecordingCreateWithoutLeadInput, CallRecordingUncheckedCreateWithoutLeadInput>
+  }
+
+  export type CallRecordingUpdateWithWhereUniqueWithoutLeadInput = {
+    where: CallRecordingWhereUniqueInput
+    data: XOR<CallRecordingUpdateWithoutLeadInput, CallRecordingUncheckedUpdateWithoutLeadInput>
+  }
+
+  export type CallRecordingUpdateManyWithWhereWithoutLeadInput = {
+    where: CallRecordingScalarWhereInput
+    data: XOR<CallRecordingUpdateManyMutationInput, CallRecordingUncheckedUpdateManyWithoutLeadInput>
+  }
+
+  export type CallRecordingScalarWhereInput = {
+    AND?: CallRecordingScalarWhereInput | CallRecordingScalarWhereInput[]
+    OR?: CallRecordingScalarWhereInput[]
+    NOT?: CallRecordingScalarWhereInput | CallRecordingScalarWhereInput[]
+    id?: StringFilter<"CallRecording"> | string
+    leadId?: StringFilter<"CallRecording"> | string
+    duration?: IntFilter<"CallRecording"> | number
+    fileUrl?: StringFilter<"CallRecording"> | string
+    callType?: StringFilter<"CallRecording"> | string
+    timestamp?: DateTimeFilter<"CallRecording"> | Date | string
+    createdAt?: DateTimeFilter<"CallRecording"> | Date | string
+    updatedAt?: DateTimeFilter<"CallRecording"> | Date | string
+  }
+
   export type BranchUpsertWithoutLeadsInput = {
     update: XOR<BranchUpdateWithoutLeadsInput, BranchUncheckedUpdateWithoutLeadsInput>
     create: XOR<BranchCreateWithoutLeadsInput, BranchUncheckedCreateWithoutLeadsInput>
@@ -117058,6 +118524,258 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
+  export type LeadCreateWithoutCallRecordingsInput = {
+    id?: string
+    firstName: string
+    lastName?: string | null
+    email?: string | null
+    phone: string
+    phoneCountryCode?: string | null
+    country?: string | null
+    countryCode?: string | null
+    company?: string | null
+    enquiryAbout?: string | null
+    jobTitle?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: number
+    engagementScore?: number
+    qualityScore?: number
+    isHotLead?: boolean
+    lastScoredAt?: Date | string | null
+    status?: $Enums.LeadStatus
+    stage?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId?: string | null
+    managerExplanation?: string | null
+    rotationViolation?: boolean
+    userExplanation?: string | null
+    violationTime?: Date | string | null
+    nextFollowUp?: Date | string | null
+    isReEnquiry?: boolean
+    reEnquiryCount?: number
+    lastEnquiryDate?: Date | string | null
+    originalLeadId?: string | null
+    potentialValue?: number
+    events?: CalendarEventCreateNestedManyWithoutLeadInput
+    checkIns?: CheckInCreateNestedManyWithoutLeadInput
+    interactions?: InteractionCreateNestedManyWithoutLeadInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedLeadsInput
+    organisation: OrganisationCreateNestedOneWithoutLeadsInput
+    previousOwner?: UserCreateNestedOneWithoutPreviousLeadsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
+    history?: LeadHistoryCreateNestedManyWithoutLeadInput
+    tasks?: TaskCreateNestedManyWithoutLeadInput
+    emailLists?: EmailListCreateNestedManyWithoutLeadsInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
+    documents?: DocumentCreateNestedManyWithoutLeadInput
+    pipeline?: PipelineCreateNestedOneWithoutLeadsInput
+    products?: LeadProductCreateNestedManyWithoutLeadInput
+    convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
+    convertedContacts?: ContactCreateNestedManyWithoutLeadInput
+    convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    branch?: BranchCreateNestedOneWithoutLeadsInput
+  }
+
+  export type LeadUncheckedCreateWithoutCallRecordingsInput = {
+    id?: string
+    firstName: string
+    lastName?: string | null
+    email?: string | null
+    phone: string
+    phoneCountryCode?: string | null
+    country?: string | null
+    countryCode?: string | null
+    company?: string | null
+    enquiryAbout?: string | null
+    jobTitle?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: number
+    engagementScore?: number
+    qualityScore?: number
+    isHotLead?: boolean
+    lastScoredAt?: Date | string | null
+    status?: $Enums.LeadStatus
+    stage?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId: string
+    assignedToId?: string | null
+    teamId?: string | null
+    managerExplanation?: string | null
+    previousOwnerId?: string | null
+    rotationViolation?: boolean
+    userExplanation?: string | null
+    violationTime?: Date | string | null
+    nextFollowUp?: Date | string | null
+    isReEnquiry?: boolean
+    reEnquiryCount?: number
+    lastEnquiryDate?: Date | string | null
+    originalLeadId?: string | null
+    createdById?: string | null
+    pipelineId?: string | null
+    potentialValue?: number
+    branchId?: string | null
+    events?: CalendarEventUncheckedCreateNestedManyWithoutLeadInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutLeadInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
+    history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
+    products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
+    convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
+    convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
+    convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+  }
+
+  export type LeadCreateOrConnectWithoutCallRecordingsInput = {
+    where: LeadWhereUniqueInput
+    create: XOR<LeadCreateWithoutCallRecordingsInput, LeadUncheckedCreateWithoutCallRecordingsInput>
+  }
+
+  export type LeadUpsertWithoutCallRecordingsInput = {
+    update: XOR<LeadUpdateWithoutCallRecordingsInput, LeadUncheckedUpdateWithoutCallRecordingsInput>
+    create: XOR<LeadCreateWithoutCallRecordingsInput, LeadUncheckedCreateWithoutCallRecordingsInput>
+    where?: LeadWhereInput
+  }
+
+  export type LeadUpdateToOneWithWhereWithoutCallRecordingsInput = {
+    where?: LeadWhereInput
+    data: XOR<LeadUpdateWithoutCallRecordingsInput, LeadUncheckedUpdateWithoutCallRecordingsInput>
+  }
+
+  export type LeadUpdateWithoutCallRecordingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: IntFieldUpdateOperationsInput | number
+    engagementScore?: IntFieldUpdateOperationsInput | number
+    qualityScore?: IntFieldUpdateOperationsInput | number
+    isHotLead?: BoolFieldUpdateOperationsInput | boolean
+    lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    stage?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    managerExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    rotationViolation?: BoolFieldUpdateOperationsInput | boolean
+    userExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    violationTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextFollowUp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
+    reEnquiryCount?: IntFieldUpdateOperationsInput | number
+    lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
+    potentialValue?: FloatFieldUpdateOperationsInput | number
+    events?: CalendarEventUpdateManyWithoutLeadNestedInput
+    checkIns?: CheckInUpdateManyWithoutLeadNestedInput
+    interactions?: InteractionUpdateManyWithoutLeadNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedLeadsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutLeadsNestedInput
+    previousOwner?: UserUpdateOneWithoutPreviousLeadsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
+    history?: LeadHistoryUpdateManyWithoutLeadNestedInput
+    tasks?: TaskUpdateManyWithoutLeadNestedInput
+    emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
+    documents?: DocumentUpdateManyWithoutLeadNestedInput
+    pipeline?: PipelineUpdateOneWithoutLeadsNestedInput
+    products?: LeadProductUpdateManyWithoutLeadNestedInput
+    convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
+    convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
+    convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    branch?: BranchUpdateOneWithoutLeadsNestedInput
+  }
+
+  export type LeadUncheckedUpdateWithoutCallRecordingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: IntFieldUpdateOperationsInput | number
+    engagementScore?: IntFieldUpdateOperationsInput | number
+    qualityScore?: IntFieldUpdateOperationsInput | number
+    isHotLead?: BoolFieldUpdateOperationsInput | boolean
+    lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    stage?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    managerExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    rotationViolation?: BoolFieldUpdateOperationsInput | boolean
+    userExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    violationTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextFollowUp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
+    reEnquiryCount?: IntFieldUpdateOperationsInput | number
+    lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    potentialValue?: FloatFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    events?: CalendarEventUncheckedUpdateManyWithoutLeadNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutLeadNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
+    history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
+    products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
+    convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
+    convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
+    convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type OrganisationCreateWithoutAccountsInput = {
@@ -118128,6 +119846,7 @@ export namespace Prisma {
     products?: LeadProductCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -118187,6 +119906,7 @@ export namespace Prisma {
     products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutConvertedAccountsInput = {
@@ -118916,6 +120636,7 @@ export namespace Prisma {
     products?: LeadProductUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -118975,6 +120696,7 @@ export namespace Prisma {
     products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type AccountProductUpsertWithWhereUniqueWithoutAccountInput = {
@@ -120042,6 +121764,7 @@ export namespace Prisma {
     products?: LeadProductCreateNestedManyWithoutLeadInput
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -120101,6 +121824,7 @@ export namespace Prisma {
     products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutConvertedContactsInput = {
@@ -120794,6 +122518,7 @@ export namespace Prisma {
     products?: LeadProductUpdateManyWithoutLeadNestedInput
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -120853,6 +122578,7 @@ export namespace Prisma {
     products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type BranchUpsertWithoutContactsInput = {
@@ -121731,6 +123457,7 @@ export namespace Prisma {
     products?: LeadProductCreateNestedManyWithoutLeadInput
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -121790,6 +123517,7 @@ export namespace Prisma {
     products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutConvertedOpportunitiesInput = {
@@ -122519,6 +124247,7 @@ export namespace Prisma {
     products?: LeadProductUpdateManyWithoutLeadNestedInput
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -122578,6 +124307,7 @@ export namespace Prisma {
     products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type PipelineUpsertWithoutOpportunitiesInput = {
@@ -123735,6 +125465,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -123794,6 +125525,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutProductsInput = {
@@ -123930,6 +125662,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -123989,6 +125722,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type ProductUpsertWithoutLeadsInput = {
@@ -127005,6 +128739,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -127064,6 +128799,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutTasksInput = {
@@ -127930,6 +129666,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -127989,6 +129726,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type OpportunityUpsertWithoutTasksInput = {
@@ -128699,6 +130437,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -128758,6 +130497,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutInteractionsInput = {
@@ -129490,6 +131230,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -129549,6 +131290,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type OpportunityUpsertWithoutInteractionsInput = {
@@ -130210,6 +131952,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -130269,6 +132012,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutEventsInput = {
@@ -130901,6 +132645,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -130960,6 +132705,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type OpportunityUpsertWithoutEventsInput = {
@@ -131690,6 +133436,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -131749,6 +133496,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutEmailListsInput = {
@@ -142109,6 +143857,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -142168,6 +143917,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutCheckInsInput = {
@@ -142725,6 +144475,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -142784,6 +144535,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type OrganisationUpsertWithoutCheckInsInput = {
@@ -147076,6 +148828,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -147135,6 +148888,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutHistoryInput = {
@@ -147763,6 +149517,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -147822,6 +149577,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type UserUpsertWithoutHistoryNewOwnerInput = {
@@ -149253,6 +151009,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -149312,6 +151069,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutPipelineInput = {
@@ -152048,6 +153806,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -152107,6 +153866,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutWhatsAppMessagesInput = {
@@ -152632,6 +154392,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -152691,6 +154452,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type ContactUpsertWithoutWhatsAppMessagesInput = {
@@ -155771,6 +157533,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
     branch?: BranchCreateNestedOneWithoutLeadsInput
   }
 
@@ -155830,6 +157593,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutDocumentsInput = {
@@ -156516,6 +158280,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -156575,6 +158340,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type ContactUpsertWithoutDocumentsInput = {
@@ -158196,6 +159962,7 @@ export namespace Prisma {
     convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutBranchInput = {
@@ -158254,6 +160021,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
     convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
     convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutBranchInput = {
@@ -162578,6 +164346,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -162637,6 +164406,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutOrganisationInput = {
@@ -166693,6 +168463,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -166752,6 +168523,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutAssignedToInput = {
@@ -166855,6 +168627,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -166914,6 +168687,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutPreviousOwnerInput = {
@@ -167017,6 +168791,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -167076,6 +168851,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutCreatedByInput = {
@@ -169822,6 +171598,16 @@ export namespace Prisma {
     branchId?: string | null
   }
 
+  export type CallRecordingCreateManyLeadInput = {
+    id?: string
+    duration?: number
+    fileUrl: string
+    callType?: string
+    timestamp?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CalendarEventUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -170580,6 +172366,36 @@ export namespace Prisma {
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CallRecordingUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CallRecordingUncheckedUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CallRecordingUncheckedUpdateManyWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    callType?: StringFieldUpdateOperationsInput | string
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateManyParentAccountInput = {
@@ -173651,6 +175467,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -173710,6 +175527,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutEmailListsInput = {
@@ -174098,6 +175916,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
     branch?: BranchUpdateOneWithoutLeadsNestedInput
   }
 
@@ -174157,6 +175976,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutPipelineInput = {
@@ -174974,6 +176794,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutBranchInput = {
@@ -175032,6 +176853,7 @@ export namespace Prisma {
     convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
     convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
     convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutBranchInput = {
@@ -175774,6 +177596,10 @@ export namespace Prisma {
      * @deprecated Use LeadDefaultArgs instead
      */
     export type LeadArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = LeadDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use CallRecordingDefaultArgs instead
+     */
+    export type CallRecordingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = CallRecordingDefaultArgs<ExtArgs>
     /**
      * @deprecated Use AccountDefaultArgs instead
      */

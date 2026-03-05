@@ -64,6 +64,7 @@ import importRoutes from './routes/importRoutes';
 import aiRoutes from './routes/aiRoutes';
 import emailRoutes from './routes/emailRoutes';
 import searchRoutes from './routes/searchRoutes';
+import androidRoutes from './routes/androidRoutes';
 
 import adRoutes from './routes/adRoutes';
 import pipelineRoutes from './routes/pipelineRoutes';
@@ -366,6 +367,7 @@ app.use('/api/whatsapp', whatsAppRoutes);
 app.use('/api/commissions', commissionRoutes);
 app.use('/api/landing-pages', landingPageRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/android', androidRoutes);
 app.use('/api/sales-targets', salesTargetRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/ads', adRoutes);

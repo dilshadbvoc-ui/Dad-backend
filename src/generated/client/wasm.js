@@ -255,6 +255,17 @@ exports.Prisma.LeadScalarFieldEnum = {
   branchId: 'branchId'
 };
 
+exports.Prisma.CallRecordingScalarFieldEnum = {
+  id: 'id',
+  leadId: 'leadId',
+  duration: 'duration',
+  fileUrl: 'fileUrl',
+  callType: 'callType',
+  timestamp: 'timestamp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1265,6 +1276,7 @@ exports.Prisma.ModelName = {
   Team: 'Team',
   Notification: 'Notification',
   Lead: 'Lead',
+  CallRecording: 'CallRecording',
   Account: 'Account',
   Contact: 'Contact',
   Opportunity: 'Opportunity',
