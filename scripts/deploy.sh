@@ -127,9 +127,42 @@ else
 fi
 node copy-prisma.js
 
-# 2. Skip Frontend Build on Backend Server
-# Frontend is deployed separately on Vercel
-echo "⏭️  Skipping frontend build (deployed separately on Vercel)"
+# 2. Update Frontend (Sibling Directory)
+# Assumes frontend is cloned as a sibling folder named 'frontend' or 'client'
+CLIENT_DIR="$BACKEND_DIR/../frontend" 
+if [ ! -d "$CLIENT_DIR" ]; then
+    CLIENT_DIR="$BACKEND_DIR/../client"
+fi
+
+if [ -d "$CLIENT_DIR" ]; then
+    echo "📥 Updating Frontend in $CLIENT_DIR..."
+    cd "$CLIENT_DIR"
+    
+    # Clean up stale locks
+    if [ -f .git/index.lock ]; then
+        echo "🧹 Removing stale git lock for frontend..."
+        rm -f .git/index.lock
+    fi
+
+    git fetch origin main
+    git reset --hard origin/main
+    
+    echo "📦 Installing Frontend dependencies..."
+    npm install
+    
+    echo "🏗️ Building Frontend..."
+    # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
+    NODE_OPTIONS=--max-old-space-size=800 npm run build
+    
+    # Deploy to Nginx
+    echo "📂 Deploying Static Files to Nginx root..."
+    sudo mkdir -p /var/www/crm-client
+    sudo rm -rf /var/www/crm-client/*
+    sudo cp -r dist/* /var/www/crm-client/
+    echo "✨ Frontend deployed successfully."
+else
+    echo "⚠️ Frontend directory not found as sibling at $BACKEND_DIR/../frontend! Skipping frontend build."
+fi
 
 echo "▶️ Starting Backend API..."
 cd "$BACKEND_DIR"
