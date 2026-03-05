@@ -128,8 +128,11 @@ fi
 node copy-prisma.js
 
 # 2. Update Frontend (Sibling Directory)
-# Assumes frontend is cloned as a sibling folder named 'frontend' or 'client'
-CLIENT_DIR="$BACKEND_DIR/../frontend" 
+# Assumes frontend is cloned as a sibling folder named 'frontend', 'client' or 'frontend-temp'
+CLIENT_DIR="$BACKEND_DIR/../frontend-temp" 
+if [ ! -d "$CLIENT_DIR" ]; then
+    CLIENT_DIR="$BACKEND_DIR/../frontend"
+fi
 if [ ! -d "$CLIENT_DIR" ]; then
     CLIENT_DIR="$BACKEND_DIR/../client"
 fi
