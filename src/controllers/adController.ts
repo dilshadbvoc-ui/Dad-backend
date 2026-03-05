@@ -192,7 +192,7 @@ export const createFullAd = async (req: AuthRequest, res: Response) => {
         console.log('[createFullAd] Ad Set created:', adSetId);
 
         // 3. Create Creative
-        console.log('[createFullAd] Step 3: Creating creative...');
+        console.log('[createFullAd] Step 3: Creating creative... pageId from config:', config.pageId, 'from body:', creative?.pageId);
         let imageHash = creative.imageHash;
         if (creative.imageUrl && !imageHash) {
             const uploadResult = await metaService.uploadImage(config, creative.imageUrl);
@@ -201,6 +201,7 @@ export const createFullAd = async (req: AuthRequest, res: Response) => {
 
         const creativeResult = await metaService.createAdCreative(config, {
             ...creative,
+            pageId: creative.pageId || config.pageId, // Use org's stored pageId as fallback
             imageHash
         });
         const creativeId = creativeResult.id;
