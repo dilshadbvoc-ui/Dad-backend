@@ -199,6 +199,7 @@ export class MetaService {
             campaign_id: details.campaignId,
             optimization_goal: details.optimizationGoal || 'REACH',
             billing_event: details.billingEvent || 'IMPRESSIONS',
+            bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
             status: details.status || 'PAUSED',
             targeting: details.targeting
         };
@@ -209,6 +210,8 @@ export class MetaService {
 
         if (details.bidAmount) {
             data.bid_amount = details.bidAmount;
+            // If explicit bid amount is given, use BID_CAP strategy instead
+            data.bid_strategy = 'LOWEST_COST_WITH_BID_CAP';
         }
 
         return await this.makePostRequest(`${adAccountId}/adsets`, config.accessToken, data);
