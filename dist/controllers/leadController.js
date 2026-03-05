@@ -68,57 +68,20 @@ const getLeads = async (req, res) => {
         // 2. Hierarchy Visibility
         // Only apply hierarchy restrictions for non-admin users
         if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user) && !(0, roleUtils_1.isAdmin)(user)) {
-            // Get user's role to determine visibility rules
-            // Handle both UUID-based roles (new) and string-based roles (legacy)
-            let roleName = '';
-            // Try to get role from Role table (UUID-based or roleKey)
-            let userRole = await prisma_1.default.role.findFirst({
-                where: {
-                    OR: [
-                        { id: user.role },
-                        { roleKey: user.role, organisationId: user.organisationId },
-                        { roleKey: user.role, organisationId: null }
-                    ]
-                }
+            // New Logic: Anyone can see their own leads + leads of their subordinates (recursively) + managed branches.
+            // Role names no longer strictly limit visibility if they have reporting subordinates.
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            andConditions.push({
+                OR: [
+                    { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                    {
+                        AND: [
+                            { createdById: { in: visibleUserIds } }, // Created by self or subordinate
+                            { assignedToId: null } // But not reassigned to someone else (who might be outside visibility)
+                        ]
+                    }
+                ]
             });
-            if (userRole) {
-                roleName = userRole.name;
-            }
-            else {
-                // Fallback to legacy string-based role
-                // Normalize: 'sales_rep' -> 'Sales Rep', 'manager' -> 'Manager'
-                roleName = user.role.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            }
-            // Sales Reps: Only see leads assigned to them or created by them
-            if (roleName === 'Sales Rep') {
-                andConditions.push({
-                    OR: [
-                        { assignedToId: user.id }, // Directly assigned to this user
-                        {
-                            AND: [
-                                { createdById: user.id }, // Created by user
-                                { assignedToId: null } // But not reassigned to someone else
-                            ]
-                        }
-                    ]
-                });
-            }
-            else {
-                // Managers: Only see leads assigned to them or their direct subordinates
-                const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-                andConditions.push({
-                    OR: [
-                        { assignedToId: user.id }, // Directly assigned to this user
-                        { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } }, // Assigned to subordinates
-                        {
-                            AND: [
-                                { createdById: user.id }, // Created by user
-                                { assignedToId: null } // But not reassigned to someone else
-                            ]
-                        }
-                    ]
-                });
-            }
         }
         // Filter: Status
         if (req.query.status && Object.values(client_1.LeadStatus).includes(req.query.status)) {
@@ -461,7 +424,7 @@ const updateLead = async (req, res) => {
         if (updates.assignedToId || updates.assignedTo) { // Handle payload differences
             const targetUserId = updates.assignedToId || updates.assignedTo; // Assuming ID string
             if (!requester.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(requester) && !(0, roleUtils_1.isAdmin)(requester)) {
-                const allowedIds = await (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
+                const allowedIds = await (0, hierarchyUtils_1.getVisibleUserIds)(requester.id);
                 // If passing an object (legacy), extract ID?? Usually frontend sends ID string for update.
                 // Let's assume ID string.
                 if (typeof targetUserId === 'string' && !allowedIds.includes(targetUserId)) {
@@ -790,15 +753,27 @@ const createBulkLeads = async (req, res) => {
                     country: l.country || geoData?.country || undefined,
                     countryCode: l.countryCode || geoData?.countryCode || undefined,
                     phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
-                    organisationId: orgId,
-                    assignedToId: finalOwnerId || user.id,
-                    branchId: l.branchId || user.branchId, // Support explicit branch or inherit from user
+                    organisation: { connect: { id: orgId } },
                     source: l.source || client_1.LeadSource.import,
                     status: l.status || client_1.LeadStatus.new,
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
-                    stage: l.stage || undefined
+                    stage: l.stage || undefined,
+                    createdBy: { connect: { id: user.id } }
                 };
-                console.log('[createBulkLeads] Creating lead:', data.firstName, data.phone);
+                // Connect to branch if available
+                const finalBranchId = l.branchId || user.branchId;
+                if (finalBranchId) {
+                    data.branch = { connect: { id: finalBranchId } };
+                }
+                // Connect to assigned user if determined
+                // If finalOwnerId is null (e.g., no rule matched), it creates an unassigned lead 
+                // (or you can fallback to the importer: user.id)
+                // We'll fallback to user (the importer) if no rule matched and no manual assignment.
+                const finalAssignedTo = finalOwnerId || user.id;
+                if (finalAssignedTo) {
+                    data.assignedTo = { connect: { id: finalAssignedTo } };
+                }
+                console.log('[createBulkLeads] Creating lead:', data.firstName, data.phone, 'Assigned to:', finalAssignedTo);
                 const lead = await prisma_1.default.lead.create({ data });
                 // AI Scoring
                 Promise.resolve().then(() => __importStar(require('../services/leadScoringService'))).then(({ LeadScoringService }) => {
@@ -831,7 +806,7 @@ const bulkAssignLeads = async (req, res) => {
         const { leadIds, assignedTo, reason } = req.body;
         const requester = req.user;
         if (requester.role !== 'super_admin' && requester.role !== 'admin') {
-            const allowedIds = await (0, hierarchyUtils_1.getSubordinateIds)(requester.id);
+            const allowedIds = await (0, hierarchyUtils_1.getVisibleUserIds)(requester.id);
             if (!allowedIds.includes(assignedTo)) {
                 return res.status(403).json({ message: 'Forbidden assignment' });
             }
@@ -1089,28 +1064,18 @@ const getViolations = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
-            let subordinateIds = [];
+            let visibleUserIds = [];
             try {
-                logDebug('Fetching subordinates...');
-                subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-                logDebug(`Subordinates found: ${subordinateIds.length}`);
+                logDebug('Fetching visible users...');
+                visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+                logDebug(`Visible users found: ${visibleUserIds.length}`);
             }
             catch (subError) {
-                logDebug(`Error fetching subordinates: ${subError.message}`);
-                console.error('[getViolations] Error fetching subordinates:', subError);
-                // Continue with just the user's own violations
+                logDebug(`Error fetching visible users: ${subError.message}`);
+                console.error('[getViolations] Error fetching visible users:', subError);
+                visibleUserIds = [user.id];
             }
-            // Logic:
-            // 1. I am previousOwner (I failed)
-            // 2. I am manager of previousOwner (My report failed)
-            // Guard against empty array which causes Prisma issues
-            const orConditions = [{ previousOwnerId: user.id }];
-            if (subordinateIds.length > 0) {
-                // orConditions.push({ previousOwnerId: { in: subordinateIds } });
-                // FIX: Use explicit string array to avoid Prisma serialization issues if any
-                orConditions.push({ previousOwnerId: { in: subordinateIds } });
-            }
-            where.OR = orConditions;
+            where.previousOwnerId = { in: visibleUserIds };
         }
         logDebug(`[Leads] Querying Prisma with where: ${JSON.stringify(where)}`);
         const violations = await prisma_1.default.lead.findMany({

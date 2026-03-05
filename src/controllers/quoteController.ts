@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 
 export const getQuotes = async (req: Request, res: Response) => {
@@ -26,10 +26,10 @@ export const getQuotes = async (req: Request, res: Response) => {
 
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
+            const visibleUserIds = await getVisibleUserIds(user.id);
             where.OR = [
-                { assignedToId: { in: [...subordinateIds, user.id] } },
-                { createdById: { in: [...subordinateIds, user.id] } }
+                { assignedToId: { in: visibleUserIds } },
+                { createdById: { in: visibleUserIds } }
             ];
         }
 

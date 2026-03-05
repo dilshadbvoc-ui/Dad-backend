@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
 import { Prisma } from '../generated/client';
 
@@ -49,9 +49,8 @@ export const getTasks = async (req: Request, res: Response) => {
         // - Created by user
         // - Related to leads/contacts/accounts/opportunities owned by user or subordinates
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
-            const visibleUserIds = [...subordinateIds, user.id];
-            
+            const visibleUserIds = await getVisibleUserIds(user.id);
+
             const visibilityConditions = [
                 // Tasks assigned to user or subordinates
                 { assignedToId: { in: visibleUserIds } },
@@ -66,7 +65,7 @@ export const getTasks = async (req: Request, res: Response) => {
                 // Tasks related to opportunities owned by user or subordinates
                 { opportunity: { ownerId: { in: visibleUserIds } } }
             ];
-            
+
             // Use AND to combine with other filters
             if (!where.AND) where.AND = [];
             (where.AND as any[]).push({ OR: visibilityConditions });
@@ -77,7 +76,7 @@ export const getTasks = async (req: Request, res: Response) => {
                 { subject: { contains: search, mode: 'insensitive' } },
                 { description: { contains: search, mode: 'insensitive' } }
             ];
-            
+
             // Use AND to combine with other filters
             if (!where.AND) where.AND = [];
             (where.AND as any[]).push({ OR: searchConditions });
@@ -97,9 +96,9 @@ export const getTasks = async (req: Request, res: Response) => {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
                 // Include all potential relations to reconstruct 'relatedTo'
                 // Filter out deleted leads
-                lead: { 
+                lead: {
                     where: { isDeleted: false },
-                    select: { id: true, firstName: true, lastName: true, company: true } 
+                    select: { id: true, firstName: true, lastName: true, company: true }
                 },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
@@ -220,9 +219,9 @@ export const getTaskById = async (req: Request, res: Response) => {
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true } },
-                lead: { 
+                lead: {
                     where: { isDeleted: false },
-                    select: { id: true, firstName: true, lastName: true, company: true } 
+                    select: { id: true, firstName: true, lastName: true, company: true }
                 },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },

@@ -24,10 +24,10 @@ const getCases = async (req, res) => {
         };
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            // Show cases assigned to self OR subordinates, AND cases created by the user
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            // Show cases assigned to self OR visible subordinates/branches, AND cases created by the user
             where.OR = [
-                { assignedToId: { in: [...subordinateIds, user.id] } },
+                { assignedToId: { in: visibleUserIds } },
                 { createdById: user.id }
             ];
         }
@@ -188,8 +188,8 @@ const getCaseById = async (req, res) => {
         }
         // Hierarchy check
         if (user.role !== 'super_admin' && user.role !== 'admin' && supportCase.assignedToId !== user.id && supportCase.createdById !== user.id) {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            if (!subordinateIds.includes(supportCase.assignedToId || '')) {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            if (!visibleUserIds.includes(supportCase.assignedToId || '')) {
                 return res.status(403).json({ message: 'Not authorized to view this case' });
             }
         }

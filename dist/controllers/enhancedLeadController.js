@@ -44,9 +44,9 @@ const getLeadsEnhanced = async (req, res) => {
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             try {
-                const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-                where.assignedToId = { in: subordinateIds };
-                logger_1.logger.debug('Applied hierarchy filter', 'LEADS', userId, organisationId || undefined, { subordinateCount: subordinateIds.length });
+                const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+                where.assignedToId = { in: visibleUserIds };
+                logger_1.logger.debug('Applied hierarchy filter', 'LEADS', userId, organisationId || undefined, { visibleCount: visibleUserIds.length });
             }
             catch (error) {
                 logger_1.logger.error('Failed to get subordinate IDs', error, 'LEADS', userId, organisationId || undefined);

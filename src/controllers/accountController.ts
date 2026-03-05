@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 
 // GET /api/accounts
@@ -25,9 +25,9 @@ export const getAccounts = async (req: Request, res: Response) => {
 
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
+            const visibleUserIds = await getVisibleUserIds(user.id);
             // In Prisma: ownerId IN [...]
-            where.ownerId = { in: [...subordinateIds, user.id] };
+            where.ownerId = { in: visibleUserIds };
         }
 
         // Filters

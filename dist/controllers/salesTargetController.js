@@ -100,8 +100,14 @@ const assignTarget = async (req, res) => {
             });
             // Distribute to team members
             if (team.members.length > 0) {
-                const distributedValue = Math.floor(targetValue / team.members.length);
-                for (const member of team.members) {
+                const totalMembers = team.members.length;
+                const baseValue = Math.floor(targetValue / totalMembers);
+                let remainder = targetValue - (baseValue * totalMembers);
+                for (let i = 0; i < team.members.length; i++) {
+                    const member = team.members[i];
+                    // Give remainder to the first member (or distribute piece-meal if we wanted true exact floats)
+                    // For amounts or units, giving remainder to first member is standard.
+                    const memberValue = i === 0 ? baseValue + remainder : baseValue;
                     // Check if member already has a target
                     const existingMemberTarget = await prisma_1.default.salesTarget.findFirst({
                         where: {
@@ -118,7 +124,7 @@ const assignTarget = async (req, res) => {
                     if (!existingMemberTarget) {
                         const childTarget = await prisma_1.default.salesTarget.create({
                             data: {
-                                targetValue: distributedValue,
+                                targetValue: memberValue,
                                 period,
                                 metric,
                                 startDate,
@@ -138,7 +144,7 @@ const assignTarget = async (req, res) => {
                             data: {
                                 recipientId: member.id,
                                 title: 'New Team Sales Target Assigned',
-                                message: `Your team "${team.name}" has been assigned a ${metric} target${opportunityType ? ` (${opportunityType})` : ''}. Your individual share is ${distributedValue.toLocaleString()}`,
+                                message: `Your team "${team.name}" has been assigned a ${metric} target${opportunityType ? ` (${opportunityType})` : ''}. Your individual share is ${memberValue.toLocaleString()}`,
                                 type: 'info',
                                 relatedResource: 'SalesTarget',
                                 relatedId: childTarget.id
@@ -194,32 +200,13 @@ const assignTarget = async (req, res) => {
                 }
             });
             if (shouldDistribute) {
-                // 1. Create SELF-CHILD for the manager (for personal sales)
-                // We'll calculate share simply as equal share for now, or 0? 
-                // Usually manager also sells. Let's give equal share.
-                const totalMembers = directReports.length + 1;
-                const distributedValue = Math.floor(targetValue / totalMembers);
-                // Manager's Personal Target
-                const selfChild = await prisma_1.default.salesTarget.create({
-                    data: {
-                        targetValue: distributedValue,
-                        period,
-                        metric,
-                        startDate,
-                        endDate,
-                        assignedToId: assignToUserId,
-                        assignedById: user.id,
-                        parentTargetId: mainTarget.id,
-                        organisationId: userOrgId,
-                        autoDistributed: false, // Leaf
-                        productId: productId || null,
-                        scope: 'INDIVIDUAL',
-                        opportunityType: opportunityType || null
-                    }
-                });
-                childTargets.push(selfChild);
-                // 2. Distribute to Reports
-                for (const report of directReports) {
+                // Distribute strictly to Reports (no personal slice for manager)
+                const totalMembers = directReports.length;
+                const baseValue = Math.floor(targetValue / totalMembers);
+                const remainder = targetValue - (baseValue * totalMembers);
+                for (let i = 0; i < directReports.length; i++) {
+                    const report = directReports[i];
+                    const reportValue = i === 0 ? baseValue + remainder : baseValue;
                     const existingSubTarget = await prisma_1.default.salesTarget.findFirst({
                         where: {
                             assignedToId: report.id,
@@ -235,7 +222,7 @@ const assignTarget = async (req, res) => {
                     if (!existingSubTarget) {
                         // Recursively create targets
                         // distributeToSubordinates will handle creating the report's target and ITS children
-                        await distributeToSubordinates(report.id, distributedValue, period, startDate, endDate, mainTarget.id, user.id, userOrgId, metric, productId, opportunityType);
+                        await distributeToSubordinates(report.id, reportValue, period, startDate, endDate, mainTarget.id, user.id, userOrgId, metric, productId, opportunityType);
                     }
                 }
             }
@@ -321,29 +308,15 @@ const distributeToSubordinates = async (userId, targetValue, period, startDate, 
         }
     });
     if (hasReports) {
-        // Distribute to self (Personal) and Children
-        const childValue = Math.floor(targetValue / totalMembers);
-        // Self Personal Child
-        await prisma_1.default.salesTarget.create({
-            data: {
-                targetValue: childValue,
-                period,
-                metric,
-                startDate,
-                endDate,
-                assignedToId: userId,
-                assignedById: assignerId,
-                parentTargetId: myTarget.id,
-                organisationId,
-                autoDistributed: false, // Leaf
-                productId: productId || null,
-                scope: 'INDIVIDUAL',
-                opportunityType: opportunityType || null
-            }
-        });
+        // Distribute strictly to children
+        const totalMembers = directReports.length;
+        const baseValue = Math.floor(targetValue / totalMembers);
+        const remainder = targetValue - (baseValue * totalMembers);
         // Distribute to reports
-        for (const report of directReports) {
-            await distributeToSubordinates(report.id, childValue, period, startDate, endDate, myTarget.id, assignerId, organisationId, metric, productId, opportunityType);
+        for (let i = 0; i < directReports.length; i++) {
+            const report = directReports[i];
+            const reportValue = i === 0 ? baseValue + remainder : baseValue;
+            await distributeToSubordinates(report.id, reportValue, period, startDate, endDate, myTarget.id, assignerId, organisationId, metric, productId, opportunityType);
         }
     }
 };

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getSubordinateIds, getOrgId } from '../utils/hierarchyUtils';
+import { getSubordinateIds, getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
 
 export const getGoals = async (req: Request, res: Response) => {
@@ -19,9 +19,9 @@ export const getGoals = async (req: Request, res: Response) => {
 
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
-            // Show goals assigned to self OR subordinates
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            // Show goals assigned to self OR visible
+            where.assignedToId = { in: visibleUserIds };
         }
 
         const goals = await prisma.goal.findMany({

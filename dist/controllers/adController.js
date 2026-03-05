@@ -20,8 +20,8 @@ const getMetaConfig = async (req) => {
         throw new Error('Organisation not found');
     const integrations = org.integrations;
     const metaConfig = integrations?.meta;
-    if (!metaConfig?.accessToken || !metaConfig?.adAccountId) {
-        throw new Error('Meta integration not configured. Please check settings.');
+    if (!metaConfig?.accessToken) {
+        throw new Error('Meta integration not configured. Please connect your Facebook account in Settings → Integrations.');
     }
     // Decrypt the token before using it
     return {
@@ -172,17 +172,22 @@ const createFullAd = async (req, res) => {
     try {
         const config = await (0, exports.getMetaConfig)(req);
         const { campaign, adSet, creative, ad } = req.body;
+        console.log('[createFullAd] Payload received:', JSON.stringify({ campaign, adSet: { ...adSet, targeting: '...' }, creative: { ...creative, imageUrl: creative?.imageUrl ? '...' : undefined }, ad }, null, 2));
         // 1. Create Campaign
+        console.log('[createFullAd] Step 1: Creating campaign...');
         const campaignResult = await metaService_1.metaService.createCampaign(config, campaign);
         const campaignId = campaignResult.id;
+        console.log('[createFullAd] Campaign created:', campaignId);
         // 2. Create Ad Set
+        console.log('[createFullAd] Step 2: Creating ad set with daily_budget:', adSet.dailyBudget);
         const adSetResult = await metaService_1.metaService.createAdSet(config, {
             ...adSet,
             campaignId
         });
         const adSetId = adSetResult.id;
+        console.log('[createFullAd] Ad Set created:', adSetId);
         // 3. Create Creative
-        // First, check if we need to upload an image from a URL
+        console.log('[createFullAd] Step 3: Creating creative... pageId from config:', config.pageId, 'from body:', creative?.pageId);
         let imageHash = creative.imageHash;
         if (creative.imageUrl && !imageHash) {
             const uploadResult = await metaService_1.metaService.uploadImage(config, creative.imageUrl);
@@ -190,10 +195,13 @@ const createFullAd = async (req, res) => {
         }
         const creativeResult = await metaService_1.metaService.createAdCreative(config, {
             ...creative,
+            pageId: creative.pageId || config.pageId, // Use org's stored pageId as fallback
             imageHash
         });
         const creativeId = creativeResult.id;
+        console.log('[createFullAd] Creative created:', creativeId);
         // 4. Create Ad
+        console.log('[createFullAd] Step 4: Creating ad...');
         const adResult = await metaService_1.metaService.createAd(config, {
             ...ad,
             adSetId,
@@ -208,8 +216,11 @@ const createFullAd = async (req, res) => {
         });
     }
     catch (error) {
-        console.error('Error in createFullAd:', error);
-        res.status(500).json({ message: error.message });
+        console.error('Error in createFullAd:', error?.response?.data || error.message || error);
+        // Return Meta's actual error message for better user feedback
+        const metaError = error?.response?.data?.error;
+        const userMessage = metaError?.error_user_msg || metaError?.message || error.message || 'Failed to create ad';
+        res.status(500).json({ message: userMessage });
     }
 };
 exports.createFullAd = createFullAd;

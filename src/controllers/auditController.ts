@@ -29,25 +29,25 @@ export const getAuditLogs = async (req: Request, res: Response) => {
 
         // 2. HIERARCHY FILTERING - Users should not see activities from people above them
         if (!userIsSuperAdmin) {
-            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-            const subordinateIds = await getSubordinateIds(user.id);
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            const visibleUserIds = await getVisibleUserIds(user.id);
 
             // Limit actor to self or subordinates (not superiors)
-            where.actorId = { in: subordinateIds };
+            where.actorId = { in: visibleUserIds };
         }
 
         // 3. BRANCH ISOLATION (Optional but enforced for non-admins)
         if (user.branchId && !isOrgAdmin && !userIsSuperAdmin) {
             // Ensure they only see activities from their own branch
-            where.actor = { 
+            where.actor = {
                 ...where.actor,
-                branchId: user.branchId 
+                branchId: user.branchId
             };
         } else if (req.query.branchId && (isOrgAdmin || userIsSuperAdmin)) {
             // Admins can explicitly filter by branch
-            where.actor = { 
+            where.actor = {
                 ...where.actor,
-                branchId: String(req.query.branchId) 
+                branchId: String(req.query.branchId)
             };
         }
 

@@ -257,7 +257,7 @@ const exportToExcel = async (req, res) => {
         if (!orgId) {
             return res.status(401).json({ message: 'Organisation not found' });
         }
-        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
         // Branch filter
         const branchFilter = branchId ? { branchId: branchId } : {};
         const workbook = new exceljs_1.default.Workbook();
@@ -271,7 +271,7 @@ const exportToExcel = async (req, res) => {
             };
             // Hierarchy restrictions
             if (user.role !== 'admin' && user.role !== 'super_admin') {
-                where.assignedToId = { in: [...subordinateIds, user.id] };
+                where.assignedToId = { in: visibleUserIds };
             }
             else if (userId) {
                 where.assignedToId = userId;
@@ -329,7 +329,7 @@ const exportToExcel = async (req, res) => {
                 ...branchFilter
             };
             if (user.role !== 'admin' && user.role !== 'super_admin') {
-                where.ownerId = { in: [...subordinateIds, user.id] };
+                where.ownerId = { in: visibleUserIds };
             }
             if (startDate || endDate) {
                 where.updatedAt = {};
@@ -368,7 +368,7 @@ const exportToExcel = async (req, res) => {
         else if (type === 'user-sales') {
             const users = await prisma_1.default.user.findMany({
                 where: {
-                    id: { in: [...subordinateIds, user.id] },
+                    id: { in: visibleUserIds },
                     organisationId: orgId,
                     isActive: true,
                     ...branchFilter

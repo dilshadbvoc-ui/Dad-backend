@@ -53,9 +53,9 @@ const getGoals = async (req, res) => {
         };
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            // Show goals assigned to self OR subordinates
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            // Show goals assigned to self OR visible
+            where.assignedToId = { in: visibleUserIds };
         }
         const goals = await prisma_1.default.goal.findMany({
             where,

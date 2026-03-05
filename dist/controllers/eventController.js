@@ -28,9 +28,8 @@ const getEvents = async (req, res) => {
         }
         // 2. Hierarchy Visibility - Modified to include self
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            subordinateIds.push(user.id); // Include self
-            where.createdById = { in: subordinateIds };
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.createdById = { in: visibleUserIds };
         }
         if (start && end) {
             where.startTime = {

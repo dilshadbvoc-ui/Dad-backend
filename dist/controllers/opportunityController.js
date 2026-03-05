@@ -64,9 +64,9 @@ const getOpportunities = async (req, res) => {
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
             // In Prisma: ownerId IN [...]
-            where.ownerId = { in: [...subordinateIds, user.id] };
+            where.ownerId = { in: visibleUserIds };
         }
         // Add filters if needed (e.g. stage, etc.) based on query params if standard match Mongoose behavior which passed `query` directly sometimes?
         // Mongoose code had `const query: any = {}` and populated it manually.

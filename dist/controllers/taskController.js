@@ -61,8 +61,7 @@ const getTasks = async (req, res) => {
         // - Created by user
         // - Related to leads/contacts/accounts/opportunities owned by user or subordinates
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-            const visibleUserIds = [...subordinateIds, user.id];
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
             const visibilityConditions = [
                 // Tasks assigned to user or subordinates
                 { assignedToId: { in: visibleUserIds } },

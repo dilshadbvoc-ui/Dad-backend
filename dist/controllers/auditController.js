@@ -63,10 +63,10 @@ const getAuditLogs = async (req, res) => {
         }
         // 2. HIERARCHY FILTERING - Users should not see activities from people above them
         if (!userIsSuperAdmin) {
-            const { getSubordinateIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
-            const subordinateIds = await getSubordinateIds(user.id);
+            const { getVisibleUserIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
+            const visibleUserIds = await getVisibleUserIds(user.id);
             // Limit actor to self or subordinates (not superiors)
-            where.actorId = { in: subordinateIds };
+            where.actorId = { in: visibleUserIds };
         }
         // 3. BRANCH ISOLATION (Optional but enforced for non-admins)
         if (user.branchId && !isOrgAdmin && !userIsSuperAdmin) {

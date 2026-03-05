@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 
 // GET /api/follow-ups - Get all follow-up tasks for user and subordinates
@@ -15,7 +15,7 @@ export const getFollowUps = async (req: Request, res: Response) => {
 
         console.log('[getFollowUps] User:', user.id, user.role, user.email);
 
-        const where: Prisma.TaskWhereInput = { 
+        const where: Prisma.TaskWhereInput = {
             isDeleted: false,
             // Only show tasks with due dates (follow-ups)
             dueDate: { not: null }
@@ -36,15 +36,12 @@ export const getFollowUps = async (req: Request, res: Response) => {
         // 2. Hierarchy Visibility - Show follow-ups for user and subordinates
         // Admins and super admins see all tasks in their org (already filtered above)
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
-            // ALWAYS include the user themselves, even if getSubordinateIds fails
-            const visibleUserIds = [...new Set([user.id, ...subordinateIds])];
-            
+            const visibleUserIds = await getVisibleUserIds(user.id);
+
             console.log('[getFollowUps] User ID:', user.id);
             console.log('[getFollowUps] User ID type:', typeof user.id);
-            console.log('[getFollowUps] Subordinate IDs:', subordinateIds);
             console.log('[getFollowUps] Visible user IDs:', visibleUserIds);
-            
+
             // Show tasks if:
             // 1. Created by user/subordinates (ALWAYS show what you created)
             // 2. Assigned to user/subordinates
@@ -62,7 +59,7 @@ export const getFollowUps = async (req: Request, res: Response) => {
                 { subject: { contains: search, mode: 'insensitive' } },
                 { description: { contains: search, mode: 'insensitive' } }
             ];
-            
+
             // Use AND to combine with other filters
             if (!where.AND) where.AND = [];
             (where.AND as any[]).push({ OR: searchConditions });
@@ -76,16 +73,16 @@ export const getFollowUps = async (req: Request, res: Response) => {
 
         const count = await prisma.task.count({ where });
         console.log('[getFollowUps] Count:', count);
-        
+
         const tasks = await prisma.task.findMany({
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
                 createdBy: { select: { firstName: true, lastName: true, email: true } },
                 // Include all potential relations
-                lead: { 
+                lead: {
                     where: { isDeleted: false },
-                    select: { id: true, firstName: true, lastName: true, company: true } 
+                    select: { id: true, firstName: true, lastName: true, company: true }
                 },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
@@ -168,9 +165,9 @@ export const updateFollowUp = async (req: Request, res: Response) => {
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
                 createdBy: { select: { firstName: true, lastName: true, email: true } },
-                lead: { 
+                lead: {
                     where: { isDeleted: false },
-                    select: { id: true, firstName: true, lastName: true, company: true } 
+                    select: { id: true, firstName: true, lastName: true, company: true }
                 },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },

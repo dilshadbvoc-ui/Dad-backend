@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 import { NotificationService } from '../services/notificationService';
 
@@ -28,9 +28,9 @@ export const getOpportunities = async (req: Request, res: Response) => {
 
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
+            const visibleUserIds = await getVisibleUserIds(user.id);
             // In Prisma: ownerId IN [...]
-            where.ownerId = { in: [...subordinateIds, user.id] };
+            where.ownerId = { in: visibleUserIds };
         }
 
         // Add filters if needed (e.g. stage, etc.) based on query params if standard match Mongoose behavior which passed `query` directly sometimes?
@@ -156,7 +156,7 @@ export const createOpportunity = async (req: Request, res: Response) => {
                             where: { id: oppId },
                             data: { paymentStatus: 'partial' }
                         });
-                        
+
                         // Then convert to EMI
                         if (installments && installments.length > 0) {
                             const { default: EMIService } = await import('../services/emiService');
@@ -193,7 +193,7 @@ export const createOpportunity = async (req: Request, res: Response) => {
             // Hierarchy Notification on Sale Closure with Payment
             try {
                 const { paymentType, paidAmount } = req.body;
-                
+
                 // Only send notification if payment is recorded
                 if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
                     const owner = await prisma.user.findUnique({
@@ -378,7 +378,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
                             where: { id: oppId },
                             data: { paymentStatus: 'partial' }
                         });
-                        
+
                         // Then convert to EMI
                         if (installments && installments.length > 0) {
                             const { default: EMIService } = await import('../services/emiService');
@@ -440,7 +440,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             // Hierarchy Notification on Sale Closure with Payment
             try {
                 const { paymentType, paidAmount } = req.body;
-                
+
                 // Only send notification if payment is recorded
                 if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
                     const owner = await prisma.user.findUnique({

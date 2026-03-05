@@ -61,10 +61,10 @@ const getQuotes = async (req, res) => {
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
             where.OR = [
-                { assignedToId: { in: [...subordinateIds, user.id] } },
-                { createdById: { in: [...subordinateIds, user.id] } }
+                { assignedToId: { in: visibleUserIds } },
+                { createdById: { in: visibleUserIds } }
             ];
         }
         if (search) {

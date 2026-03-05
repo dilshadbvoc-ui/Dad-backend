@@ -53,7 +53,10 @@ class MarketingAPIService {
     async createCampaign(adAccountId, campaignData) {
         try {
             const formattedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
-            const response = await this.customAxios.post(`/${formattedId}/campaigns`, campaignData);
+            const response = await this.customAxios.post(`/${formattedId}/campaigns`, {
+                ...campaignData,
+                is_adset_budget_sharing_enabled: false
+            });
             return response.data;
         }
         catch (error) {

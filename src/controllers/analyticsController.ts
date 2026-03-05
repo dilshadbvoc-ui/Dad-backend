@@ -40,11 +40,11 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         // So we just add the explicit branch filter.
 
         logDebug('[Analytics] Importing hierarchyUtils...');
-        const { getSubordinateIds } = await import('../utils/hierarchyUtils');
+        const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
 
-        logDebug('[Analytics] Fetching subordinateIds...');
-        const subordinateIds = await getSubordinateIds(user.id);
-        logDebug(`[Analytics] Subordinates: ${subordinateIds.length}`);
+        logDebug('[Analytics] Fetching visibleUserIds...');
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        logDebug(`[Analytics] Visible users: ${visibleUserIds.length}`);
 
         if (!orgId && !isSuperAdmin) {
             logDebug('[Analytics] No Org ID');
@@ -58,13 +58,13 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         // Base filter for users who are not admin/super_admin
         const visibilityFilter: any = {};
         if (!isSuperAdmin && user.role !== 'admin') {
-            visibilityFilter.assignedToId = { in: [...subordinateIds, user.id] };
+            visibilityFilter.assignedToId = { in: visibleUserIds };
         }
 
         // Special case for opportunity ownerId vs assignedToId (if schema differs)
         const oppVisibilityFilter: any = {};
         if (!isSuperAdmin && user.role !== 'admin') {
-            oppVisibilityFilter.ownerId = { in: [...subordinateIds, user.id] };
+            oppVisibilityFilter.ownerId = { in: visibleUserIds };
         }
 
         // Current Month Dates
@@ -118,10 +118,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
             // Contacts/Accounts
             prisma.contact.count({
-                where: { ...combinedFilter, isDeleted: false, ...(!isSuperAdmin && user.role !== 'admin' ? { ownerId: { in: [...subordinateIds, user.id] } } : {}) }
+                where: { ...combinedFilter, isDeleted: false, ...(!isSuperAdmin && user.role !== 'admin' ? { ownerId: { in: visibleUserIds } } : {}) }
             }),
             prisma.account.count({
-                where: { ...combinedFilter, isDeleted: false, ...(!isSuperAdmin && user.role !== 'admin' ? { ownerId: { in: [...subordinateIds, user.id] } } : {}) }
+                where: { ...combinedFilter, isDeleted: false, ...(!isSuperAdmin && user.role !== 'admin' ? { ownerId: { in: visibleUserIds } } : {}) }
             }),
 
             // Previous Month Stats for Trends (Leads)
@@ -264,9 +264,9 @@ export const getSalesChartData = async (req: Request, res: Response) => {
         // Base filter for visibility
         const visibilityFilter: any = {};
         if (user.role !== 'admin' && !isSuperAdmin) {
-            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-            const subordinateIds = await getSubordinateIds(user.id);
-            visibilityFilter.ownerId = { in: subordinateIds };
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.ownerId = { in: visibleUserIds };
         }
 
         // Fetch closed_won opportunities
@@ -343,9 +343,9 @@ export const getTopLeads = async (req: Request, res: Response) => {
         // Visibility
         const visibilityFilter: any = {};
         if (!isSuperAdmin && user.role !== 'admin') {
-            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-            const subordinateIds = await getSubordinateIds(user.id);
-            visibilityFilter.assignedToId = { in: [...subordinateIds, user.id] };
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.assignedToId = { in: visibleUserIds };
         }
 
         const topLeads = await prisma.lead.findMany({
@@ -398,9 +398,9 @@ export const getSalesForecast = async (req: Request, res: Response) => {
         // Visibility
         const visibilityFilter: any = {};
         if (!isSuperAdmin && user.role !== 'admin') {
-            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-            const subordinateIds = await getSubordinateIds(user.id);
-            visibilityFilter.ownerId = { in: subordinateIds };
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.ownerId = { in: visibleUserIds };
         }
 
         // Get open opportunities (not closed_won or closed_lost)
@@ -656,9 +656,9 @@ export const getSalesBook = async (req: Request, res: Response) => {
         // Visibility
         const visibilityFilter: any = {};
         if (!isSuperAdmin && user.role !== 'admin') {
-            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-            const subordinateIds = await getSubordinateIds(user.id);
-            visibilityFilter.ownerId = { in: subordinateIds };
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.ownerId = { in: visibleUserIds };
         }
 
         // Date Filter
@@ -724,8 +724,8 @@ export const getUserWiseSales = async (req: Request, res: Response) => {
         // Determine scope of users to report on
         let userIdsToReport: string[] = [];
         if (!isSuperAdmin && user.role !== 'admin') {
-            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
-            userIdsToReport = await getSubordinateIds(user.id);
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            userIdsToReport = await getVisibleUserIds(user.id);
         } else {
             // Admin sees all active users in org (and optional branch)
             const users = await prisma.user.findMany({

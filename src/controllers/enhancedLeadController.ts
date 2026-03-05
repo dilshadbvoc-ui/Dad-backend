@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
 import { LeadSource, LeadStatus } from '../generated/client';
@@ -45,9 +45,9 @@ export const getLeadsEnhanced = async (req: Request, res: Response) => {
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             try {
-                const subordinateIds = await getSubordinateIds(user.id);
-                where.assignedToId = { in: subordinateIds };
-                logger.debug('Applied hierarchy filter', 'LEADS', userId, organisationId || undefined, { subordinateCount: subordinateIds.length });
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.assignedToId = { in: visibleUserIds };
+                logger.debug('Applied hierarchy filter', 'LEADS', userId, organisationId || undefined, { visibleCount: visibleUserIds.length });
             } catch (error) {
                 logger.error('Failed to get subordinate IDs', error, 'LEADS', userId, organisationId || undefined);
                 return ResponseHandler.serverError(res, 'Failed to apply access controls');
@@ -90,7 +90,7 @@ export const getLeadsEnhanced = async (req: Request, res: Response) => {
                 logger.dbError('findMany', 'Lead', error, userId, organisationId || undefined);
                 throw new Error('Failed to fetch leads');
             }),
-            
+
             prisma.lead.count({ where }).catch(error => {
                 logger.dbError('count', 'Lead', error, userId, organisationId || undefined);
                 throw new Error('Failed to count leads');
@@ -98,16 +98,16 @@ export const getLeadsEnhanced = async (req: Request, res: Response) => {
         ]);
 
         logger.info(`Retrieved ${leads.length} leads (page ${page})`, 'LEADS', userId, organisationId || undefined);
-        
+
         return ResponseHandler.paginated(res, leads, page, limit, total, 'Leads retrieved successfully');
 
     } catch (error: any) {
         logger.apiError('GET', '/api/leads', error, userId, organisationId || undefined);
-        
+
         if (error.message.includes('Failed to')) {
             return ResponseHandler.serverError(res, error.message);
         }
-        
+
         return ResponseHandler.serverError(res, 'An unexpected error occurred while fetching leads');
     }
 };
@@ -133,19 +133,19 @@ export const createLeadEnhanced = async (req: Request, res: Response) => {
 
         // 3. Validate required fields
         const validationErrors: string[] = [];
-        
+
         if (!leadValidation.firstName(sanitizedData.firstName)) {
             validationErrors.push('First name is required and must be 1-50 characters');
         }
-        
+
         if (!leadValidation.lastName(sanitizedData.lastName)) {
             validationErrors.push('Last name is required and must be 1-50 characters');
         }
-        
+
         if (!leadValidation.email(sanitizedData.email)) {
             validationErrors.push('Valid email address is required');
         }
-        
+
         if (sanitizedData.phone && !leadValidation.phone(sanitizedData.phone)) {
             validationErrors.push('Phone number format is invalid');
         }
@@ -215,11 +215,11 @@ export const createLeadEnhanced = async (req: Request, res: Response) => {
 
     } catch (error: any) {
         logger.apiError('POST', '/api/leads', error, userId, organisationId || undefined);
-        
+
         if (error.message.includes('Failed to')) {
             return ResponseHandler.serverError(res, error.message);
         }
-        
+
         return ResponseHandler.serverError(res, 'An unexpected error occurred while creating the lead');
     }
 };
@@ -262,19 +262,19 @@ export const updateLeadEnhanced = async (req: Request, res: Response) => {
 
         // 4. Validate updated fields
         const validationErrors: string[] = [];
-        
+
         if (sanitizedData.firstName && !leadValidation.firstName(sanitizedData.firstName)) {
             validationErrors.push('First name must be 1-50 characters');
         }
-        
+
         if (sanitizedData.lastName && !leadValidation.lastName(sanitizedData.lastName)) {
             validationErrors.push('Last name must be 1-50 characters');
         }
-        
+
         if (sanitizedData.email && !leadValidation.email(sanitizedData.email)) {
             validationErrors.push('Valid email address is required');
         }
-        
+
         if (sanitizedData.phone && !leadValidation.phone(sanitizedData.phone)) {
             validationErrors.push('Phone number format is invalid');
         }
@@ -334,11 +334,11 @@ export const updateLeadEnhanced = async (req: Request, res: Response) => {
 
     } catch (error: any) {
         logger.apiError('PUT', `/api/leads/${leadId}`, error, userId, organisationId || undefined);
-        
+
         if (error.message.includes('Failed to')) {
             return ResponseHandler.serverError(res, error.message);
         }
-        
+
         return ResponseHandler.serverError(res, 'An unexpected error occurred while updating the lead');
     }
 };

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import ExcelJS from 'exceljs';
 
 /**
@@ -266,7 +266,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
         if (!orgId) {
             return res.status(401).json({ message: 'Organisation not found' });
         }
-        const subordinateIds = await getSubordinateIds(user.id);
+        const visibleUserIds = await getVisibleUserIds(user.id);
 
         // Branch filter
         const branchFilter = branchId ? { branchId: branchId as string } : {};
@@ -284,7 +284,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
             // Hierarchy restrictions
             if (user.role !== 'admin' && user.role !== 'super_admin') {
-                where.assignedToId = { in: [...subordinateIds, user.id] };
+                where.assignedToId = { in: visibleUserIds };
             } else if (userId) {
                 where.assignedToId = userId as string;
             }
@@ -342,7 +342,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
                 ...branchFilter
             };
             if (user.role !== 'admin' && user.role !== 'super_admin') {
-                where.ownerId = { in: [...subordinateIds, user.id] };
+                where.ownerId = { in: visibleUserIds };
             }
 
             if (startDate || endDate) {
@@ -383,7 +383,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
         } else if (type === 'user-sales') {
             const users = await prisma.user.findMany({
                 where: {
-                    id: { in: [...subordinateIds, user.id] },
+                    id: { in: visibleUserIds },
                     organisationId: orgId as string,
                     isActive: true,
                     ...branchFilter

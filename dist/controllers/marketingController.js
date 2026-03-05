@@ -6,22 +6,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCampaign = exports.getCampaigns = exports.getAdAccounts = void 0;
 const marketingAPIService_1 = __importDefault(require("../services/marketingAPIService"));
 const prisma_1 = __importDefault(require("../config/prisma"));
+const hierarchyUtils_1 = require("../utils/hierarchyUtils");
+const encryption_1 = require("../utils/encryption");
+// Helper to get decrypted Meta access token from the organisation's integrations
+const getMetaAccessToken = async (user) => {
+    try {
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!orgId)
+            return null;
+        const org = await prisma_1.default.organisation.findUnique({
+            where: { id: orgId },
+            select: { integrations: true }
+        });
+        const integrations = org?.integrations || {};
+        const metaIntegration = integrations.meta;
+        if (!metaIntegration?.connected || !metaIntegration?.accessToken) {
+            return null;
+        }
+        // Decrypt the stored token
+        return (0, encryption_1.decrypt)(metaIntegration.accessToken);
+    }
+    catch (error) {
+        console.error('[Marketing] Error getting Meta token:', error);
+        return null;
+    }
+};
 const getAdAccounts = async (req, res) => {
     try {
-        const user = await prisma_1.default.user.findUnique({
-            where: { id: req.user.id }
-            // Assuming metaAccessToken is a field in User model. 
-            // If it's protected/hidden in schema, we might need to select it explicitly if not default.
-        });
-        if (!user || !user.metaAccessToken) {
-            // Return 200 instead of 400 to prevent console errors, handle graciously in frontend
+        const accessToken = await getMetaAccessToken(req.user);
+        if (!accessToken) {
             return res.status(200).json({
                 success: false,
                 code: 'META_NOT_CONNECTED',
-                message: 'User not connected to Meta'
+                message: 'Meta account not connected. Please connect in Settings → Integrations.'
             });
         }
-        const marketingService = new marketingAPIService_1.default(user.metaAccessToken);
+        const marketingService = new marketingAPIService_1.default(accessToken);
         const accounts = await marketingService.getAdAccounts();
         res.status(200).json({
             success: true,
@@ -38,18 +58,15 @@ exports.getAdAccounts = getAdAccounts;
 const getCampaigns = async (req, res) => {
     try {
         const { adAccountId } = req.params;
-        const user = await prisma_1.default.user.findUnique({
-            where: { id: req.user.id }
-        });
-        if (!user || !user.metaAccessToken) {
-            // Return 200 instead of 400 to prevent console errors, handle graciously in frontend
+        const accessToken = await getMetaAccessToken(req.user);
+        if (!accessToken) {
             return res.status(200).json({
                 success: false,
                 code: 'META_NOT_CONNECTED',
-                message: 'User not connected to Meta'
+                message: 'Meta account not connected. Please connect in Settings → Integrations.'
             });
         }
-        const marketingService = new marketingAPIService_1.default(user.metaAccessToken);
+        const marketingService = new marketingAPIService_1.default(accessToken);
         const campaigns = await marketingService.getCampaigns(adAccountId);
         res.status(200).json({
             success: true,
@@ -67,21 +84,18 @@ const createCampaign = async (req, res) => {
     try {
         const { adAccountId } = req.params;
         const { name, objective, status, special_ad_categories } = req.body;
-        const user = await prisma_1.default.user.findUnique({
-            where: { id: req.user.id }
-        });
-        if (!user || !user.metaAccessToken) {
-            // Return 200 instead of 400 to prevent console errors, handle graciously in frontend
+        const accessToken = await getMetaAccessToken(req.user);
+        if (!accessToken) {
             return res.status(200).json({
                 success: false,
                 code: 'META_NOT_CONNECTED',
-                message: 'User not connected to Meta'
+                message: 'Meta account not connected. Please connect in Settings → Integrations.'
             });
         }
-        const marketingService = new marketingAPIService_1.default(user.metaAccessToken);
+        const marketingService = new marketingAPIService_1.default(accessToken);
         const campaign = await marketingService.createCampaign(adAccountId, {
             name,
-            objective, // e.g., 'OUTCOME_LEADS', 'OUTCOME_TRAFFIC'
+            objective,
             status: status || 'PAUSED',
             special_ad_categories: special_ad_categories || []
         });

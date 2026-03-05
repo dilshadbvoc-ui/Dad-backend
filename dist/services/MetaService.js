@@ -68,7 +68,8 @@ class MetaService {
                 }
             }
         }
-        const errorMsg = lastError?.response?.data?.error?.message || lastError?.message || 'Failed to post data to Meta API';
+        const metaError = lastError?.response?.data?.error;
+        const errorMsg = metaError?.error_user_msg || metaError?.message || lastError?.message || 'Failed to post data to Meta API';
         throw new Error(errorMsg);
     }
     async exchangeForLongLivedToken(shortLivedToken, config) {
@@ -154,7 +155,8 @@ class MetaService {
             name: details.name,
             objective: details.objective,
             status: details.status || 'PAUSED', // Always create as paused by default
-            special_ad_categories: ['NONE']
+            special_ad_categories: ['NONE'],
+            is_adset_budget_sharing_enabled: false
         });
     }
     async createAdSet(config, details) {
@@ -164,6 +166,7 @@ class MetaService {
             campaign_id: details.campaignId,
             optimization_goal: details.optimizationGoal || 'REACH',
             billing_event: details.billingEvent || 'IMPRESSIONS',
+            bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
             status: details.status || 'PAUSED',
             targeting: details.targeting
         };
@@ -172,6 +175,8 @@ class MetaService {
         }
         if (details.bidAmount) {
             data.bid_amount = details.bidAmount;
+            // If explicit bid amount is given, use BID_CAP strategy instead
+            data.bid_strategy = 'LOWEST_COST_WITH_BID_CAP';
         }
         return await this.makePostRequest(`${adAccountId}/adsets`, config.accessToken, data);
     }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getSubordinateIds, getOrgId } from '../utils/hierarchyUtils';
+import { getSubordinateIds, getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 import { logAudit } from '../utils/auditLogger';
 
@@ -23,10 +23,10 @@ export const getCases = async (req: Request, res: Response) => {
 
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
-            // Show cases assigned to self OR subordinates, AND cases created by the user
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            // Show cases assigned to self OR visible subordinates/branches, AND cases created by the user
             where.OR = [
-                { assignedToId: { in: [...subordinateIds, user.id] } },
+                { assignedToId: { in: visibleUserIds } },
                 { createdById: user.id }
             ];
         }
@@ -202,8 +202,8 @@ export const getCaseById = async (req: Request, res: Response) => {
 
         // Hierarchy check
         if (user.role !== 'super_admin' && user.role !== 'admin' && supportCase.assignedToId !== user.id && supportCase.createdById !== user.id) {
-            const subordinateIds = await getSubordinateIds(user.id);
-            if (!subordinateIds.includes(supportCase.assignedToId || '')) {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            if (!visibleUserIds.includes(supportCase.assignedToId || '')) {
                 return res.status(403).json({ message: 'Not authorized to view this case' });
             }
         }

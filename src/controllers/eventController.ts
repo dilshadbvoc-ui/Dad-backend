@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 import { logAudit } from '../utils/auditLogger';
 
@@ -25,9 +25,8 @@ export const getEvents = async (req: Request, res: Response) => {
 
         // 2. Hierarchy Visibility - Modified to include self
         if (user.role !== 'super_admin' && user.role !== 'admin') {
-            const subordinateIds = await getSubordinateIds(user.id);
-            subordinateIds.push(user.id); // Include self
-            where.createdById = { in: subordinateIds };
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            where.createdById = { in: visibleUserIds };
         }
 
         if (start && end) {
