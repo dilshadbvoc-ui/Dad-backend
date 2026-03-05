@@ -832,7 +832,7 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                     ) || undefined;
                 }
 
-                const data = {
+                const data: any = {
                     firstName: l.firstName,
                     lastName: l.lastName || '',
                     phone: cleanPhone,
@@ -841,16 +841,30 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                     country: l.country || geoData?.country || undefined,
                     countryCode: l.countryCode || geoData?.countryCode || undefined,
                     phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
-                    organisationId: orgId,
-                    assignedToId: finalOwnerId || user.id,
-                    branchId: l.branchId || user.branchId, // Support explicit branch or inherit from user
+                    organisation: { connect: { id: orgId } },
                     source: l.source || LeadSource.import,
                     status: l.status || LeadStatus.new,
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
-                    stage: l.stage || undefined
+                    stage: l.stage || undefined,
+                    createdBy: { connect: { id: user.id } }
                 };
 
-                console.log('[createBulkLeads] Creating lead:', data.firstName, data.phone);
+                // Connect to branch if available
+                const finalBranchId = l.branchId || user.branchId;
+                if (finalBranchId) {
+                    data.branch = { connect: { id: finalBranchId } };
+                }
+
+                // Connect to assigned user if determined
+                // If finalOwnerId is null (e.g., no rule matched), it creates an unassigned lead 
+                // (or you can fallback to the importer: user.id)
+                // We'll fallback to user (the importer) if no rule matched and no manual assignment.
+                const finalAssignedTo = finalOwnerId || user.id;
+                if (finalAssignedTo) {
+                    data.assignedTo = { connect: { id: finalAssignedTo } };
+                }
+
+                console.log('[createBulkLeads] Creating lead:', data.firstName, data.phone, 'Assigned to:', finalAssignedTo);
 
                 const lead = await prisma.lead.create({ data });
 
