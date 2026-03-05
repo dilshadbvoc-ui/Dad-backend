@@ -15,11 +15,17 @@ export const getBranches = async (req: Request, res: Response) => {
             return res.status(403).json({ message: 'User has no organisation' });
         }
 
+        const where: any = {
+            organisationId: orgId,
+            isDeleted: false
+        };
+
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
+            where.managerId = user.id;
+        }
+
         const branches = await prisma.branch.findMany({
-            where: {
-                organisationId: orgId,
-                isDeleted: false
-            },
+            where,
             include: {
                 manager: {
                     select: {
