@@ -178,7 +178,8 @@ export class MetaService {
             name: details.name,
             objective: details.objective,
             status: details.status || 'PAUSED', // Always create as paused by default
-            special_ad_categories: ['NONE']
+            special_ad_categories: ['NONE'],
+            is_adset_budget_sharing_enabled: false
         });
     }
 

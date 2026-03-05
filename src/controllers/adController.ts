@@ -28,8 +28,8 @@ export const getMetaConfig = async (req: AuthRequest) => {
     const integrations = org.integrations as any;
     const metaConfig = integrations?.meta;
 
-    if (!metaConfig?.accessToken || !metaConfig?.adAccountId) {
-        throw new Error('Meta integration not configured. Please check settings.');
+    if (!metaConfig?.accessToken) {
+        throw new Error('Meta integration not configured. Please connect your Facebook account in Settings → Integrations.');
     }
 
     // Decrypt the token before using it
