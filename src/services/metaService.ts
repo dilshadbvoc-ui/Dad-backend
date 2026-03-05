@@ -79,7 +79,8 @@ export class MetaService {
             }
         }
 
-        const errorMsg = lastError?.response?.data?.error?.message || lastError?.message || 'Failed to post data to Meta API';
+        const metaError = lastError?.response?.data?.error;
+        const errorMsg = metaError?.error_user_msg || metaError?.message || lastError?.message || 'Failed to post data to Meta API';
         throw new Error(errorMsg);
     }
 

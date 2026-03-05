@@ -174,19 +174,25 @@ export const createFullAd = async (req: AuthRequest, res: Response) => {
         const config = await getMetaConfig(req);
         const { campaign, adSet, creative, ad } = req.body;
 
+        console.log('[createFullAd] Payload received:', JSON.stringify({ campaign, adSet: { ...adSet, targeting: '...' }, creative: { ...creative, imageUrl: creative?.imageUrl ? '...' : undefined }, ad }, null, 2));
+
         // 1. Create Campaign
+        console.log('[createFullAd] Step 1: Creating campaign...');
         const campaignResult = await metaService.createCampaign(config, campaign);
         const campaignId = campaignResult.id;
+        console.log('[createFullAd] Campaign created:', campaignId);
 
         // 2. Create Ad Set
+        console.log('[createFullAd] Step 2: Creating ad set with daily_budget:', adSet.dailyBudget);
         const adSetResult = await metaService.createAdSet(config, {
             ...adSet,
             campaignId
         });
         const adSetId = adSetResult.id;
+        console.log('[createFullAd] Ad Set created:', adSetId);
 
         // 3. Create Creative
-        // First, check if we need to upload an image from a URL
+        console.log('[createFullAd] Step 3: Creating creative...');
         let imageHash = creative.imageHash;
         if (creative.imageUrl && !imageHash) {
             const uploadResult = await metaService.uploadImage(config, creative.imageUrl);
@@ -198,8 +204,10 @@ export const createFullAd = async (req: AuthRequest, res: Response) => {
             imageHash
         });
         const creativeId = creativeResult.id;
+        console.log('[createFullAd] Creative created:', creativeId);
 
         // 4. Create Ad
+        console.log('[createFullAd] Step 4: Creating ad...');
         const adResult = await metaService.createAd(config, {
             ...ad,
             adSetId,
@@ -214,8 +222,11 @@ export const createFullAd = async (req: AuthRequest, res: Response) => {
             adId: adResult.id
         });
     } catch (error: any) {
-        console.error('Error in createFullAd:', error);
-        res.status(500).json({ message: error.message });
+        console.error('Error in createFullAd:', error?.response?.data || error.message || error);
+        // Return Meta's actual error message for better user feedback
+        const metaError = error?.response?.data?.error;
+        const userMessage = metaError?.error_user_msg || metaError?.message || error.message || 'Failed to create ad';
+        res.status(500).json({ message: userMessage });
     }
 };
 
