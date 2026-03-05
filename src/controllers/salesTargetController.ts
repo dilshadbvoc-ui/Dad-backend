@@ -108,9 +108,16 @@ export const assignTarget = async (req: Request, res: Response) => {
 
             // Distribute to team members
             if (team.members.length > 0) {
-                const distributedValue = Math.floor(targetValue / team.members.length);
+                const totalMembers = team.members.length;
+                const baseValue = Math.floor(targetValue / totalMembers);
+                let remainder = targetValue - (baseValue * totalMembers);
 
-                for (const member of team.members) {
+                for (let i = 0; i < team.members.length; i++) {
+                    const member = team.members[i];
+                    // Give remainder to the first member (or distribute piece-meal if we wanted true exact floats)
+                    // For amounts or units, giving remainder to first member is standard.
+                    const memberValue = i === 0 ? baseValue + remainder : baseValue;
+
                     // Check if member already has a target
                     const existingMemberTarget = await prisma.salesTarget.findFirst({
                         where: {
@@ -128,7 +135,7 @@ export const assignTarget = async (req: Request, res: Response) => {
                     if (!existingMemberTarget) {
                         const childTarget = await prisma.salesTarget.create({
                             data: {
-                                targetValue: distributedValue,
+                                targetValue: memberValue,
                                 period,
                                 metric,
                                 startDate,
@@ -149,7 +156,7 @@ export const assignTarget = async (req: Request, res: Response) => {
                             data: {
                                 recipientId: member.id,
                                 title: 'New Team Sales Target Assigned',
-                                message: `Your team "${team.name}" has been assigned a ${metric} target${opportunityType ? ` (${opportunityType})` : ''}. Your individual share is ${distributedValue.toLocaleString()}`,
+                                message: `Your team "${team.name}" has been assigned a ${metric} target${opportunityType ? ` (${opportunityType})` : ''}. Your individual share is ${memberValue.toLocaleString()}`,
                                 type: 'info',
                                 relatedResource: 'SalesTarget',
                                 relatedId: childTarget.id
@@ -210,15 +217,17 @@ export const assignTarget = async (req: Request, res: Response) => {
 
             if (shouldDistribute) {
                 // 1. Create SELF-CHILD for the manager (for personal sales)
-                // We'll calculate share simply as equal share for now, or 0? 
-                // Usually manager also sells. Let's give equal share.
+                // We'll calculate share simply as equal share for now
                 const totalMembers = directReports.length + 1;
-                const distributedValue = Math.floor(targetValue / totalMembers);
+                const baseValue = Math.floor(targetValue / totalMembers);
+                const remainder = targetValue - (baseValue * totalMembers);
 
-                // Manager's Personal Target
+                // Manager's Personal Target gets the remainder
+                const managerPersonalValue = baseValue + remainder;
+
                 const selfChild = await prisma.salesTarget.create({
                     data: {
-                        targetValue: distributedValue,
+                        targetValue: managerPersonalValue,
                         period,
                         metric,
                         startDate,
@@ -255,7 +264,7 @@ export const assignTarget = async (req: Request, res: Response) => {
                         // distributeToSubordinates will handle creating the report's target and ITS children
                         await distributeToSubordinates(
                             report.id,
-                            distributedValue,
+                            baseValue,
                             period,
                             startDate,
                             endDate,
@@ -375,12 +384,15 @@ const distributeToSubordinates = async (
 
     if (hasReports) {
         // Distribute to self (Personal) and Children
-        const childValue = Math.floor(targetValue / totalMembers);
+        const baseValue = Math.floor(targetValue / totalMembers);
+        const remainder = targetValue - (baseValue * totalMembers);
 
-        // Self Personal Child
+        // Self Personal Child gets the remainder
+        const managerPersonalValue = baseValue + remainder;
+
         await prisma.salesTarget.create({
             data: {
-                targetValue: childValue,
+                targetValue: managerPersonalValue,
                 period,
                 metric,
                 startDate,
@@ -400,7 +412,7 @@ const distributeToSubordinates = async (
         for (const report of directReports) {
             await distributeToSubordinates(
                 report.id,
-                childValue,
+                baseValue,
                 period,
                 startDate,
                 endDate,
