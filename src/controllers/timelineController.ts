@@ -15,7 +15,7 @@ function getHumanReadableAction(action: string, entity: string): string {
         'LEAD_STATUS_CHANGE': 'Changed Lead Status',
         'BULK_IMPORT_COMPLETED': 'Completed Bulk Import'
     };
-    
+
     return actionMap[action] || `${action.replace(/_/g, ' ')} ${entity}`;
 }
 
@@ -29,7 +29,7 @@ export const getTimeline = async (req: Request, res: Response) => {
         }
 
         // Fetch related data concurrently
-        const [interactions, tasks, events, auditLogs] = await Promise.all([
+        const [interactions, tasks, events, auditLogs, callRecordings] = await Promise.all([
             prisma.interaction.findMany({
                 where: { [`${type}Id`]: id },
                 orderBy: { date: 'desc' },
@@ -49,6 +49,10 @@ export const getTimeline = async (req: Request, res: Response) => {
                 where: { entityId: id }, // AuditLog stores entityId generically
                 orderBy: { createdAt: 'desc' },
                 include: { actor: { select: { firstName: true, lastName: true } } }
+            }),
+            prisma.callRecording.findMany({
+                where: { leadId: id },
+                orderBy: { timestamp: 'desc' }
             })
         ]);
 
@@ -88,7 +92,7 @@ export const getTimeline = async (req: Request, res: Response) => {
                 // Format audit log description based on action type
                 let description = '';
                 const details = a.details as any;
-                
+
                 switch (a.action) {
                     case 'CREATE_LEAD':
                     case 'CREATE':
@@ -108,12 +112,12 @@ export const getTimeline = async (req: Request, res: Response) => {
                         description = 'Exported data';
                         break;
                     case 'LEAD_STATUS_CHANGE':
-                        description = details?.oldStatus && details?.newStatus 
+                        description = details?.oldStatus && details?.newStatus
                             ? `Status changed from ${details.oldStatus} to ${details.newStatus}`
                             : 'Status changed';
                         break;
                     case 'BULK_IMPORT_COMPLETED':
-                        description = details?.successCount 
+                        description = details?.successCount
                             ? `Imported ${details.successCount} records`
                             : 'Bulk import completed';
                         break;
@@ -138,7 +142,17 @@ export const getTimeline = async (req: Request, res: Response) => {
                     actor: a.actor,
                     meta: {}
                 };
-            })
+            }),
+            ...callRecordings.map(c => ({
+                id: c.id,
+                type: 'recording',
+                subType: c.callType,
+                title: `Call: ${c.callType}`,
+                description: `Duration: ${Math.floor(c.duration / 60)}m ${c.duration % 60}s`,
+                date: c.timestamp,
+                actor: null, // Call logs are from the device, usually specific to the assigned user
+                meta: { fileUrl: c.fileUrl, duration: c.duration, callType: c.callType }
+            }))
         ];
 
         // Sort by date descending
