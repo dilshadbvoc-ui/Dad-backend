@@ -45,19 +45,19 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const { leadId, duration, callType, timestamp } = req.body;
         const file = req.file;
 
-        if (!leadId || !file) {
-            return res.status(400).json({ error: 'leadId and audio file are required' });
+        if (!leadId) {
+            return res.status(400).json({ error: 'leadId is required' });
         }
 
         // In a production app you would upload this file to S3.
         // For this implementation, we store it locally in the uploads folder and return the URL.
-        const fileUrl = `/uploads/${file.filename}`;
+        const fileUrl = file ? `/uploads/${file.filename}` : null;
 
         const recording = await prisma.callRecording.create({
             data: {
                 leadId,
                 duration: parseInt(duration, 10) || 0,
-                fileUrl,
+                fileUrl: fileUrl || '', // Prisma schema expects string, could be empty if no audio
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
             }
