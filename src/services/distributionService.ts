@@ -12,21 +12,28 @@ export const DistributionService = {
     /**
      * Assign a lead to a user based on active assignment rules (Round Robin, Top Performer, etc.)
      */
-    async assignLead(lead: any, organisationId: string): Promise<string | null> {
+    async assignLead(lead: any, organisationId: string, ruleId?: string): Promise<string | null> {
         try {
             console.log(`[DistributionService] Attempting to assign lead ${lead.id} (Branch: ${lead.branchId || 'None'})`);
 
             // 1. Fetch active rules for this organisation, filtered by branch
+            // If ruleId is provided, restrict to that specific rule
+            const where: any = {
+                organisationId: organisationId,
+                isActive: true,
+                isDeleted: false,
+                OR: [
+                    { branchId: lead.branchId }, // Match specific branch
+                    { branchId: null }           // OR Global rules
+                ]
+            };
+
+            if (ruleId) {
+                where.id = ruleId;
+            }
+
             const rules = await prisma.assignmentRule.findMany({
-                where: {
-                    organisationId: organisationId,
-                    isActive: true,
-                    isDeleted: false,
-                    OR: [
-                        { branchId: lead.branchId }, // Match specific branch
-                        { branchId: null }           // OR Global rules
-                    ]
-                },
+                where,
                 orderBy: [
                     { priority: 'asc' }
                 ]
@@ -34,7 +41,12 @@ export const DistributionService = {
 
             if (!rules || rules.length === 0) {
                 console.log('[DistributionService] No active assignment rules found.');
-                return null;
+                // Fallback to organisation creator if no rules match
+                const org = await prisma.organisation.findUnique({
+                    where: { id: organisationId },
+                    select: { createdBy: true }
+                });
+                return org?.createdBy || null;
             }
 
             // 2. Iterate through rules to find a match
@@ -78,7 +90,7 @@ export const DistributionService = {
                     if (assignedUserId) {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
-                        
+
                         await prisma.lead.update({
                             where: { id: lead.id },
                             data: { assignedToId: assignedUserId }
@@ -111,12 +123,12 @@ export const DistributionService = {
                     if (managerId) {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
-                        
+
                         await prisma.lead.update({
                             where: { id: lead.id },
                             data: { assignedToId: managerId }
                         });
-                        
+
                         // Create history record
                         await prisma.leadHistory.create({
                             data: {
@@ -127,7 +139,7 @@ export const DistributionService = {
                                 reason: `Escalated to manager - all users at quota (Rule: ${rule.name})`
                             }
                         });
-                        
+
                         // Don't increment quota for manager - they'll manually reassign
                         console.log(`[DistributionService] Escalated to manager ${managerId} for manual assignment`);
                         return managerId;

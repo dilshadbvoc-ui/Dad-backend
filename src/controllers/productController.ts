@@ -22,6 +22,14 @@ export const getProducts = async (req: Request, res: Response) => {
             const orgId = getOrgId(user);
             if (!orgId) return res.status(403).json({ message: 'User not associated with an organisation' });
             where.organisationId = orgId;
+
+            // Branch Scoping
+            if (user.branchId) {
+                where.OR = [
+                    { branchId: user.branchId },
+                    { branchId: null }
+                ];
+            }
         }
 
         if (search) {
@@ -80,7 +88,8 @@ export const createProduct = async (req: Request, res: Response) => {
                 category: req.body.category,
                 tags: req.body.tags,
                 organisation: { connect: { id: orgId } },
-                createdBy: { connect: { id: user.id } }
+                createdBy: { connect: { id: user.id } },
+                ...(user.branchId ? { branch: { connect: { id: user.branchId } } } : {})
             }
         });
 
@@ -350,7 +359,7 @@ export const getSharedProduct = async (req: Request, res: Response) => {
         });
 
         if (!share) return res.status(404).json({ message: 'Product link not found' });
-        
+
         // Security checks: ensure product and organisation are not deleted
         if (share.product.isDeleted || share.organisation.isDeleted) {
             return res.status(404).json({ message: 'Product is no longer available' });
@@ -395,9 +404,9 @@ export const getSharedProduct = async (req: Request, res: Response) => {
             const { NotificationService } = await import('../services/notificationService');
             const { getIO } = await import('../socket');
             const viewedAt = new Date();
-            const time = viewedAt.toLocaleString('en-US', { 
+            const time = viewedAt.toLocaleString('en-US', {
                 timeZone: 'Asia/Kolkata',
-                hour: '2-digit', 
+                hour: '2-digit',
                 minute: '2-digit',
                 hour12: true,
                 day: '2-digit',
@@ -464,13 +473,13 @@ export const getSharedProduct = async (req: Request, res: Response) => {
             try {
                 const lead = await prisma.lead.findUnique({
                     where: { id: leadId },
-                    select: { 
-                        id: true, 
-                        firstName: true, 
-                        lastName: true, 
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
                         phone: true,
-                        company: true, 
-                        organisationId: true 
+                        company: true,
+                        organisationId: true
                     }
                 });
                 if (lead) {

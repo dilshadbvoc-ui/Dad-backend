@@ -652,6 +652,17 @@ export const updateLead = async (req: Request, res: Response) => {
             });
         }
 
+        // Hierarchy Notification
+        import('../services/notificationService').then(({ NotificationService }) => {
+            const leadName = `${finalLead.firstName} ${finalLead.lastName || ''}`.trim();
+            NotificationService.sendToHierarchy(
+                requester.id,
+                'Lead Updated',
+                `${requester.firstName} updated lead: ${leadName}`,
+                'info'
+            ).catch(console.error);
+        });
+
     } catch (error) {
         console.error('[updateLead] Error:', error);
         res.status(400).json({ message: (error as Error).message });
@@ -722,10 +733,15 @@ export const deleteLead = async (req: Request, res: Response) => {
 
 export const createBulkLeads = async (req: Request, res: Response) => {
     try {
-        const leadsData = req.body;
+        const { leads, assignmentRuleId, applyAssignmentRules } = req.body;
         const user = (req as any).user;
 
-        console.log('[createBulkLeads] Received:', leadsData.length, 'leads');
+        // Support both direct array (legacy) and object with options
+        const leadsData = Array.isArray(req.body) ? req.body : leads;
+        const ruleId = Array.isArray(req.body) ? undefined : assignmentRuleId;
+        const applyRules = Array.isArray(req.body) ? true : (applyAssignmentRules !== false); // Default to true if not explicitly false
+
+        console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId);
 
         if (!Array.isArray(leadsData) || leadsData.length === 0) {
             return res.status(400).json({ message: 'Invalid input' });
@@ -737,7 +753,6 @@ export const createBulkLeads = async (req: Request, res: Response) => {
 
         const { AssignmentRuleService } = await import('../services/assignmentRuleService');
         const { GeoLocationService } = await import('../services/geoLocationService');
-        const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
@@ -785,11 +800,13 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                 let finalOwnerId = l.assignedTo;
 
                 // If no owner specified, apply assignment rules
-                if (!finalOwnerId) {
+                if (!finalOwnerId && applyRules) {
                     finalOwnerId = await AssignmentRuleService.assignLead(
                         l,
                         orgId,
-                        l.branchId || user.branchId || undefined
+                        l.branchId || user.branchId || undefined,
+                        ruleId,
+                        user.id // Importer fallback
                     ) || undefined;
                 }
 

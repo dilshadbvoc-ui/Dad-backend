@@ -361,7 +361,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById',
-  organisationId: 'organisationId'
+  organisationId: 'organisationId',
+  branchId: 'branchId'
 };
 
 exports.Prisma.LeadProductScalarFieldEnum = {

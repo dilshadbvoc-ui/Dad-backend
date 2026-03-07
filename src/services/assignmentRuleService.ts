@@ -5,9 +5,30 @@ export class AssignmentRuleService {
      * Assigns a lead to a user based on active assignment rules,
      * with fallback to branch manager or organisation admin.
      */
-    static async assignLead(lead: any, organisationId: string, branchId?: string): Promise<string | null> {
+    static async assignLead(lead: any, organisationId: string, branchId?: string, ruleId?: string, importerId?: string): Promise<string | null> {
         try {
-            // 1. Fetch active assignment rules for the organisation
+            // 1. If a specific rule ID is provided, try to use it
+            if (ruleId) {
+                const rule = await prisma.assignmentRule.findUnique({
+                    where: { id: ruleId, organisationId, isActive: true, isDeleted: false }
+                });
+
+                if (rule) {
+                    const assigneeId = await this.getAssignee(rule, organisationId, branchId || lead.branchId);
+                    if (assigneeId) {
+                        // Update last assigned user for round robin
+                        if (rule.ruleType === 'round_robin' || rule.ruleType === 'round_robin_role') {
+                            await prisma.assignmentRule.update({
+                                where: { id: rule.id },
+                                data: { lastAssignedUserId: assigneeId }
+                            });
+                        }
+                        return assigneeId;
+                    }
+                }
+            }
+
+            // 2. Fetch active assignment rules for the organisation (normal flow)
             const rules = await prisma.assignmentRule.findMany({
                 where: {
                     organisationId,
@@ -18,10 +39,10 @@ export class AssignmentRuleService {
                 orderBy: { priority: 'asc' }
             });
 
-            // 2. Iterate through rules and find the first match
+            // 3. Iterate through rules and find the first match
             for (const rule of rules) {
                 if (this.isMatch(lead, rule)) {
-                    const assigneeId = await this.getAssignee(rule, organisationId, branchId);
+                    const assigneeId = await this.getAssignee(rule, organisationId, branchId || lead.branchId);
                     if (assigneeId) {
                         // Update rule's last assigned user for round robin if applicable
                         if (rule.ruleType === 'round_robin' || rule.ruleType === 'round_robin_role') {
@@ -35,16 +56,22 @@ export class AssignmentRuleService {
                 }
             }
 
-            // 3. Fallback logic: Branch Manager
-            if (branchId) {
+            // 4. Fallback logic: Branch Manager
+            if (branchId || lead.branchId) {
+                const finalBranchId = branchId || lead.branchId;
                 const branch = await prisma.branch.findUnique({
-                    where: { id: branchId },
+                    where: { id: finalBranchId },
                     select: { managerId: true }
                 });
                 if (branch?.managerId) return branch.managerId;
             }
 
-            // 4. Default Fallback: Organisation Creator
+            // 5. Default Fallback: Importer (if provided) else Organisation Creator
+            if (importerId) {
+                console.log(`[AssignmentRuleService] Fallback to Importer: ${importerId}`);
+                return importerId;
+            }
+
             const org = await prisma.organisation.findUnique({
                 where: { id: organisationId },
                 select: { createdBy: true }

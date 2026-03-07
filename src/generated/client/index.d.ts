@@ -7544,6 +7544,7 @@ export namespace Prisma {
     tasks: number
     interactions: number
     assignmentRules: number
+    products: number
   }
 
   export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7555,6 +7556,7 @@ export namespace Prisma {
     tasks?: boolean | BranchCountOutputTypeCountTasksArgs
     interactions?: boolean | BranchCountOutputTypeCountInteractionsArgs
     assignmentRules?: boolean | BranchCountOutputTypeCountAssignmentRulesArgs
+    products?: boolean | BranchCountOutputTypeCountProductsArgs
   }
 
   // Custom InputTypes
@@ -7622,6 +7624,13 @@ export namespace Prisma {
    */
   export type BranchCountOutputTypeCountAssignmentRulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AssignmentRuleWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductWhereInput
   }
 
 
@@ -21957,6 +21966,7 @@ export namespace Prisma {
     updatedAt: Date | null
     createdById: string | null
     organisationId: string | null
+    branchId: string | null
   }
 
   export type ProductMaxAggregateOutputType = {
@@ -21981,6 +21991,7 @@ export namespace Prisma {
     updatedAt: Date | null
     createdById: string | null
     organisationId: string | null
+    branchId: string | null
   }
 
   export type ProductCountAggregateOutputType = {
@@ -22006,6 +22017,7 @@ export namespace Prisma {
     updatedAt: number
     createdById: number
     organisationId: number
+    branchId: number
     _all: number
   }
 
@@ -22046,6 +22058,7 @@ export namespace Prisma {
     updatedAt?: true
     createdById?: true
     organisationId?: true
+    branchId?: true
   }
 
   export type ProductMaxAggregateInputType = {
@@ -22070,6 +22083,7 @@ export namespace Prisma {
     updatedAt?: true
     createdById?: true
     organisationId?: true
+    branchId?: true
   }
 
   export type ProductCountAggregateInputType = {
@@ -22095,6 +22109,7 @@ export namespace Prisma {
     updatedAt?: true
     createdById?: true
     organisationId?: true
+    branchId?: true
     _all?: true
   }
 
@@ -22207,6 +22222,7 @@ export namespace Prisma {
     updatedAt: Date
     createdById: string | null
     organisationId: string
+    branchId: string | null
     _count: ProductCountAggregateOutputType | null
     _avg: ProductAvgAggregateOutputType | null
     _sum: ProductSumAggregateOutputType | null
@@ -22251,6 +22267,7 @@ export namespace Prisma {
     updatedAt?: boolean
     createdById?: boolean
     organisationId?: boolean
+    branchId?: boolean
     createdBy?: boolean | Product$createdByArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     quoteItems?: boolean | Product$quoteItemsArgs<ExtArgs>
@@ -22258,6 +22275,7 @@ export namespace Prisma {
     salesTargets?: boolean | Product$salesTargetsArgs<ExtArgs>
     leads?: boolean | Product$leadsArgs<ExtArgs>
     productShares?: boolean | Product$productSharesArgs<ExtArgs>
+    branch?: boolean | Product$branchArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -22284,8 +22302,10 @@ export namespace Prisma {
     updatedAt?: boolean
     createdById?: boolean
     organisationId?: boolean
+    branchId?: boolean
     createdBy?: boolean | Product$createdByArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    branch?: boolean | Product$branchArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectScalar = {
@@ -22311,6 +22331,7 @@ export namespace Prisma {
     updatedAt?: boolean
     createdById?: boolean
     organisationId?: boolean
+    branchId?: boolean
   }
 
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22321,11 +22342,13 @@ export namespace Prisma {
     salesTargets?: boolean | Product$salesTargetsArgs<ExtArgs>
     leads?: boolean | Product$leadsArgs<ExtArgs>
     productShares?: boolean | Product$productSharesArgs<ExtArgs>
+    branch?: boolean | Product$branchArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | Product$createdByArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    branch?: boolean | Product$branchArgs<ExtArgs>
   }
 
   export type $ProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22338,6 +22361,7 @@ export namespace Prisma {
       salesTargets: Prisma.$SalesTargetPayload<ExtArgs>[]
       leads: Prisma.$LeadProductPayload<ExtArgs>[]
       productShares: Prisma.$ProductSharePayload<ExtArgs>[]
+      branch: Prisma.$BranchPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -22362,6 +22386,7 @@ export namespace Prisma {
       updatedAt: Date
       createdById: string | null
       organisationId: string
+      branchId: string | null
     }, ExtArgs["result"]["product"]>
     composites: {}
   }
@@ -22733,6 +22758,7 @@ export namespace Prisma {
     salesTargets<T extends Product$salesTargetsArgs<ExtArgs> = {}>(args?: Subset<T, Product$salesTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesTargetPayload<ExtArgs>, T, "findMany"> | Null>
     leads<T extends Product$leadsArgs<ExtArgs> = {}>(args?: Subset<T, Product$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadProductPayload<ExtArgs>, T, "findMany"> | Null>
     productShares<T extends Product$productSharesArgs<ExtArgs> = {}>(args?: Subset<T, Product$productSharesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductSharePayload<ExtArgs>, T, "findMany"> | Null>
+    branch<T extends Product$branchArgs<ExtArgs> = {}>(args?: Subset<T, Product$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22784,6 +22810,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
     readonly createdById: FieldRef<"Product", 'String'>
     readonly organisationId: FieldRef<"Product", 'String'>
+    readonly branchId: FieldRef<"Product", 'String'>
   }
     
 
@@ -23214,6 +23241,21 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProductShareScalarFieldEnum | ProductShareScalarFieldEnum[]
+  }
+
+  /**
+   * Product.branch
+   */
+  export type Product$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -68159,6 +68201,7 @@ export namespace Prisma {
     tasks?: boolean | Branch$tasksArgs<ExtArgs>
     interactions?: boolean | Branch$interactionsArgs<ExtArgs>
     assignmentRules?: boolean | Branch$assignmentRulesArgs<ExtArgs>
+    products?: boolean | Branch$productsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["branch"]>
 
@@ -68201,6 +68244,7 @@ export namespace Prisma {
     tasks?: boolean | Branch$tasksArgs<ExtArgs>
     interactions?: boolean | Branch$interactionsArgs<ExtArgs>
     assignmentRules?: boolean | Branch$assignmentRulesArgs<ExtArgs>
+    products?: boolean | Branch$productsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BranchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -68221,6 +68265,7 @@ export namespace Prisma {
       tasks: Prisma.$TaskPayload<ExtArgs>[]
       interactions: Prisma.$InteractionPayload<ExtArgs>[]
       assignmentRules: Prisma.$AssignmentRulePayload<ExtArgs>[]
+      products: Prisma.$ProductPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -68607,6 +68652,7 @@ export namespace Prisma {
     tasks<T extends Branch$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Branch$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
     interactions<T extends Branch$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InteractionPayload<ExtArgs>, T, "findMany"> | Null>
     assignmentRules<T extends Branch$assignmentRulesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$assignmentRulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssignmentRulePayload<ExtArgs>, T, "findMany"> | Null>
+    products<T extends Branch$productsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -69136,6 +69182,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AssignmentRuleScalarFieldEnum | AssignmentRuleScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.products
+   */
+  export type Branch$productsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Product
+     */
+    select?: ProductSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductInclude<ExtArgs> | null
+    where?: ProductWhereInput
+    orderBy?: ProductOrderByWithRelationInput | ProductOrderByWithRelationInput[]
+    cursor?: ProductWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductScalarFieldEnum | ProductScalarFieldEnum[]
   }
 
   /**
@@ -74503,7 +74569,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     createdById: 'createdById',
-    organisationId: 'organisationId'
+    organisationId: 'organisationId',
+    branchId: 'branchId'
   };
 
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
@@ -77498,6 +77565,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     createdById?: StringNullableFilter<"Product"> | string | null
     organisationId?: StringFilter<"Product"> | string
+    branchId?: StringNullableFilter<"Product"> | string | null
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
     quoteItems?: QuoteLineItemListRelationFilter
@@ -77505,6 +77573,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetListRelationFilter
     leads?: LeadProductListRelationFilter
     productShares?: ProductShareListRelationFilter
+    branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
   }
 
   export type ProductOrderByWithRelationInput = {
@@ -77530,6 +77599,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
     createdBy?: UserOrderByWithRelationInput
     organisation?: OrganisationOrderByWithRelationInput
     quoteItems?: QuoteLineItemOrderByRelationAggregateInput
@@ -77537,6 +77607,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetOrderByRelationAggregateInput
     leads?: LeadProductOrderByRelationAggregateInput
     productShares?: ProductShareOrderByRelationAggregateInput
+    branch?: BranchOrderByWithRelationInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -77565,6 +77636,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     createdById?: StringNullableFilter<"Product"> | string | null
     organisationId?: StringFilter<"Product"> | string
+    branchId?: StringNullableFilter<"Product"> | string | null
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
     quoteItems?: QuoteLineItemListRelationFilter
@@ -77572,6 +77644,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetListRelationFilter
     leads?: LeadProductListRelationFilter
     productShares?: ProductShareListRelationFilter
+    branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
   }, "id">
 
   export type ProductOrderByWithAggregationInput = {
@@ -77597,6 +77670,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
     _count?: ProductCountOrderByAggregateInput
     _avg?: ProductAvgOrderByAggregateInput
     _max?: ProductMaxOrderByAggregateInput
@@ -77630,6 +77704,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     createdById?: StringNullableWithAggregatesFilter<"Product"> | string | null
     organisationId?: StringWithAggregatesFilter<"Product"> | string
+    branchId?: StringNullableWithAggregatesFilter<"Product"> | string | null
   }
 
   export type LeadProductWhereInput = {
@@ -82173,6 +82248,7 @@ export namespace Prisma {
     tasks?: TaskListRelationFilter
     interactions?: InteractionListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
+    products?: ProductListRelationFilter
   }
 
   export type BranchOrderByWithRelationInput = {
@@ -82196,6 +82272,7 @@ export namespace Prisma {
     tasks?: TaskOrderByRelationAggregateInput
     interactions?: InteractionOrderByRelationAggregateInput
     assignmentRules?: AssignmentRuleOrderByRelationAggregateInput
+    products?: ProductOrderByRelationAggregateInput
   }
 
   export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -82222,6 +82299,7 @@ export namespace Prisma {
     tasks?: TaskListRelationFilter
     interactions?: InteractionListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
+    products?: ProductListRelationFilter
   }, "id">
 
   export type BranchOrderByWithAggregationInput = {
@@ -84749,6 +84827,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateInput = {
@@ -84774,6 +84853,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
@@ -84809,6 +84889,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
@@ -84834,6 +84915,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
@@ -84864,6 +84946,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
   }
 
   export type ProductUpdateManyMutationInput = {
@@ -84912,6 +84995,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeadProductCreateInput = {
@@ -89874,6 +89958,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateInput = {
@@ -89895,6 +89980,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUpdateInput = {
@@ -89916,6 +90002,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateInput = {
@@ -89937,6 +90024,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateManyInput = {
@@ -92015,6 +92103,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdById?: SortOrder
     organisationId?: SortOrder
+    branchId?: SortOrder
   }
 
   export type ProductAvgOrderByAggregateInput = {
@@ -92046,6 +92135,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdById?: SortOrder
     organisationId?: SortOrder
+    branchId?: SortOrder
   }
 
   export type ProductMinOrderByAggregateInput = {
@@ -92070,6 +92160,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     createdById?: SortOrder
     organisationId?: SortOrder
+    branchId?: SortOrder
   }
 
   export type ProductSumOrderByAggregateInput = {
@@ -101633,6 +101724,12 @@ export namespace Prisma {
     connect?: ProductShareWhereUniqueInput | ProductShareWhereUniqueInput[]
   }
 
+  export type BranchCreateNestedOneWithoutProductsInput = {
+    create?: XOR<BranchCreateWithoutProductsInput, BranchUncheckedCreateWithoutProductsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutProductsInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type QuoteLineItemUncheckedCreateNestedManyWithoutProductInput = {
     create?: XOR<QuoteLineItemCreateWithoutProductInput, QuoteLineItemUncheckedCreateWithoutProductInput> | QuoteLineItemCreateWithoutProductInput[] | QuoteLineItemUncheckedCreateWithoutProductInput[]
     connectOrCreate?: QuoteLineItemCreateOrConnectWithoutProductInput | QuoteLineItemCreateOrConnectWithoutProductInput[]
@@ -101759,6 +101856,16 @@ export namespace Prisma {
     update?: ProductShareUpdateWithWhereUniqueWithoutProductInput | ProductShareUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: ProductShareUpdateManyWithWhereWithoutProductInput | ProductShareUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: ProductShareScalarWhereInput | ProductShareScalarWhereInput[]
+  }
+
+  export type BranchUpdateOneWithoutProductsNestedInput = {
+    create?: XOR<BranchCreateWithoutProductsInput, BranchUncheckedCreateWithoutProductsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutProductsInput
+    upsert?: BranchUpsertWithoutProductsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutProductsInput, BranchUpdateWithoutProductsInput>, BranchUncheckedUpdateWithoutProductsInput>
   }
 
   export type QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput = {
@@ -104325,6 +104432,13 @@ export namespace Prisma {
     connect?: AssignmentRuleWhereUniqueInput | AssignmentRuleWhereUniqueInput[]
   }
 
+  export type ProductCreateNestedManyWithoutBranchInput = {
+    create?: XOR<ProductCreateWithoutBranchInput, ProductUncheckedCreateWithoutBranchInput> | ProductCreateWithoutBranchInput[] | ProductUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutBranchInput | ProductCreateOrConnectWithoutBranchInput[]
+    createMany?: ProductCreateManyBranchInputEnvelope
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutBranchInput = {
     create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
@@ -104379,6 +104493,13 @@ export namespace Prisma {
     connectOrCreate?: AssignmentRuleCreateOrConnectWithoutBranchInput | AssignmentRuleCreateOrConnectWithoutBranchInput[]
     createMany?: AssignmentRuleCreateManyBranchInputEnvelope
     connect?: AssignmentRuleWhereUniqueInput | AssignmentRuleWhereUniqueInput[]
+  }
+
+  export type ProductUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<ProductCreateWithoutBranchInput, ProductUncheckedCreateWithoutBranchInput> | ProductCreateWithoutBranchInput[] | ProductUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutBranchInput | ProductCreateOrConnectWithoutBranchInput[]
+    createMany?: ProductCreateManyBranchInputEnvelope
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
   }
 
   export type OrganisationUpdateOneRequiredWithoutBranchesNestedInput = {
@@ -104511,6 +104632,20 @@ export namespace Prisma {
     deleteMany?: AssignmentRuleScalarWhereInput | AssignmentRuleScalarWhereInput[]
   }
 
+  export type ProductUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<ProductCreateWithoutBranchInput, ProductUncheckedCreateWithoutBranchInput> | ProductCreateWithoutBranchInput[] | ProductUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutBranchInput | ProductCreateOrConnectWithoutBranchInput[]
+    upsert?: ProductUpsertWithWhereUniqueWithoutBranchInput | ProductUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: ProductCreateManyBranchInputEnvelope
+    set?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    disconnect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    delete?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    update?: ProductUpdateWithWhereUniqueWithoutBranchInput | ProductUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: ProductUpdateManyWithWhereWithoutBranchInput | ProductUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutBranchNestedInput = {
     create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
@@ -104621,6 +104756,20 @@ export namespace Prisma {
     update?: AssignmentRuleUpdateWithWhereUniqueWithoutBranchInput | AssignmentRuleUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: AssignmentRuleUpdateManyWithWhereWithoutBranchInput | AssignmentRuleUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: AssignmentRuleScalarWhereInput | AssignmentRuleScalarWhereInput[]
+  }
+
+  export type ProductUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<ProductCreateWithoutBranchInput, ProductUncheckedCreateWithoutBranchInput> | ProductCreateWithoutBranchInput[] | ProductUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: ProductCreateOrConnectWithoutBranchInput | ProductCreateOrConnectWithoutBranchInput[]
+    upsert?: ProductUpsertWithWhereUniqueWithoutBranchInput | ProductUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: ProductCreateManyBranchInputEnvelope
+    set?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    disconnect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    delete?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+    update?: ProductUpdateWithWhereUniqueWithoutBranchInput | ProductUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: ProductUpdateManyWithWhereWithoutBranchInput | ProductUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
   }
 
   export type RoleCreatepermissionsInput = {
@@ -106311,6 +106460,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutOrganisationInput = {
@@ -106335,6 +106485,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
@@ -107496,6 +107647,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutOrganisationInput = {
@@ -107516,6 +107668,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutOrganisationInput = {
@@ -108347,6 +108500,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     createdById?: StringNullableFilter<"Product"> | string | null
     organisationId?: StringFilter<"Product"> | string
+    branchId?: StringNullableFilter<"Product"> | string | null
   }
 
   export type QuoteUpsertWithWhereUniqueWithoutOrganisationInput = {
@@ -110960,6 +111114,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutCreatedByInput = {
@@ -110984,6 +111139,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
@@ -112782,6 +112938,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutUsersInput = {
@@ -112802,6 +112959,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutUsersInput = {
@@ -112827,6 +112985,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutManagerInput = {
@@ -112847,6 +113006,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutManagerInput = {
@@ -114292,6 +114452,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutUsersInput = {
@@ -114312,6 +114473,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUpsertWithWhereUniqueWithoutManagerInput = {
@@ -117456,6 +117618,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutLeadsInput = {
@@ -117476,6 +117639,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutLeadsInput = {
@@ -118504,6 +118668,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutLeadsInput = {
@@ -118524,6 +118689,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type LeadCreateWithoutCallRecordingsInput = {
@@ -119968,6 +120134,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutAccountsInput = {
@@ -119988,6 +120155,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutAccountsInput = {
@@ -120744,6 +120912,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutAccountsInput = {
@@ -120764,6 +120933,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type CalendarEventCreateWithoutContactInput = {
@@ -121850,6 +122020,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutContactsInput = {
@@ -121870,6 +122041,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutContactsInput = {
@@ -122610,6 +122782,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutContactsInput = {
@@ -122630,6 +122803,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type CalendarEventCreateWithoutOpportunityInput = {
@@ -123643,6 +123817,7 @@ export namespace Prisma {
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutOpportunitiesInput = {
@@ -123663,6 +123838,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutOpportunitiesInput = {
@@ -124431,6 +124607,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutOpportunitiesInput = {
@@ -124451,6 +124628,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserCreateWithoutCreatedProductsInput = {
@@ -124973,6 +125151,53 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BranchCreateWithoutProductsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutBranchesInput
+    manager?: UserCreateNestedOneWithoutManagedBranchesInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    leads?: LeadCreateNestedManyWithoutBranchInput
+    contacts?: ContactCreateNestedManyWithoutBranchInput
+    opportunities?: OpportunityCreateNestedManyWithoutBranchInput
+    accounts?: AccountCreateNestedManyWithoutBranchInput
+    tasks?: TaskCreateNestedManyWithoutBranchInput
+    interactions?: InteractionCreateNestedManyWithoutBranchInput
+    assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutProductsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    managerId?: string | null
+    organisationId: string
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    leads?: LeadUncheckedCreateNestedManyWithoutBranchInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutBranchInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
+    assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutProductsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutProductsInput, BranchUncheckedCreateWithoutProductsInput>
+  }
+
   export type UserUpsertWithoutCreatedProductsInput = {
     update: XOR<UserUpdateWithoutCreatedProductsInput, UserUncheckedUpdateWithoutCreatedProductsInput>
     create: XOR<UserCreateWithoutCreatedProductsInput, UserUncheckedCreateWithoutCreatedProductsInput>
@@ -125410,6 +125635,59 @@ export namespace Prisma {
     data: XOR<ProductShareUpdateManyMutationInput, ProductShareUncheckedUpdateManyWithoutProductInput>
   }
 
+  export type BranchUpsertWithoutProductsInput = {
+    update: XOR<BranchUpdateWithoutProductsInput, BranchUncheckedUpdateWithoutProductsInput>
+    create: XOR<BranchCreateWithoutProductsInput, BranchUncheckedCreateWithoutProductsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutProductsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutProductsInput, BranchUncheckedUpdateWithoutProductsInput>
+  }
+
+  export type BranchUpdateWithoutProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
+    manager?: UserUpdateOneWithoutManagedBranchesNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    leads?: LeadUpdateManyWithoutBranchNestedInput
+    contacts?: ContactUpdateManyWithoutBranchNestedInput
+    opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
+    accounts?: AccountUpdateManyWithoutBranchNestedInput
+    tasks?: TaskUpdateManyWithoutBranchNestedInput
+    interactions?: InteractionUpdateManyWithoutBranchNestedInput
+    assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    leads?: LeadUncheckedUpdateManyWithoutBranchNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutBranchNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
+    assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
   export type LeadCreateWithoutProductsInput = {
     id?: string
     firstName: string
@@ -125560,6 +125838,7 @@ export namespace Prisma {
     accountProducts?: AccountProductCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutLeadsInput = {
@@ -125585,6 +125864,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
@@ -125763,6 +126043,7 @@ export namespace Prisma {
     accountProducts?: AccountProductUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutLeadsInput = {
@@ -125788,6 +126069,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
@@ -125890,6 +126172,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutAccountProductsInput = {
@@ -125915,6 +126198,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
     leads?: LeadProductUncheckedCreateNestedManyWithoutProductInput
@@ -126184,6 +126468,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutAccountProductsInput = {
@@ -126209,6 +126494,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
     leads?: LeadProductUncheckedUpdateManyWithoutProductNestedInput
@@ -127929,6 +128215,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutQuoteItemsInput = {
@@ -127954,6 +128241,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
     leads?: LeadProductUncheckedCreateNestedManyWithoutProductInput
@@ -128070,6 +128358,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutQuoteItemsInput = {
@@ -128095,6 +128384,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
     leads?: LeadProductUncheckedUpdateManyWithoutProductNestedInput
@@ -129039,6 +129329,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutTasksInput = {
@@ -129059,6 +129350,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutTasksInput = {
@@ -129984,6 +130276,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutTasksInput = {
@@ -130004,6 +130297,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type DocumentCreateWithoutInteractionsInput = {
@@ -130737,6 +131031,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutInteractionsInput = {
@@ -130757,6 +131052,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutInteractionsInput = {
@@ -131548,6 +131844,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutInteractionsInput = {
@@ -131568,6 +131865,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type AccountCreateWithoutEventsInput = {
@@ -139056,6 +139354,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutAssignmentRulesInput = {
@@ -139076,6 +139375,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutAssignmentRulesInput = {
@@ -139830,6 +140130,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutAssignmentRulesInput = {
@@ -139850,6 +140151,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserCreateWithoutAssignedSalesTargetsInput = {
@@ -140532,6 +140834,7 @@ export namespace Prisma {
     accountProducts?: AccountProductCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
     productShares?: ProductShareCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutSalesTargetsInput = {
@@ -140557,6 +140860,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     leads?: LeadProductUncheckedCreateNestedManyWithoutProductInput
@@ -141247,6 +141551,7 @@ export namespace Prisma {
     accountProducts?: AccountProductUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutSalesTargetsInput = {
@@ -141272,6 +141577,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     leads?: LeadProductUncheckedUpdateManyWithoutProductNestedInput
@@ -158617,6 +158923,7 @@ export namespace Prisma {
     accountProducts?: AccountProductCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
     leads?: LeadProductCreateNestedManyWithoutProductInput
+    branch?: BranchCreateNestedOneWithoutProductsInput
   }
 
   export type ProductUncheckedCreateWithoutProductSharesInput = {
@@ -158642,6 +158949,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     createdById?: string | null
     organisationId: string
+    branchId?: string | null
     quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
@@ -159019,6 +159327,7 @@ export namespace Prisma {
     accountProducts?: AccountProductUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutProductSharesInput = {
@@ -159044,6 +159353,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
@@ -160438,6 +160748,76 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProductCreateWithoutBranchInput = {
+    id?: string
+    name: string
+    sku?: string | null
+    description?: string | null
+    basePrice: number
+    currency?: string
+    taxRate?: number
+    category?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    unit?: string
+    minQuantity?: number
+    maxQuantity?: number | null
+    imageUrl?: string | null
+    isActive?: boolean
+    brochureUrl?: string | null
+    validFrom?: Date | string | null
+    validUntil?: Date | string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
+    organisation: OrganisationCreateNestedOneWithoutProductsInput
+    quoteItems?: QuoteLineItemCreateNestedManyWithoutProductInput
+    accountProducts?: AccountProductCreateNestedManyWithoutProductInput
+    salesTargets?: SalesTargetCreateNestedManyWithoutProductInput
+    leads?: LeadProductCreateNestedManyWithoutProductInput
+    productShares?: ProductShareCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutBranchInput = {
+    id?: string
+    name: string
+    sku?: string | null
+    description?: string | null
+    basePrice: number
+    currency?: string
+    taxRate?: number
+    category?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    unit?: string
+    minQuantity?: number
+    maxQuantity?: number | null
+    imageUrl?: string | null
+    isActive?: boolean
+    brochureUrl?: string | null
+    validFrom?: Date | string | null
+    validUntil?: Date | string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: string | null
+    organisationId: string
+    quoteItems?: QuoteLineItemUncheckedCreateNestedManyWithoutProductInput
+    accountProducts?: AccountProductUncheckedCreateNestedManyWithoutProductInput
+    salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutProductInput
+    leads?: LeadProductUncheckedCreateNestedManyWithoutProductInput
+    productShares?: ProductShareUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutBranchInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutBranchInput, ProductUncheckedCreateWithoutBranchInput>
+  }
+
+  export type ProductCreateManyBranchInputEnvelope = {
+    data: ProductCreateManyBranchInput | ProductCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganisationUpsertWithoutBranchesInput = {
     update: XOR<OrganisationUpdateWithoutBranchesInput, OrganisationUncheckedUpdateWithoutBranchesInput>
     create: XOR<OrganisationCreateWithoutBranchesInput, OrganisationUncheckedCreateWithoutBranchesInput>
@@ -160904,6 +161284,22 @@ export namespace Prisma {
   export type AssignmentRuleUpdateManyWithWhereWithoutBranchInput = {
     where: AssignmentRuleScalarWhereInput
     data: XOR<AssignmentRuleUpdateManyMutationInput, AssignmentRuleUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type ProductUpsertWithWhereUniqueWithoutBranchInput = {
+    where: ProductWhereUniqueInput
+    update: XOR<ProductUpdateWithoutBranchInput, ProductUncheckedUpdateWithoutBranchInput>
+    create: XOR<ProductCreateWithoutBranchInput, ProductUncheckedCreateWithoutBranchInput>
+  }
+
+  export type ProductUpdateWithWhereUniqueWithoutBranchInput = {
+    where: ProductWhereUniqueInput
+    data: XOR<ProductUpdateWithoutBranchInput, ProductUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type ProductUpdateManyWithWhereWithoutBranchInput = {
+    where: ProductScalarWhereInput
+    data: XOR<ProductUpdateManyMutationInput, ProductUncheckedUpdateManyWithoutBranchInput>
   }
 
   export type OrganisationCreateWithoutRolePermissionsInput = {
@@ -163071,6 +163467,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
+    branchId?: string | null
   }
 
   export type QuoteCreateManyOrganisationInput = {
@@ -164630,6 +165027,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutOrganisationInput = {
@@ -164654,6 +165052,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
@@ -164683,6 +165082,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUpdateWithoutOrganisationInput = {
@@ -165995,6 +166395,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutOrganisationInput = {
@@ -166015,6 +166416,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateManyWithoutOrganisationInput = {
@@ -166765,6 +167167,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
+    branchId?: string | null
   }
 
   export type QuoteCreateManyAssignedToInput = {
@@ -169282,6 +169685,7 @@ export namespace Prisma {
     salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
     leads?: LeadProductUpdateManyWithoutProductNestedInput
     productShares?: ProductShareUpdateManyWithoutProductNestedInput
+    branch?: BranchUpdateOneWithoutProductsNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutCreatedByInput = {
@@ -169306,6 +169710,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
@@ -169335,6 +169740,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuoteUpdateWithoutAssignedToInput = {
@@ -170970,6 +171376,7 @@ export namespace Prisma {
     tasks?: TaskUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutManagerInput = {
@@ -170990,6 +171397,7 @@ export namespace Prisma {
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateManyWithoutManagerInput = {
@@ -176529,6 +176937,31 @@ export namespace Prisma {
     dealValue?: number | null
   }
 
+  export type ProductCreateManyBranchInput = {
+    id?: string
+    name: string
+    sku?: string | null
+    description?: string | null
+    basePrice: number
+    currency?: string
+    taxRate?: number
+    category?: string | null
+    tags?: ProductCreatetagsInput | string[]
+    unit?: string
+    minQuantity?: number
+    maxQuantity?: number | null
+    imageUrl?: string | null
+    isActive?: boolean
+    brochureUrl?: string | null
+    validFrom?: Date | string | null
+    validUntil?: Date | string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdById?: string | null
+    organisationId: string
+  }
+
   export type UserUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
@@ -177387,6 +177820,91 @@ export namespace Prisma {
     companySize?: NullableIntFieldUpdateOperationsInput | number | null
     leadScore?: NullableIntFieldUpdateOperationsInput | number | null
     dealValue?: NullableFloatFieldUpdateOperationsInput | number | null
+  }
+
+  export type ProductUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    unit?: StringFieldUpdateOperationsInput | string
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutProductsNestedInput
+    quoteItems?: QuoteLineItemUpdateManyWithoutProductNestedInput
+    accountProducts?: AccountProductUpdateManyWithoutProductNestedInput
+    salesTargets?: SalesTargetUpdateManyWithoutProductNestedInput
+    leads?: LeadProductUpdateManyWithoutProductNestedInput
+    productShares?: ProductShareUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    unit?: StringFieldUpdateOperationsInput | string
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    quoteItems?: QuoteLineItemUncheckedUpdateManyWithoutProductNestedInput
+    accountProducts?: AccountProductUncheckedUpdateManyWithoutProductNestedInput
+    salesTargets?: SalesTargetUncheckedUpdateManyWithoutProductNestedInput
+    leads?: LeadProductUncheckedUpdateManyWithoutProductNestedInput
+    productShares?: ProductShareUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sku?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: ProductUpdatetagsInput | string[]
+    unit?: StringFieldUpdateOperationsInput | string
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
   }
 
   export type EMIInstallmentCreateManyScheduleInput = {

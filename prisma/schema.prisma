@@ -479,6 +479,9 @@ model Product {
   salesTargets    SalesTarget[]
   leads           LeadProduct[]
   productShares   ProductShare[]
+  branchId        String?
+  branch          Branch?         @relation(fields: [branchId], references: [id])
+  @@index([branchId])
 }
 
 model LeadProduct {
@@ -1530,6 +1533,7 @@ model Branch {
   tasks          Task[]
   interactions   Interaction[]
   assignmentRules AssignmentRule[]
+  products        Product[]
   
   @@index([organisationId])
 }
