@@ -1279,9 +1279,14 @@ model Pipeline {
 model WebForm {
   id             String   @id @default(uuid())
   name           String
+  description    String?
   code           String?
   fields         Json?
   settings       Json?
+  submitAction   String   @default("message") // 'message', 'redirect'
+  submitMessage  String?
+  redirectUrl    String?
+  status         String   @default("active")  // 'active', 'inactive'
   isActive       Boolean  @default(true)
   organisationId String
   createdById    String?

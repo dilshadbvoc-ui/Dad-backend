@@ -58067,7 +58067,12 @@ export namespace Prisma {
   export type WebFormMinAggregateOutputType = {
     id: string | null
     name: string | null
+    description: string | null
     code: string | null
+    submitAction: string | null
+    submitMessage: string | null
+    redirectUrl: string | null
+    status: string | null
     isActive: boolean | null
     organisationId: string | null
     createdById: string | null
@@ -58079,7 +58084,12 @@ export namespace Prisma {
   export type WebFormMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    description: string | null
     code: string | null
+    submitAction: string | null
+    submitMessage: string | null
+    redirectUrl: string | null
+    status: string | null
     isActive: boolean | null
     organisationId: string | null
     createdById: string | null
@@ -58091,9 +58101,14 @@ export namespace Prisma {
   export type WebFormCountAggregateOutputType = {
     id: number
     name: number
+    description: number
     code: number
     fields: number
     settings: number
+    submitAction: number
+    submitMessage: number
+    redirectUrl: number
+    status: number
     isActive: number
     organisationId: number
     createdById: number
@@ -58107,7 +58122,12 @@ export namespace Prisma {
   export type WebFormMinAggregateInputType = {
     id?: true
     name?: true
+    description?: true
     code?: true
+    submitAction?: true
+    submitMessage?: true
+    redirectUrl?: true
+    status?: true
     isActive?: true
     organisationId?: true
     createdById?: true
@@ -58119,7 +58139,12 @@ export namespace Prisma {
   export type WebFormMaxAggregateInputType = {
     id?: true
     name?: true
+    description?: true
     code?: true
+    submitAction?: true
+    submitMessage?: true
+    redirectUrl?: true
+    status?: true
     isActive?: true
     organisationId?: true
     createdById?: true
@@ -58131,9 +58156,14 @@ export namespace Prisma {
   export type WebFormCountAggregateInputType = {
     id?: true
     name?: true
+    description?: true
     code?: true
     fields?: true
     settings?: true
+    submitAction?: true
+    submitMessage?: true
+    redirectUrl?: true
+    status?: true
     isActive?: true
     organisationId?: true
     createdById?: true
@@ -58218,9 +58248,14 @@ export namespace Prisma {
   export type WebFormGroupByOutputType = {
     id: string
     name: string
+    description: string | null
     code: string | null
     fields: JsonValue | null
     settings: JsonValue | null
+    submitAction: string
+    submitMessage: string | null
+    redirectUrl: string | null
+    status: string
     isActive: boolean
     organisationId: string
     createdById: string | null
@@ -58249,9 +58284,14 @@ export namespace Prisma {
   export type WebFormSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    description?: boolean
     code?: boolean
     fields?: boolean
     settings?: boolean
+    submitAction?: boolean
+    submitMessage?: boolean
+    redirectUrl?: boolean
+    status?: boolean
     isActive?: boolean
     organisationId?: boolean
     createdById?: boolean
@@ -58265,9 +58305,14 @@ export namespace Prisma {
   export type WebFormSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    description?: boolean
     code?: boolean
     fields?: boolean
     settings?: boolean
+    submitAction?: boolean
+    submitMessage?: boolean
+    redirectUrl?: boolean
+    status?: boolean
     isActive?: boolean
     organisationId?: boolean
     createdById?: boolean
@@ -58281,9 +58326,14 @@ export namespace Prisma {
   export type WebFormSelectScalar = {
     id?: boolean
     name?: boolean
+    description?: boolean
     code?: boolean
     fields?: boolean
     settings?: boolean
+    submitAction?: boolean
+    submitMessage?: boolean
+    redirectUrl?: boolean
+    status?: boolean
     isActive?: boolean
     organisationId?: boolean
     createdById?: boolean
@@ -58310,9 +58360,14 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      description: string | null
       code: string | null
       fields: Prisma.JsonValue | null
       settings: Prisma.JsonValue | null
+      submitAction: string
+      submitMessage: string | null
+      redirectUrl: string | null
+      status: string
       isActive: boolean
       organisationId: string
       createdById: string | null
@@ -58716,9 +58771,14 @@ export namespace Prisma {
   interface WebFormFieldRefs {
     readonly id: FieldRef<"WebForm", 'String'>
     readonly name: FieldRef<"WebForm", 'String'>
+    readonly description: FieldRef<"WebForm", 'String'>
     readonly code: FieldRef<"WebForm", 'String'>
     readonly fields: FieldRef<"WebForm", 'Json'>
     readonly settings: FieldRef<"WebForm", 'Json'>
+    readonly submitAction: FieldRef<"WebForm", 'String'>
+    readonly submitMessage: FieldRef<"WebForm", 'String'>
+    readonly redirectUrl: FieldRef<"WebForm", 'String'>
+    readonly status: FieldRef<"WebForm", 'String'>
     readonly isActive: FieldRef<"WebForm", 'Boolean'>
     readonly organisationId: FieldRef<"WebForm", 'String'>
     readonly createdById: FieldRef<"WebForm", 'String'>
@@ -75231,9 +75291,14 @@ export namespace Prisma {
   export const WebFormScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    description: 'description',
     code: 'code',
     fields: 'fields',
     settings: 'settings',
+    submitAction: 'submitAction',
+    submitMessage: 'submitMessage',
+    redirectUrl: 'redirectUrl',
+    status: 'status',
     isActive: 'isActive',
     organisationId: 'organisationId',
     createdById: 'createdById',
@@ -81235,9 +81300,14 @@ export namespace Prisma {
     NOT?: WebFormWhereInput | WebFormWhereInput[]
     id?: StringFilter<"WebForm"> | string
     name?: StringFilter<"WebForm"> | string
+    description?: StringNullableFilter<"WebForm"> | string | null
     code?: StringNullableFilter<"WebForm"> | string | null
     fields?: JsonNullableFilter<"WebForm">
     settings?: JsonNullableFilter<"WebForm">
+    submitAction?: StringFilter<"WebForm"> | string
+    submitMessage?: StringNullableFilter<"WebForm"> | string | null
+    redirectUrl?: StringNullableFilter<"WebForm"> | string | null
+    status?: StringFilter<"WebForm"> | string
     isActive?: BoolFilter<"WebForm"> | boolean
     organisationId?: StringFilter<"WebForm"> | string
     createdById?: StringNullableFilter<"WebForm"> | string | null
@@ -81251,9 +81321,14 @@ export namespace Prisma {
   export type WebFormOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrderInput | SortOrder
     code?: SortOrderInput | SortOrder
     fields?: SortOrderInput | SortOrder
     settings?: SortOrderInput | SortOrder
+    submitAction?: SortOrder
+    submitMessage?: SortOrderInput | SortOrder
+    redirectUrl?: SortOrderInput | SortOrder
+    status?: SortOrder
     isActive?: SortOrder
     organisationId?: SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -81270,9 +81345,14 @@ export namespace Prisma {
     OR?: WebFormWhereInput[]
     NOT?: WebFormWhereInput | WebFormWhereInput[]
     name?: StringFilter<"WebForm"> | string
+    description?: StringNullableFilter<"WebForm"> | string | null
     code?: StringNullableFilter<"WebForm"> | string | null
     fields?: JsonNullableFilter<"WebForm">
     settings?: JsonNullableFilter<"WebForm">
+    submitAction?: StringFilter<"WebForm"> | string
+    submitMessage?: StringNullableFilter<"WebForm"> | string | null
+    redirectUrl?: StringNullableFilter<"WebForm"> | string | null
+    status?: StringFilter<"WebForm"> | string
     isActive?: BoolFilter<"WebForm"> | boolean
     organisationId?: StringFilter<"WebForm"> | string
     createdById?: StringNullableFilter<"WebForm"> | string | null
@@ -81286,9 +81366,14 @@ export namespace Prisma {
   export type WebFormOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrderInput | SortOrder
     code?: SortOrderInput | SortOrder
     fields?: SortOrderInput | SortOrder
     settings?: SortOrderInput | SortOrder
+    submitAction?: SortOrder
+    submitMessage?: SortOrderInput | SortOrder
+    redirectUrl?: SortOrderInput | SortOrder
+    status?: SortOrder
     isActive?: SortOrder
     organisationId?: SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -81306,9 +81391,14 @@ export namespace Prisma {
     NOT?: WebFormScalarWhereWithAggregatesInput | WebFormScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"WebForm"> | string
     name?: StringWithAggregatesFilter<"WebForm"> | string
+    description?: StringNullableWithAggregatesFilter<"WebForm"> | string | null
     code?: StringNullableWithAggregatesFilter<"WebForm"> | string | null
     fields?: JsonNullableWithAggregatesFilter<"WebForm">
     settings?: JsonNullableWithAggregatesFilter<"WebForm">
+    submitAction?: StringWithAggregatesFilter<"WebForm"> | string
+    submitMessage?: StringNullableWithAggregatesFilter<"WebForm"> | string | null
+    redirectUrl?: StringNullableWithAggregatesFilter<"WebForm"> | string | null
+    status?: StringWithAggregatesFilter<"WebForm"> | string
     isActive?: BoolWithAggregatesFilter<"WebForm"> | boolean
     organisationId?: StringWithAggregatesFilter<"WebForm"> | string
     createdById?: StringNullableWithAggregatesFilter<"WebForm"> | string | null
@@ -88855,9 +88945,14 @@ export namespace Prisma {
   export type WebFormCreateInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -88869,9 +88964,14 @@ export namespace Prisma {
   export type WebFormUncheckedCreateInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     organisationId: string
     createdById?: string | null
@@ -88883,9 +88983,14 @@ export namespace Prisma {
   export type WebFormUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88897,9 +89002,14 @@ export namespace Prisma {
   export type WebFormUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     organisationId?: StringFieldUpdateOperationsInput | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88911,9 +89021,14 @@ export namespace Prisma {
   export type WebFormCreateManyInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     organisationId: string
     createdById?: string | null
@@ -88925,9 +89040,14 @@ export namespace Prisma {
   export type WebFormUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88937,9 +89057,14 @@ export namespace Prisma {
   export type WebFormUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     organisationId?: StringFieldUpdateOperationsInput | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -94187,9 +94312,14 @@ export namespace Prisma {
   export type WebFormCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrder
     code?: SortOrder
     fields?: SortOrder
     settings?: SortOrder
+    submitAction?: SortOrder
+    submitMessage?: SortOrder
+    redirectUrl?: SortOrder
+    status?: SortOrder
     isActive?: SortOrder
     organisationId?: SortOrder
     createdById?: SortOrder
@@ -94201,7 +94331,12 @@ export namespace Prisma {
   export type WebFormMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrder
     code?: SortOrder
+    submitAction?: SortOrder
+    submitMessage?: SortOrder
+    redirectUrl?: SortOrder
+    status?: SortOrder
     isActive?: SortOrder
     organisationId?: SortOrder
     createdById?: SortOrder
@@ -94213,7 +94348,12 @@ export namespace Prisma {
   export type WebFormMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    description?: SortOrder
     code?: SortOrder
+    submitAction?: SortOrder
+    submitMessage?: SortOrder
+    redirectUrl?: SortOrder
+    status?: SortOrder
     isActive?: SortOrder
     organisationId?: SortOrder
     createdById?: SortOrder
@@ -107138,9 +107278,14 @@ export namespace Prisma {
   export type WebFormCreateWithoutOrganisationInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -107151,9 +107296,14 @@ export namespace Prisma {
   export type WebFormUncheckedCreateWithoutOrganisationInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     createdById?: string | null
     createdAt?: Date | string
@@ -108928,9 +109078,14 @@ export namespace Prisma {
     NOT?: WebFormScalarWhereInput | WebFormScalarWhereInput[]
     id?: StringFilter<"WebForm"> | string
     name?: StringFilter<"WebForm"> | string
+    description?: StringNullableFilter<"WebForm"> | string | null
     code?: StringNullableFilter<"WebForm"> | string | null
     fields?: JsonNullableFilter<"WebForm">
     settings?: JsonNullableFilter<"WebForm">
+    submitAction?: StringFilter<"WebForm"> | string
+    submitMessage?: StringNullableFilter<"WebForm"> | string | null
+    redirectUrl?: StringNullableFilter<"WebForm"> | string | null
+    status?: StringFilter<"WebForm"> | string
     isActive?: BoolFilter<"WebForm"> | boolean
     organisationId?: StringFilter<"WebForm"> | string
     createdById?: StringNullableFilter<"WebForm"> | string | null
@@ -112364,9 +112519,14 @@ export namespace Prisma {
   export type WebFormCreateWithoutCreatedByInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -112377,9 +112537,14 @@ export namespace Prisma {
   export type WebFormUncheckedCreateWithoutCreatedByInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     organisationId: string
     createdAt?: Date | string
@@ -163676,9 +163841,14 @@ export namespace Prisma {
   export type WebFormCreateManyOrganisationInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     createdById?: string | null
     createdAt?: Date | string
@@ -165823,9 +165993,14 @@ export namespace Prisma {
   export type WebFormUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -165836,9 +166011,14 @@ export namespace Prisma {
   export type WebFormUncheckedUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -165849,9 +166029,14 @@ export namespace Prisma {
   export type WebFormUncheckedUpdateManyWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -167471,9 +167656,14 @@ export namespace Prisma {
   export type WebFormCreateManyCreatedByInput = {
     id?: string
     name: string
+    description?: string | null
     code?: string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: string
+    submitMessage?: string | null
+    redirectUrl?: string | null
+    status?: string
     isActive?: boolean
     organisationId: string
     createdAt?: Date | string
@@ -170770,9 +170960,14 @@ export namespace Prisma {
   export type WebFormUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -170783,9 +170978,14 @@ export namespace Prisma {
   export type WebFormUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -170796,9 +170996,14 @@ export namespace Prisma {
   export type WebFormUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     code?: NullableStringFieldUpdateOperationsInput | string | null
     fields?: NullableJsonNullValueInput | InputJsonValue
     settings?: NullableJsonNullValueInput | InputJsonValue
+    submitAction?: StringFieldUpdateOperationsInput | string
+    submitMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    redirectUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
