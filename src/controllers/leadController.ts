@@ -483,7 +483,7 @@ export const updateLead = async (req: Request, res: Response) => {
             // Auto-create a follow-up task
             const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
             const dueDate = new Date(updates.nextFollowUp);
-            dueDate.setHours(0, 0, 0, 0); // Normalize to start of day
+            // Preserving time instead of normalizing to start of day
 
             // Check if a task already exists for this lead on this date
             const existingTask = await prisma.task.findFirst({
@@ -1298,8 +1298,19 @@ export const getPendingFollowUpsCount = async (req: Request, res: Response) => {
         // Daily Briefing is personal
         where.assignedToId = user.id;
 
-        const count = await prisma.lead.count({ where });
-        res.json({ count });
+        const leads = await prisma.lead.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                nextFollowUp: true,
+                company: true
+            },
+            orderBy: { nextFollowUp: 'asc' }
+        });
+
+        res.json({ count: leads.length, leads });
     } catch (error) {
         console.error('[getPendingFollowUpsCount] Error:', error);
         res.status(500).json({ message: (error as Error).message });
