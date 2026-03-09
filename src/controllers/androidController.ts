@@ -64,26 +64,58 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             }
         });
 
-        // Also create an Interaction record so it shows up in "Call Logs" and lead timeline
         const interactionDirection = callType === 'OUTGOING' ? 'outbound' : 'inbound';
-        const durationMinutes = (parseInt(duration, 10) || 0) / 60;
+        const durationSecs = parseInt(duration, 10) || 0;
+        const durationMinutes = durationSecs / 60;
+        const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${fileUrl ? ' (Recording attached)' : ''}`;
 
-        await prisma.interaction.create({
-            data: {
-                type: 'call',
-                direction: interactionDirection,
-                subject: `Mobile Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`,
-                description: `Duration: ${Math.floor((parseInt(duration, 10) || 0) / 60)}m ${(parseInt(duration, 10) || 0) % 60}s`,
-                date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
-                duration: Math.round(durationMinutes * 100) / 100, // as minutes, round to 2 decimals
-                recordingUrl: fileUrl || undefined,
-                recordingDuration: parseInt(duration, 10) || 0, // as seconds
-                callStatus: 'completed',
+        // Phase 1: Try to find an existing "initiated" interaction to update
+        // This links the "Initiated call" entry from CRM with the actual duration from Android
+        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+        const existingInitiatedInteraction = await prisma.interaction.findFirst({
+            where: {
                 leadId,
                 organisationId: user.organisationId,
-                createdById: user.id,
-            }
+                type: 'call',
+                callStatus: 'initiated',
+                createdAt: { gte: fifteenMinutesAgo }
+            },
+            orderBy: { createdAt: 'desc' }
         });
+
+        if (existingInitiatedInteraction) {
+            await prisma.interaction.update({
+                where: { id: existingInitiatedInteraction.id },
+                data: {
+                    duration: Math.round(durationMinutes * 100) / 100,
+                    recordingDuration: durationSecs,
+                    recordingUrl: fileUrl || undefined,
+                    callStatus: 'completed',
+                    description: formattedDescription,
+                    // Optionally update the subject to be more descriptive
+                    subject: `Completed Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`
+                }
+            });
+        } else {
+            // Also create an Interaction record so it shows up in "Call Logs" and lead timeline if none was initiated
+            await prisma.interaction.create({
+                data: {
+                    type: 'call',
+                    direction: interactionDirection,
+                    subject: `Mobile Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`,
+                    description: formattedDescription,
+                    date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
+                    duration: Math.round(durationMinutes * 100) / 100, // as minutes, round to 2 decimals
+                    recordingUrl: fileUrl || undefined,
+                    recordingDuration: durationSecs, // as seconds
+                    callStatus: 'completed',
+                    leadId,
+                    organisationId: user.organisationId,
+                    createdById: user.id,
+                }
+            });
+        }
 
         res.status(201).json({ message: 'Recording and Interaction uploaded successfully', recording });
     } catch (error) {
