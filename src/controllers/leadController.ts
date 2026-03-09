@@ -3,6 +3,7 @@ import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
+import { NotificationService } from '../services/notificationService';
 import { LeadSource, LeadStatus } from '../generated/client';
 import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 // Dynamic import used for OpenAI to avoid startup errors if missing
@@ -451,6 +452,17 @@ export const updateLead = async (req: Request, res: Response) => {
             // Remap for Prisma - store the ID directly
             updates.assignedToId = targetUserId;
             delete updates.assignedTo; // Clean up the relation object
+
+            // Notify new owner
+            if (currentLead.assignedToId !== targetUserId) {
+                const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
+                NotificationService.send(
+                    targetUserId,
+                    'New Lead Assigned',
+                    `Lead "${leadName}" has been assigned to you by ${requester.firstName}.`,
+                    'info'
+                ).catch(console.error);
+            }
         }
 
         // Track Status Change

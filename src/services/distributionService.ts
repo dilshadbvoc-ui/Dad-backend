@@ -1,5 +1,6 @@
 
 import prisma from '../config/prisma';
+import { NotificationService } from './notificationService';
 // UserRole import removed
 
 // Helper to get start of today (UTC midnight)
@@ -555,6 +556,14 @@ export const DistributionService = {
 
             await waClient.sendTextMessage(user.phone, message);
             console.log(`[DistributionService] Notification sent to ${user.phone}`);
+
+            // Also send CRM/Native notification
+            await NotificationService.send(
+                userId,
+                'New Lead Assigned (Auto)',
+                `You have been auto-assigned a new lead: ${lead.firstName} ${lead.lastName}`,
+                'info'
+            );
 
         } catch (error) {
             console.error('[DistributionService] Failed to notify user:', error);

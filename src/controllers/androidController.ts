@@ -53,17 +53,39 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         // For this implementation, we store it locally in the uploads folder and return the URL.
         const fileUrl = file ? `/uploads/${file.filename}` : null;
 
+        // Create Call Recording record
         const recording = await prisma.callRecording.create({
             data: {
                 leadId,
                 duration: parseInt(duration, 10) || 0,
-                fileUrl: fileUrl || '', // Prisma schema expects string, could be empty if no audio
+                fileUrl: fileUrl || '',
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
             }
         });
 
-        res.status(201).json({ message: 'Recording uploaded successfully', recording });
+        // Also create an Interaction record so it shows up in "Call Logs" and lead timeline
+        const interactionDirection = callType === 'OUTGOING' ? 'outbound' : 'inbound';
+        const durationMinutes = (parseInt(duration, 10) || 0) / 60;
+
+        await prisma.interaction.create({
+            data: {
+                type: 'call',
+                direction: interactionDirection,
+                subject: `Mobile Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`,
+                description: `Duration: ${Math.floor((parseInt(duration, 10) || 0) / 60)}m ${(parseInt(duration, 10) || 0) % 60}s`,
+                date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
+                duration: Math.round(durationMinutes * 100) / 100, // as minutes, round to 2 decimals
+                recordingUrl: fileUrl || undefined,
+                recordingDuration: parseInt(duration, 10) || 0, // as seconds
+                callStatus: 'completed',
+                leadId,
+                organisationId: user.organisationId,
+                createdById: user.id,
+            }
+        });
+
+        res.status(201).json({ message: 'Recording and Interaction uploaded successfully', recording });
     } catch (error) {
         console.error('Error uploading recording:', error);
         res.status(500).json({ error: 'Failed to upload recording' });
