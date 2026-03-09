@@ -66,7 +66,11 @@ export const getTimeline = async (req: Request, res: Response) => {
                 description: i.description,
                 date: i.date,
                 actor: i.createdBy,
-                meta: { direction: i.direction }
+                meta: {
+                    direction: i.direction,
+                    duration: i.duration,
+                    recordingDuration: i.recordingDuration
+                }
             })),
             ...tasks.map(t => ({
                 id: t.id,
