@@ -764,7 +764,6 @@ export const createBulkLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { AssignmentRuleService } = await import('../services/assignmentRuleService');
         const { GeoLocationService } = await import('../services/geoLocationService');
         let createdCount = 0;
         let duplicateCount = 0;
@@ -814,10 +813,10 @@ export const createBulkLeads = async (req: Request, res: Response) => {
 
                 // If no owner specified, apply assignment rules
                 if (!finalOwnerId && applyRules) {
-                    finalOwnerId = await AssignmentRuleService.assignLead(
-                        l,
+                    const { DistributionService } = await import('../services/distributionService');
+                    finalOwnerId = await DistributionService.assignLead(
+                        { ...l, id: undefined, branchId: l.branchId || user.branchId || undefined },
                         orgId,
-                        l.branchId || user.branchId || undefined,
                         ruleId,
                         user.id // Importer fallback
                     ) || undefined;

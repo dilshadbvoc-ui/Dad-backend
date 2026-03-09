@@ -49,7 +49,26 @@ const getWebForms = async (req, res) => {
             where: { organisationId: orgId, isDeleted: false },
             orderBy: { createdAt: 'desc' }
         });
-        res.json(webForms);
+        // Calculate submissionsCount for each form
+        // Submissions are leads with source 'website' and sourceDetails content linking to the form
+        const formsWithCounts = await Promise.all(webForms.map(async (form) => {
+            const count = await prisma_1.default.lead.count({
+                where: {
+                    organisationId: orgId,
+                    source: 'website',
+                    isDeleted: false,
+                    sourceDetails: {
+                        path: ['webFormId'],
+                        equals: form.id
+                    }
+                }
+            });
+            return {
+                ...form,
+                submissionsCount: count
+            };
+        }));
+        res.json(formsWithCounts);
     }
     catch (error) {
         res.status(500).json({ message: error.message });

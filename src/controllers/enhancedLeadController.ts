@@ -194,7 +194,7 @@ export const createLeadEnhanced = async (req: Request, res: Response) => {
 
         // 6. Apply distribution rules (non-blocking)
         try {
-            await DistributionService.assignLead(newLead, organisationId);
+            await DistributionService.assignLead(newLead, organisationId, undefined, userId);
             logger.info('Lead distribution applied', 'LEADS', userId, organisationId || undefined, { leadId: newLead.id });
         } catch (error) {
             logger.error('Lead distribution failed', error, 'LEADS', userId, organisationId || undefined, { leadId: newLead.id });

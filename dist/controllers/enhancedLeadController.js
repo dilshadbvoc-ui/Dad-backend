@@ -116,7 +116,7 @@ const createLeadEnhanced = async (req, res) => {
             return apiResponse_1.ResponseHandler.forbidden(res, 'User not associated with an organisation');
         }
         // 2. Sanitize and validate input
-        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'company', 'source', 'status', 'leadScore', 'notes'];
+        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'source', 'status', 'leadScore', 'notes'];
         const sanitizedData = (0, validation_1.sanitizeObject)(req.body, allowedFields);
         // 3. Validate required fields
         const validationErrors = [];
@@ -171,7 +171,7 @@ const createLeadEnhanced = async (req, res) => {
         });
         // 6. Apply distribution rules (non-blocking)
         try {
-            await distributionService_1.DistributionService.assignLead(newLead, organisationId);
+            await distributionService_1.DistributionService.assignLead(newLead, organisationId, undefined, userId);
             logger_1.logger.info('Lead distribution applied', 'LEADS', userId, organisationId || undefined, { leadId: newLead.id });
         }
         catch (error) {
@@ -227,7 +227,7 @@ const updateLeadEnhanced = async (req, res) => {
             return apiResponse_1.ResponseHandler.notFound(res, 'Lead not found');
         }
         // 3. Sanitize and validate update data
-        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'company', 'source', 'status', 'leadScore', 'notes'];
+        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'source', 'status', 'leadScore', 'notes'];
         const sanitizedData = (0, validation_1.sanitizeObject)(req.body, allowedFields);
         // 4. Validate updated fields
         const validationErrors = [];

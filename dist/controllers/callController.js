@@ -113,13 +113,21 @@ exports.completeCall = completeCall;
 const getLeadCalls = async (req, res) => {
     try {
         const { leadId } = req.params;
+        const user = req.user;
         if (leadId === 'new')
             return res.json([]);
+        const where = {
+            leadId: leadId,
+            type: 'call',
+            isDeleted: false
+        };
+        // Hierarchy filtering
+        if (user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.createdById = { in: visibleUserIds };
+        }
         const calls = await prisma_1.default.interaction.findMany({
-            where: {
-                leadId: leadId,
-                type: 'call'
-            },
+            where,
             orderBy: { date: 'desc' }
         });
         res.json(calls);
@@ -168,7 +176,24 @@ const getAllCalls = async (req, res) => {
         if (status && status !== 'all') {
             where.callStatus = status;
         }
-        if (userId && userId !== 'all') {
+        if (user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            if (userId && userId !== 'all') {
+                // If filtering by specific user, ensure that user is in allowed hierarchy
+                if (visibleUserIds.includes(userId)) {
+                    where.createdById = userId;
+                }
+                else {
+                    // Not authorized to view this user's calls
+                    where.createdById = 'none';
+                }
+            }
+            else {
+                where.createdById = { in: visibleUserIds };
+            }
+        }
+        else if (userId && userId !== 'all') {
+            // Admin/Super Admin can filter by any user
             where.createdById = userId;
         }
         if (startDate || endDate) {
@@ -266,6 +291,11 @@ const getCallStats = async (req, res) => {
             isDeleted: false,
             date: { gte: startDate }
         };
+        // Hierarchy filtering
+        if (user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            baseWhere.createdById = { in: visibleUserIds };
+        }
         // Total calls
         const totalCalls = await prisma_1.default.interaction.count({ where: baseWhere });
         // Calls by direction

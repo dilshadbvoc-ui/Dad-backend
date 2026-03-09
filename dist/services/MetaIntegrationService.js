@@ -122,7 +122,10 @@ exports.MetaIntegrationService = {
                 });
                 logger_1.logger.info(`Created lead ${lead.id} from Meta LeadGen ID: ${leadgen_id}`, 'MetaWebhook', undefined, org.id);
                 // Auto-distribute the lead using assignment rules
-                await distributionService_1.DistributionService.assignLead(lead, org.id);
+                // Check if there's a specific rule mapped to this form or a default rule for Meta
+                const formRules = metaConfig?.formRules || {};
+                const ruleId = formRules[form_id] || metaConfig?.defaultRuleId;
+                await distributionService_1.DistributionService.assignLead(lead, org.id, ruleId && ruleId !== 'none' ? ruleId : undefined);
                 // Find an admin user to notify
                 const adminUser = await prisma_1.default.user.findFirst({
                     where: {

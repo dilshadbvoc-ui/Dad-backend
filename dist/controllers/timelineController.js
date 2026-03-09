@@ -29,7 +29,7 @@ const getTimeline = async (req, res) => {
             return res.status(400).json({ message: 'Invalid entity type or ID' });
         }
         // Fetch related data concurrently
-        const [interactions, tasks, events, auditLogs] = await Promise.all([
+        const [interactions, tasks, events, auditLogs, callRecordings] = await Promise.all([
             prisma_1.default.interaction.findMany({
                 where: { [`${type}Id`]: id },
                 orderBy: { date: 'desc' },
@@ -49,6 +49,10 @@ const getTimeline = async (req, res) => {
                 where: { entityId: id }, // AuditLog stores entityId generically
                 orderBy: { createdAt: 'desc' },
                 include: { actor: { select: { firstName: true, lastName: true } } }
+            }),
+            prisma_1.default.callRecording.findMany({
+                where: { leadId: id },
+                orderBy: { timestamp: 'desc' }
             })
         ]);
         // Normalize data for UI
@@ -61,7 +65,11 @@ const getTimeline = async (req, res) => {
                 description: i.description,
                 date: i.date,
                 actor: i.createdBy,
-                meta: { direction: i.direction }
+                meta: {
+                    direction: i.direction,
+                    duration: i.duration,
+                    recordingDuration: i.recordingDuration
+                }
             })),
             ...tasks.map(t => ({
                 id: t.id,
@@ -137,7 +145,17 @@ const getTimeline = async (req, res) => {
                     actor: a.actor,
                     meta: {}
                 };
-            })
+            }),
+            ...callRecordings.map(c => ({
+                id: c.id,
+                type: 'recording',
+                subType: c.callType,
+                title: `Call: ${c.callType}`,
+                description: `Duration: ${Math.floor(c.duration / 60)}m ${c.duration % 60}s`,
+                date: c.timestamp,
+                actor: null, // Call logs are from the device, usually specific to the assigned user
+                meta: { fileUrl: c.fileUrl, duration: c.duration, callType: c.callType }
+            }))
         ];
         // Sort by date descending
         timeline.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

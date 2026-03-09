@@ -23,9 +23,10 @@ const getLeadsReport = async (req, res) => {
             organisationId: orgId,
             isDeleted: false
         };
-        // If not admin, restrict to self and subordinates
+        // If not admin, restrict to self and subordinates (or managed branches)
         if (user.role !== 'admin' && user.role !== 'super_admin') {
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.assignedToId = { in: visibleUserIds };
         }
         if (stage)
             where.stage = stage;
@@ -86,9 +87,10 @@ const getUserPerformance = async (req, res) => {
             dateFilter.gte = new Date(startDate);
         if (endDate)
             dateFilter.lte = new Date(endDate);
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
         const users = await prisma_1.default.user.findMany({
             where: {
-                id: { in: [...subordinateIds, user.id] },
+                id: { in: visibleUserIds },
                 organisationId: orgId,
                 isActive: true
             },
@@ -195,7 +197,8 @@ const getSalesBook = async (req, res) => {
         };
         // If not admin, restrict to self and subordinates
         if (user.role !== 'admin' && user.role !== 'super_admin') {
-            where.ownerId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.ownerId = { in: visibleUserIds };
         }
         // Get won opportunities (sales)
         const sales = await prisma_1.default.opportunity.findMany({
@@ -516,8 +519,8 @@ const getTeamPerformanceReport = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(403).json({ message: 'No org' });
-        const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-        const teamIds = [user.id, ...subordinateIds];
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        const teamIds = visibleUserIds;
         const teamsData = await prisma_1.default.user.findMany({
             where: { id: { in: teamIds } },
             select: {

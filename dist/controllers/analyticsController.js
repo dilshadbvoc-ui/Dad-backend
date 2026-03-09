@@ -424,12 +424,19 @@ const getLeadSourceAnalytics = async (req, res) => {
         const orgFilter = orgId ? { organisationId: orgId } : {};
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
+        // Hierarchy Visibility
+        const visibilityFilter = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            visibilityFilter.assignedToId = { in: visibleUserIds };
+        }
         // Prisma groupBy for lead sources
         const sourceStats = await prisma_1.default.lead.groupBy({
             by: ['source'],
             where: {
                 ...combinedFilter,
-                isDeleted: false
+                isDeleted: false,
+                ...visibilityFilter
             },
             _count: { source: true },
             orderBy: { _count: { source: 'desc' } }
@@ -458,11 +465,19 @@ const getAiInsights = async (req, res) => {
         const orgFilter = orgId ? { organisationId: orgId } : {};
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
+        // Visibility Filters for Insights
+        const visibilityFilter = {};
+        const oppVisibilityFilter = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            visibilityFilter.assignedToId = { in: visibleUserIds };
+            oppVisibilityFilter.ownerId = { in: visibleUserIds };
+        }
         const insights = [];
         // 1. Top Lead Source Analysis
         const topSource = await prisma_1.default.lead.groupBy({
             by: ['source'],
-            where: { ...combinedFilter, isDeleted: false },
+            where: { ...combinedFilter, isDeleted: false, ...visibilityFilter },
             _count: { source: true },
             orderBy: { _count: { source: 'desc' } },
             take: 1
@@ -483,7 +498,8 @@ const getAiInsights = async (req, res) => {
                 ...combinedFilter,
                 stage: { in: ['prospecting', 'qualified'] },
                 isDeleted: false,
-                updatedAt: { lt: thirtyDaysAgo }
+                updatedAt: { lt: thirtyDaysAgo },
+                ...oppVisibilityFilter
             }
         });
         if (stagnantDeals > 0) {
@@ -500,7 +516,8 @@ const getAiInsights = async (req, res) => {
                 ...combinedFilter,
                 stage: { notIn: ['closed_won', 'closed_lost'] },
                 isDeleted: false,
-                amount: { gt: 0 }
+                amount: { gt: 0 },
+                ...oppVisibilityFilter
             },
             _avg: { amount: true }
         });
@@ -511,7 +528,8 @@ const getAiInsights = async (req, res) => {
                 ...combinedFilter,
                 stage: { notIn: ['closed_won', 'closed_lost'] },
                 isDeleted: false,
-                amount: { gt: highValueThreshold }
+                amount: { gt: highValueThreshold },
+                ...oppVisibilityFilter
             },
             take: 2,
             orderBy: { amount: 'desc' },
@@ -558,10 +576,17 @@ const getTopPerformers = async (req, res) => {
         const userCombinedFilter = { ...orgFilter, ...branchFilter };
         // For Active users
         const activeFilter = { isActive: true };
+        // Hierarchy Visibility for Top Performers
+        const visibilityFilter = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            visibilityFilter.id = { in: visibleUserIds };
+        }
         const topUsers = await prisma_1.default.user.findMany({
             where: {
                 ...userCombinedFilter,
-                ...activeFilter
+                ...activeFilter,
+                ...visibilityFilter
             },
             select: {
                 id: true,

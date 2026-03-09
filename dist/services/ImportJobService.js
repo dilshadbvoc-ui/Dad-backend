@@ -225,7 +225,7 @@ class ImportJobService {
                     if (applyAssignmentRules && !leadData.assignedToId) {
                         // Only apply rules if no explicit owner was set via mapping
                         console.log(`[ImportJob ${jobId}] Applying assignment rules for lead ${createdLead.id}`);
-                        await distributionService_1.DistributionService.assignLead(createdLead, job.organisationId);
+                        await distributionService_1.DistributionService.assignLead(createdLead, job.organisationId, undefined, job.createdById);
                         console.log(`[ImportJob ${jobId}] Assignment rules applied for lead ${createdLead.id}`);
                     }
                     else if (applyAssignmentRules && leadData.assignedToId) {

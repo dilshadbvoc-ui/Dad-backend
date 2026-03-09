@@ -45,39 +45,36 @@ exports.DuplicateLeadService = {
      * IMPORTANT: Only considers it a duplicate if the lead is in the SAME branch
      * Same lead in different branches = NEW lead (not a re-enquiry)
      */
-    async checkDuplicate(phone, email, organisationId, branchId) {
+    async checkDuplicate(phone, email, organisationId, branchId, includeAllBranches = false // Default to false: isolate by branch
+    ) {
         try {
             // Sanitize phone
             const cleanPhone = phone.toString().replace(/\D/g, '');
             // Build OR conditions for duplicate check
             const conditions = [
-                { phone: cleanPhone, organisationId }
+                { phone: cleanPhone, organisationId },
+                { secondaryPhone: cleanPhone, organisationId }
             ];
             if (email) {
                 conditions.push({ email, organisationId });
             }
-            // CRITICAL: Duplicates must be in the same branch
-            // If no branchId provided, we can't determine duplicates accurately
             const where = {
                 OR: conditions,
                 isDeleted: false,
                 organisationId
             };
-            // ALWAYS filter by branch if branchId is provided
-            // This ensures same lead in different branches = NEW lead
-            if (branchId) {
-                where.branchId = branchId;
-            }
-            else {
-                // If no branchId, only check leads without branch assignment
-                // This handles cases where branch is not set
-                where.branchId = null;
+            // STRICT BRANCH ISOLATION:
+            // If includeAllBranches is false (default), we only look for duplicates within the same branch.
+            // If branchId is null/undefined, we look for unassigned leads.
+            if (!includeAllBranches) {
+                where.branchId = branchId || null;
             }
             console.log('[DuplicateLeadService] Checking duplicate with:', {
                 phone: cleanPhone,
                 email,
                 organisationId,
                 branchId,
+                includeAllBranches,
                 where
             });
             // Check for existing lead IN THE SAME BRANCH
@@ -179,6 +176,17 @@ exports.DuplicateLeadService = {
                     leadId: existingLead.id,
                     createdById: existingLead.assignedToId,
                     organisationId
+                }
+            });
+            // Log in LeadHistory for ownership history timeline
+            await prisma_1.default.leadHistory.create({
+                data: {
+                    leadId: existingLead.id,
+                    reason: `Re-Enquiry received from ${newData.source || 'Website'}`,
+                    fieldName: 'status',
+                    oldValue: existingLead.status,
+                    newValue: client_1.LeadStatus.re_enquiry,
+                    createdAt: now
                 }
             });
             // Notify the assigned owner

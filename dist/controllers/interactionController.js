@@ -126,6 +126,11 @@ const getLeadInteractions = async (req, res) => {
         const where = { leadId, isDeleted: false };
         if (orgId)
             where.organisationId = orgId;
+        // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
+        if (user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.createdById = { in: visibleUserIds };
+        }
         const interactions = await prisma_1.default.interaction.findMany({
             where,
             include: {
@@ -158,6 +163,11 @@ const getAllInteractions = async (req, res) => {
         };
         if (user.branchId) {
             where.branchId = user.branchId;
+        }
+        // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
+        if (user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.createdById = { in: visibleUserIds };
         }
         // Filter: Type
         if (type)

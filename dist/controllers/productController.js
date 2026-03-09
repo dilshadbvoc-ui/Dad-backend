@@ -58,6 +58,13 @@ const getProducts = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User not associated with an organisation' });
             where.organisationId = orgId;
+            // Branch Scoping
+            if (user.branchId) {
+                where.OR = [
+                    { branchId: user.branchId },
+                    { branchId: null }
+                ];
+            }
         }
         if (search) {
             where.OR = [
@@ -113,7 +120,8 @@ const createProduct = async (req, res) => {
                 category: req.body.category,
                 tags: req.body.tags,
                 organisation: { connect: { id: orgId } },
-                createdBy: { connect: { id: user.id } }
+                createdBy: { connect: { id: user.id } },
+                ...(user.branchId ? { branch: { connect: { id: user.branchId } } } : {})
             }
         });
         // Audit Log

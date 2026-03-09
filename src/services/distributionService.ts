@@ -13,9 +13,9 @@ export const DistributionService = {
     /**
      * Assign a lead to a user based on active assignment rules (Round Robin, Top Performer, etc.)
      */
-    async assignLead(lead: any, organisationId: string, ruleId?: string): Promise<string | null> {
+    async assignLead(lead: any, organisationId: string, ruleId?: string, fallbackUserId?: string): Promise<string | null> {
         try {
-            console.log(`[DistributionService] Attempting to assign lead ${lead.id} (Branch: ${lead.branchId || 'None'})`);
+            console.log(`[DistributionService] Attempting to assign lead ${lead.id || 'new'} (Branch: ${lead.branchId || 'None'})`);
 
             // 1. Fetch active rules for this organisation, filtered by branch
             // If ruleId is provided, restrict to that specific rule
@@ -42,7 +42,9 @@ export const DistributionService = {
 
             if (!rules || rules.length === 0) {
                 console.log('[DistributionService] No active assignment rules found.');
-                // Fallback to organisation creator if no rules match
+                // Fallback to provided user OR organisation creator
+                if (fallbackUserId) return fallbackUserId;
+
                 const org = await prisma.organisation.findUnique({
                     where: { id: organisationId },
                     select: { createdBy: true }

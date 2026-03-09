@@ -38,6 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DistributionService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
+const notificationService_1 = require("./notificationService");
 // UserRole import removed
 // Helper to get start of today (UTC midnight)
 const getStartOfToday = () => {
@@ -48,27 +49,39 @@ exports.DistributionService = {
     /**
      * Assign a lead to a user based on active assignment rules (Round Robin, Top Performer, etc.)
      */
-    async assignLead(lead, organisationId) {
+    async assignLead(lead, organisationId, ruleId, fallbackUserId) {
         try {
-            console.log(`[DistributionService] Attempting to assign lead ${lead.id} (Branch: ${lead.branchId || 'None'})`);
+            console.log(`[DistributionService] Attempting to assign lead ${lead.id || 'new'} (Branch: ${lead.branchId || 'None'})`);
             // 1. Fetch active rules for this organisation, filtered by branch
+            // If ruleId is provided, restrict to that specific rule
+            const where = {
+                organisationId: organisationId,
+                isActive: true,
+                isDeleted: false,
+                OR: [
+                    { branchId: lead.branchId }, // Match specific branch
+                    { branchId: null } // OR Global rules
+                ]
+            };
+            if (ruleId) {
+                where.id = ruleId;
+            }
             const rules = await prisma_1.default.assignmentRule.findMany({
-                where: {
-                    organisationId: organisationId,
-                    isActive: true,
-                    isDeleted: false,
-                    OR: [
-                        { branchId: lead.branchId }, // Match specific branch
-                        { branchId: null } // OR Global rules
-                    ]
-                },
+                where,
                 orderBy: [
                     { priority: 'asc' }
                 ]
             });
             if (!rules || rules.length === 0) {
                 console.log('[DistributionService] No active assignment rules found.');
-                return null;
+                // Fallback to provided user OR organisation creator
+                if (fallbackUserId)
+                    return fallbackUserId;
+                const org = await prisma_1.default.organisation.findUnique({
+                    where: { id: organisationId },
+                    select: { createdBy: true }
+                });
+                return org?.createdBy || null;
             }
             // 2. Iterate through rules to find a match
             for (const rule of rules) {
@@ -523,6 +536,8 @@ exports.DistributionService = {
             const message = `Hi ${user.firstName}, New Lead Assigned!\n\nName: ${lead.firstName} ${lead.lastName}\nCompany: ${lead.company || 'N/A'}\n\nPlease check the CRM for details.`;
             await waClient.sendTextMessage(user.phone, message);
             console.log(`[DistributionService] Notification sent to ${user.phone}`);
+            // Also send CRM/Native notification
+            await notificationService_1.NotificationService.send(userId, 'New Lead Assigned (Auto)', `You have been auto-assigned a new lead: ${lead.firstName} ${lead.lastName}`, 'info');
         }
         catch (error) {
             console.error('[DistributionService] Failed to notify user:', error);

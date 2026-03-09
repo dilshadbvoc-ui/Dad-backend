@@ -41,6 +41,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const distributionService_1 = require("../services/distributionService");
 const workflowEngine_1 = require("../services/workflowEngine");
+const notificationService_1 = require("../services/notificationService");
 const client_1 = require("../generated/client");
 const roleUtils_1 = require("../utils/roleUtils");
 // Dynamic import used for OpenAI to avoid startup errors if missing
@@ -204,6 +205,7 @@ const createLead = async (req, res) => {
                 lastName: req.body.lastName || undefined,
                 email: cleanEmail,
                 phone: cleanPhone,
+                secondaryPhone: req.body.secondaryPhone || undefined,
                 company: req.body.company || undefined,
                 enquiryAbout: req.body.enquiryAbout || undefined,
                 jobTitle: req.body.jobTitle || undefined,
@@ -444,6 +446,11 @@ const updateLead = async (req, res) => {
             // Remap for Prisma - store the ID directly
             updates.assignedToId = targetUserId;
             delete updates.assignedTo; // Clean up the relation object
+            // Notify new owner
+            if (currentLead.assignedToId !== targetUserId) {
+                const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
+                notificationService_1.NotificationService.send(targetUserId, 'New Lead Assigned', `Lead "${leadName}" has been assigned to you by ${requester.firstName}.`, 'info').catch(console.error);
+            }
         }
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
@@ -473,7 +480,7 @@ const updateLead = async (req, res) => {
             // Auto-create a follow-up task
             const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
             const dueDate = new Date(updates.nextFollowUp);
-            dueDate.setHours(0, 0, 0, 0); // Normalize to start of day
+            // Preserving time instead of normalizing to start of day
             // Check if a task already exists for this lead on this date
             const existingTask = await prisma_1.default.task.findFirst({
                 where: {
@@ -520,7 +527,7 @@ const updateLead = async (req, res) => {
         }
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
         const allowedFields = [
-            'firstName', 'lastName', 'email', 'phone', 'company', 'enquiryAbout', 'jobTitle', 'address',
+            'firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'enquiryAbout', 'jobTitle', 'address',
             'status', 'source', 'sourceDetails', 'stage', 'tags', 'potentialValue',
             'nextFollowUp', 'customFields', 'isHotLead', 'lostReason', 'notes',
             'country', 'countryCode', 'phoneCountryCode', 'city', 'state', 'zip'
@@ -623,6 +630,11 @@ const updateLead = async (req, res) => {
                 LeadScoringService.scoreLead(leadId).catch(console.error);
             });
         }
+        // Hierarchy Notification
+        Promise.resolve().then(() => __importStar(require('../services/notificationService'))).then(({ NotificationService }) => {
+            const leadName = `${finalLead.firstName} ${finalLead.lastName || ''}`.trim();
+            NotificationService.sendToHierarchy(requester.id, 'Lead Updated', `${requester.firstName} updated lead: ${leadName}`, 'info').catch(console.error);
+        });
     }
     catch (error) {
         console.error('[updateLead] Error:', error);
@@ -691,9 +703,13 @@ const deleteLead = async (req, res) => {
 exports.deleteLead = deleteLead;
 const createBulkLeads = async (req, res) => {
     try {
-        const leadsData = req.body;
+        const { leads, assignmentRuleId, applyAssignmentRules } = req.body;
         const user = req.user;
-        console.log('[createBulkLeads] Received:', leadsData.length, 'leads');
+        // Support both direct array (legacy) and object with options
+        const leadsData = Array.isArray(req.body) ? req.body : leads;
+        const ruleId = Array.isArray(req.body) ? undefined : assignmentRuleId;
+        const applyRules = Array.isArray(req.body) ? true : (applyAssignmentRules !== false); // Default to true if not explicitly false
+        console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId);
         if (!Array.isArray(leadsData) || leadsData.length === 0) {
             return res.status(400).json({ message: 'Invalid input' });
         }
@@ -701,9 +717,7 @@ const createBulkLeads = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { AssignmentRuleService } = await Promise.resolve().then(() => __importStar(require('../services/assignmentRuleService')));
         const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/geoLocationService')));
-        const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
@@ -741,8 +755,10 @@ const createBulkLeads = async (req, res) => {
                 // Determine final owner
                 let finalOwnerId = l.assignedTo;
                 // If no owner specified, apply assignment rules
-                if (!finalOwnerId) {
-                    finalOwnerId = await AssignmentRuleService.assignLead(l, orgId, l.branchId || user.branchId || undefined) || undefined;
+                if (!finalOwnerId && applyRules) {
+                    const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/distributionService')));
+                    finalOwnerId = await DistributionService.assignLead({ ...l, id: undefined, branchId: l.branchId || user.branchId || undefined }, orgId, ruleId, user.id // Importer fallback
+                    ) || undefined;
                 }
                 const data = {
                     firstName: l.firstName,
@@ -867,6 +883,7 @@ const convertLead = async (req, res) => {
         // If no amount provided, use lead's potentialValue or calculate from products
         if (!amount || opportunityAmount === 0) {
             if (lead.potentialValue && lead.potentialValue > 0) {
+                console.log(`[convertLead] Using potentialValue ${lead.potentialValue} as fallback for amount`);
                 opportunityAmount = lead.potentialValue;
             }
             else if (lead.products && lead.products.length > 0) {
@@ -874,6 +891,7 @@ const convertLead = async (req, res) => {
                 opportunityAmount = lead.products.reduce((total, item) => {
                     return total + (item.price * item.quantity);
                 }, 0);
+                console.log(`[convertLead] Using product sum ${opportunityAmount} as fallback for amount`);
             }
         }
         // 0. Limit Check
@@ -1192,8 +1210,18 @@ const getPendingFollowUpsCount = async (req, res) => {
         }
         // Daily Briefing is personal
         where.assignedToId = user.id;
-        const count = await prisma_1.default.lead.count({ where });
-        res.json({ count });
+        const leads = await prisma_1.default.lead.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                nextFollowUp: true,
+                company: true
+            },
+            orderBy: { nextFollowUp: 'asc' }
+        });
+        res.json({ count: leads.length, leads });
     }
     catch (error) {
         console.error('[getPendingFollowUpsCount] Error:', error);

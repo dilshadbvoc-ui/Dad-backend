@@ -193,11 +193,11 @@ export class ImportJobService {
 
                     // Determine initial assignedToId based on whether we're applying rules
                     let initialAssignedToId = leadData.assignedToId; // From mapping (ownerEmail)
-                    
+
                     console.log(`[ImportJob ${jobId}] Processing lead: ${leadData.firstName} ${leadData.lastName}`);
                     console.log(`[ImportJob ${jobId}] applyAssignmentRules: ${applyAssignmentRules}`);
                     console.log(`[ImportJob ${jobId}] initialAssignedToId from mapping: ${initialAssignedToId}`);
-                    
+
                     if (!initialAssignedToId && !applyAssignmentRules) {
                         // If no explicit owner and NOT applying rules, assign to uploader
                         initialAssignedToId = job.createdById;
@@ -216,7 +216,7 @@ export class ImportJobService {
                     if (applyAssignmentRules && !leadData.assignedToId) {
                         // Only apply rules if no explicit owner was set via mapping
                         console.log(`[ImportJob ${jobId}] Applying assignment rules for lead ${createdLead.id}`);
-                        await DistributionService.assignLead(createdLead, job.organisationId);
+                        await DistributionService.assignLead(createdLead, job.organisationId, undefined, job.createdById);
                         console.log(`[ImportJob ${jobId}] Assignment rules applied for lead ${createdLead.id}`);
                     } else if (applyAssignmentRules && leadData.assignedToId) {
                         console.log(`[ImportJob ${jobId}] Skipping assignment rules - explicit owner set: ${leadData.assignedToId}`);
