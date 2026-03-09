@@ -960,12 +960,14 @@ export const convertLead = async (req: Request, res: Response) => {
         // If no amount provided, use lead's potentialValue or calculate from products
         if (!amount || opportunityAmount === 0) {
             if (lead.potentialValue && lead.potentialValue > 0) {
+                console.log(`[convertLead] Using potentialValue ${lead.potentialValue} as fallback for amount`);
                 opportunityAmount = lead.potentialValue;
             } else if (lead.products && lead.products.length > 0) {
                 // Calculate from products
                 opportunityAmount = lead.products.reduce((total, item) => {
                     return total + (item.price * item.quantity);
                 }, 0);
+                console.log(`[convertLead] Using product sum ${opportunityAmount} as fallback for amount`);
             }
         }
 
