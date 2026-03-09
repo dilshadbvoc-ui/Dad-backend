@@ -214,6 +214,7 @@ exports.Prisma.LeadScalarFieldEnum = {
   lastName: 'lastName',
   email: 'email',
   phone: 'phone',
+  secondaryPhone: 'secondaryPhone',
   phoneCountryCode: 'phoneCountryCode',
   country: 'country',
   countryCode: 'countryCode',

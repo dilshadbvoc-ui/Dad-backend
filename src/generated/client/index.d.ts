@@ -14725,6 +14725,7 @@ export namespace Prisma {
     lastName: string | null
     email: string | null
     phone: string | null
+    secondaryPhone: string | null
     phoneCountryCode: string | null
     country: string | null
     countryCode: string | null
@@ -14767,6 +14768,7 @@ export namespace Prisma {
     lastName: string | null
     email: string | null
     phone: string | null
+    secondaryPhone: string | null
     phoneCountryCode: string | null
     country: string | null
     countryCode: string | null
@@ -14809,6 +14811,7 @@ export namespace Prisma {
     lastName: number
     email: number
     phone: number
+    secondaryPhone: number
     phoneCountryCode: number
     country: number
     countryCode: number
@@ -14874,6 +14877,7 @@ export namespace Prisma {
     lastName?: true
     email?: true
     phone?: true
+    secondaryPhone?: true
     phoneCountryCode?: true
     country?: true
     countryCode?: true
@@ -14916,6 +14920,7 @@ export namespace Prisma {
     lastName?: true
     email?: true
     phone?: true
+    secondaryPhone?: true
     phoneCountryCode?: true
     country?: true
     countryCode?: true
@@ -14958,6 +14963,7 @@ export namespace Prisma {
     lastName?: true
     email?: true
     phone?: true
+    secondaryPhone?: true
     phoneCountryCode?: true
     country?: true
     countryCode?: true
@@ -15092,6 +15098,7 @@ export namespace Prisma {
     lastName: string | null
     email: string | null
     phone: string
+    secondaryPhone: string | null
     phoneCountryCode: string | null
     country: string | null
     countryCode: string | null
@@ -15158,6 +15165,7 @@ export namespace Prisma {
     lastName?: boolean
     email?: boolean
     phone?: boolean
+    secondaryPhone?: boolean
     phoneCountryCode?: boolean
     country?: boolean
     countryCode?: boolean
@@ -15225,6 +15233,7 @@ export namespace Prisma {
     lastName?: boolean
     email?: boolean
     phone?: boolean
+    secondaryPhone?: boolean
     phoneCountryCode?: boolean
     country?: boolean
     countryCode?: boolean
@@ -15278,6 +15287,7 @@ export namespace Prisma {
     lastName?: boolean
     email?: boolean
     phone?: boolean
+    secondaryPhone?: boolean
     phoneCountryCode?: boolean
     country?: boolean
     countryCode?: boolean
@@ -15379,6 +15389,7 @@ export namespace Prisma {
       lastName: string | null
       email: string | null
       phone: string
+      secondaryPhone: string | null
       phoneCountryCode: string | null
       country: string | null
       countryCode: string | null
@@ -15835,6 +15846,7 @@ export namespace Prisma {
     readonly lastName: FieldRef<"Lead", 'String'>
     readonly email: FieldRef<"Lead", 'String'>
     readonly phone: FieldRef<"Lead", 'String'>
+    readonly secondaryPhone: FieldRef<"Lead", 'String'>
     readonly phoneCountryCode: FieldRef<"Lead", 'String'>
     readonly country: FieldRef<"Lead", 'String'>
     readonly countryCode: FieldRef<"Lead", 'String'>
@@ -74467,6 +74479,7 @@ export namespace Prisma {
     lastName: 'lastName',
     email: 'email',
     phone: 'phone',
+    secondaryPhone: 'secondaryPhone',
     phoneCountryCode: 'phoneCountryCode',
     country: 'country',
     countryCode: 'countryCode',
@@ -76694,6 +76707,7 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"Lead"> | string | null
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringFilter<"Lead"> | string
+    secondaryPhone?: StringNullableFilter<"Lead"> | string | null
     phoneCountryCode?: StringNullableFilter<"Lead"> | string | null
     country?: StringNullableFilter<"Lead"> | string | null
     countryCode?: StringNullableFilter<"Lead"> | string | null
@@ -76760,6 +76774,7 @@ export namespace Prisma {
     lastName?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrder
+    secondaryPhone?: SortOrderInput | SortOrder
     phoneCountryCode?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
     countryCode?: SortOrderInput | SortOrder
@@ -76830,6 +76845,7 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"Lead"> | string | null
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringFilter<"Lead"> | string
+    secondaryPhone?: StringNullableFilter<"Lead"> | string | null
     phoneCountryCode?: StringNullableFilter<"Lead"> | string | null
     country?: StringNullableFilter<"Lead"> | string | null
     countryCode?: StringNullableFilter<"Lead"> | string | null
@@ -76896,6 +76912,7 @@ export namespace Prisma {
     lastName?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrder
+    secondaryPhone?: SortOrderInput | SortOrder
     phoneCountryCode?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
     countryCode?: SortOrderInput | SortOrder
@@ -76951,6 +76968,7 @@ export namespace Prisma {
     lastName?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     email?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     phone?: StringWithAggregatesFilter<"Lead"> | string
+    secondaryPhone?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     phoneCountryCode?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     country?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     countryCode?: StringNullableWithAggregatesFilter<"Lead"> | string | null
@@ -83833,6 +83851,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -83893,6 +83912,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -83953,6 +83973,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -84013,6 +84034,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -84073,6 +84095,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -84120,6 +84143,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -84161,6 +84185,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -91691,6 +91716,7 @@ export namespace Prisma {
     lastName?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    secondaryPhone?: SortOrder
     phoneCountryCode?: SortOrder
     country?: SortOrder
     countryCode?: SortOrder
@@ -91746,6 +91772,7 @@ export namespace Prisma {
     lastName?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    secondaryPhone?: SortOrder
     phoneCountryCode?: SortOrder
     country?: SortOrder
     countryCode?: SortOrder
@@ -91788,6 +91815,7 @@ export namespace Prisma {
     lastName?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    secondaryPhone?: SortOrder
     phoneCountryCode?: SortOrder
     country?: SortOrder
     countryCode?: SortOrder
@@ -106327,6 +106355,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -106386,6 +106415,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -108483,6 +108513,7 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"Lead"> | string | null
     email?: StringNullableFilter<"Lead"> | string | null
     phone?: StringFilter<"Lead"> | string
+    secondaryPhone?: StringNullableFilter<"Lead"> | string | null
     phoneCountryCode?: StringNullableFilter<"Lead"> | string | null
     country?: StringNullableFilter<"Lead"> | string | null
     countryCode?: StringNullableFilter<"Lead"> | string | null
@@ -110552,6 +110583,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -110611,6 +110643,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -110680,6 +110713,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -110739,6 +110773,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -110808,6 +110843,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -110867,6 +110903,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -118863,6 +118900,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -118922,6 +118960,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -118997,6 +119036,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -119056,6 +119096,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -120128,6 +120169,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -120187,6 +120229,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -120920,6 +120963,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -120979,6 +121023,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -122050,6 +122095,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -122109,6 +122155,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -122806,6 +122853,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -122865,6 +122913,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123747,6 +123796,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -123806,6 +123856,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -124539,6 +124590,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -124598,6 +124650,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125859,6 +125912,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -125918,6 +125972,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -126058,6 +126113,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126117,6 +126173,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -129145,6 +129202,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -129204,6 +129262,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -130074,6 +130133,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -130133,6 +130193,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -130847,6 +130908,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -130906,6 +130968,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -131642,6 +131705,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -131701,6 +131765,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -132366,6 +132431,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -132425,6 +132491,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -133059,6 +133126,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133118,6 +133186,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133850,6 +133919,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -133909,6 +133979,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -144279,6 +144350,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -144338,6 +144410,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -144897,6 +144970,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144956,6 +145030,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149250,6 +149325,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -149309,6 +149385,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -149939,6 +150016,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149998,6 +150076,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151431,6 +151510,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -151490,6 +151570,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -154228,6 +154309,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -154287,6 +154369,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -154814,6 +154897,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -154873,6 +154957,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157955,6 +158040,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -158014,6 +158100,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -158702,6 +158789,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -158761,6 +158849,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -160387,6 +160476,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -160446,6 +160536,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -163526,6 +163617,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -164864,6 +164956,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164923,6 +165016,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164982,6 +165076,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167085,6 +167180,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -167131,6 +167227,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -167177,6 +167274,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -169007,6 +169105,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169066,6 +169165,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169125,6 +169225,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169171,6 +169272,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169230,6 +169332,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169289,6 +169392,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169335,6 +169439,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169394,6 +169499,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169453,6 +169559,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176031,6 +176138,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176090,6 +176198,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176149,6 +176258,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176410,6 +176520,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -176480,6 +176591,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176539,6 +176651,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176598,6 +176711,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176959,6 +177073,7 @@ export namespace Prisma {
     lastName?: string | null
     email?: string | null
     phone: string
+    secondaryPhone?: string | null
     phoneCountryCode?: string | null
     country?: string | null
     countryCode?: string | null
@@ -177382,6 +177497,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -177441,6 +177557,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -177500,6 +177617,7 @@ export namespace Prisma {
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
     phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null

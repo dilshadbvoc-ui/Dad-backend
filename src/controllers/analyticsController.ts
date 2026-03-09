@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId } from '../utils/hierarchyUtils';
+import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { isSuperAdmin as checkSuperAdmin } from '../utils/roleUtils';
 import fs from 'fs';
 import path from 'path';
@@ -451,12 +451,20 @@ export const getLeadSourceAnalytics = async (req: Request, res: Response) => {
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
 
+        // Hierarchy Visibility
+        const visibilityFilter: any = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.assignedToId = { in: visibleUserIds };
+        }
+
         // Prisma groupBy for lead sources
         const sourceStats = await prisma.lead.groupBy({
             by: ['source'],
             where: {
                 ...combinedFilter,
-                isDeleted: false
+                isDeleted: false,
+                ...visibilityFilter
             },
             _count: { source: true },
             orderBy: { _count: { source: 'desc' } }
@@ -489,12 +497,21 @@ export const getAiInsights = async (req: Request, res: Response) => {
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
 
+        // Visibility Filters for Insights
+        const visibilityFilter: any = {};
+        const oppVisibilityFilter: any = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.assignedToId = { in: visibleUserIds };
+            oppVisibilityFilter.ownerId = { in: visibleUserIds };
+        }
+
         const insights = [];
 
         // 1. Top Lead Source Analysis
         const topSource = await prisma.lead.groupBy({
             by: ['source'],
-            where: { ...combinedFilter, isDeleted: false },
+            where: { ...combinedFilter, isDeleted: false, ...visibilityFilter },
             _count: { source: true },
             orderBy: { _count: { source: 'desc' } },
             take: 1
@@ -518,7 +535,8 @@ export const getAiInsights = async (req: Request, res: Response) => {
                 ...combinedFilter,
                 stage: { in: ['prospecting', 'qualified'] },
                 isDeleted: false,
-                updatedAt: { lt: thirtyDaysAgo }
+                updatedAt: { lt: thirtyDaysAgo },
+                ...oppVisibilityFilter
             }
         });
 
@@ -537,7 +555,8 @@ export const getAiInsights = async (req: Request, res: Response) => {
                 ...combinedFilter,
                 stage: { notIn: ['closed_won', 'closed_lost'] },
                 isDeleted: false,
-                amount: { gt: 0 }
+                amount: { gt: 0 },
+                ...oppVisibilityFilter
             },
             _avg: { amount: true }
         });
@@ -550,7 +569,8 @@ export const getAiInsights = async (req: Request, res: Response) => {
                 ...combinedFilter,
                 stage: { notIn: ['closed_won', 'closed_lost'] },
                 isDeleted: false,
-                amount: { gt: highValueThreshold }
+                amount: { gt: highValueThreshold },
+                ...oppVisibilityFilter
             },
             take: 2,
             orderBy: { amount: 'desc' },
@@ -602,10 +622,18 @@ export const getTopPerformers = async (req: Request, res: Response) => {
         // For Active users
         const activeFilter = { isActive: true };
 
+        // Hierarchy Visibility for Top Performers
+        const visibilityFilter: any = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.id = { in: visibleUserIds };
+        }
+
         const topUsers = await prisma.user.findMany({
             where: {
                 ...userCombinedFilter,
-                ...activeFilter
+                ...activeFilter,
+                ...visibilityFilter
             },
             select: {
                 id: true,

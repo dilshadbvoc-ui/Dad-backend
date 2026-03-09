@@ -221,6 +221,7 @@ model Lead {
   lastName           String?
   email              String?
   phone              String
+  secondaryPhone     String?
   phoneCountryCode   String? // e.g., "+1", "+91", "+44"
   country            String? // e.g., "United States", "India", "United Kingdom"
   countryCode        String? // ISO 3166-1 alpha-2 code, e.g., "US", "IN", "GB"

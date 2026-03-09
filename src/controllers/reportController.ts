@@ -22,9 +22,10 @@ export const getLeadsReport = async (req: Request, res: Response) => {
             isDeleted: false
         };
 
-        // If not admin, restrict to self and subordinates
+        // If not admin, restrict to self and subordinates (or managed branches)
         if (user.role !== 'admin' && user.role !== 'super_admin') {
-            where.assignedToId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            where.assignedToId = { in: visibleUserIds };
         }
 
         if (stage) where.stage = stage as string;
@@ -85,9 +86,11 @@ export const getUserPerformance = async (req: Request, res: Response) => {
         if (startDate) dateFilter.gte = new Date(startDate as string);
         if (endDate) dateFilter.lte = new Date(endDate as string);
 
+        const visibleUserIds = await getVisibleUserIds(user.id);
+
         const users = await prisma.user.findMany({
             where: {
-                id: { in: [...subordinateIds, user.id] },
+                id: { in: visibleUserIds },
                 organisationId: orgId,
                 isActive: true
             },
@@ -201,7 +204,8 @@ export const getSalesBook = async (req: Request, res: Response) => {
 
         // If not admin, restrict to self and subordinates
         if (user.role !== 'admin' && user.role !== 'super_admin') {
-            where.ownerId = { in: [...subordinateIds, user.id] };
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            where.ownerId = { in: visibleUserIds };
         }
 
         // Get won opportunities (sales)
@@ -541,8 +545,8 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(403).json({ message: 'No org' });
 
-        const subordinateIds = await getSubordinateIds(user.id);
-        const teamIds = [user.id, ...subordinateIds];
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        const teamIds = visibleUserIds;
 
         const teamsData = await prisma.user.findMany({
             where: { id: { in: teamIds } },

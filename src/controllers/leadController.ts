@@ -195,6 +195,7 @@ export const createLead = async (req: Request, res: Response) => {
                 lastName: req.body.lastName || undefined,
                 email: cleanEmail,
                 phone: cleanPhone,
+                secondaryPhone: req.body.secondaryPhone || undefined,
                 company: req.body.company || undefined,
                 enquiryAbout: req.body.enquiryAbout || undefined,
                 jobTitle: req.body.jobTitle || undefined,
@@ -547,7 +548,7 @@ export const updateLead = async (req: Request, res: Response) => {
 
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
         const allowedFields = [
-            'firstName', 'lastName', 'email', 'phone', 'company', 'enquiryAbout', 'jobTitle', 'address',
+            'firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'enquiryAbout', 'jobTitle', 'address',
             'status', 'source', 'sourceDetails', 'stage', 'tags', 'potentialValue',
             'nextFollowUp', 'customFields', 'isHotLead', 'lostReason', 'notes',
             'country', 'countryCode', 'phoneCountryCode', 'city', 'state', 'zip'

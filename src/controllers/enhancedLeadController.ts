@@ -128,7 +128,7 @@ export const createLeadEnhanced = async (req: Request, res: Response) => {
         }
 
         // 2. Sanitize and validate input
-        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'company', 'source', 'status', 'leadScore', 'notes'];
+        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'source', 'status', 'leadScore', 'notes'];
         const sanitizedData = sanitizeObject(req.body, allowedFields);
 
         // 3. Validate required fields
@@ -257,7 +257,7 @@ export const updateLeadEnhanced = async (req: Request, res: Response) => {
         }
 
         // 3. Sanitize and validate update data
-        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'company', 'source', 'status', 'leadScore', 'notes'];
+        const allowedFields = ['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'source', 'status', 'leadScore', 'notes'];
         const sanitizedData = sanitizeObject(req.body, allowedFields);
 
         // 4. Validate updated fields
