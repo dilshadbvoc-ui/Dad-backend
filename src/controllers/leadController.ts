@@ -936,7 +936,7 @@ export const convertLead = async (req: Request, res: Response) => {
         const { id } = req.params;
         const leadId = id;
 
-        const { dealName, amount, accountId } = req.body;
+        const { dealName, amount, accountId, accountName, contactName } = req.body;
         const user = (req as any).user;
         const orgId = getOrgId(user);
 
@@ -999,7 +999,7 @@ export const convertLead = async (req: Request, res: Response) => {
                 // Create new Account
                 account = await tx.account.create({
                     data: {
-                        name: lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
+                        name: accountName || lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
                         organisationId: orgId,
                         ownerId: user.id, // Assign to converter
                         type: 'customer',
@@ -1013,10 +1013,24 @@ export const convertLead = async (req: Request, res: Response) => {
             }
 
             // 2. Create Contact
+            let firstName = lead.firstName;
+            let lastName = lead.lastName || '';
+
+            if (contactName) {
+                const parts = contactName.trim().split(/\s+/);
+                if (parts.length > 1) {
+                    lastName = parts.pop() || '';
+                    firstName = parts.join(' ');
+                } else {
+                    firstName = contactName;
+                    lastName = '';
+                }
+            }
+
             const contact = await tx.contact.create({
                 data: {
-                    firstName: lead.firstName,
-                    lastName: lead.lastName || '',
+                    firstName,
+                    lastName,
                     email: lead.email,
                     phones: lead.phone ? [{ type: 'mobile', number: lead.phone }] : [],
                     jobTitle: lead.jobTitle,
