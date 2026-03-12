@@ -15,11 +15,10 @@ export const importLeads = async (req: Request, res: Response) => {
         const defaultStatus = req.body.defaultStatus || 'new';
         const pipelineId = req.body.pipelineId || null;
         const defaultStage = req.body.defaultStage || null;
-        const branchId = req.body.branchId || null;
-        const applyAssignmentRules = req.body.applyAssignmentRules === 'true';
-
         const user = (req as any).user;
         const orgId = getOrgId(user);
+        const branchId = req.body.branchId || user.branchId || null;
+        const applyAssignmentRules = req.body.applyAssignmentRules === 'true';
 
         if (!orgId) return res.status(400).json({ message: 'User has no organisation' });
 

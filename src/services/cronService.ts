@@ -25,7 +25,10 @@ export const initCronJobs = () => {
             console.log(`[Cron] Found ${overdueLeads.length} leads with overdue follow-ups.`);
 
             if (overdueLeads.length > 0) {
-                // Bulk update to set nextFollowUp to Today
+                // Bulk update to set nextFollowUp to Today at 10 AM IST (04:30 AM UTC)
+                const rolloverTime = new Date(today);
+                rolloverTime.setUTCHours(4, 30, 0, 0);
+
                 const updateResult = await prisma.lead.updateMany({
                     where: {
                         status: { not: 'converted' },
@@ -34,7 +37,7 @@ export const initCronJobs = () => {
                         }
                     },
                     data: {
-                        nextFollowUp: today
+                        nextFollowUp: rolloverTime
                     }
                 });
 

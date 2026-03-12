@@ -42,9 +42,10 @@ export const getLeads = async (req: Request, res: Response) => {
             andConditions.push({
                 OR: [
                     { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                    { createdById: user.id },                // Created by the user (always visible)
                     {
                         AND: [
-                            { createdById: { in: visibleUserIds } }, // Created by self or subordinate
+                            { createdById: { in: visibleUserIds } }, // Created by subordinate
                             { assignedToId: null }    // But not reassigned to someone else (who might be outside visibility)
                         ]
                     }
