@@ -1100,7 +1100,8 @@ export const convertLead = async (req: Request, res: Response) => {
                 data: {
                     leadId: null, // Unlink from lead
                     contactId: contact.id,
-                    accountId: targetAccountId
+                    accountId: targetAccountId,
+                    opportunityId: opportunity.id
                 }
             });
 
