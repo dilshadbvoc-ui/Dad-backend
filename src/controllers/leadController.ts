@@ -358,47 +358,21 @@ export const getLeadById = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
 
-            // Apply role-based visibility for non-admins
-            if (!isAdmin(user)) {
-                // Get user's role to determine visibility rules
-                // Handle both UUID-based roles (new) and string-based roles (legacy)
-                let roleName = '';
-
-                const userRole = await prisma.role.findFirst({
-                    where: {
-                        OR: [
-                            { id: user.role },
-                            { roleKey: user.role, organisationId: user.organisationId },
-                            { roleKey: user.role, organisationId: null }
-                        ]
-                    }
-                });
-
-                if (userRole) {
-                    roleName = userRole.name;
-                } else {
-                    // Fallback to legacy string-based role
-                    roleName = user.role.split('_').map((word: string) =>
-                        word.charAt(0).toUpperCase() + word.slice(1)
-                    ).join(' ');
+        // 2. Hierarchy Visibility
+        if (!user.isSuperAdmin && !isSuperAdmin(user) && !isAdmin(user)) {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            
+            where.OR = [
+                { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                { createdById: user.id },                // Created by the user (always visible)
+                {
+                    AND: [
+                        { createdById: { in: visibleUserIds } }, // Created by subordinate
+                        { assignedToId: null }    // But not reassigned to someone else
+                    ]
                 }
-
-                // Sales Reps: Only see leads assigned to them or created by them
-                if (roleName === 'Sales Rep') {
-                    where.OR = [
-                        { assignedToId: user.id },
-                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
-                    ];
-                } else {
-                    // Managers: Only see leads assigned to them or their direct subordinates
-                    const subordinateIds = await getSubordinateIds(user.id);
-                    where.OR = [
-                        { assignedToId: user.id },
-                        { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } },
-                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
-                    ];
-                }
-            }
+            ];
+        }
         }
 
         const lead = await prisma.lead.findFirst({
@@ -703,7 +677,7 @@ export const deleteLead = async (req: Request, res: Response) => {
         const leadId = req.params.id;
 
         // Role Check
-        if (user.role !== 'admin' && user.role !== 'super_admin') {
+        if (!isAdmin(user)) {
             return res.status(403).json({ message: 'Not authorized to delete leads' });
         }
 
@@ -711,7 +685,7 @@ export const deleteLead = async (req: Request, res: Response) => {
         if (!lead) return res.status(404).json({ message: 'Lead not found' });
 
         // Org Check
-        if (user.role !== 'super_admin') {
+        if (!isSuperAdmin(user)) {
             const userOrgId = getOrgId(user);
             if (lead.organisationId !== userOrgId) {
                 return res.status(403).json({ message: 'Not authorized to delete this lead' });
@@ -909,7 +883,7 @@ export const bulkAssignLeads = async (req: Request, res: Response) => {
         const { leadIds, assignedTo, reason } = req.body;
         const requester = (req as any).user;
 
-        if (requester.role !== 'super_admin' && requester.role !== 'admin') {
+        if (!isAdmin(requester)) {
             const allowedIds = await getVisibleUserIds(requester.id);
             if (!allowedIds.includes(assignedTo)) {
                 return res.status(403).json({ message: 'Forbidden assignment' });
