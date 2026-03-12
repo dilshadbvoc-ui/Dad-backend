@@ -963,9 +963,10 @@ export const convertLead = async (req: Request, res: Response) => {
 
         const { dealName, amount, accountId, accountName, contactName } = req.body;
         const user = (req as any).user;
-        const orgId = getOrgId(user);
-
-        if (!orgId) return res.status(400).json({ message: 'No organisation context' });
+        
+        // Initial org check for the converting user
+        const userOrgId = getOrgId(user);
+        if (!userOrgId && !user.isSuperAdmin) return res.status(400).json({ message: 'No organisation context' });
 
         const lead = await prisma.lead.findUnique({
             where: { id: leadId },
@@ -997,6 +998,9 @@ export const convertLead = async (req: Request, res: Response) => {
             }
         }
 
+        // Use lead's organisationId to ensure deal stays in correct tenant
+        const orgId = lead.organisationId || userOrgId;
+        
         // 0. Limit Check
         const org = lead.organisation;
         if (org.contactLimit > 0) {
@@ -1084,6 +1088,7 @@ export const convertLead = async (req: Request, res: Response) => {
                     accountId: targetAccountId,
                     leadId: lead.id,
                     branchId: lead.branchId,
+                    pipelineId: lead.pipelineId, // Preserve pipeline context
                     contacts: { connect: { id: contact.id } }
                 }
             });
