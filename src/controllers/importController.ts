@@ -19,6 +19,7 @@ export const importLeads = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         const branchId = req.body.branchId || user.branchId || null;
         const applyAssignmentRules = req.body.applyAssignmentRules === 'true';
+        const splitUserIds = req.body.splitUserIds ? (typeof req.body.splitUserIds === 'string' ? JSON.parse(req.body.splitUserIds) : req.body.splitUserIds) : [];
 
         if (!orgId) return res.status(400).json({ message: 'User has no organisation' });
 
@@ -29,7 +30,8 @@ export const importLeads = async (req: Request, res: Response) => {
             pipelineId,
             defaultStage,
             branchId,
-            applyAssignmentRules
+            applyAssignmentRules,
+            splitUserIds
         });
 
         // Start Processing in Background

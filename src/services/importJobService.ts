@@ -10,6 +10,7 @@ export class ImportJobService {
         defaultStage?: string;
         branchId?: string;
         applyAssignmentRules?: boolean;
+        splitUserIds?: string[];
     }) {
         return await prisma.importJob.create({
             data: {
@@ -23,7 +24,8 @@ export class ImportJobService {
                     pipelineId: options.pipelineId,
                     defaultStage: options.defaultStage,
                     branchId: options.branchId,
-                    applyAssignmentRules: options.applyAssignmentRules || false
+                    applyAssignmentRules: options.applyAssignmentRules || false,
+                    splitUserIds: options.splitUserIds || []
                 } : undefined
             }
         });
@@ -67,6 +69,8 @@ export class ImportJobService {
             const defaultStage = metadata.defaultStage || null;
             const branchId = metadata.branchId || null;
             const applyAssignmentRules = metadata.applyAssignmentRules || false;
+            const splitUserIds = metadata.splitUserIds || [];
+            let splitIndex = 0;
 
             for await (const row of processStream) {
                 try {
@@ -191,17 +195,20 @@ export class ImportJobService {
                         continue;
                     }
 
-                    // Determine initial assignedToId based on whether we're applying rules
+                    // Determine initial assignedToId based on whether we're applying rules or splitting
                     let initialAssignedToId = leadData.assignedToId; // From mapping (ownerEmail)
 
-                    console.log(`[ImportJob ${jobId}] Processing lead: ${leadData.firstName} ${leadData.lastName}`);
-                    console.log(`[ImportJob ${jobId}] applyAssignmentRules: ${applyAssignmentRules}`);
-                    console.log(`[ImportJob ${jobId}] initialAssignedToId from mapping: ${initialAssignedToId}`);
-
-                    if (!initialAssignedToId && !applyAssignmentRules) {
-                        // If no explicit owner and NOT applying rules, assign to uploader
+                    if (splitUserIds.length > 0) {
+                        // Priority 1: Manual split between selected users
+                        initialAssignedToId = splitUserIds[splitIndex % splitUserIds.length];
+                        splitIndex++;
+                        console.log(`[ImportJob ${jobId}] Splitting lead, assigned to: ${initialAssignedToId}`);
+                    } else if (applyAssignmentRules) {
+                        // Priority 2: Assignment Rules (handled after creation)
+                        initialAssignedToId = undefined;
+                    } else if (!initialAssignedToId) {
+                        // Priority 3: Fallback to uploader
                         initialAssignedToId = job.createdById;
-                        console.log(`[ImportJob ${jobId}] No rules, assigning to uploader: ${initialAssignedToId}`);
                     }
                     // If applyAssignmentRules is true and no explicit owner, leave it undefined
                     // The DistributionService will assign it after creation
