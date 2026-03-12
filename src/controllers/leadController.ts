@@ -666,15 +666,29 @@ export const updateLead = async (req: Request, res: Response) => {
             });
         }
 
-        // Hierarchy Notification
+        // Notifications
         import('../services/notificationService').then(({ NotificationService }) => {
             const leadName = `${finalLead.firstName} ${finalLead.lastName || ''}`.trim();
+
+            // 1. Hierarchy Notification (existing)
             NotificationService.sendToHierarchy(
                 requester.id,
                 'Lead Updated',
                 `${requester.firstName} updated lead: ${leadName}`,
                 'info'
             ).catch(console.error);
+
+            // 2. Owner Notification for Status Change
+            if (updates.status && updates.status !== currentLead.status) {
+                if (finalLead.assignedToId && finalLead.assignedToId !== requester.id) {
+                    NotificationService.send(
+                        finalLead.assignedToId,
+                        'Lead Status Updated',
+                        `Your lead "${leadName}" status has been updated to "${updates.status}" by ${requester.firstName}.`,
+                        'info'
+                    ).catch(console.error);
+                }
+            }
         });
 
     } catch (error) {
@@ -923,6 +937,17 @@ export const bulkAssignLeads = async (req: Request, res: Response) => {
             await prisma.leadHistory.createMany({
                 data: historyRecords
             });
+
+            // Notify new owner
+            if (assignedTo !== requester.id) {
+                const { NotificationService } = await import('../services/notificationService');
+                NotificationService.send(
+                    assignedTo,
+                    'Bulk Leads Assigned',
+                    `${result.count} leads have been assigned to you by ${requester.firstName}.`,
+                    'info'
+                ).catch(console.error);
+            }
         }
 
         res.json({ message: 'Assigned successfully', count: result.count });
@@ -1145,6 +1170,18 @@ export const convertLead = async (req: Request, res: Response) => {
             });
         } catch (e) {
             console.error('Audit Log Error:', e);
+        }
+
+        // Notify Lead Owner
+        if (lead.assignedToId && lead.assignedToId !== user.id) {
+            const { NotificationService } = await import('../services/notificationService');
+            const leadName = `${lead.firstName} ${lead.lastName || ''}`.trim();
+            NotificationService.send(
+                lead.assignedToId,
+                'Lead Moved to Pipeline',
+                `Your lead "${leadName}" has been moved to the pipeline by ${user.firstName}.`,
+                'info'
+            ).catch(console.error);
         }
 
         res.json({
