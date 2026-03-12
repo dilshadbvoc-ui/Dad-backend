@@ -988,6 +988,9 @@ export const convertLead = async (req: Request, res: Response) => {
         }
 
         const result = await prisma.$transaction(async (tx) => {
+            // Determine owner for new entities (preserve lead owner if assigned)
+            const finalOwnerId = lead.assignedToId || user.id;
+
             // 1. Handle Account
             let targetAccountId = accountId;
             let account;
@@ -1001,7 +1004,7 @@ export const convertLead = async (req: Request, res: Response) => {
                     data: {
                         name: accountName || lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
                         organisationId: orgId,
-                        ownerId: user.id, // Assign to converter
+                        ownerId: finalOwnerId,
                         type: 'customer',
                         phone: lead.phone,
                         address: lead.address as any,
@@ -1035,7 +1038,7 @@ export const convertLead = async (req: Request, res: Response) => {
                     phones: lead.phone ? [{ type: 'mobile', number: lead.phone }] : [],
                     jobTitle: lead.jobTitle,
                     organisationId: orgId,
-                    ownerId: user.id,
+                    ownerId: finalOwnerId,
                     accountId: targetAccountId,
                     address: lead.address as any,
                     customFields: lead.customFields as any, // Migrate custom fields
@@ -1052,7 +1055,7 @@ export const convertLead = async (req: Request, res: Response) => {
                     stage: 'new',
                     closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
                     organisationId: orgId,
-                    ownerId: user.id,
+                    ownerId: finalOwnerId,
                     accountId: targetAccountId,
                     leadId: lead.id,
                     branchId: lead.branchId,
