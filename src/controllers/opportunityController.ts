@@ -23,7 +23,8 @@ export const getOpportunities = async (req: Request, res: Response) => {
             const orgId = getOrgId(user);
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId) where.branchId = user.branchId;
+            // Branch filtering should be handled by visibility logic or explicit query params
+            if (req.query.branchId) where.branchId = String(req.query.branchId);
         }
 
         // 2. Hierarchy Visibility
@@ -237,7 +238,7 @@ export const getOpportunityById = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId) where.branchId = user.branchId;
+            // Removed strict branchId check to allow cross-branch visibility via hierarchy
         }
 
         const opportunity = await prisma.opportunity.findFirst({
@@ -325,7 +326,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             const orgId = getOrgId(requester);
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
-            if (requester.branchId) whereObj.branchId = requester.branchId;
+            // Removed strict branchId check for cross-branch updates
         }
 
         const opportunity = await prisma.opportunity.update({
@@ -509,7 +510,7 @@ export const deleteOpportunity = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
-            if (user.branchId) where.branchId = user.branchId;
+            // Removed strict branchId check for cross-branch deletion
         }
 
         const opportunity = await prisma.opportunity.findFirst({ where });
