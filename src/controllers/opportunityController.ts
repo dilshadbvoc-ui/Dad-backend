@@ -8,7 +8,7 @@ import { NotificationService } from '../services/notificationService';
 export const getOpportunities = async (req: Request, res: Response) => {
     try {
         const page = parseInt(req.query.page as string || '1');
-        const limit = parseInt(req.query.limit as string || '10');
+        const limit = parseInt(req.query.limit as string || '1000');
         const skip = (page - 1) * limit;
 
         const user = (req as any).user;
@@ -48,7 +48,7 @@ export const getOpportunities = async (req: Request, res: Response) => {
             where,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } },
+                owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } },
                 emiSchedule: { select: { id: true, status: true } }
             },
             skip,
@@ -257,7 +257,7 @@ export const getOpportunityById = async (req: Request, res: Response) => {
                         }
                     }
                 },
-                owner: { select: { firstName: true, lastName: true, profileImage: true, email: true } },
+                owner: { select: { id: true, firstName: true, lastName: true, profileImage: true, email: true } },
                 contacts: true,
                 lead: {
                     select: {
@@ -334,7 +334,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             data: opportunityUpdates,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } }
+                owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } }
             }
         });
 

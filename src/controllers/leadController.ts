@@ -93,7 +93,7 @@ export const getLeads = async (req: Request, res: Response) => {
             where,
             include: {
                 assignedTo: {
-                    select: { firstName: true, lastName: true, email: true }
+                    select: { id: true, firstName: true, lastName: true, email: true }
                 }
             },
             skip: (page - 1) * pageSize,
@@ -1077,7 +1077,7 @@ export const convertLead = async (req: Request, res: Response) => {
                 data: {
                     name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
-                    stage: 'new',
+                    stage: 'prospecting',
                     closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
                     organisationId: orgId,
                     ownerId: finalOwnerId,
