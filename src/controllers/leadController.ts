@@ -761,13 +761,15 @@ export const deleteLead = async (req: Request, res: Response) => {
 
 export const createBulkLeads = async (req: Request, res: Response) => {
     try {
-        const { leads, assignmentRuleId, applyAssignmentRules } = req.body;
+        const { leads, assignmentRuleId, applyAssignmentRules, splitUserIds } = req.body;
         const user = (req as any).user;
 
         // Support both direct array (legacy) and object with options
         const leadsData = Array.isArray(req.body) ? req.body : leads;
         const ruleId = Array.isArray(req.body) ? undefined : assignmentRuleId;
         const applyRules = Array.isArray(req.body) ? true : (applyAssignmentRules !== false); // Default to true if not explicitly false
+        const splitIds = Array.isArray(req.body) ? [] : (splitUserIds || []);
+        let splitIndex = 0;
 
         console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId);
 
@@ -826,8 +828,10 @@ export const createBulkLeads = async (req: Request, res: Response) => {
                 // Determine final owner
                 let finalOwnerId = l.assignedTo;
 
-                // If no owner specified, apply assignment rules
-                if (!finalOwnerId && applyRules) {
+                if (splitIds.length > 0) {
+                    finalOwnerId = splitIds[splitIndex % splitIds.length];
+                    splitIndex++;
+                } else if (!finalOwnerId && applyRules) {
                     const { DistributionService } = await import('../services/distributionService');
                     finalOwnerId = await DistributionService.assignLead(
                         { ...l, id: undefined, branchId: l.branchId || user.branchId || undefined },
