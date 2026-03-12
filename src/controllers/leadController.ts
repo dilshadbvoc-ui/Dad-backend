@@ -999,7 +999,7 @@ export const convertLead = async (req: Request, res: Response) => {
         }
 
         // Use lead's organisationId to ensure deal stays in correct tenant
-        const orgId = lead.organisationId || userOrgId;
+        const orgId = (lead.organisationId || userOrgId) as string;
         
         // 0. Limit Check
         const org = lead.organisation;
@@ -1038,7 +1038,7 @@ export const convertLead = async (req: Request, res: Response) => {
                         phone: lead.phone,
                         address: lead.address as any,
                         leadId: lead.id, // Link to original lead
-                        branchId: lead.branchId
+                        branchId: lead.branchId || undefined
                     }
                 });
                 targetAccountId = account.id;
@@ -1072,7 +1072,7 @@ export const convertLead = async (req: Request, res: Response) => {
                     address: lead.address as any,
                     customFields: lead.customFields as any, // Migrate custom fields
                     leadId: lead.id, // Link to original lead
-                    branchId: lead.branchId
+                    branchId: lead.branchId || undefined
                 }
             });
 
@@ -1087,8 +1087,8 @@ export const convertLead = async (req: Request, res: Response) => {
                     ownerId: finalOwnerId,
                     accountId: targetAccountId,
                     leadId: lead.id,
-                    branchId: lead.branchId,
-                    pipelineId: lead.pipelineId, // Preserve pipeline context
+                    branchId: lead.branchId || undefined,
+                    pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
                     contacts: { connect: { id: contact.id } }
                 }
             });
