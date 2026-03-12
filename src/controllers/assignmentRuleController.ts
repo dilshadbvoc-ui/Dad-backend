@@ -97,8 +97,6 @@ export const createAssignmentRule = async (req: Request, res: Response) => {
 
         if (branchIdToSet) {
             ruleData.branch = { connect: { id: branchIdToSet } };
-        } else {
-            ruleData.branchId = null; // Explicitly global
         }
 
         const rule = await prisma.assignmentRule.create({
@@ -158,10 +156,8 @@ export const updateAssignmentRule = async (req: Request, res: Response) => {
 
             if (branchIdToSet) {
                 updateData.branch = { connect: { id: branchIdToSet } };
-                updateData.branchId = undefined; // Prisma quirk: can't set both
             } else {
                 updateData.branch = { disconnect: true };
-                updateData.branchId = null;
             }
         }
 
