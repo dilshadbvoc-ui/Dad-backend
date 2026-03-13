@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import express from 'express';
+import { emitToOrg } from '../socket';
 import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { DistributionService } from '../services/distributionService';
@@ -11,7 +12,7 @@ import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 
 
 // GET /api/leads
-export const getLeads = async (req: Request, res: Response) => {
+export const getLeads = async (req: express.Request, res: express.Response) => {
     try {
         console.log('[getLeads] Query Params:', req.query); // DEBUG LOG
 
@@ -110,7 +111,7 @@ export const getLeads = async (req: Request, res: Response) => {
 };
 
 // POST /api/leads
-export const createLead = async (req: Request, res: Response) => {
+export const createLead = async (req: express.Request, res: express.Response) => {
     try {
         const { email, phone } = req.body;
 
@@ -318,6 +319,9 @@ export const createLead = async (req: Request, res: Response) => {
             // Don't fail the request if workflow fails
         }
 
+        // Socket Emit for Real-time Sync
+        emitToOrg(orgId, 'lead_created', lead);
+
         res.status(201).json(lead);
     } catch (error: any) {
         console.error('createLead Error:', error);
@@ -344,7 +348,7 @@ export const createLead = async (req: Request, res: Response) => {
     }
 };
 
-export const getLeadById = async (req: Request, res: Response) => {
+export const getLeadById = async (req: express.Request, res: express.Response) => {
     try {
         const user = (req as any).user;
         const orgId = getOrgId(user);
@@ -389,7 +393,7 @@ export const getLeadById = async (req: Request, res: Response) => {
     }
 };
 
-export const updateLead = async (req: Request, res: Response) => {
+export const updateLead = async (req: express.Request, res: express.Response) => {
     try {
         const updates = { ...req.body };
         const leadId = req.params.id;
@@ -640,6 +644,9 @@ export const updateLead = async (req: Request, res: Response) => {
             });
         }
 
+        // Socket Emit for Real-time Sync
+        emitToOrg(finalLead.organisationId, 'lead_updated', finalLead);
+
         // Notifications
         import('../services/notificationService').then(({ NotificationService }) => {
             const leadName = `${finalLead.firstName} ${finalLead.lastName || ''}`.trim();
@@ -671,7 +678,7 @@ export const updateLead = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteLead = async (req: Request, res: Response) => {
+export const deleteLead = async (req: express.Request, res: express.Response) => {
     try {
         const user = (req as any).user;
         const leadId = req.params.id;
@@ -727,13 +734,16 @@ export const deleteLead = async (req: Request, res: Response) => {
             console.error('Audit Log Error:', e);
         }
 
+        // Socket Emit for Real-time Sync
+        emitToOrg(lead.organisationId, 'lead_deleted', { id: leadId });
+
         res.json({ message: 'Lead deleted' });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
 };
 
-export const createBulkLeads = async (req: Request, res: Response) => {
+export const createBulkLeads = async (req: express.Request, res: express.Response) => {
     try {
         const { leads, assignmentRuleId, applyAssignmentRules, splitUserIds } = req.body;
         const user = (req as any).user;
@@ -878,7 +888,7 @@ export const createBulkLeads = async (req: Request, res: Response) => {
     }
 };
 
-export const bulkAssignLeads = async (req: Request, res: Response) => {
+export const bulkAssignLeads = async (req: express.Request, res: express.Response) => {
     try {
         const { leadIds, assignedTo, reason } = req.body;
         const requester = (req as any).user;
@@ -934,7 +944,7 @@ export const bulkAssignLeads = async (req: Request, res: Response) => {
     }
 };
 
-export const convertLead = async (req: Request, res: Response) => {
+export const convertLead = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         const leadId = id;
@@ -1190,7 +1200,7 @@ const logDebug = (msg: string) => {
     }
 };
 
-export const getViolations = async (req: Request, res: Response) => {
+export const getViolations = async (req: express.Request, res: express.Response) => {
     try {
         logDebug('Entered getViolations');
         const user = (req as any).user;
@@ -1250,7 +1260,7 @@ export const getViolations = async (req: Request, res: Response) => {
     }
 };
 
-export const getLeadHistory = async (req: Request, res: Response) => {
+export const getLeadHistory = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         const user = (req as any).user;
@@ -1279,7 +1289,7 @@ export const getLeadHistory = async (req: Request, res: Response) => {
 };
 
 
-export const submitExplanation = async (req: Request, res: Response) => {
+export const submitExplanation = async (req: express.Request, res: express.Response) => {
     try {
         const { leadId, explanation, type } = req.body; // type = 'user' | 'manager'
         const user = (req as any).user;
@@ -1330,7 +1340,7 @@ export const submitExplanation = async (req: Request, res: Response) => {
     }
 };
 
-export const getPendingFollowUpsCount = async (req: Request, res: Response) => {
+export const getPendingFollowUpsCount = async (req: express.Request, res: express.Response) => {
     try {
         const user = (req as any).user;
         const now = new Date();
@@ -1370,7 +1380,7 @@ export const getPendingFollowUpsCount = async (req: Request, res: Response) => {
     }
 };
 
-export const generateAIResponse = async (req: Request, res: Response) => {
+export const generateAIResponse = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         const { context } = req.body; // e.g. "Draft an intro email"
@@ -1405,7 +1415,7 @@ export const generateAIResponse = async (req: Request, res: Response) => {
 
 
 // GET /api/leads/re-enquiries - Get all re-enquiry leads
-export const getReEnquiryLeads = async (req: Request, res: Response) => {
+export const getReEnquiryLeads = async (req: express.Request, res: express.Response) => {
     try {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(403).json({ message: 'No organisation context' });
@@ -1424,7 +1434,7 @@ export const getReEnquiryLeads = async (req: Request, res: Response) => {
 };
 
 // GET /api/leads/duplicates - Find all duplicate leads
-export const getDuplicateLeads = async (req: Request, res: Response) => {
+export const getDuplicateLeads = async (req: express.Request, res: express.Response) => {
     try {
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(403).json({ message: 'No organisation context' });

@@ -290,11 +290,27 @@ export const initSocket = (httpServer: HttpServer) => {
 let ioInstance: SocketIOServer | null = null;
 
 export const getIO = () => {
-    if (!ioInstance) {
-        // This relies on initSocket setting it, which we should do
-        // Since initSocket returns io, we can't easily capture it inside here unless we assign it.
-        // Let's modify initSocket to assign to ioInstance.
-        return null;
-    }
     return ioInstance;
+};
+
+/**
+ * Emit an event to a specific user's room
+ */
+export const emitToUser = (userId: string, event: string, data: any) => {
+    const io = getIO();
+    if (io) {
+        io.to(userId).emit(event, data);
+        logger.debug(`Socket emit to user ${userId}: ${event}`, 'SocketEmit');
+    }
+};
+
+/**
+ * Emit an event to an entire organisation room
+ */
+export const emitToOrg = (organisationId: string, event: string, data: any) => {
+    const io = getIO();
+    if (io) {
+        io.to(`org:${organisationId}`).emit(event, data);
+        logger.debug(`Socket emit to org ${organisationId}: ${event}`, 'SocketEmit');
+    }
 };
