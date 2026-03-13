@@ -105,7 +105,7 @@ rm -f package-lock.json
 
 # Install all dependencies (Prisma CLI is needed for migrations)
 echo "📦 Installing dependencies..."
-npm install --ignore-scripts
+npm install
 
 echo "🗄️ Running Migrations..."
 npx prisma db push --accept-data-loss
