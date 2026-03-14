@@ -43,6 +43,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         }
 
         const { leadId, duration, callType, timestamp, phoneNumber } = req.body;
+        console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}`);
+        
         const file = req.file;
 
         let targetLeadId = leadId;
@@ -52,6 +54,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         if (!targetLeadId && phoneNumber) {
             const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
             const last10 = cleanPhone.slice(-10);
+            console.log(`[AndroidUpload] No leadId provided. Searching for phone endsWith: ${last10}`);
             
             const lead = await prisma.lead.findFirst({
                 where: {
@@ -61,16 +64,21 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 select: { id: true, phone: true }
             });
             if (lead) {
+                console.log(`[AndroidUpload] Found lead matching phone: ${lead.id}`);
                 targetLeadId = lead.id;
                 finalPhone = lead.phone;
+            } else {
+                console.warn(`[AndroidUpload] No lead found in DB for phone last10: ${last10}`);
             }
         }
 
         if (!targetLeadId && !phoneNumber) {
+            console.error(`[AndroidUpload] Upload failed: No leadId and no phoneNumber`);
             return res.status(400).json({ error: 'leadId or phoneNumber is required' });
         }
 
         // Create recording record (linked to lead if found)
+        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'})`);
         const recording = await prisma.callRecording.create({
             data: {
                 leadId: targetLeadId || undefined,
@@ -87,6 +95,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
 
         // Link to existing "initiated" interaction
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+        console.log(`[AndroidUpload] Searching for 'initiated' interaction within last 15 mins for mapping...`);
         
         const existingInitiatedInteraction = await prisma.interaction.findFirst({
             where: {
@@ -103,6 +112,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         });
 
         if (existingInitiatedInteraction) {
+            console.log(`[AndroidUpload] Mapping duration to existing interaction: ${existingInitiatedInteraction.id}`);
             await prisma.interaction.update({
                 where: { id: existingInitiatedInteraction.id },
                 data: {
@@ -115,6 +125,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 }
             });
         } else if (targetLeadId) {
+            console.log(`[AndroidUpload] No initiated interaction found. Creating new 'completed' record for leadId: ${targetLeadId}`);
             // Create new if none initiated but lead exists
             await prisma.interaction.create({
                 data: {
@@ -132,11 +143,13 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     phoneNumber: finalPhone
                 }
             });
+        } else {
+             console.warn(`[AndroidUpload] Could not link duration to lead or initiated interaction.`);
         }
 
         res.status(201).json({ message: 'Recording and Interaction uploaded successfully', recording });
     } catch (error) {
-        console.error('Error uploading recording:', error);
+        console.error('[AndroidUpload] CRITICAL ERROR during upload:', error);
         res.status(500).json({ error: 'Failed to upload recording' });
     }
 };
