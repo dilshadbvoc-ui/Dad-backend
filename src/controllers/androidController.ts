@@ -42,44 +42,62 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
-        const { leadId, duration, callType, timestamp } = req.body;
+        const { leadId, duration, callType, timestamp, phoneNumber } = req.body;
         const file = req.file;
 
-        if (!leadId) {
-            return res.status(400).json({ error: 'leadId is required' });
+        let targetLeadId = leadId;
+        let finalPhone = phoneNumber;
+
+        // Fallback: If no leadId, try to find lead by phone number
+        if (!targetLeadId && phoneNumber) {
+            const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+            const last10 = cleanPhone.slice(-10);
+            
+            const lead = await prisma.lead.findFirst({
+                where: {
+                    organisationId: user.organisationId,
+                    phone: { contains: last10 }
+                },
+                select: { id: true, phone: true }
+            });
+            if (lead) {
+                targetLeadId = lead.id;
+                finalPhone = lead.phone;
+            }
         }
 
-        // In a production app you would upload this file to S3.
-        // For this implementation, we store it locally in the uploads folder and return the URL.
-        const fileUrl = file ? `/uploads/${file.filename}` : null;
+        if (!targetLeadId && !phoneNumber) {
+            return res.status(400).json({ error: 'leadId or phoneNumber is required' });
+        }
 
-        // Create Call Recording record
+        // Create recording record (linked to lead if found)
         const recording = await prisma.callRecording.create({
             data: {
-                leadId,
+                leadId: targetLeadId || undefined,
                 duration: parseInt(duration, 10) || 0,
-                fileUrl: fileUrl || '',
+                fileUrl: file ? `/uploads/${file.filename}` : '',
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
             }
         });
 
-        const interactionDirection = callType === 'OUTGOING' ? 'outbound' : 'inbound';
         const durationSecs = parseInt(duration, 10) || 0;
         const durationMinutes = durationSecs / 60;
-        const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${fileUrl ? ' (Recording attached)' : ''}`;
+        const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
-        // Phase 1: Try to find an existing "initiated" interaction to update
-        // This links the "Initiated call" entry from CRM with the actual duration from Android
+        // Link to existing "initiated" interaction
         const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-
+        
         const existingInitiatedInteraction = await prisma.interaction.findFirst({
             where: {
-                leadId,
                 organisationId: user.organisationId,
                 type: 'call',
                 callStatus: 'initiated',
-                createdAt: { gte: fifteenMinutesAgo }
+                createdAt: { gte: fifteenMinutesAgo },
+                OR: [
+                    targetLeadId ? { leadId: targetLeadId } : {},
+                    phoneNumber ? { phoneNumber: { contains: phoneNumber.slice(-10) } } : {}
+                ].filter(condition => Object.keys(condition).length > 0)
             },
             orderBy: { createdAt: 'desc' }
         });
@@ -90,29 +108,28 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 data: {
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
-                    recordingUrl: fileUrl || undefined,
+                    recordingUrl: file ? `/uploads/${file.filename}` : undefined,
                     callStatus: 'completed',
                     description: formattedDescription,
-                    // Optionally update the subject to be more descriptive
                     subject: `Completed Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`
                 }
             });
-        } else {
-            // Also create an Interaction record so it shows up in "Call Logs" and lead timeline if none was initiated
+        } else if (targetLeadId) {
+            // Create new if none initiated but lead exists
             await prisma.interaction.create({
                 data: {
                     type: 'call',
-                    direction: interactionDirection,
+                    direction: callType === 'OUTGOING' ? 'outbound' : 'inbound',
                     subject: `Mobile Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`,
                     description: formattedDescription,
                     date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
-                    duration: Math.round(durationMinutes * 100) / 100, // as minutes, round to 2 decimals
-                    recordingUrl: fileUrl || undefined,
-                    recordingDuration: durationSecs, // as seconds
+                    duration: Math.round(durationMinutes * 100) / 100,
+                    recordingDuration: durationSecs,
                     callStatus: 'completed',
-                    leadId,
+                    leadId: targetLeadId,
                     organisationId: user.organisationId,
                     createdById: user.id,
+                    phoneNumber: finalPhone
                 }
             });
         }
