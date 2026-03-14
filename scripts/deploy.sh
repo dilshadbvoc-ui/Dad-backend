@@ -151,7 +151,7 @@ if [ -d "$CLIENT_DIR" ]; then
     git reset --hard origin/main
     
     echo "📦 Installing Frontend dependencies..."
-    npm install
+    npm install --legacy-peer-deps
     
     echo "🏗️ Building Frontend..."
     # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
