@@ -58,6 +58,15 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
         if (account) data.account = { connect: { id: account } };
         if (opportunity) data.opportunity = { connect: { id: opportunity } };
 
+        // Support polymorphic relatedTo/onModel pattern (standard across frontend)
+        if (req.body.relatedTo && req.body.onModel) {
+            const { relatedTo, onModel } = req.body;
+            if (onModel === 'Lead') data.lead = { connect: { id: relatedTo } };
+            else if (onModel === 'Contact') data.contact = { connect: { id: relatedTo } };
+            else if (onModel === 'Account') data.account = { connect: { id: relatedTo } };
+            else if (onModel === 'Opportunity') data.opportunity = { connect: { id: relatedTo } };
+        }
+
         const interaction = await prisma.interaction.create({
             data
         });
