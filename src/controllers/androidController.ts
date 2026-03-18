@@ -113,16 +113,18 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const durationMinutes = durationSecs / 60;
         const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
-        // Link to existing "initiated" interaction
-        const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-        console.log(`[AndroidUpload] Searching for 'initiated' interaction within last 15 mins for mapping...`);
+        // Link to existing "initiated" or "completed" interaction (that's missing a recording)
+        // Expand window to 4 hours to account for long calls or delayed sync
+        const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
+        console.log(`[AndroidUpload] Searching for interaction within last 4 hours for mapping (Lead: ${targetLeadId}, Phone: ${phoneNumber})...`);
         
-        const existingInitiatedInteraction = await prisma.interaction.findFirst({
+        const existingInteraction = await prisma.interaction.findFirst({
             where: {
                 organisationId: user.organisationId,
                 type: 'call',
-                callStatus: 'initiated',
-                createdAt: { gte: fifteenMinutesAgo },
+                callStatus: { in: ['initiated', 'completed'] },
+                recordingUrl: null, // Only link if it doesn't have a recording already
+                createdAt: { gte: fourHoursAgo },
                 OR: [
                     targetLeadId ? { leadId: targetLeadId } : {},
                     phoneNumber ? { phoneNumber: { contains: phoneNumber.slice(-10) } } : {}
@@ -131,17 +133,17 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             orderBy: { createdAt: 'desc' }
         });
 
-        if (existingInitiatedInteraction) {
-            console.log(`[AndroidUpload] Mapping duration to existing interaction: ${existingInitiatedInteraction.id}`);
+        if (existingInteraction) {
+            console.log(`[AndroidUpload] Mapping duration to existing interaction: ${existingInteraction.id} (Status: ${existingInteraction.callStatus})`);
             await prisma.interaction.update({
-                where: { id: existingInitiatedInteraction.id },
+                where: { id: existingInteraction.id },
                 data: {
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
-                    recordingUrl: file ? `/uploads/${file.filename}` : undefined,
+                    recordingUrl: recording.fileUrl,
                     callStatus: 'completed',
-                    description: formattedDescription,
-                    subject: `Completed Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`
+                    leadId: targetLeadId || undefined,
+                    phoneNumber: phoneNumber || undefined
                 }
             });
         } else if (targetLeadId) {
