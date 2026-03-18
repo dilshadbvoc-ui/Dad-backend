@@ -613,7 +613,7 @@ model Interaction {
   subject           String
   description       String?
   date              DateTime             @default(now())
-  duration          Int?
+  duration          Float?
   recordingUrl      String?
   recordingDuration Int?
   callStatus        String?

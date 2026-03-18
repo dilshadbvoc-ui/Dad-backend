@@ -158,6 +158,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
+                    recordingUrl: recording.fileUrl,
                     callStatus: 'completed',
                     leadId: targetLeadId,
                     organisationId: user.organisationId,
