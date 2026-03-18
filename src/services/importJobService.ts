@@ -114,9 +114,9 @@ export class ImportJobService {
 
                         if (String(crmField) === 'fullName') {
                             // Split full name into first and last
-                            const nameParts = String(value).trim().split(' ');
+                            const nameParts = String(value).trim().split(/\s+/);
                             leadData.firstName = nameParts[0] || '';
-                            leadData.lastName = nameParts.slice(1).join(' ') || nameParts[0] || '';
+                            leadData.lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
                         } else if (String(crmField) === 'tags') {
                             // Handle comma-separated tags
                             leadData.tags = String(value).split(',').map(t => t.trim()).filter(Boolean);

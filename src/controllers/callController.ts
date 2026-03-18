@@ -258,7 +258,8 @@ export const getAllCalls = async (req: Request, res: Response) => {
                         id: true,
                         firstName: true,
                         lastName: true,
-                        phone: true
+                        phone: true,
+                        company: true
                     }
                 },
                 contact: {
