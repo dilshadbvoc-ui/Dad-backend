@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { getAndroidLeads, uploadCallRecording } from '../controllers/androidController';
+import { logExternalMessage } from '../controllers/whatsAppController';
 import { protect } from '../middleware/authMiddleware';
 
 const router = express.Router();
