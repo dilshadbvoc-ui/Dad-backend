@@ -3,6 +3,7 @@ import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
 import { Prisma } from '../generated/client';
+import { TaskService } from '../services/taskService';
 
 // Helper to consolidate polymorphic 'relatedTo' for Frontend compatibility
 const transformTask = (task: any) => {
@@ -186,6 +187,11 @@ export const createTask = async (req: Request, res: Response) => {
             }
         });
 
+        // Sync Lead follow-up date
+        if (task.leadId) {
+            await TaskService.syncLeadFollowUp(task.leadId);
+        }
+
         if (orgId) {
             await logAudit({
                 organisationId: orgId,
@@ -292,6 +298,11 @@ export const updateTask = async (req: Request, res: Response) => {
             }
         });
 
+        // Sync Lead follow-up date
+        if (task.leadId) {
+            await TaskService.syncLeadFollowUp(task.leadId);
+        }
+
         await logAudit({
             organisationId: requester.organisationId || getOrgId(requester),
             actorId: requester.id,
@@ -323,6 +334,12 @@ export const deleteTask = async (req: Request, res: Response) => {
             where,
             data: { isDeleted: true }
         });
+
+        // Sync Lead follow-up date (task is now deleted)
+        const task = await prisma.task.findUnique({ where: { id: req.params.id } });
+        if (task?.leadId) {
+            await TaskService.syncLeadFollowUp(task.leadId);
+        }
 
         await logAudit({
             organisationId: (orgId || getOrgId(user)) as string,

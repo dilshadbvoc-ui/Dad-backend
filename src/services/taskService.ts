@@ -34,4 +34,28 @@ export class TaskService {
             data: createData
         });
     }
+
+    static async syncLeadFollowUp(leadId: string) {
+        if (!leadId) return;
+
+        // Find the earliest upcoming task that isn't completed and has a due date
+        const nextTask = await prisma.task.findFirst({
+            where: {
+                leadId,
+                isDeleted: false,
+                status: { not: 'completed' },
+                dueDate: { not: null }
+            },
+            orderBy: {
+                dueDate: 'asc'
+            }
+        });
+
+        await prisma.lead.update({
+            where: { id: leadId },
+            data: {
+                nextFollowUp: nextTask ? nextTask.dueDate : null
+            }
+        });
+    }
 }

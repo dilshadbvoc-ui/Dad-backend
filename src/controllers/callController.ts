@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { TaskService } from '../services/taskService';
 import path from 'path';
 import fs from 'fs';
 
@@ -111,6 +112,11 @@ export const completeCall = async (req: Request, res: Response) => {
                     contact: interaction.contactId ? { connect: { id: interaction.contactId } } : undefined,
                 }
             });
+
+            // Sync Lead follow-up date
+            if (interaction.leadId) {
+                await TaskService.syncLeadFollowUp(interaction.leadId);
+            }
         }
 
         res.json(interaction);

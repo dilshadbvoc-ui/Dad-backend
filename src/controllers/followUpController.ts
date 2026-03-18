@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
+import { TaskService } from '../services/taskService';
 
 // GET /api/follow-ups - Get all follow-up tasks for user and subordinates
 export const getFollowUps = async (req: Request, res: Response) => {
@@ -174,6 +175,11 @@ export const updateFollowUp = async (req: Request, res: Response) => {
                 opportunity: { select: { id: true, name: true } },
             }
         });
+
+        // Sync Lead follow-up date
+        if (updatedTask.leadId) {
+            await TaskService.syncLeadFollowUp(updatedTask.leadId);
+        }
 
         // Transform response
         let relatedTo = null;
