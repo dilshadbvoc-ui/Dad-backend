@@ -358,19 +358,32 @@ export const getCallStats = async (req: Request, res: Response) => {
             where: { ...baseWhere, callStatus: 'completed' }
         });
 
-        // Average duration (for completed calls with duration)
+        // Average duration (for completed calls with duration or recordingDuration)
         const callsWithDuration = await prisma.interaction.findMany({
             where: {
                 ...baseWhere,
                 callStatus: 'completed',
-                duration: { not: null }
+                OR: [
+                    { duration: { gt: 0 } },
+                    { recordingDuration: { gt: 0 } }
+                ]
             },
-            select: { duration: true }
+            select: { duration: true, recordingDuration: true }
         });
 
-        const avgDuration = callsWithDuration.length > 0
-            ? callsWithDuration.reduce((sum, c) => sum + (c.duration || 0), 0) / callsWithDuration.length
-            : 0;
+        let totalSeconds = 0;
+        let validCalls = 0;
+        callsWithDuration.forEach(c => {
+            if (c.recordingDuration && c.recordingDuration > 0) {
+                totalSeconds += c.recordingDuration;
+                validCalls++;
+            } else if (c.duration && c.duration > 0) {
+                totalSeconds += c.duration * 60;
+                validCalls++;
+            }
+        });
+
+        const avgDuration = validCalls > 0 ? (totalSeconds / validCalls) / 60 : 0;
 
         // Calls with recordings
         const callsWithRecording = await prisma.interaction.count({
