@@ -16,7 +16,8 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
         const leads = await prisma.lead.findMany({
             where: {
                 organisationId: user.organisationId,
-                isDeleted: false
+                isDeleted: false,
+                phone: { not: '' }
             },
             select: {
                 id: true,
@@ -50,26 +51,33 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         let targetLeadId = leadId;
         let finalPhone = phoneNumber;
 
-        // Fallback: If no leadId, try to find lead by phone number
-        if (!targetLeadId && phoneNumber) {
+        // Fallback: If no leadId OR if the provided leadId has no phone (ghost lead), try to find lead by phone number
+        let leadByPhone = null;
+        if (phoneNumber) {
             const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
             const last10 = cleanPhone.slice(-10);
-            console.log(`[AndroidUpload] No leadId provided. Searching for phone endsWith: ${last10}`);
             
-            const lead = await prisma.lead.findFirst({
+            leadByPhone = await prisma.lead.findFirst({
                 where: {
                     organisationId: user.organisationId,
                     phone: { contains: last10 }
                 },
-                select: { id: true, phone: true }
+                select: { id: true, phone: true, firstName: true }
             });
-            if (lead) {
-                console.log(`[AndroidUpload] Found lead matching phone: ${lead.id}`);
-                targetLeadId = lead.id;
-                finalPhone = lead.phone;
-            } else {
-                console.warn(`[AndroidUpload] No lead found in DB for phone last10: ${last10}`);
-            }
+        }
+
+        if (!targetLeadId && leadByPhone) {
+            console.log(`[AndroidUpload] No leadId provided. Found lead matching phone: ${leadByPhone.id}`);
+            targetLeadId = leadByPhone.id;
+            finalPhone = leadByPhone.phone;
+        } else if (targetLeadId && leadByPhone && targetLeadId !== leadByPhone.id) {
+            // Mismatch detected: App sent a leadId, but DB finds a different lead for this phone
+            // This happens if the App's local cache has a "ghost" lead (empty phone) matched to this call
+            console.warn(`[AndroidUpload] Mismatch: App sent leadId=${targetLeadId}, but phone matches leadId=${leadByPhone.id} (${leadByPhone.firstName}). Overriding.`);
+            targetLeadId = leadByPhone.id;
+            finalPhone = leadByPhone.phone;
+        } else if (!targetLeadId && !leadByPhone && phoneNumber) {
+            console.warn(`[AndroidUpload] No lead found in DB for phone: ${phoneNumber}`);
         }
 
         if (!targetLeadId && !phoneNumber) {
