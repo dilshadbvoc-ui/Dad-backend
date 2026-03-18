@@ -76,6 +76,18 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             console.warn(`[AndroidUpload] Mismatch: App sent leadId=${targetLeadId}, but phone matches leadId=${leadByPhone.id} (${leadByPhone.firstName}). Overriding.`);
             targetLeadId = leadByPhone.id;
             finalPhone = leadByPhone.phone;
+        } else if (targetLeadId && !leadByPhone && phoneNumber) {
+            // App sent a leadId, but no lead matches this phone in DB. 
+            // Check if the provided leadId is a "ghost" (no phone number).
+            const providedLead = await prisma.lead.findUnique({
+                where: { id: targetLeadId },
+                select: { phone: true, firstName: true }
+            });
+
+            if (providedLead && (!providedLead.phone || providedLead.phone.trim() === '')) {
+                console.warn(`[AndroidUpload] Strict Unlink: App sent ghost leadId=${targetLeadId} (${providedLead.firstName}) for unknown phone ${phoneNumber}. Unlinking.`);
+                targetLeadId = null;
+            }
         } else if (!targetLeadId && !leadByPhone && phoneNumber) {
             console.warn(`[AndroidUpload] No lead found in DB for phone: ${phoneNumber}`);
         }
