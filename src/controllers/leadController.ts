@@ -820,7 +820,7 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                 let finalOwnerId = l.assignedTo || l.assignedToId;
 
                 // Resolution via ownerEmail if provided in import
-                if (!finalOwnerId && l.ownerEmail) {
+                if (!finalOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
                     const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
                     if (resolvedId) {
                         finalOwnerId = resolvedId;
