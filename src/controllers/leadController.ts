@@ -771,6 +771,13 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
         let reEnquiryCount = 0;
         const errors: any[] = [];
 
+        // Pre-fetch users for email resolution
+        const orgUsers = await prisma.user.findMany({
+            where: { organisationId: orgId },
+            select: { id: true, email: true }
+        });
+        const userEmailMap = new Map(orgUsers.map(u => [u.email.toLowerCase(), u.id]));
+
         for (const l of leadsData) {
             try {
                 // Sanitize phone
@@ -810,7 +817,15 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                 }
 
                 // Determine final owner
-                let finalOwnerId = l.assignedTo;
+                let finalOwnerId = l.assignedTo || l.assignedToId;
+
+                // Resolution via ownerEmail if provided in import
+                if (!finalOwnerId && l.ownerEmail) {
+                    const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
+                    if (resolvedId) {
+                        finalOwnerId = resolvedId;
+                    }
+                }
 
                 if (splitIds.length > 0) {
                     finalOwnerId = splitIds[splitIndex % splitIds.length];
@@ -1070,7 +1085,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                     name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
                     stage: 'prospecting',
-                    closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+                    closeDate: new Date(), // Set to today by default instead of +30 days
                     organisationId: orgId,
                     ownerId: finalOwnerId,
                     accountId: targetAccountId,
