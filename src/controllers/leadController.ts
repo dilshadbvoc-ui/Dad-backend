@@ -7,6 +7,7 @@ import { WorkflowEngine } from '../services/workflowEngine';
 import { NotificationService } from '../services/notificationService';
 import { LeadSource, LeadStatus } from '../generated/client';
 import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
+import { GeoLocationService } from '../services/geoLocationService';
 // Dynamic import used for OpenAI to avoid startup errors if missing
 
 
@@ -172,7 +173,6 @@ export const createLead = async (req: express.Request, res: express.Response) =>
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
-            const { GeoLocationService } = await import('../services/geoLocationService');
             const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress;
             if (ipAddress) {
                 geoData = await GeoLocationService.detectCountryFromIP(ipAddress as string);
@@ -765,7 +765,6 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { GeoLocationService } = await import('../services/geoLocationService');
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
