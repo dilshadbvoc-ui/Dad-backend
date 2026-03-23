@@ -755,7 +755,7 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
         const splitIds = Array.isArray(req.body) ? [] : (splitUserIds || []);
         let splitIndex = 0;
 
-        console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId);
+        console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId, 'SplitIds:', splitIds);
 
         if (!Array.isArray(leadsData) || leadsData.length === 0) {
             return res.status(400).json({ message: 'Invalid input' });
@@ -828,6 +828,7 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
 
                 if (splitIds.length > 0) {
                     finalOwnerId = splitIds[splitIndex % splitIds.length];
+                    console.log('[createBulkLeads] Split Assignment:', finalOwnerId, 'Index:', splitIndex);
                     splitIndex++;
                 } else if (!finalOwnerId && applyRules) {
                     const { DistributionService } = await import('../services/distributionService');
