@@ -118,9 +118,17 @@ exports.DistributionService = {
                     if (assignedUserId) {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
+                        // Fetch new user's branch
+                        const assignedUser = await prisma_1.default.user.findUnique({
+                            where: { id: assignedUserId },
+                            select: { branchId: true }
+                        });
                         await prisma_1.default.lead.update({
                             where: { id: lead.id },
-                            data: { assignedToId: assignedUserId }
+                            data: {
+                                assignedToId: assignedUserId,
+                                branchId: assignedUser?.branchId || lead.branchId
+                            }
                         });
                         // Create history record
                         await prisma_1.default.leadHistory.create({
@@ -145,9 +153,17 @@ exports.DistributionService = {
                     if (managerId) {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
+                        // Fetch manager's branch
+                        const manager = await prisma_1.default.user.findUnique({
+                            where: { id: managerId },
+                            select: { branchId: true }
+                        });
                         await prisma_1.default.lead.update({
                             where: { id: lead.id },
-                            data: { assignedToId: managerId }
+                            data: {
+                                assignedToId: managerId,
+                                branchId: manager?.branchId || lead.branchId
+                            }
                         });
                         // Create history record
                         await prisma_1.default.leadHistory.create({

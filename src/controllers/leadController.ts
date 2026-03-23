@@ -171,6 +171,16 @@ export const createLead = async (req: express.Request, res: express.Response) =>
         // Manual assignment owner logic
         const leadOwnerId = assignedTo || currentUser.id;
 
+        // Sync branch with assigned user
+        let leadBranchId = branchId || currentUser.branchId;
+        if (assignedTo) {
+            const assignedUser = await prisma.user.findUnique({
+                where: { id: assignedTo },
+                select: { branchId: true }
+            });
+            if (assignedUser?.branchId) leadBranchId = assignedUser.branchId;
+        }
+
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
@@ -211,7 +221,7 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                 countryCode: req.body.countryCode || geoData?.countryCode || undefined,
                 phoneCountryCode: req.body.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                 organisation: { connect: { id: orgId } },
-                branch: currentUser.branchId ? { connect: { id: currentUser.branchId } } : (branchId ? { connect: { id: branchId } } : undefined),
+                branch: leadBranchId ? { connect: { id: leadBranchId } } : undefined,
                 // Assign to creator by default, or to specified user
                 assignedTo: { connect: { id: leadOwnerId } },
                 source: req.body.source as LeadSource || LeadSource.manual,
@@ -428,6 +438,15 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                     changedById: requester.id,
                     reason: req.body.reason || 'Manual Assignment'
                 };
+            }
+
+            // Sync branch with new owner
+            const assignedUser = await prisma.user.findUnique({
+                where: { id: targetUserId },
+                select: { branchId: true }
+            });
+            if (assignedUser?.branchId) {
+                updates.branchId = assignedUser.branchId;
             }
 
             // Remap for Prisma - store the ID directly

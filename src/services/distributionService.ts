@@ -94,9 +94,18 @@ export const DistributionService = {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
 
+                        // Fetch new user's branch
+                        const assignedUser = await prisma.user.findUnique({
+                            where: { id: assignedUserId },
+                            select: { branchId: true }
+                        });
+
                         await prisma.lead.update({
                             where: { id: lead.id },
-                            data: { assignedToId: assignedUserId }
+                            data: { 
+                                assignedToId: assignedUserId,
+                                branchId: assignedUser?.branchId || lead.branchId
+                            }
                         });
 
                         // Create history record
@@ -127,9 +136,18 @@ export const DistributionService = {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
 
+                        // Fetch manager's branch
+                        const manager = await prisma.user.findUnique({
+                            where: { id: managerId },
+                            select: { branchId: true }
+                        });
+
                         await prisma.lead.update({
                             where: { id: lead.id },
-                            data: { assignedToId: managerId }
+                            data: { 
+                                assignedToId: managerId,
+                                branchId: manager?.branchId || lead.branchId
+                            }
                         });
 
                         // Create history record
