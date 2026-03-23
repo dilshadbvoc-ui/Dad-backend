@@ -44,7 +44,7 @@ const notificationService_1 = require("../services/notificationService");
 const getOpportunities = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
-        const limit = parseInt(req.query.limit || '10');
+        const limit = parseInt(req.query.limit || '1000');
         const skip = (page - 1) * limit;
         const user = req.user;
         const where = { isDeleted: false };
@@ -59,8 +59,9 @@ const getOpportunities = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId)
-                where.branchId = user.branchId;
+            // Branch filtering should be handled by visibility logic or explicit query params
+            if (req.query.branchId)
+                where.branchId = String(req.query.branchId);
         }
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
@@ -81,7 +82,7 @@ const getOpportunities = async (req, res) => {
             where,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } },
+                owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } },
                 emiSchedule: { select: { id: true, status: true } }
             },
             skip,
@@ -257,8 +258,7 @@ const getOpportunityById = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId)
-                where.branchId = user.branchId;
+            // Removed strict branchId check to allow cross-branch visibility via hierarchy
         }
         const opportunity = await prisma_1.default.opportunity.findFirst({
             where,
@@ -276,7 +276,7 @@ const getOpportunityById = async (req, res) => {
                         }
                     }
                 },
-                owner: { select: { firstName: true, lastName: true, profileImage: true, email: true } },
+                owner: { select: { id: true, firstName: true, lastName: true, profileImage: true, email: true } },
                 contacts: true,
                 lead: {
                     select: {
@@ -343,15 +343,14 @@ const updateOpportunity = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
-            if (requester.branchId)
-                whereObj.branchId = requester.branchId;
+            // Removed strict branchId check for cross-branch updates
         }
         const opportunity = await prisma_1.default.opportunity.update({
             where: whereObj,
             data: opportunityUpdates,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true, profileImage: true } }
+                owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } }
             }
         });
         // Audit Log
@@ -513,8 +512,7 @@ const deleteOpportunity = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
-            if (user.branchId)
-                where.branchId = user.branchId;
+            // Removed strict branchId check for cross-branch deletion
         }
         const opportunity = await prisma_1.default.opportunity.findFirst({ where });
         if (!opportunity)

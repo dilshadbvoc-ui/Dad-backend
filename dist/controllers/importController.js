@@ -48,10 +48,11 @@ const importLeads = async (req, res) => {
         const defaultStatus = req.body.defaultStatus || 'new';
         const pipelineId = req.body.pipelineId || null;
         const defaultStage = req.body.defaultStage || null;
-        const branchId = req.body.branchId || null;
-        const applyAssignmentRules = req.body.applyAssignmentRules === 'true';
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        const branchId = req.body.branchId || user.branchId || null;
+        const applyAssignmentRules = req.body.applyAssignmentRules === 'true';
+        const splitUserIds = req.body.splitUserIds ? (typeof req.body.splitUserIds === 'string' ? JSON.parse(req.body.splitUserIds) : req.body.splitUserIds) : [];
         if (!orgId)
             return res.status(400).json({ message: 'User has no organisation' });
         // Create Import Job with options
@@ -61,7 +62,8 @@ const importLeads = async (req, res) => {
             pipelineId,
             defaultStage,
             branchId,
-            applyAssignmentRules
+            applyAssignmentRules,
+            splitUserIds
         });
         // Start Processing in Background
         ImportJobService.processJob(job.id).catch(console.error);

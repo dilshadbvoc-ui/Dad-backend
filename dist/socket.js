@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIO = exports.initSocket = void 0;
+exports.emitToOrg = exports.emitToUser = exports.getIO = exports.initSocket = void 0;
 const socket_io_1 = require("socket.io");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const logger_1 = require("./utils/logger");
@@ -286,12 +286,28 @@ const initSocket = (httpServer) => {
 exports.initSocket = initSocket;
 let ioInstance = null;
 const getIO = () => {
-    if (!ioInstance) {
-        // This relies on initSocket setting it, which we should do
-        // Since initSocket returns io, we can't easily capture it inside here unless we assign it.
-        // Let's modify initSocket to assign to ioInstance.
-        return null;
-    }
     return ioInstance;
 };
 exports.getIO = getIO;
+/**
+ * Emit an event to a specific user's room
+ */
+const emitToUser = (userId, event, data) => {
+    const io = (0, exports.getIO)();
+    if (io) {
+        io.to(userId).emit(event, data);
+        logger_1.logger.debug(`Socket emit to user ${userId}: ${event}`, 'SocketEmit');
+    }
+};
+exports.emitToUser = emitToUser;
+/**
+ * Emit an event to an entire organisation room
+ */
+const emitToOrg = (organisationId, event, data) => {
+    const io = (0, exports.getIO)();
+    if (io) {
+        io.to(`org:${organisationId}`).emit(event, data);
+        logger_1.logger.debug(`Socket emit to org ${organisationId}: ${event}`, 'SocketEmit');
+    }
+};
+exports.emitToOrg = emitToOrg;

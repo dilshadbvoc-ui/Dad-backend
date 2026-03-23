@@ -590,6 +590,7 @@ model Task {
   createdById    String?
   organisationId String?
   isDeleted      Boolean      @default(false)
+  notifiedAt     DateTime?    // Tracks when the last reminder notification was sent
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   account        Account?     @relation(fields: [accountId], references: [id])

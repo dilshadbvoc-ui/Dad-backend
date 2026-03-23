@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyWebhook = exports.handleWebhook = exports.uploadMedia = exports.getMedia = exports.getMessageStatistics = exports.getConversationAnalytics = exports.markConversationAsRead = exports.markMessageAsRead = exports.getMessageStatus = exports.sendMediaMessage = exports.createTemplate = exports.getTemplates = exports.testConnection = exports.getConversations = exports.getMessages = exports.sendMessage = exports.getWhatsAppConfig = void 0;
+exports.logExternalMessage = exports.verifyWebhook = exports.handleWebhook = exports.uploadMedia = exports.getMedia = exports.getMessageStatistics = exports.getConversationAnalytics = exports.markConversationAsRead = exports.markMessageAsRead = exports.getMessageStatus = exports.sendMediaMessage = exports.createTemplate = exports.getTemplates = exports.testConnection = exports.getConversations = exports.getMessages = exports.sendMessage = exports.getWhatsAppConfig = void 0;
 const whatsAppService_1 = require("../services/whatsAppService");
 const whatsAppIntegrationService_1 = require("../services/whatsAppIntegrationService");
 const prisma_1 = __importDefault(require("../config/prisma"));
@@ -614,3 +614,57 @@ const verifyWebhook = async (req, res) => {
     }
 };
 exports.verifyWebhook = verifyWebhook;
+const logExternalMessage = async (req, res) => {
+    try {
+        const user = req.user;
+        if (!user || !user.organisationId) {
+            return res.status(401).json({ error: 'Unauthorized.' });
+        }
+        const { phoneNumber, messageText, direction, timestamp, leadId } = req.body;
+        if (!phoneNumber || !messageText) {
+            return res.status(400).json({ error: 'phoneNumber and messageText are required.' });
+        }
+        let targetLeadId = leadId;
+        const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+        const last10 = cleanPhone.slice(-10);
+        // 1. Lead Lookup (if not provided or to verify)
+        if (!targetLeadId) {
+            const lead = await prisma_1.default.lead.findFirst({
+                where: {
+                    organisationId: user.organisationId,
+                    phone: { contains: last10 },
+                    isDeleted: false
+                },
+                select: { id: true }
+            });
+            if (lead)
+                targetLeadId = lead.id;
+        }
+        // 2. Create Interaction
+        // Note: We use 'whatsapp' as the type (added to schema.prisma)
+        const interaction = await prisma_1.default.interaction.create({
+            data: {
+                type: 'whatsapp',
+                direction: direction === 'inbound' ? 'inbound' : 'outbound',
+                subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
+                description: messageText,
+                date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
+                phoneNumber: phoneNumber,
+                leadId: targetLeadId || undefined,
+                organisationId: user.organisationId,
+                createdById: user.id
+            }
+        });
+        console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
+        res.status(201).json({
+            success: true,
+            interactionId: interaction.id,
+            linkedToLead: !!targetLeadId
+        });
+    }
+    catch (error) {
+        console.error('[WhatsAppSync] Error logging external message:', error);
+        res.status(500).json({ error: 'Failed to log WhatsApp message' });
+    }
+};
+exports.logExternalMessage = logExternalMessage;

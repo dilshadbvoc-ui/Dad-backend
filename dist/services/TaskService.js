@@ -28,5 +28,49 @@ class TaskService {
             data: createData
         });
     }
+    static async syncLeadFollowUp(leadId) {
+        if (!leadId)
+            return;
+        // Find the earliest upcoming task that isn't completed and has a due date
+        const nextTask = await prisma_1.default.task.findFirst({
+            where: {
+                leadId,
+                isDeleted: false,
+                status: { notIn: ['completed', 'deferred'] },
+                dueDate: { not: null }
+            },
+            orderBy: {
+                dueDate: 'asc'
+            }
+        });
+        await prisma_1.default.lead.update({
+            where: { id: leadId },
+            data: {
+                nextFollowUp: nextTask ? nextTask.dueDate : null
+            }
+        });
+    }
+    static async rolloverTaskForLead(leadId, newDate) {
+        if (!leadId)
+            return;
+        // Find the earliest non-completed task for this lead
+        const task = await prisma_1.default.task.findFirst({
+            where: {
+                leadId,
+                isDeleted: false,
+                status: { notIn: ['completed', 'deferred'] }
+            },
+            orderBy: {
+                dueDate: 'asc'
+            }
+        });
+        if (task) {
+            await prisma_1.default.task.update({
+                where: { id: task.id },
+                data: { dueDate: newDate }
+            });
+            console.log(`[TaskService] Rolled over task ${task.id} for lead ${leadId} to ${newDate.toISOString()}`);
+        }
+    }
 }
 exports.TaskService = TaskService;

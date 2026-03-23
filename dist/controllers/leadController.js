@@ -37,6 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDuplicateLeads = exports.getReEnquiryLeads = exports.generateAIResponse = exports.getPendingFollowUpsCount = exports.submitExplanation = exports.getLeadHistory = exports.getViolations = exports.convertLead = exports.bulkAssignLeads = exports.createBulkLeads = exports.deleteLead = exports.updateLead = exports.getLeadById = exports.createLead = exports.getLeads = void 0;
+const socket_1 = require("../socket");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const distributionService_1 = require("../services/distributionService");
@@ -44,6 +45,7 @@ const workflowEngine_1 = require("../services/workflowEngine");
 const notificationService_1 = require("../services/notificationService");
 const client_1 = require("../generated/client");
 const roleUtils_1 = require("../utils/roleUtils");
+const geoLocationService_1 = require("../services/geoLocationService");
 // Dynamic import used for OpenAI to avoid startup errors if missing
 // GET /api/leads
 const getLeads = async (req, res) => {
@@ -75,9 +77,10 @@ const getLeads = async (req, res) => {
             andConditions.push({
                 OR: [
                     { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                    { createdById: user.id }, // Created by the user (always visible)
                     {
                         AND: [
-                            { createdById: { in: visibleUserIds } }, // Created by self or subordinate
+                            { createdById: { in: visibleUserIds } }, // Created by subordinate
                             { assignedToId: null } // But not reassigned to someone else (who might be outside visibility)
                         ]
                     }
@@ -118,7 +121,7 @@ const getLeads = async (req, res) => {
             where,
             include: {
                 assignedTo: {
-                    select: { firstName: true, lastName: true, email: true }
+                    select: { id: true, firstName: true, lastName: true, email: true }
                 }
             },
             skip: (page - 1) * pageSize,
@@ -183,14 +186,13 @@ const createLead = async (req, res) => {
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
-            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/geoLocationService')));
             const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress;
             if (ipAddress) {
-                geoData = await GeoLocationService.detectCountryFromIP(ipAddress);
+                geoData = await geoLocationService_1.GeoLocationService.detectCountryFromIP(ipAddress);
             }
             // Fallback: Try to detect from phone number
             if (!geoData && cleanPhone) {
-                geoData = GeoLocationService.detectCountryFromPhone(cleanPhone);
+                geoData = geoLocationService_1.GeoLocationService.detectCountryFromPhone(cleanPhone);
             }
         }
         // Custom Field Validation
@@ -319,6 +321,8 @@ const createLead = async (req, res) => {
             console.error('WorkflowEngine error:', workflowErr);
             // Don't fail the request if workflow fails
         }
+        // Socket Emit for Real-time Sync
+        (0, socket_1.emitToOrg)(orgId, 'lead_created', lead);
         res.status(201).json(lead);
     }
     catch (error) {
@@ -357,43 +361,19 @@ const getLeadById = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            // Apply role-based visibility for non-admins
-            if (!(0, roleUtils_1.isAdmin)(user)) {
-                // Get user's role to determine visibility rules
-                // Handle both UUID-based roles (new) and string-based roles (legacy)
-                let roleName = '';
-                const userRole = await prisma_1.default.role.findFirst({
-                    where: {
-                        OR: [
-                            { id: user.role },
-                            { roleKey: user.role, organisationId: user.organisationId },
-                            { roleKey: user.role, organisationId: null }
+            // 2. Hierarchy Visibility
+            if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user) && !(0, roleUtils_1.isAdmin)(user)) {
+                const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+                where.OR = [
+                    { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                    { createdById: user.id }, // Created by the user (always visible)
+                    {
+                        AND: [
+                            { createdById: { in: visibleUserIds } }, // Created by subordinate
+                            { assignedToId: null } // But not reassigned to someone else
                         ]
                     }
-                });
-                if (userRole) {
-                    roleName = userRole.name;
-                }
-                else {
-                    // Fallback to legacy string-based role
-                    roleName = user.role.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                }
-                // Sales Reps: Only see leads assigned to them or created by them
-                if (roleName === 'Sales Rep') {
-                    where.OR = [
-                        { assignedToId: user.id },
-                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
-                    ];
-                }
-                else {
-                    // Managers: Only see leads assigned to them or their direct subordinates
-                    const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-                    where.OR = [
-                        { assignedToId: user.id },
-                        { assignedToId: { in: subordinateIds.filter(id => id !== user.id) } },
-                        { AND: [{ createdById: user.id }, { assignedToId: null }] }
-                    ];
-                }
+                ];
             }
         }
         const lead = await prisma_1.default.lead.findFirst({
@@ -630,10 +610,19 @@ const updateLead = async (req, res) => {
                 LeadScoringService.scoreLead(leadId).catch(console.error);
             });
         }
-        // Hierarchy Notification
+        // Socket Emit for Real-time Sync
+        (0, socket_1.emitToOrg)(finalLead.organisationId, 'lead_updated', finalLead);
+        // Notifications
         Promise.resolve().then(() => __importStar(require('../services/notificationService'))).then(({ NotificationService }) => {
             const leadName = `${finalLead.firstName} ${finalLead.lastName || ''}`.trim();
+            // 1. Hierarchy Notification (existing)
             NotificationService.sendToHierarchy(requester.id, 'Lead Updated', `${requester.firstName} updated lead: ${leadName}`, 'info').catch(console.error);
+            // 2. Owner Notification for Status Change
+            if (updates.status && updates.status !== currentLead.status) {
+                if (finalLead.assignedToId && finalLead.assignedToId !== requester.id) {
+                    NotificationService.send(finalLead.assignedToId, 'Lead Status Updated', `Your lead "${leadName}" status has been updated to "${updates.status}" by ${requester.firstName}.`, 'info').catch(console.error);
+                }
+            }
         });
     }
     catch (error) {
@@ -647,14 +636,14 @@ const deleteLead = async (req, res) => {
         const user = req.user;
         const leadId = req.params.id;
         // Role Check
-        if (user.role !== 'admin' && user.role !== 'super_admin') {
+        if (!(0, roleUtils_1.isAdmin)(user)) {
             return res.status(403).json({ message: 'Not authorized to delete leads' });
         }
         const lead = await prisma_1.default.lead.findUnique({ where: { id: leadId } });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
         // Org Check
-        if (user.role !== 'super_admin') {
+        if (!(0, roleUtils_1.isSuperAdmin)(user)) {
             const userOrgId = (0, hierarchyUtils_1.getOrgId)(user);
             if (lead.organisationId !== userOrgId) {
                 return res.status(403).json({ message: 'Not authorized to delete this lead' });
@@ -694,6 +683,8 @@ const deleteLead = async (req, res) => {
         catch (e) {
             console.error('Audit Log Error:', e);
         }
+        // Socket Emit for Real-time Sync
+        (0, socket_1.emitToOrg)(lead.organisationId, 'lead_deleted', { id: leadId });
         res.json({ message: 'Lead deleted' });
     }
     catch (error) {
@@ -703,13 +694,15 @@ const deleteLead = async (req, res) => {
 exports.deleteLead = deleteLead;
 const createBulkLeads = async (req, res) => {
     try {
-        const { leads, assignmentRuleId, applyAssignmentRules } = req.body;
+        const { leads, assignmentRuleId, applyAssignmentRules, splitUserIds } = req.body;
         const user = req.user;
         // Support both direct array (legacy) and object with options
         const leadsData = Array.isArray(req.body) ? req.body : leads;
         const ruleId = Array.isArray(req.body) ? undefined : assignmentRuleId;
         const applyRules = Array.isArray(req.body) ? true : (applyAssignmentRules !== false); // Default to true if not explicitly false
-        console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId);
+        const splitIds = Array.isArray(req.body) ? [] : (splitUserIds || []);
+        let splitIndex = 0;
+        console.log('[createBulkLeads] Received:', leadsData?.length || 0, 'leads', 'RuleID:', ruleId, 'SplitIds:', splitIds);
         if (!Array.isArray(leadsData) || leadsData.length === 0) {
             return res.status(400).json({ message: 'Invalid input' });
         }
@@ -717,11 +710,16 @@ const createBulkLeads = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('../services/geoLocationService')));
         let createdCount = 0;
         let duplicateCount = 0;
         let reEnquiryCount = 0;
         const errors = [];
+        // Pre-fetch users for email resolution
+        const orgUsers = await prisma_1.default.user.findMany({
+            where: { organisationId: orgId },
+            select: { id: true, email: true }
+        });
+        const userEmailMap = new Map(orgUsers.map(u => [u.email.toLowerCase(), u.id]));
         for (const l of leadsData) {
             try {
                 // Sanitize phone
@@ -750,12 +748,23 @@ const createBulkLeads = async (req, res) => {
                 // Try to detect country from phone if not provided
                 let geoData = null;
                 if (!l.country && !l.countryCode && cleanPhone) {
-                    geoData = GeoLocationService.detectCountryFromPhone(cleanPhone);
+                    geoData = geoLocationService_1.GeoLocationService.detectCountryFromPhone(cleanPhone);
                 }
                 // Determine final owner
-                let finalOwnerId = l.assignedTo;
-                // If no owner specified, apply assignment rules
-                if (!finalOwnerId && applyRules) {
+                let finalOwnerId = l.assignedTo || l.assignedToId;
+                // Resolution via ownerEmail if provided in import
+                if (!finalOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
+                    const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
+                    if (resolvedId) {
+                        finalOwnerId = resolvedId;
+                    }
+                }
+                if (splitIds.length > 0) {
+                    finalOwnerId = splitIds[splitIndex % splitIds.length];
+                    console.log('[createBulkLeads] Split Assignment:', finalOwnerId, 'Index:', splitIndex);
+                    splitIndex++;
+                }
+                else if (!finalOwnerId && applyRules) {
                     const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/distributionService')));
                     finalOwnerId = await DistributionService.assignLead({ ...l, id: undefined, branchId: l.branchId || user.branchId || undefined }, orgId, ruleId, user.id // Importer fallback
                     ) || undefined;
@@ -821,7 +830,7 @@ const bulkAssignLeads = async (req, res) => {
     try {
         const { leadIds, assignedTo, reason } = req.body;
         const requester = req.user;
-        if (requester.role !== 'super_admin' && requester.role !== 'admin') {
+        if (!(0, roleUtils_1.isAdmin)(requester)) {
             const allowedIds = await (0, hierarchyUtils_1.getVisibleUserIds)(requester.id);
             if (!allowedIds.includes(assignedTo)) {
                 return res.status(403).json({ message: 'Forbidden assignment' });
@@ -849,6 +858,11 @@ const bulkAssignLeads = async (req, res) => {
             await prisma_1.default.leadHistory.createMany({
                 data: historyRecords
             });
+            // Notify new owner
+            if (assignedTo !== requester.id) {
+                const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/notificationService')));
+                NotificationService.send(assignedTo, 'Bulk Leads Assigned', `${result.count} leads have been assigned to you by ${requester.firstName}.`, 'info').catch(console.error);
+            }
         }
         res.json({ message: 'Assigned successfully', count: result.count });
     }
@@ -861,10 +875,11 @@ const convertLead = async (req, res) => {
     try {
         const { id } = req.params;
         const leadId = id;
-        const { dealName, amount, accountId } = req.body;
+        const { dealName, amount, accountId, accountName, contactName } = req.body;
         const user = req.user;
-        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        if (!orgId)
+        // Initial org check for the converting user
+        const userOrgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!userOrgId && !user.isSuperAdmin)
             return res.status(400).json({ message: 'No organisation context' });
         const lead = await prisma_1.default.lead.findUnique({
             where: { id: leadId },
@@ -894,6 +909,8 @@ const convertLead = async (req, res) => {
                 console.log(`[convertLead] Using product sum ${opportunityAmount} as fallback for amount`);
             }
         }
+        // Use lead's organisationId to ensure deal stays in correct tenant
+        const orgId = (lead.organisationId || userOrgId);
         // 0. Limit Check
         const org = lead.organisation;
         if (org.contactLimit > 0) {
@@ -909,6 +926,8 @@ const convertLead = async (req, res) => {
             }
         }
         const result = await prisma_1.default.$transaction(async (tx) => {
+            // Determine owner for new entities (preserve lead owner if assigned)
+            const finalOwnerId = lead.assignedToId || user.id;
             // 1. Handle Account
             let targetAccountId = accountId;
             let account;
@@ -921,33 +940,46 @@ const convertLead = async (req, res) => {
                 // Create new Account
                 account = await tx.account.create({
                     data: {
-                        name: lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
+                        name: accountName || lead.company || `${lead.firstName} ${lead.lastName || ''}`.trim(),
                         organisationId: orgId,
-                        ownerId: user.id, // Assign to converter
+                        ownerId: finalOwnerId,
                         type: 'customer',
                         phone: lead.phone,
                         address: lead.address,
                         leadId: lead.id, // Link to original lead
-                        branchId: lead.branchId
+                        branchId: lead.branchId || undefined
                     }
                 });
                 targetAccountId = account.id;
             }
             // 2. Create Contact
+            let firstName = lead.firstName;
+            let lastName = lead.lastName || '';
+            if (contactName) {
+                const parts = contactName.trim().split(/\s+/);
+                if (parts.length > 1) {
+                    lastName = parts.pop() || '';
+                    firstName = parts.join(' ');
+                }
+                else {
+                    firstName = contactName;
+                    lastName = '';
+                }
+            }
             const contact = await tx.contact.create({
                 data: {
-                    firstName: lead.firstName,
-                    lastName: lead.lastName || '',
+                    firstName,
+                    lastName,
                     email: lead.email,
                     phones: lead.phone ? [{ type: 'mobile', number: lead.phone }] : [],
                     jobTitle: lead.jobTitle,
                     organisationId: orgId,
-                    ownerId: user.id,
+                    ownerId: finalOwnerId,
                     accountId: targetAccountId,
                     address: lead.address,
                     customFields: lead.customFields, // Migrate custom fields
                     leadId: lead.id, // Link to original lead
-                    branchId: lead.branchId
+                    branchId: lead.branchId || undefined
                 }
             });
             // 3. Create Opportunity
@@ -955,13 +987,14 @@ const convertLead = async (req, res) => {
                 data: {
                     name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
-                    stage: 'new',
-                    closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
+                    stage: 'prospecting',
+                    closeDate: new Date(), // Set to today by default instead of +30 days
                     organisationId: orgId,
-                    ownerId: user.id,
+                    ownerId: finalOwnerId,
                     accountId: targetAccountId,
                     leadId: lead.id,
-                    branchId: lead.branchId,
+                    branchId: lead.branchId || undefined,
+                    pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
                     contacts: { connect: { id: contact.id } }
                 }
             });
@@ -1014,7 +1047,8 @@ const convertLead = async (req, res) => {
                 data: {
                     leadId: null, // Unlink from lead
                     contactId: contact.id,
-                    accountId: targetAccountId
+                    accountId: targetAccountId,
+                    opportunityId: opportunity.id
                 }
             });
             return { account, contact, opportunity, lead: updatedLead, migratedProducts: leadProducts.length };
@@ -1040,6 +1074,12 @@ const convertLead = async (req, res) => {
         }
         catch (e) {
             console.error('Audit Log Error:', e);
+        }
+        // Notify Lead Owner
+        if (lead.assignedToId && lead.assignedToId !== user.id) {
+            const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/notificationService')));
+            const leadName = `${lead.firstName} ${lead.lastName || ''}`.trim();
+            NotificationService.send(lead.assignedToId, 'Lead Moved to Pipeline', `Your lead "${leadName}" has been moved to the pipeline by ${user.firstName}.`, 'info').catch(console.error);
         }
         res.json({
             message: 'Lead converted successfully',

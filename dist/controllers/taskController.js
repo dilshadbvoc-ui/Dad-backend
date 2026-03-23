@@ -7,6 +7,7 @@ exports.deleteTask = exports.updateTask = exports.getTaskById = exports.createTa
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
+const taskService_1 = require("../services/taskService");
 // Helper to consolidate polymorphic 'relatedTo' for Frontend compatibility
 const transformTask = (task) => {
     let relatedTo = null;
@@ -187,6 +188,10 @@ const createTask = async (req, res) => {
                 opportunity: { select: { name: true } }
             }
         });
+        // Sync Lead follow-up date
+        if (task.leadId) {
+            await taskService_1.TaskService.syncLeadFollowUp(task.leadId);
+        }
         if (orgId) {
             await (0, auditLogger_1.logAudit)({
                 organisationId: orgId,
@@ -292,6 +297,10 @@ const updateTask = async (req, res) => {
                 opportunity: { select: { id: true, name: true } },
             }
         });
+        // Sync Lead follow-up date
+        if (task.leadId) {
+            await taskService_1.TaskService.syncLeadFollowUp(task.leadId);
+        }
         await (0, auditLogger_1.logAudit)({
             organisationId: requester.organisationId || (0, hierarchyUtils_1.getOrgId)(requester),
             actorId: requester.id,
@@ -323,6 +332,11 @@ const deleteTask = async (req, res) => {
             where,
             data: { isDeleted: true }
         });
+        // Sync Lead follow-up date (task is now deleted)
+        const task = await prisma_1.default.task.findUnique({ where: { id: req.params.id } });
+        if (task?.leadId) {
+            await taskService_1.TaskService.syncLeadFollowUp(task.leadId);
+        }
         await (0, auditLogger_1.logAudit)({
             organisationId: (orgId || (0, hierarchyUtils_1.getOrgId)(user)),
             actorId: user.id,

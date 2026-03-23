@@ -422,7 +422,20 @@ export const createUser = async (req: Request, res: Response) => {
         // 2. Email duplication check
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            return res.status(409).json({ message: 'User with this email already exists' });
+            if (existingUser.isActive) {
+                return res.status(409).json({ message: 'User with this email already exists and is active' });
+            } else {
+                // Suspended user: rename to free up email/userId and proceed
+                const renameSuffix = `_suspended_${Date.now()}`;
+                await prisma.user.update({
+                    where: { id: existingUser.id },
+                    data: { 
+                        email: `${existingUser.email}${renameSuffix}`,
+                        userId: existingUser.userId ? `${existingUser.userId}${renameSuffix}` : undefined
+                    }
+                });
+                logger.info(`Renamed suspended user ${existingUser.id} to free up email ${email}`, 'UserController');
+            }
         }
 
         if (!password || password.length < 8) {
@@ -476,6 +489,7 @@ export const inviteUser = async (req: Request, res: Response) => {
         const { email, firstName, lastName, role, organisationId, position, reportsTo, password, branchId, phone, dailyLeadQuota } = req.body;
         const currentUser = (req as any).user;
         const orgId = getOrgId(currentUser) || organisationId;
+        logger.info('inviteUser called', 'UserController', undefined, orgId, { body: req.body });
 
         // 1. License Check
         const { LicenseEnforcementService } = await import('../services/licenseEnforcementService');
@@ -486,9 +500,27 @@ export const inviteUser = async (req: Request, res: Response) => {
             return res.status(403).json({ message: 'Only administrators can invite users' });
         }
 
+        if (!email) {
+            logger.warn('Invite failed: Email is missing', 'UserController');
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            return res.status(400).json({ message: 'User with this email already exists' });
+            if (existingUser.isActive) {
+                return res.status(400).json({ message: 'User with this email already exists and is active' });
+            } else {
+                // Suspended user: rename to free up email/userId and proceed
+                const renameSuffix = `_suspended_${Date.now()}`;
+                await prisma.user.update({
+                    where: { id: existingUser.id },
+                    data: { 
+                        email: `${existingUser.email}${renameSuffix}`,
+                        userId: existingUser.userId ? `${existingUser.userId}${renameSuffix}` : undefined
+                    }
+                });
+                logger.info(`Renamed suspended user ${existingUser.id} to free up email ${email}`, 'UserController');
+            }
         }
 
         let targetOrgId = getOrgId(currentUser);
@@ -496,7 +528,10 @@ export const inviteUser = async (req: Request, res: Response) => {
             targetOrgId = organisationId;
         }
 
-        if (!targetOrgId) return res.status(400).json({ message: 'Organisation is required' });
+        if (!targetOrgId) {
+            logger.warn('Invite failed: Organisation ID missing', 'UserController');
+            return res.status(400).json({ message: 'Organisation is required' });
+        }
 
         // Check limits and increment counter
         const org = await prisma.organisation.findUnique({ where: { id: targetOrgId } });
@@ -558,6 +593,7 @@ export const inviteUser = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
+        logger.error('inviteUser Error', error, 'UserController');
         res.status(400).json({ message: (error as Error).message });
     }
 };

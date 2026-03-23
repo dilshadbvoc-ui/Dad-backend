@@ -48,7 +48,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         
         const file = req.file;
 
-        let targetLeadId = leadId;
+        // Robust leadId handling (convert "null" string to null)
+        let targetLeadId = (leadId === 'null' || !leadId) ? null : leadId;
         let finalPhone = phoneNumber;
 
         // Fallback: If no leadId OR if the provided leadId has no phone (ghost lead), try to find lead by phone number
@@ -101,7 +102,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'})`);
         const recording = await prisma.callRecording.create({
             data: {
-                leadId: targetLeadId || undefined,
+                lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                 duration: parseInt(duration, 10) || 0,
                 fileUrl: file ? `/uploads/${file.filename}` : '',
                 callType: callType || 'UNKNOWN',
@@ -142,7 +143,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     recordingDuration: durationSecs,
                     recordingUrl: recording.fileUrl,
                     callStatus: 'completed',
-                    leadId: targetLeadId || undefined,
+                    lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     phoneNumber: phoneNumber || undefined
                 }
             });
@@ -160,7 +161,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     recordingDuration: durationSecs,
                     recordingUrl: recording.fileUrl,
                     callStatus: 'completed',
-                    leadId: targetLeadId,
+                    lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     organisationId: user.organisationId,
                     createdById: user.id,
                     phoneNumber: finalPhone

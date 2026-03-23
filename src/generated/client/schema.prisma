@@ -299,7 +299,7 @@ model Lead {
 
 model CallRecording {
   id        String   @id @default(uuid())
-  leadId    String
+  leadId    String?
   duration  Int      @default(0) // Duration in seconds
   fileUrl   String // S3 or local path
   callType  String   @default("UNKNOWN") // INCOMING, OUTGOING, MISSED
@@ -307,7 +307,7 @@ model CallRecording {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead Lead? @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
 }
@@ -591,6 +591,7 @@ model Task {
   createdById    String?
   organisationId String?
   isDeleted      Boolean       @default(false)
+  notifiedAt     DateTime? // Tracks when the last reminder notification was sent
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   account        Account?      @relation(fields: [accountId], references: [id])
@@ -613,7 +614,7 @@ model Interaction {
   subject           String
   description       String?
   date              DateTime             @default(now())
-  duration          Int?
+  duration          Float?
   recordingUrl      String?
   recordingDuration Int?
   callStatus        String?
@@ -1222,6 +1223,7 @@ enum InteractionType {
   email
   meeting
   note
+  whatsapp
   other
 }
 

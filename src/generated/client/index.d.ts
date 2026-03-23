@@ -365,6 +365,7 @@ export const InteractionType: {
   email: 'email',
   meeting: 'meeting',
   note: 'note',
+  whatsapp: 'whatsapp',
   other: 'other'
 };
 
@@ -16738,7 +16739,7 @@ export namespace Prisma {
 
   export type CallRecordingGroupByOutputType = {
     id: string
-    leadId: string
+    leadId: string | null
     duration: number
     fileUrl: string
     callType: string
@@ -16775,7 +16776,7 @@ export namespace Prisma {
     timestamp?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    lead?: boolean | CallRecording$leadArgs<ExtArgs>
   }, ExtArgs["result"]["callRecording"]>
 
   export type CallRecordingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -16787,7 +16788,7 @@ export namespace Prisma {
     timestamp?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    lead?: boolean | CallRecording$leadArgs<ExtArgs>
   }, ExtArgs["result"]["callRecording"]>
 
   export type CallRecordingSelectScalar = {
@@ -16802,20 +16803,20 @@ export namespace Prisma {
   }
 
   export type CallRecordingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    lead?: boolean | CallRecording$leadArgs<ExtArgs>
   }
   export type CallRecordingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    lead?: boolean | LeadDefaultArgs<ExtArgs>
+    lead?: boolean | CallRecording$leadArgs<ExtArgs>
   }
 
   export type $CallRecordingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "CallRecording"
     objects: {
-      lead: Prisma.$LeadPayload<ExtArgs>
+      lead: Prisma.$LeadPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      leadId: string
+      leadId: string | null
       duration: number
       fileUrl: string
       callType: string
@@ -17186,7 +17187,7 @@ export namespace Prisma {
    */
   export interface Prisma__CallRecordingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    lead<T extends LeadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeadDefaultArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    lead<T extends CallRecording$leadArgs<ExtArgs> = {}>(args?: Subset<T, CallRecording$leadArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17539,6 +17540,21 @@ export namespace Prisma {
      * Filter which CallRecordings to delete
      */
     where?: CallRecordingWhereInput
+  }
+
+  /**
+   * CallRecording.lead
+   */
+  export type CallRecording$leadArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Lead
+     */
+    select?: LeadSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadInclude<ExtArgs> | null
+    where?: LeadWhereInput
   }
 
   /**
@@ -27789,6 +27805,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    notifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     branchId: string | null
@@ -27809,6 +27826,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    notifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     branchId: string | null
@@ -27829,6 +27847,7 @@ export namespace Prisma {
     createdById: number
     organisationId: number
     isDeleted: number
+    notifiedAt: number
     createdAt: number
     updatedAt: number
     branchId: number
@@ -27851,6 +27870,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    notifiedAt?: true
     createdAt?: true
     updatedAt?: true
     branchId?: true
@@ -27871,6 +27891,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    notifiedAt?: true
     createdAt?: true
     updatedAt?: true
     branchId?: true
@@ -27891,6 +27912,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    notifiedAt?: true
     createdAt?: true
     updatedAt?: true
     branchId?: true
@@ -27984,6 +28006,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean
+    notifiedAt: Date | null
     createdAt: Date
     updatedAt: Date
     branchId: string | null
@@ -28021,6 +28044,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     branchId?: boolean
@@ -28049,6 +28073,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     branchId?: boolean
@@ -28077,6 +28102,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     branchId?: boolean
@@ -28130,6 +28156,7 @@ export namespace Prisma {
       createdById: string | null
       organisationId: string | null
       isDeleted: boolean
+      notifiedAt: Date | null
       createdAt: Date
       updatedAt: Date
       branchId: string | null
@@ -28548,6 +28575,7 @@ export namespace Prisma {
     readonly createdById: FieldRef<"Task", 'String'>
     readonly organisationId: FieldRef<"Task", 'String'>
     readonly isDeleted: FieldRef<"Task", 'Boolean'>
+    readonly notifiedAt: FieldRef<"Task", 'DateTime'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
     readonly branchId: FieldRef<"Task", 'String'>
@@ -29883,7 +29911,7 @@ export namespace Prisma {
     readonly subject: FieldRef<"Interaction", 'String'>
     readonly description: FieldRef<"Interaction", 'String'>
     readonly date: FieldRef<"Interaction", 'DateTime'>
-    readonly duration: FieldRef<"Interaction", 'Int'>
+    readonly duration: FieldRef<"Interaction", 'Float'>
     readonly recordingUrl: FieldRef<"Interaction", 'String'>
     readonly recordingDuration: FieldRef<"Interaction", 'Int'>
     readonly callStatus: FieldRef<"Interaction", 'String'>
@@ -74743,6 +74771,7 @@ export namespace Prisma {
     createdById: 'createdById',
     organisationId: 'organisationId',
     isDeleted: 'isDeleted',
+    notifiedAt: 'notifiedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     branchId: 'branchId'
@@ -77015,19 +77044,19 @@ export namespace Prisma {
     OR?: CallRecordingWhereInput[]
     NOT?: CallRecordingWhereInput | CallRecordingWhereInput[]
     id?: StringFilter<"CallRecording"> | string
-    leadId?: StringFilter<"CallRecording"> | string
+    leadId?: StringNullableFilter<"CallRecording"> | string | null
     duration?: IntFilter<"CallRecording"> | number
     fileUrl?: StringFilter<"CallRecording"> | string
     callType?: StringFilter<"CallRecording"> | string
     timestamp?: DateTimeFilter<"CallRecording"> | Date | string
     createdAt?: DateTimeFilter<"CallRecording"> | Date | string
     updatedAt?: DateTimeFilter<"CallRecording"> | Date | string
-    lead?: XOR<LeadRelationFilter, LeadWhereInput>
+    lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
   }
 
   export type CallRecordingOrderByWithRelationInput = {
     id?: SortOrder
-    leadId?: SortOrder
+    leadId?: SortOrderInput | SortOrder
     duration?: SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
@@ -77042,19 +77071,19 @@ export namespace Prisma {
     AND?: CallRecordingWhereInput | CallRecordingWhereInput[]
     OR?: CallRecordingWhereInput[]
     NOT?: CallRecordingWhereInput | CallRecordingWhereInput[]
-    leadId?: StringFilter<"CallRecording"> | string
+    leadId?: StringNullableFilter<"CallRecording"> | string | null
     duration?: IntFilter<"CallRecording"> | number
     fileUrl?: StringFilter<"CallRecording"> | string
     callType?: StringFilter<"CallRecording"> | string
     timestamp?: DateTimeFilter<"CallRecording"> | Date | string
     createdAt?: DateTimeFilter<"CallRecording"> | Date | string
     updatedAt?: DateTimeFilter<"CallRecording"> | Date | string
-    lead?: XOR<LeadRelationFilter, LeadWhereInput>
+    lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
   }, "id">
 
   export type CallRecordingOrderByWithAggregationInput = {
     id?: SortOrder
-    leadId?: SortOrder
+    leadId?: SortOrderInput | SortOrder
     duration?: SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
@@ -77073,7 +77102,7 @@ export namespace Prisma {
     OR?: CallRecordingScalarWhereWithAggregatesInput[]
     NOT?: CallRecordingScalarWhereWithAggregatesInput | CallRecordingScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"CallRecording"> | string
-    leadId?: StringWithAggregatesFilter<"CallRecording"> | string
+    leadId?: StringNullableWithAggregatesFilter<"CallRecording"> | string | null
     duration?: IntWithAggregatesFilter<"CallRecording"> | number
     fileUrl?: StringWithAggregatesFilter<"CallRecording"> | string
     callType?: StringWithAggregatesFilter<"CallRecording"> | string
@@ -78242,6 +78271,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Task"> | string | null
     organisationId?: StringNullableFilter<"Task"> | string | null
     isDeleted?: BoolFilter<"Task"> | boolean
+    notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     branchId?: StringNullableFilter<"Task"> | string | null
@@ -78270,6 +78300,7 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    notifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branchId?: SortOrderInput | SortOrder
@@ -78301,6 +78332,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Task"> | string | null
     organisationId?: StringNullableFilter<"Task"> | string | null
     isDeleted?: BoolFilter<"Task"> | boolean
+    notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     branchId?: StringNullableFilter<"Task"> | string | null
@@ -78329,6 +78361,7 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    notifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branchId?: SortOrderInput | SortOrder
@@ -78355,6 +78388,7 @@ export namespace Prisma {
     createdById?: StringNullableWithAggregatesFilter<"Task"> | string | null
     organisationId?: StringNullableWithAggregatesFilter<"Task"> | string | null
     isDeleted?: BoolWithAggregatesFilter<"Task"> | boolean
+    notifiedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     branchId?: StringNullableWithAggregatesFilter<"Task"> | string | null
@@ -78370,7 +78404,7 @@ export namespace Prisma {
     subject?: StringFilter<"Interaction"> | string
     description?: StringNullableFilter<"Interaction"> | string | null
     date?: DateTimeFilter<"Interaction"> | Date | string
-    duration?: IntNullableFilter<"Interaction"> | number | null
+    duration?: FloatNullableFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableFilter<"Interaction"> | number | null
     callStatus?: StringNullableFilter<"Interaction"> | string | null
@@ -78441,7 +78475,7 @@ export namespace Prisma {
     subject?: StringFilter<"Interaction"> | string
     description?: StringNullableFilter<"Interaction"> | string | null
     date?: DateTimeFilter<"Interaction"> | Date | string
-    duration?: IntNullableFilter<"Interaction"> | number | null
+    duration?: FloatNullableFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableFilter<"Interaction"> | number | null
     callStatus?: StringNullableFilter<"Interaction"> | string | null
@@ -78509,7 +78543,7 @@ export namespace Prisma {
     subject?: StringWithAggregatesFilter<"Interaction"> | string
     description?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     date?: DateTimeWithAggregatesFilter<"Interaction"> | Date | string
-    duration?: IntNullableWithAggregatesFilter<"Interaction"> | number | null
+    duration?: FloatNullableWithAggregatesFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableWithAggregatesFilter<"Interaction"> | number | null
     callStatus?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
@@ -84235,12 +84269,12 @@ export namespace Prisma {
     timestamp?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lead: LeadCreateNestedOneWithoutCallRecordingsInput
+    lead?: LeadCreateNestedOneWithoutCallRecordingsInput
   }
 
   export type CallRecordingUncheckedCreateInput = {
     id?: string
-    leadId: string
+    leadId?: string | null
     duration?: number
     fileUrl: string
     callType?: string
@@ -84257,12 +84291,12 @@ export namespace Prisma {
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lead?: LeadUpdateOneRequiredWithoutCallRecordingsNestedInput
+    lead?: LeadUpdateOneWithoutCallRecordingsNestedInput
   }
 
   export type CallRecordingUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    leadId?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
@@ -84273,7 +84307,7 @@ export namespace Prisma {
 
   export type CallRecordingCreateManyInput = {
     id?: string
-    leadId: string
+    leadId?: string | null
     duration?: number
     fileUrl: string
     callType?: string
@@ -84294,7 +84328,7 @@ export namespace Prisma {
 
   export type CallRecordingUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    leadId?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
@@ -85581,6 +85615,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -85608,6 +85643,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -85621,6 +85657,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -85648,6 +85685,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85668,6 +85706,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -85681,6 +85720,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -85700,6 +85740,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85764,7 +85805,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85790,7 +85831,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85842,7 +85883,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -85860,7 +85901,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -91896,9 +91937,9 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type LeadRelationFilter = {
-    is?: LeadWhereInput
-    isNot?: LeadWhereInput
+  export type LeadNullableRelationFilter = {
+    is?: LeadWhereInput | null
+    isNot?: LeadWhereInput | null
   }
 
   export type CallRecordingCountOrderByAggregateInput = {
@@ -91956,11 +91997,6 @@ export namespace Prisma {
   export type AccountNullableRelationFilter = {
     is?: AccountWhereInput | null
     isNot?: AccountWhereInput | null
-  }
-
-  export type LeadNullableRelationFilter = {
-    is?: LeadWhereInput | null
-    isNot?: LeadWhereInput | null
   }
 
   export type AccountCountOrderByAggregateInput = {
@@ -92323,6 +92359,11 @@ export namespace Prisma {
     maxQuantity?: SortOrder
   }
 
+  export type LeadRelationFilter = {
+    is?: LeadWhereInput
+    isNot?: LeadWhereInput
+  }
+
   export type ProductRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
@@ -92633,6 +92674,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branchId?: SortOrder
@@ -92653,6 +92695,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branchId?: SortOrder
@@ -92673,6 +92716,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branchId?: SortOrder
@@ -100350,10 +100394,12 @@ export namespace Prisma {
     connect?: LeadWhereUniqueInput
   }
 
-  export type LeadUpdateOneRequiredWithoutCallRecordingsNestedInput = {
+  export type LeadUpdateOneWithoutCallRecordingsNestedInput = {
     create?: XOR<LeadCreateWithoutCallRecordingsInput, LeadUncheckedCreateWithoutCallRecordingsInput>
     connectOrCreate?: LeadCreateOrConnectWithoutCallRecordingsInput
     upsert?: LeadUpsertWithoutCallRecordingsInput
+    disconnect?: LeadWhereInput | boolean
+    delete?: LeadWhereInput | boolean
     connect?: LeadWhereUniqueInput
     update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutCallRecordingsInput, LeadUpdateWithoutCallRecordingsInput>, LeadUncheckedUpdateWithoutCallRecordingsInput>
   }
@@ -106811,6 +106857,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -106836,6 +106883,7 @@ export namespace Prisma {
     assignedToId?: string | null
     createdById?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -108469,7 +108517,7 @@ export namespace Prisma {
     subject?: StringFilter<"Interaction"> | string
     description?: StringNullableFilter<"Interaction"> | string | null
     date?: DateTimeFilter<"Interaction"> | Date | string
-    duration?: IntNullableFilter<"Interaction"> | number | null
+    duration?: FloatNullableFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableFilter<"Interaction"> | number | null
     callStatus?: StringNullableFilter<"Interaction"> | string | null
@@ -108811,6 +108859,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Task"> | string | null
     organisationId?: StringNullableFilter<"Task"> | string | null
     isDeleted?: BoolFilter<"Task"> | boolean
+    notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     branchId?: StringNullableFilter<"Task"> | string | null
@@ -111657,6 +111706,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -111682,6 +111732,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -111705,6 +111756,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -111730,6 +111782,7 @@ export namespace Prisma {
     assignedToId?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -117302,6 +117355,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -117327,6 +117381,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -118832,7 +118887,7 @@ export namespace Prisma {
     OR?: CallRecordingScalarWhereInput[]
     NOT?: CallRecordingScalarWhereInput | CallRecordingScalarWhereInput[]
     id?: StringFilter<"CallRecording"> | string
-    leadId?: StringFilter<"CallRecording"> | string
+    leadId?: StringNullableFilter<"CallRecording"> | string | null
     duration?: IntFilter<"CallRecording"> | number
     fileUrl?: StringFilter<"CallRecording"> | string
     callType?: StringFilter<"CallRecording"> | string
@@ -120069,6 +120124,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
@@ -120094,6 +120150,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -121837,6 +121894,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -121862,6 +121920,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -123621,6 +123680,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -123646,6 +123706,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -160836,6 +160897,7 @@ export namespace Prisma {
     priority?: $Enums.TaskPriority
     dueDate?: Date | string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutTasksInput
@@ -160862,6 +160924,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -163794,6 +163857,7 @@ export namespace Prisma {
     assignedToId?: string | null
     createdById?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -164882,7 +164946,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164907,7 +164971,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164932,7 +164996,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165521,6 +165585,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -165546,6 +165611,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165565,6 +165631,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167588,6 +167655,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -167607,6 +167675,7 @@ export namespace Prisma {
     assignedToId?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -169031,7 +169100,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169056,7 +169125,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169081,7 +169150,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170419,6 +170488,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -170444,6 +170514,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170463,6 +170534,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170476,6 +170548,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -170501,6 +170574,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170520,6 +170594,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172191,6 +172266,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -172464,7 +172540,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172489,7 +172565,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172514,7 +172590,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172576,6 +172652,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -172601,6 +172678,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172620,6 +172698,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173319,6 +173398,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -173731,7 +173811,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173756,7 +173836,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173781,7 +173861,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173987,6 +174067,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
@@ -174012,6 +174093,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174031,6 +174113,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174271,6 +174354,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -174514,7 +174598,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174539,7 +174623,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174564,7 +174648,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174682,6 +174766,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -174707,6 +174792,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174726,6 +174812,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175090,6 +175177,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     branchId?: string | null
@@ -175217,7 +175305,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175242,7 +175330,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175267,7 +175355,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175385,6 +175473,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -175410,6 +175499,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175429,6 +175519,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176968,7 +177059,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176993,7 +177084,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -177018,7 +177109,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -177199,6 +177290,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId?: string | null
     isDeleted?: boolean
+    notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -177934,6 +178026,7 @@ export namespace Prisma {
     priority?: EnumTaskPriorityFieldUpdateOperationsInput | $Enums.TaskPriority
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutTasksNestedInput
@@ -177960,6 +178053,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -177979,6 +178073,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -177990,7 +178085,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178015,7 +178110,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178040,7 +178135,7 @@ export namespace Prisma {
     subject?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    duration?: NullableIntFieldUpdateOperationsInput | number | null
+    duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null

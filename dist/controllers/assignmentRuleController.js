@@ -101,25 +101,41 @@ const createAssignmentRule = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation' });
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+        let branchIdToSet = req.body.branchId;
+        if (!isAdmin) {
+            // Force branch managers to their own branch
+            branchIdToSet = user.branchId;
+        }
+        else if (branchIdToSet === 'global' || branchIdToSet === null) {
+            branchIdToSet = null;
+        }
+        else if (!branchIdToSet && user.branchId) {
+            // Default to user's branch if they have one and didn't specify global
+            branchIdToSet = user.branchId;
+        }
+        const ruleData = {
+            name: req.body.name,
+            description: req.body.description,
+            isActive: req.body.isActive ?? true,
+            priority: Number(req.body.priority) || 0,
+            entity: req.body.entity || 'Lead',
+            distributionType: req.body.distributionType || 'specific_user',
+            distributionScope: req.body.distributionScope || 'organisation',
+            targetRole: req.body.targetRole,
+            targetManagerId: req.body.targetManagerId,
+            ruleType: req.body.ruleType || 'round_robin',
+            criteria: req.body.criteria || [],
+            assignTo: req.body.assignTo,
+            companySize: req.body.companySize,
+            organisation: { connect: { id: orgId } },
+            createdBy: { connect: { id: user.id } }
+        };
+        if (branchIdToSet) {
+            ruleData.branch = { connect: { id: branchIdToSet } };
+        }
         const rule = await prisma_1.default.assignmentRule.create({
-            data: {
-                name: req.body.name,
-                description: req.body.description,
-                isActive: req.body.isActive ?? true,
-                priority: req.body.priority || 0,
-                entity: req.body.entity || 'Lead',
-                distributionType: req.body.distributionType || 'specific_user',
-                distributionScope: req.body.distributionScope || 'organisation',
-                targetRole: req.body.targetRole,
-                targetManagerId: req.body.targetManagerId,
-                ruleType: req.body.ruleType || 'round_robin',
-                criteria: req.body.criteria || [],
-                assignTo: req.body.assignTo,
-                companySize: req.body.companySize,
-                organisation: { connect: { id: orgId } },
-                createdBy: { connect: { id: user.id } },
-                branch: (req.body.branchId || user.branchId) ? { connect: { id: req.body.branchId || user.branchId } } : undefined
-            }
+            data: ruleData
         });
         // Audit Log
         try {
@@ -157,13 +173,28 @@ const updateAssignmentRule = async (req, res) => {
         });
         if (!existing)
             return res.status(404).json({ message: 'Assignment rule not found' });
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+        const updateData = { ...req.body };
+        // Remove raw branchId to handle it via connect/disconnect
+        delete updateData.branchId;
+        if (req.body.branchId !== undefined) {
+            let branchIdToSet = req.body.branchId;
+            if (!isAdmin) {
+                branchIdToSet = user.branchId;
+            }
+            else if (branchIdToSet === 'global' || branchIdToSet === null) {
+                branchIdToSet = null;
+            }
+            if (branchIdToSet) {
+                updateData.branch = { connect: { id: branchIdToSet } };
+            }
+            else {
+                updateData.branch = { disconnect: true };
+            }
+        }
         const rule = await prisma_1.default.assignmentRule.update({
             where: { id: req.params.id },
-            data: {
-                ...req.body,
-                branchId: undefined, // remove raw branchId
-                branch: req.body.branchId ? { connect: { id: req.body.branchId } } : undefined
-            }
+            data: updateData
         });
         // Audit Log
         try {

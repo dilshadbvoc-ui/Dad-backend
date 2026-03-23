@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteRecording = exports.getCallStats = exports.getAllCalls = exports.getRecording = exports.getLeadCalls = exports.completeCall = exports.initiateCall = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
+const taskService_1 = require("../services/taskService");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 // Helper to ensure upload directory exists
@@ -102,6 +103,10 @@ const completeCall = async (req, res) => {
                     contact: interaction.contactId ? { connect: { id: interaction.contactId } } : undefined,
                 }
             });
+            // Sync Lead follow-up date
+            if (interaction.leadId) {
+                await taskService_1.TaskService.syncLeadFollowUp(interaction.leadId);
+            }
         }
         res.json(interaction);
     }
@@ -230,7 +235,8 @@ const getAllCalls = async (req, res) => {
                         id: true,
                         firstName: true,
                         lastName: true,
-                        phone: true
+                        phone: true,
+                        company: true
                     }
                 },
                 contact: {
@@ -313,18 +319,31 @@ const getCallStats = async (req, res) => {
         const completedCalls = await prisma_1.default.interaction.count({
             where: { ...baseWhere, callStatus: 'completed' }
         });
-        // Average duration (for completed calls with duration)
+        // Average duration (for completed calls with duration or recordingDuration)
         const callsWithDuration = await prisma_1.default.interaction.findMany({
             where: {
                 ...baseWhere,
                 callStatus: 'completed',
-                duration: { not: null }
+                OR: [
+                    { duration: { gt: 0 } },
+                    { recordingDuration: { gt: 0 } }
+                ]
             },
-            select: { duration: true }
+            select: { duration: true, recordingDuration: true }
         });
-        const avgDuration = callsWithDuration.length > 0
-            ? callsWithDuration.reduce((sum, c) => sum + (c.duration || 0), 0) / callsWithDuration.length
-            : 0;
+        let totalSeconds = 0;
+        let validCalls = 0;
+        callsWithDuration.forEach(c => {
+            if (c.recordingDuration && c.recordingDuration > 0) {
+                totalSeconds += c.recordingDuration;
+                validCalls++;
+            }
+            else if (c.duration && c.duration > 0) {
+                totalSeconds += c.duration * 60;
+                validCalls++;
+            }
+        });
+        const avgDuration = validCalls > 0 ? (totalSeconds / validCalls) / 60 : 0;
         // Calls with recordings
         const callsWithRecording = await prisma_1.default.interaction.count({
             where: {

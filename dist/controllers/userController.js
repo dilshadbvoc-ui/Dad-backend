@@ -418,7 +418,21 @@ const createUser = async (req, res) => {
         // 2. Email duplication check
         const existingUser = await prisma_1.default.user.findUnique({ where: { email } });
         if (existingUser) {
-            return res.status(409).json({ message: 'User with this email already exists' });
+            if (existingUser.isActive) {
+                return res.status(409).json({ message: 'User with this email already exists and is active' });
+            }
+            else {
+                // Suspended user: rename to free up email/userId and proceed
+                const renameSuffix = `_suspended_${Date.now()}`;
+                await prisma_1.default.user.update({
+                    where: { id: existingUser.id },
+                    data: {
+                        email: `${existingUser.email}${renameSuffix}`,
+                        userId: existingUser.userId ? `${existingUser.userId}${renameSuffix}` : undefined
+                    }
+                });
+                logger_1.logger.info(`Renamed suspended user ${existingUser.id} to free up email ${email}`, 'UserController');
+            }
         }
         if (!password || password.length < 8) {
             return res.status(400).json({ message: 'Password must be at least 8 characters' });
@@ -466,6 +480,7 @@ const inviteUser = async (req, res) => {
         const { email, firstName, lastName, role, organisationId, position, reportsTo, password, branchId, phone, dailyLeadQuota } = req.body;
         const currentUser = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(currentUser) || organisationId;
+        logger_1.logger.info('inviteUser called', 'UserController', undefined, orgId, { body: req.body });
         // 1. License Check
         const { LicenseEnforcementService } = await Promise.resolve().then(() => __importStar(require('../services/licenseEnforcementService')));
         await LicenseEnforcementService.checkLimits(orgId, 'users');
@@ -473,16 +488,36 @@ const inviteUser = async (req, res) => {
         if (currentUser.role !== 'super_admin' && currentUser.role !== 'admin') {
             return res.status(403).json({ message: 'Only administrators can invite users' });
         }
+        if (!email) {
+            logger_1.logger.warn('Invite failed: Email is missing', 'UserController');
+            return res.status(400).json({ message: 'Email is required' });
+        }
         const existingUser = await prisma_1.default.user.findUnique({ where: { email } });
         if (existingUser) {
-            return res.status(400).json({ message: 'User with this email already exists' });
+            if (existingUser.isActive) {
+                return res.status(400).json({ message: 'User with this email already exists and is active' });
+            }
+            else {
+                // Suspended user: rename to free up email/userId and proceed
+                const renameSuffix = `_suspended_${Date.now()}`;
+                await prisma_1.default.user.update({
+                    where: { id: existingUser.id },
+                    data: {
+                        email: `${existingUser.email}${renameSuffix}`,
+                        userId: existingUser.userId ? `${existingUser.userId}${renameSuffix}` : undefined
+                    }
+                });
+                logger_1.logger.info(`Renamed suspended user ${existingUser.id} to free up email ${email}`, 'UserController');
+            }
         }
         let targetOrgId = (0, hierarchyUtils_1.getOrgId)(currentUser);
         if (currentUser.role === 'super_admin' && organisationId) {
             targetOrgId = organisationId;
         }
-        if (!targetOrgId)
+        if (!targetOrgId) {
+            logger_1.logger.warn('Invite failed: Organisation ID missing', 'UserController');
             return res.status(400).json({ message: 'Organisation is required' });
+        }
         // Check limits and increment counter
         const org = await prisma_1.default.organisation.findUnique({ where: { id: targetOrgId } });
         if (org) {
@@ -538,6 +573,7 @@ const inviteUser = async (req, res) => {
         });
     }
     catch (error) {
+        logger_1.logger.error('inviteUser Error', error, 'UserController');
         res.status(400).json({ message: error.message });
     }
 };

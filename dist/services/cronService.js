@@ -59,19 +59,20 @@ const initCronJobs = () => {
             });
             console.log(`[Cron] Found ${overdueLeads.length} leads with overdue follow-ups.`);
             if (overdueLeads.length > 0) {
-                // Bulk update to set nextFollowUp to Today
-                const updateResult = await prisma_1.prisma.lead.updateMany({
-                    where: {
-                        status: { not: 'converted' },
-                        nextFollowUp: {
-                            lt: today
-                        }
-                    },
-                    data: {
-                        nextFollowUp: today
-                    }
-                });
-                console.log(`[Cron] Rolled over ${updateResult.count} leads to today.`);
+                const { TaskService } = await Promise.resolve().then(() => __importStar(require('./taskService')));
+                // Set nextFollowUp to Today at 10 AM IST (04:30 AM UTC)
+                const rolloverTime = new Date(today);
+                rolloverTime.setUTCHours(4, 30, 0, 0);
+                // Update each lead and its earliest task
+                for (const lead of overdueLeads) {
+                    await prisma_1.prisma.lead.update({
+                        where: { id: lead.id },
+                        data: { nextFollowUp: rolloverTime }
+                    });
+                    // Also rollover the associated task
+                    await TaskService.rolloverTaskForLead(lead.id, rolloverTime);
+                }
+                console.log(`[Cron] Rolled over ${overdueLeads.length} leads and their tasks to today.`);
             }
         }
         catch (error) {

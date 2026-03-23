@@ -503,7 +503,8 @@ export const getSharedProduct = async (req: Request, res: Response) => {
             shareConfig: {
                 youtubeUrl: share.youtubeUrl,
                 customTitle: share.customTitle,
-                customDescription: share.customDescription
+                customDescription: share.customDescription,
+                createdAt: share.createdAt
             },
             lead: leadData
         });

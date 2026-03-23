@@ -448,6 +448,7 @@ exports.Prisma.TaskScalarFieldEnum = {
   createdById: 'createdById',
   organisationId: 'organisationId',
   isDeleted: 'isDeleted',
+  notifiedAt: 'notifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   branchId: 'branchId'
@@ -1238,6 +1239,7 @@ exports.InteractionType = exports.$Enums.InteractionType = {
   email: 'email',
   meeting: 'meeting',
   note: 'note',
+  whatsapp: 'whatsapp',
   other: 'other'
 };
 

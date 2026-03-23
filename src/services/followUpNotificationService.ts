@@ -27,22 +27,26 @@ export class FollowUpNotificationService {
      */
     private static async send30MinuteReminders(now: Date) {
         try {
-            // Calculate time window: 30-45 minutes from now
-            // (15-minute window to catch tasks in case cron runs slightly off)
-            const thirtyMinsFromNow = new Date(now.getTime() + 30 * 60 * 1000);
+            // Calculate time window: 0-45 minutes from now (inclusive of missed ones)
+            // But only if they haven't been notified in the last hour
+            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
             const fortyFiveMinsFromNow = new Date(now.getTime() + 45 * 60 * 1000);
 
-            console.log(`[FollowUpNotificationService] Checking for tasks due between ${thirtyMinsFromNow.toISOString()} and ${fortyFiveMinsFromNow.toISOString()}`);
+            console.log(`[FollowUpNotificationService] Checking 30-min reminders due before ${fortyFiveMinsFromNow.toISOString()}`);
 
-            // Find tasks (follow-ups) with dueDate in the next 30-45 minutes
+            // Find tasks (follow-ups)
             const tasks = await prisma.task.findMany({
                 where: {
                     dueDate: {
-                        gte: thirtyMinsFromNow,
-                        lte: fortyFiveMinsFromNow
+                        lte: fortyFiveMinsFromNow,
+                        gt: now // Only for upcoming in this method
                     },
                     status: { notIn: ['completed', 'deferred'] },
-                    isDeleted: false
+                    isDeleted: false,
+                    OR: [
+                        { notifiedAt: null },
+                        { notifiedAt: { lt: oneHourAgo } } // Allow re-notifying if it was a long time ago (sanity)
+                    ]
                 },
                 include: {
                     assignedTo: {
@@ -129,6 +133,12 @@ export class FollowUpNotificationService {
 
                     console.log(`[FollowUpNotificationService] Sent 30-min reminder to manager ${task.assignedTo.reportsToId} for task ${task.id}`);
                 }
+
+                // Update notifiedAt to prevent duplicates
+                await prisma.task.update({
+                    where: { id: task.id },
+                    data: { notifiedAt: now }
+                });
             }
         } catch (error) {
             console.error('[FollowUpNotificationService] Error in send30MinuteReminders:', error);
@@ -141,24 +151,26 @@ export class FollowUpNotificationService {
      */
     private static async sendDayOfReminders(now: Date) {
         try {
-            // Get start and end of current day
-            const startOfDay = new Date(now);
-            startOfDay.setHours(0, 0, 0, 0);
-            
-            const endOfDay = new Date(now);
-            endOfDay.setHours(23, 59, 59, 999);
+            // Calculate time window: from 2 hours ago up to 15 minutes from now
+            // This catches missed notifications while preventing duplicates via notifiedAt
+            const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+            const fifteenMinsFromNow = new Date(now.getTime() + 15 * 60 * 1000);
 
-            console.log(`[FollowUpNotificationService] Checking for tasks due today between ${startOfDay.toISOString()} and ${endOfDay.toISOString()}`);
+            console.log(`[FollowUpNotificationService] Checking for day-of reminders due between ${twoHoursAgo.toISOString()} and ${fifteenMinsFromNow.toISOString()}`);
 
-            // Find tasks due today
+            // Find tasks due in this window
             const tasks = await prisma.task.findMany({
                 where: {
                     dueDate: {
-                        gte: startOfDay,
-                        lte: endOfDay
+                        gte: twoHoursAgo,
+                        lte: fifteenMinsFromNow
                     },
                     status: { notIn: ['completed', 'deferred'] },
-                    isDeleted: false
+                    isDeleted: false,
+                    OR: [
+                        { notifiedAt: null },
+                        { notifiedAt: { lt: twoHoursAgo } }
+                    ]
                 },
                 include: {
                     assignedTo: {
@@ -205,54 +217,54 @@ export class FollowUpNotificationService {
             for (const task of tasks) {
                 if (!task.assignedToId || !task.dueDate) continue;
 
-                // Check if task is due within the next 15 minutes (current check window)
-                const fifteenMinsFromNow = new Date(now.getTime() + 15 * 60 * 1000);
                 const taskDueTime = new Date(task.dueDate);
 
-                // Only send day-of notification if task is due soon (within next 15 mins)
-                // This prevents spam and focuses on imminent tasks
-                if (taskDueTime <= fifteenMinsFromNow && taskDueTime >= now) {
-                    // Format the related entity name
-                    let relatedName = 'Unknown';
-                    if (task.lead) {
-                        relatedName = `${task.lead.firstName} ${task.lead.lastName || ''}`.trim();
-                        if (task.lead.company) relatedName += ` (${task.lead.company})`;
-                    } else if (task.contact) {
-                        relatedName = `${task.contact.firstName} ${task.contact.lastName || ''}`.trim();
-                    } else if (task.account) {
-                        relatedName = task.account.name;
-                    } else if (task.opportunity) {
-                        relatedName = task.opportunity.name;
-                    }
+                // Format the related entity name
+                let relatedName = 'Unknown';
+                if (task.lead) {
+                    relatedName = `${task.lead.firstName} ${task.lead.lastName || ''}`.trim();
+                    if (task.lead.company) relatedName += ` (${task.lead.company})`;
+                } else if (task.contact) {
+                    relatedName = `${task.contact.firstName} ${task.contact.lastName || ''}`.trim();
+                } else if (task.account) {
+                    relatedName = task.account.name;
+                } else if (task.opportunity) {
+                    relatedName = task.opportunity.name;
+                }
 
-                    const timeStr = taskDueTime.toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                    });
+                const timeStr = taskDueTime.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
 
-                    // Notify assigned user
+                // Notify assigned user
+                await NotificationService.send(
+                    task.assignedToId,
+                    '🔔 Follow-up Due Now',
+                    `Your follow-up "${task.subject}" with ${relatedName} is due at ${timeStr}`,
+                    'warning'
+                );
+
+                console.log(`[FollowUpNotificationService] Sent day-of reminder to user ${task.assignedToId} for task ${task.id}`);
+
+                // Notify manager if exists
+                if (task.assignedTo?.reportsToId) {
                     await NotificationService.send(
-                        task.assignedToId,
-                        '🔔 Follow-up Due Now',
-                        `Your follow-up "${task.subject}" with ${relatedName} is due at ${timeStr}`,
-                        'warning'
+                        task.assignedTo.reportsToId,
+                        '👥 Team Follow-up Due',
+                        `${task.assignedTo.firstName} ${task.assignedTo.lastName || ''} has a follow-up "${task.subject}" with ${relatedName} due at ${timeStr}`,
+                        'info'
                     );
 
-                    console.log(`[FollowUpNotificationService] Sent day-of reminder to user ${task.assignedToId} for task ${task.id}`);
-
-                    // Notify manager if exists
-                    if (task.assignedTo?.reportsToId) {
-                        await NotificationService.send(
-                            task.assignedTo.reportsToId,
-                            '👥 Team Follow-up Due',
-                            `${task.assignedTo.firstName} ${task.assignedTo.lastName || ''} has a follow-up "${task.subject}" with ${relatedName} due at ${timeStr}`,
-                            'info'
-                        );
-
-                        console.log(`[FollowUpNotificationService] Sent day-of reminder to manager ${task.assignedTo.reportsToId} for task ${task.id}`);
-                    }
+                    console.log(`[FollowUpNotificationService] Sent day-of reminder to manager ${task.assignedTo.reportsToId} for task ${task.id}`);
                 }
+
+                // Update notifiedAt to prevent duplicates
+                await prisma.task.update({
+                    where: { id: task.id },
+                    data: { notifiedAt: now }
+                });
             }
         } catch (error) {
             console.error('[FollowUpNotificationService] Error in sendDayOfReminders:', error);

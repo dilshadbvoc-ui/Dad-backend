@@ -43,7 +43,7 @@ export class TaskService {
             where: {
                 leadId,
                 isDeleted: false,
-                status: { not: 'completed' },
+                status: { notIn: ['completed', 'deferred'] },
                 dueDate: { not: null }
             },
             orderBy: {
@@ -57,5 +57,29 @@ export class TaskService {
                 nextFollowUp: nextTask ? nextTask.dueDate : null
             }
         });
+    }
+
+    static async rolloverTaskForLead(leadId: string, newDate: Date) {
+        if (!leadId) return;
+
+        // Find the earliest non-completed task for this lead
+        const task = await prisma.task.findFirst({
+            where: {
+                leadId,
+                isDeleted: false,
+                status: { notIn: ['completed', 'deferred'] }
+            },
+            orderBy: {
+                dueDate: 'asc'
+            }
+        });
+
+        if (task) {
+            await prisma.task.update({
+                where: { id: task.id },
+                data: { dueDate: newDate }
+            });
+            console.log(`[TaskService] Rolled over task ${task.id} for lead ${leadId} to ${newDate.toISOString()}`);
+        }
     }
 }

@@ -244,8 +244,13 @@ exports.DistributionService = {
             isActive: true
         };
         const targetBranchId = rule.branchId || branchId;
+        console.log(`[DistributionService] Finding users for rule: ${rule.name}. Target Branch: ${targetBranchId || 'Global'}`);
         if (targetBranchId) {
             where.branchId = targetBranchId;
+        }
+        else {
+            // If explicitly global rule and no lead branch, pick from anyone
+            // but we might want to prioritize organization-level users here.
         }
         if (rule.targetRole) {
             where.role = rule.targetRole;
