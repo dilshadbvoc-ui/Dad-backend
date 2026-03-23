@@ -178,16 +178,35 @@ const createTask = async (req, res) => {
             else if (onModel === 'Opportunity')
                 data.opportunity = { connect: { id: relatedTo } };
         }
-        const task = await prisma_1.default.task.create({
-            data,
-            include: {
-                assignedTo: { select: { firstName: true, lastName: true } },
-                lead: { select: { firstName: true, lastName: true } },
-                contact: { select: { firstName: true, lastName: true } },
-                account: { select: { name: true } },
-                opportunity: { select: { name: true } }
-            }
-        });
+        let task;
+        if (onModel === 'Lead' && relatedTo && dueDateISO) {
+            // Use the deduplication logic for Lead follow-ups
+            task = await taskService_1.TaskService.rescheduleOrCreateFollowUp({
+                subject: req.body.subject,
+                description: req.body.description,
+                status: req.body.status || 'not_started',
+                priority: req.body.priority || 'medium',
+                dueDate: new Date(dueDateISO),
+                organisationId: orgId,
+                createdById: user.id,
+                leadId: relatedTo,
+                assignedToId: req.body.assignedTo,
+                branchId: user.branchId || req.body.branchId
+            });
+        }
+        else {
+            // Standard task creation
+            task = await prisma_1.default.task.create({
+                data,
+                include: {
+                    assignedTo: { select: { firstName: true, lastName: true } },
+                    lead: { select: { firstName: true, lastName: true } },
+                    contact: { select: { firstName: true, lastName: true } },
+                    account: { select: { name: true } },
+                    opportunity: { select: { name: true } }
+                }
+            });
+        }
         // Sync Lead follow-up date
         if (task.leadId) {
             await taskService_1.TaskService.syncLeadFollowUp(task.leadId);

@@ -46,6 +46,7 @@ const notificationService_1 = require("../services/notificationService");
 const client_1 = require("../generated/client");
 const roleUtils_1 = require("../utils/roleUtils");
 const geoLocationService_1 = require("../services/geoLocationService");
+const taskService_1 = require("../services/taskService");
 // Dynamic import used for OpenAI to avoid startup errors if missing
 // GET /api/leads
 const getLeads = async (req, res) => {
@@ -457,41 +458,21 @@ const updateLead = async (req, res) => {
                     organisationId: currentLead.organisationId
                 }
             });
-            // Auto-create a follow-up task
+            // Auto-create or reschedule follow-up task
             const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
             const dueDate = new Date(updates.nextFollowUp);
-            // Preserving time instead of normalizing to start of day
-            // Check if a task already exists for this lead on this date
-            const existingTask = await prisma_1.default.task.findFirst({
-                where: {
-                    leadId: leadId,
-                    dueDate: dueDate,
-                    isDeleted: false,
-                    subject: { contains: 'Follow up' }
-                }
+            await taskService_1.TaskService.rescheduleOrCreateFollowUp({
+                subject: `Follow up with ${leadName}`,
+                description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
+                status: 'not_started',
+                priority: 'medium',
+                dueDate: dueDate,
+                organisationId: currentLead.organisationId,
+                createdById: requester.id,
+                leadId: leadId,
+                assignedToId: updates.assignedToId || currentLead.assignedToId || requester.id,
+                branchId: currentLead.branchId || undefined
             });
-            // Only create if no existing task
-            if (!existingTask) {
-                await prisma_1.default.task.create({
-                    data: {
-                        subject: `Follow up with ${leadName}`,
-                        description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
-                        status: 'not_started',
-                        priority: 'medium',
-                        dueDate: dueDate,
-                        createdBy: { connect: { id: requester.id } },
-                        organisation: { connect: { id: currentLead.organisationId } },
-                        lead: { connect: { id: leadId } },
-                        // Assign to the newly assigned user, the existing assigned user, or the requester
-                        ...(updates.assignedToId
-                            ? { assignedTo: { connect: { id: updates.assignedToId } } }
-                            : currentLead.assignedToId
-                                ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
-                                : { assignedTo: { connect: { id: requester.id } } }),
-                        ...(currentLead.branchId ? { branch: { connect: { id: currentLead.branchId } } } : {})
-                    }
-                });
-            }
         }
         if (updates.customFields) {
             const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));

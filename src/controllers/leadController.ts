@@ -8,6 +8,7 @@ import { NotificationService } from '../services/notificationService';
 import { LeadSource, LeadStatus } from '../generated/client';
 import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 import { GeoLocationService } from '../services/geoLocationService';
+import { TaskService } from '../services/taskService';
 // Dynamic import used for OpenAI to avoid startup errors if missing
 
 
@@ -472,44 +473,22 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 }
             });
 
-            // Auto-create a follow-up task
+            // Auto-create or reschedule follow-up task
             const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
             const dueDate = new Date(updates.nextFollowUp);
-            // Preserving time instead of normalizing to start of day
 
-            // Check if a task already exists for this lead on this date
-            const existingTask = await prisma.task.findFirst({
-                where: {
-                    leadId: leadId,
-                    dueDate: dueDate,
-                    isDeleted: false,
-                    subject: { contains: 'Follow up' }
-                }
+            await TaskService.rescheduleOrCreateFollowUp({
+                subject: `Follow up with ${leadName}`,
+                description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
+                status: 'not_started',
+                priority: 'medium',
+                dueDate: dueDate,
+                organisationId: currentLead.organisationId,
+                createdById: requester.id,
+                leadId: leadId,
+                assignedToId: updates.assignedToId || currentLead.assignedToId || requester.id,
+                branchId: currentLead.branchId || undefined
             });
-
-            // Only create if no existing task
-            if (!existingTask) {
-                await prisma.task.create({
-                    data: {
-                        subject: `Follow up with ${leadName}`,
-                        description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
-                        status: 'not_started',
-                        priority: 'medium',
-                        dueDate: dueDate,
-                        createdBy: { connect: { id: requester.id } },
-                        organisation: { connect: { id: currentLead.organisationId } },
-                        lead: { connect: { id: leadId } },
-                        // Assign to the newly assigned user, the existing assigned user, or the requester
-                        ...(updates.assignedToId
-                            ? { assignedTo: { connect: { id: updates.assignedToId } } }
-                            : currentLead.assignedToId
-                                ? { assignedTo: { connect: { id: currentLead.assignedToId } } }
-                                : { assignedTo: { connect: { id: requester.id } } }
-                        ),
-                        ...(currentLead.branchId ? { branch: { connect: { id: currentLead.branchId } } } : {})
-                    }
-                });
-            }
         }
 
         if (updates.customFields) {
