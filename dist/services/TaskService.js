@@ -7,7 +7,7 @@ exports.TaskService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 class TaskService {
     static async createTask(data) {
-        const { organisationId, createdById, assignedToId, leadId, contactId, accountId, opportunityId, ...rest } = data;
+        const { organisationId, createdById, assignedToId, leadId, contactId, accountId, opportunityId, branchId, ...rest } = data;
         const createData = {
             ...rest,
             organisation: { connect: { id: organisationId } },
@@ -24,6 +24,8 @@ class TaskService {
             createData.account = { connect: { id: accountId } };
         if (opportunityId)
             createData.opportunity = { connect: { id: opportunityId } };
+        if (branchId)
+            createData.branch = { connect: { id: branchId } };
         return await prisma_1.default.task.create({
             data: createData
         });
@@ -74,15 +76,26 @@ class TaskService {
     }
     static async rescheduleOrCreateFollowUp(data) {
         const { leadId, branchId, organisationId, dueDate, ...rest } = data;
-        // Find existing non-terminal task for this lead in this branch
-        // We consider ANY incomplete task for this lead as the "current follow-up"
+        // Fetch lead's actual branch if not provided or if we want to be sure
+        let effectiveBranchId = branchId;
+        if (!effectiveBranchId) {
+            const lead = await prisma_1.default.lead.findUnique({
+                where: { id: leadId },
+                select: { branchId: true }
+            });
+            effectiveBranchId = lead?.branchId || null;
+        }
+        // Find existing non-terminal task for this lead
+        // We search for tasks in ANY branch (including null) to prevent duplicates across branches
         const existingTask = await prisma_1.default.task.findFirst({
             where: {
                 leadId,
                 organisationId,
-                branchId: branchId || undefined,
                 isDeleted: false,
                 status: { notIn: ['completed', 'deferred'] }
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         });
         if (existingTask) {
@@ -91,10 +104,11 @@ class TaskService {
             const updateData = {
                 subject: rest.subject,
                 description: rest.description,
-                status: rest.status,
-                priority: rest.priority,
+                status: rest.status || existingTask.status,
+                priority: rest.priority || existingTask.priority,
                 dueDate: dueDate,
-                notifiedAt: null // Reset notification if rescheduled? Usually yes.
+                notifiedAt: null, // Reset notification if rescheduled
+                branch: effectiveBranchId ? { connect: { id: effectiveBranchId } } : { disconnect: true }
             };
             if (rest.assignedToId) {
                 updateData.assignedTo = { connect: { id: rest.assignedToId } };
@@ -106,7 +120,10 @@ class TaskService {
         }
         else {
             console.log(`[TaskService] Creating new follow-up for lead ${leadId}`);
-            return await this.createTask(data);
+            return await this.createTask({
+                ...data,
+                branchId: effectiveBranchId || undefined
+            });
         }
     }
 }

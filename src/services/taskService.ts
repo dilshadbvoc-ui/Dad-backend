@@ -15,8 +15,9 @@ export class TaskService {
         accountId?: string;
         opportunityId?: string;
         assignedToId?: string;
+        branchId?: string;
     }) {
-        const { organisationId, createdById, assignedToId, leadId, contactId, accountId, opportunityId, ...rest } = data;
+        const { organisationId, createdById, assignedToId, leadId, contactId, accountId, opportunityId, branchId, ...rest } = data;
 
         const createData: Prisma.TaskCreateInput = {
             ...rest,
@@ -29,6 +30,7 @@ export class TaskService {
         if (contactId) createData.contact = { connect: { id: contactId } };
         if (accountId) createData.account = { connect: { id: accountId } };
         if (opportunityId) createData.opportunity = { connect: { id: opportunityId } };
+        if (branchId) createData.branch = { connect: { id: branchId } };
 
         return await prisma.task.create({
             data: createData
@@ -93,19 +95,31 @@ export class TaskService {
         createdById?: string;
         leadId: string;
         assignedToId?: string;
-        branchId?: string;
+        branchId?: string | null;
     }) {
         const { leadId, branchId, organisationId, dueDate, ...rest } = data;
 
-        // Find existing non-terminal task for this lead in this branch
-        // We consider ANY incomplete task for this lead as the "current follow-up"
+        // Fetch lead's actual branch if not provided or if we want to be sure
+        let effectiveBranchId = branchId;
+        if (!effectiveBranchId) {
+            const lead = await prisma.lead.findUnique({
+                where: { id: leadId },
+                select: { branchId: true }
+            });
+            effectiveBranchId = lead?.branchId || null;
+        }
+
+        // Find existing non-terminal task for this lead
+        // We search for tasks in ANY branch (including null) to prevent duplicates across branches
         const existingTask = await prisma.task.findFirst({
             where: {
                 leadId,
                 organisationId,
-                branchId: branchId || undefined,
                 isDeleted: false,
                 status: { notIn: ['completed', 'deferred'] }
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         });
 
@@ -116,10 +130,11 @@ export class TaskService {
             const updateData: Prisma.TaskUpdateInput = {
                 subject: rest.subject,
                 description: rest.description,
-                status: rest.status,
-                priority: rest.priority,
+                status: rest.status || existingTask.status,
+                priority: rest.priority || existingTask.priority,
                 dueDate: dueDate,
-                notifiedAt: null // Reset notification if rescheduled? Usually yes.
+                notifiedAt: null, // Reset notification if rescheduled
+                branch: effectiveBranchId ? { connect: { id: effectiveBranchId } } : { disconnect: true }
             };
 
             if (rest.assignedToId) {
@@ -132,7 +147,10 @@ export class TaskService {
             });
         } else {
             console.log(`[TaskService] Creating new follow-up for lead ${leadId}`);
-            return await this.createTask(data);
+            return await this.createTask({
+                ...data,
+                branchId: effectiveBranchId || undefined
+            });
         }
     }
 }

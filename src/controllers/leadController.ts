@@ -487,7 +487,7 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 createdById: requester.id,
                 leadId: leadId,
                 assignedToId: updates.assignedToId || currentLead.assignedToId || requester.id,
-                branchId: currentLead.branchId || undefined
+                branchId: currentLead.branchId
             });
         }
 

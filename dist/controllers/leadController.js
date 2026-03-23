@@ -471,7 +471,7 @@ const updateLead = async (req, res) => {
                 createdById: requester.id,
                 leadId: leadId,
                 assignedToId: updates.assignedToId || currentLead.assignedToId || requester.id,
-                branchId: currentLead.branchId || undefined
+                branchId: currentLead.branchId
             });
         }
         if (updates.customFields) {
