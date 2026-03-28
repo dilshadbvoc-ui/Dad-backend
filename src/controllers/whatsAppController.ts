@@ -850,7 +850,7 @@ export const logExternalMessage = async (req: Request, res: Response) => {
                     console.log(`[WhatsAppSync] Found matching lead: ${leadByName.firstName} (${leadByName.id}) by name fallback: ${phoneNumber}`);
                 }
             }
-        }
+        
 
         // 2. Create Interaction
         // Note: We use 'whatsapp' as the type (added to schema.prisma)
