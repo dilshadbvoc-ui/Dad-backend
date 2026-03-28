@@ -809,13 +809,27 @@ export const getUserWiseSales = async (req: Request, res: Response) => {
                 _avg: { amount: true }
             });
 
+            const totalOpportunities = await prisma.opportunity.count({
+                where: {
+                    ownerId: uid,
+                    isDeleted: false,
+                    ...orgFilter,
+                    ...dateFilter
+                }
+            });
+
+            const dealsCount = aggregates._count.id || 0;
+            const winRate = totalOpportunities > 0 ? (dealsCount / totalOpportunities) * 100 : 0;
+
             return {
                 userId: uid,
                 name: `${userDetails.firstName} ${userDetails.lastName}`,
                 email: userDetails.email,
                 totalRevenue: aggregates._sum.amount || 0,
-                dealsCount: aggregates._count.id || 0,
-                avgDealSize: Math.round(aggregates._avg.amount || 0)
+                dealsCount: dealsCount,
+                avgDealSize: Math.round(aggregates._avg.amount || 0),
+                totalOpportunities,
+                winRate: Math.round(winRate)
             };
         }));
 
