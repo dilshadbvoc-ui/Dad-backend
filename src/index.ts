@@ -91,6 +91,9 @@ import { setupPassport } from './services/ssoService';
 
 const app = express();
 const httpServer = createServer(app);
+httpServer.timeout = 1800000; // 30 minutes
+httpServer.keepAliveTimeout = 1810000; // Slightly more than timeout
+httpServer.headersTimeout = 1820000; // Slightly more than keepAliveTimeout
 
 // Initialize Passport/SSO
 setupPassport();
