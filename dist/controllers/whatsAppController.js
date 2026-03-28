@@ -624,21 +624,44 @@ const logExternalMessage = async (req, res) => {
         if (!phoneNumber || !messageText) {
             return res.status(400).json({ error: 'phoneNumber and messageText are required.' });
         }
+        console.log(`[WhatsAppSync] Request: phone=${phoneNumber}, leadId=${leadId}, direction=${direction}`);
         let targetLeadId = leadId;
         const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
-        const last10 = cleanPhone.slice(-10);
+        const last10 = cleanPhone.length >= 10 ? cleanPhone.slice(-10) : null;
         // 1. Lead Lookup (if not provided or to verify)
         if (!targetLeadId) {
-            const lead = await prisma_1.default.lead.findFirst({
-                where: {
-                    organisationId: user.organisationId,
-                    phone: { contains: last10 },
-                    isDeleted: false
-                },
-                select: { id: true }
-            });
-            if (lead)
-                targetLeadId = lead.id;
+            if (last10) {
+                const lead = await prisma_1.default.lead.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        phone: { contains: last10 },
+                        isDeleted: false
+                    },
+                    select: { id: true, firstName: true }
+                });
+                if (lead) {
+                    targetLeadId = lead.id;
+                    console.log(`[WhatsAppSync] Found matching lead: ${lead.firstName} (${lead.id}) by phone ${last10}`);
+                }
+            }
+            // Fallback: If still no lead found, try matching by name (phoneNumber field might contain a name)
+            if (!targetLeadId && phoneNumber && phoneNumber.length > 2) {
+                const leadByName = await prisma_1.default.lead.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        OR: [
+                            { firstName: { equals: phoneNumber, mode: 'insensitive' } },
+                            { lastName: { equals: phoneNumber, mode: 'insensitive' } }
+                        ],
+                        isDeleted: false
+                    },
+                    select: { id: true, firstName: true }
+                });
+                if (leadByName) {
+                    targetLeadId = leadByName.id;
+                    console.log(`[WhatsAppSync] Found matching lead: ${leadByName.firstName} (${leadByName.id}) by name fallback: ${phoneNumber}`);
+                }
+            }
         }
         // 2. Create Interaction
         // Note: We use 'whatsapp' as the type (added to schema.prisma)
@@ -656,6 +679,16 @@ const logExternalMessage = async (req, res) => {
             }
         });
         console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
+        // Emit socket event for real-time UI updates
+        const io = req.app.get('io');
+        if (io && targetLeadId) {
+            io.to(`lead_${targetLeadId}`).emit('new_interaction', {
+                interaction: {
+                    ...interaction,
+                    type: 'whatsapp'
+                }
+            });
+        }
         res.status(201).json({
             success: true,
             interactionId: interaction.id,

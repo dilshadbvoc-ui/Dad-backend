@@ -192,6 +192,111 @@ export const getMessages = async (req: AuthRequest, res: Response) => {
     }
 };
 
+export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) => {
+    try {
+        const user = req.user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No organisation found' });
+
+        const { leadId } = req.params;
+        if (!leadId) return res.status(400).json({ message: 'Lead ID is required' });
+
+        // Get the lead's phone number for matching
+        const lead = await prisma.lead.findUnique({
+            where: { id: leadId },
+            select: { phone: true, secondaryPhone: true }
+        });
+
+        if (!lead) return res.status(404).json({ message: 'Lead not found' });
+
+        // Build phone match conditions
+        const phoneConds: any[] = [{ leadId }];
+        if (lead.phone) {
+            const last10 = lead.phone.replace(/[^0-9]/g, '').slice(-10);
+            if (last10.length >= 10) {
+                phoneConds.push({ phoneNumber: { contains: last10 } });
+            }
+        }
+        if (lead.secondaryPhone) {
+            const last10s = lead.secondaryPhone.replace(/[^0-9]/g, '').slice(-10);
+            if (last10s.length >= 10) {
+                phoneConds.push({ phoneNumber: { contains: last10s } });
+            }
+        }
+
+        // 1. Fetch WhatsAppMessage records
+        const waMessages = await prisma.whatsAppMessage.findMany({
+            where: {
+                organisationId: orgId,
+                isDeleted: false,
+                OR: phoneConds
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 100,
+            include: {
+                agent: { select: { id: true, firstName: true, lastName: true } }
+            }
+        });
+
+        // 2. Fetch Interaction records with type='whatsapp' 
+        const waInteractions = await prisma.interaction.findMany({
+            where: {
+                leadId,
+                type: 'whatsapp',
+                isDeleted: false
+            },
+            orderBy: { date: 'desc' },
+            take: 100,
+            include: {
+                createdBy: { select: { id: true, firstName: true, lastName: true } }
+            }
+        });
+
+        // Normalize both into a unified format
+        const normalized = [
+            ...waMessages.map(m => ({
+                id: m.id,
+                source: 'whatsapp_message' as const,
+                direction: m.direction === 'incoming' ? 'inbound' : 'outbound',
+                messageType: m.messageType,
+                content: (m.content as any)?.text || (m.content as any)?.templateName || m.messageType,
+                status: m.status,
+                phoneNumber: m.phoneNumber,
+                date: m.sentAt || m.createdAt,
+                actor: m.agent ? `${m.agent.firstName} ${m.agent.lastName || ''}`.trim() : null
+            })),
+            ...waInteractions.map(i => ({
+                id: i.id,
+                source: 'interaction' as const,
+                direction: i.direction || 'outbound',
+                messageType: 'text',
+                content: i.description || i.subject || 'WhatsApp message',
+                status: 'logged',
+                phoneNumber: i.phoneNumber,
+                date: i.date,
+                actor: i.createdBy ? `${i.createdBy.firstName} ${i.createdBy.lastName || ''}`.trim() : null
+            }))
+        ];
+
+        // Deduplicate by timestamp proximity (within 5s) and same direction
+        const seen = new Set<string>();
+        const deduped = normalized.filter(item => {
+            const key = `${item.direction}_${Math.floor(new Date(item.date).getTime() / 5000)}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+
+        // Sort by date descending
+        deduped.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        res.json(deduped);
+    } catch (error: any) {
+        console.error('Error in getLeadWhatsAppMessages:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const getConversations = async (req: AuthRequest, res: Response) => {
     try {
         const user = req.user;
@@ -702,21 +807,49 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'phoneNumber and messageText are required.' });
         }
 
+        console.log(`[WhatsAppSync] Request: phone=${phoneNumber}, leadId=${leadId}, direction=${direction}`);
+
         let targetLeadId = leadId;
         const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
-        const last10 = cleanPhone.slice(-10);
+        const last10 = cleanPhone.length >= 10 ? cleanPhone.slice(-10) : null;
 
         // 1. Lead Lookup (if not provided or to verify)
-        if (!targetLeadId) {
+        if (!targetLeadId && last10) {
             const lead = await prisma.lead.findFirst({
                 where: {
                     organisationId: user.organisationId,
-                    phone: { contains: last10 },
-                    isDeleted: false
+                    isDeleted: false,
+                    OR: [
+                        { phone: { contains: last10 } },
+                        { secondaryPhone: { contains: last10 } }
+                    ]
                 },
-                select: { id: true }
+                select: { id: true, firstName: true }
             });
-            if (lead) targetLeadId = lead.id;
+            if (lead) {
+                targetLeadId = lead.id;
+                console.log(`[WhatsAppSync] Found matching lead: ${lead.firstName} (${lead.id}) by phone ${last10}`);
+            }
+        }
+        
+        // Fallback: If still no lead found, try matching by name (phoneNumber field might contain a name)
+        if (!targetLeadId && phoneNumber && phoneNumber.length > 2) {
+                const leadByName = await prisma.lead.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        OR: [
+                            { firstName: { equals: phoneNumber, mode: 'insensitive' } },
+                            { lastName: { equals: phoneNumber, mode: 'insensitive' } }
+                        ],
+                        isDeleted: false
+                    },
+                    select: { id: true, firstName: true }
+                });
+                if (leadByName) {
+                    targetLeadId = leadByName.id;
+                    console.log(`[WhatsAppSync] Found matching lead: ${leadByName.firstName} (${leadByName.id}) by name fallback: ${phoneNumber}`);
+                }
+            }
         }
 
         // 2. Create Interaction
@@ -737,6 +870,17 @@ export const logExternalMessage = async (req: Request, res: Response) => {
 
         console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
         
+        // Emit socket event for real-time UI updates
+        const io = req.app.get('io');
+        if (io && targetLeadId) {
+            io.to(`lead_${targetLeadId}`).emit('new_interaction', {
+                interaction: {
+                    ...interaction,
+                    type: 'whatsapp'
+                }
+            });
+        }
+
         res.status(201).json({ 
             success: true, 
             interactionId: interaction.id,

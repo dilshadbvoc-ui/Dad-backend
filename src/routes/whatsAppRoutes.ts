@@ -13,6 +13,7 @@ import {
     getConversationAnalytics,
     getMessageStatistics,
     markConversationAsRead,
+    getLeadWhatsAppMessages,
     getMedia,
     uploadMedia,
     handleWebhook,
@@ -45,6 +46,7 @@ router.get('/messages/media/:mediaId', protect, getMedia as any);
 router.get('/templates', protect, whatsappLimiter, getTemplates as any);
 router.post('/templates', protect, whatsappLimiter, validate(whatsappTemplateSchema), createTemplate as any);
 router.get('/analytics', protect, whatsappLimiter, getConversationAnalytics as any);
+router.get('/lead/:leadId', protect, whatsappLimiter, getLeadWhatsAppMessages as any);
 router.post('/test', protect, whatsappLimiter, testConnection as any);
 router.get('/webhook', verifyWebhook as any);
 router.post('/webhook', handleWebhook as any);

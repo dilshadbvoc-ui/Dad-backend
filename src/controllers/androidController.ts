@@ -44,9 +44,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         }
 
         const { leadId, duration, callType, timestamp, phoneNumber } = req.body;
-        console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}`);
-        
         const file = req.file;
+
+        console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}, hasFile=${!!file}`);
+        if (!file && req.body.audio) {
+             console.warn('[AndroidUpload] WARNING: Found audio in body but NOT as req.file. Possible field name mismatch? Expected "audio".');
+        }
 
         // Robust leadId handling (convert "null" string to null)
         let targetLeadId = (leadId === 'null' || !leadId) ? null : leadId;
@@ -58,13 +61,19 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
             const last10 = cleanPhone.slice(-10);
             
-            leadByPhone = await prisma.lead.findFirst({
-                where: {
-                    organisationId: user.organisationId,
-                    phone: { contains: last10 }
-                },
-                select: { id: true, phone: true, firstName: true }
-            });
+            if (last10.length >= 10) {
+                leadByPhone = await prisma.lead.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        isDeleted: false,
+                        OR: [
+                            { phone: { contains: last10 } },
+                            { secondaryPhone: { contains: last10 } }
+                        ]
+                    },
+                    select: { id: true, phone: true, firstName: true }
+                });
+            }
         }
 
         if (!targetLeadId && leadByPhone) {
@@ -141,34 +150,57 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 data: {
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
-                    recordingUrl: recording.fileUrl,
+                    recordingUrl: recording.fileUrl || undefined,
                     callStatus: 'completed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     phoneNumber: phoneNumber || undefined
                 }
             });
-        } else if (targetLeadId) {
-            console.log(`[AndroidUpload] No initiated interaction found. Creating new 'completed' record for leadId: ${targetLeadId}`);
-            // Create new if none initiated but lead exists
+        } else {
+            // No existing interaction: Create a new record for lead or standalone
+            const rawType = String(callType || 'UNKNOWN').toUpperCase();
+            
+            // Map Android CallLog types (String or Numeric)
+            // 1 = INCOMING, 2 = OUTGOING, 3 = MISSED, 5 = REJECTED, 6 = BLOCKED
+            let direction: 'inbound' | 'outbound' = 'inbound';
+            let subject = 'Mobile Call';
+            let status = 'completed';
+
+            if (rawType === 'OUTGOING' || rawType === '2' || rawType === 'OUT') {
+                direction = 'outbound';
+                subject = 'Mobile Outbound Call';
+            } else if (rawType === 'MISSED' || rawType === '3') {
+                direction = 'inbound';
+                subject = 'Missed Call from Lead';
+                status = 'missed';
+            } else if (rawType === 'REJECTED' || rawType === '5') {
+                direction = 'inbound';
+                subject = 'Rejected Call from Lead';
+                status = 'rejected';
+            } else if (rawType === 'INCOMING' || rawType === '1' || rawType === 'IN') {
+                direction = 'inbound';
+                subject = 'Mobile Inbound Call';
+            }
+
+            console.log(`[AndroidUpload] No initiated interaction found. Creating new '${direction}' record (Type: ${rawType}, Lead: ${targetLeadId || 'null'})`);
+            
             await prisma.interaction.create({
                 data: {
                     type: 'call',
-                    direction: callType === 'OUTGOING' ? 'outbound' : 'inbound',
-                    subject: `Mobile Call ${callType === 'OUTGOING' ? 'to' : 'from'} Lead`,
+                    direction: direction,
+                    subject: subject,
                     description: formattedDescription,
                     date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
-                    recordingUrl: recording.fileUrl,
-                    callStatus: 'completed',
+                    recordingUrl: recording.fileUrl || null,
+                    callStatus: status,
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     organisationId: user.organisationId,
                     createdById: user.id,
                     phoneNumber: finalPhone
                 }
             });
-        } else {
-             console.warn(`[AndroidUpload] Could not link duration to lead or initiated interaction.`);
         }
 
         res.status(201).json({ message: 'Recording and Interaction uploaded successfully', recording });

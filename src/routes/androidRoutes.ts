@@ -30,5 +30,6 @@ const upload = multer({
 // Routes
 router.get('/leads', protect, getAndroidLeads as any);
 router.post('/recordings', protect, upload.single('audio'), uploadCallRecording as any);
+router.post('/whatsapp/sync', protect, logExternalMessage as any);
 
 export default router;

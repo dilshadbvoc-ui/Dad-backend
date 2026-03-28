@@ -523,6 +523,15 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
             // Don't filter by branchId on update - users can update leads across branches if they have access
         }
 
+        // Sanitize phone if it's being updated
+        if (updates.phone) {
+            let cleanPhone = updates.phone.toString().replace(/\D/g, '');
+            if (cleanPhone.length > 10) {
+                cleanPhone = cleanPhone.slice(-10); // Take last 10 digits
+            }
+            updates.phone = cleanPhone;
+        }
+
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma
         const allowedFields = [
             'firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'enquiryAbout', 'jobTitle', 'address',
@@ -670,8 +679,27 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
             }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('[updateLead] Error:', error);
+
+        // Handle Prisma Unique Constraint Errors (e.g., P2002)
+        if (error.code === 'P2002') {
+            const target = error.meta?.target || [];
+            if (target.includes('phone')) {
+                return res.status(400).json({
+                    message: 'A lead with this phone number already exists in your organisation.'
+                });
+            }
+            if (target.includes('email')) {
+                return res.status(400).json({
+                    message: 'A lead with this email address already exists in your organisation.'
+                });
+            }
+            return res.status(400).json({
+                message: 'A lead with these details already exists in your organisation.'
+            });
+        }
+
         res.status(400).json({ message: (error as Error).message });
     }
 };

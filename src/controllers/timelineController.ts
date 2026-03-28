@@ -31,17 +31,26 @@ export const getTimeline = async (req: Request, res: Response) => {
         // Fetch related data concurrently
         const [interactions, tasks, events, auditLogs, callRecordings] = await Promise.all([
             prisma.interaction.findMany({
-                where: { [`${type}Id`]: id },
+                where: { 
+                    [`${type}Id`]: id,
+                    isDeleted: false
+                },
                 orderBy: { date: 'desc' },
                 include: { createdBy: { select: { firstName: true, lastName: true } } }
             }),
             prisma.task.findMany({
-                where: { [`${type}Id`]: id },
+                where: { 
+                    [`${type}Id`]: id,
+                    isDeleted: false
+                },
                 orderBy: { createdAt: 'desc' },
                 include: { assignedTo: { select: { firstName: true, lastName: true } } }
             }),
             prisma.calendarEvent.findMany({
-                where: { [`${type}Id`]: id },
+                where: { 
+                    [`${type}Id`]: id,
+                    isDeleted: false
+                },
                 orderBy: { startTime: 'desc' },
                 include: { createdBy: { select: { firstName: true, lastName: true } } }
             }),
