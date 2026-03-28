@@ -107,6 +107,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'leadId or phoneNumber is required' });
         }
 
+        // Only add call data for phone numbers that exist in the CRM setup
+        if (!targetLeadId) {
+            console.warn(`[AndroidUpload] Upload skipped: Phone number ${phoneNumber} is not associated with any Lead in the CRM.`);
+            return res.status(200).json({ message: 'Call dropped: Phone number not found in CRM' });
+        }
+
         // Create recording record (linked to lead if found)
         console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'})`);
         const recording = await prisma.callRecording.create({
