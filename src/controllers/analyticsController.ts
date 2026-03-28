@@ -255,18 +255,33 @@ export const getSalesChartData = async (req: Request, res: Response) => {
         const orgFilter = orgId ? { organisationId: orgId } : {};
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
+        const requestedUserId = req.query.userId as string;
 
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Go back 5 months to include current month = 6 total
         sixMonthsAgo.setDate(1); // Start of that month
         sixMonthsAgo.setHours(0, 0, 0, 0);
 
-        // Base filter for visibility
+        // Visibility & User Filtering
         const visibilityFilter: any = {};
         if (user.role !== 'admin' && !isSuperAdmin) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
-            visibilityFilter.ownerId = { in: visibleUserIds };
+            
+            if (requestedUserId) {
+                // If specific user requested, verify they are in visibility scope
+                if (visibleUserIds.includes(requestedUserId)) {
+                    visibilityFilter.ownerId = requestedUserId;
+                } else {
+                    // Not authorized to see this user's data
+                    return res.status(403).json({ message: 'Unauthorized access to user data' });
+                }
+            } else {
+                visibilityFilter.ownerId = { in: visibleUserIds };
+            }
+        } else if (requestedUserId) {
+            // Admin can see any user
+            visibilityFilter.ownerId = requestedUserId;
         }
 
         // Fetch closed_won opportunities
