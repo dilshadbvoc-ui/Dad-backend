@@ -147,7 +147,8 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   isDeleted: 'isDeleted',
   createdBy: 'createdBy',
   upsellConfig: 'upsellConfig',
-  ssoConfig: 'ssoConfig'
+  ssoConfig: 'ssoConfig',
+  whatsAppScrapingEnabled: 'whatsAppScrapingEnabled'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -285,6 +286,7 @@ exports.Prisma.AccountScalarFieldEnum = {
   ownerId: 'ownerId',
   organisationId: 'organisationId',
   parentAccountId: 'parentAccountId',
+  previousOwnerId: 'previousOwnerId',
   leadId: 'leadId',
   branchId: 'branchId'
 };
@@ -311,6 +313,7 @@ exports.Prisma.ContactScalarFieldEnum = {
   accountId: 'accountId',
   ownerId: 'ownerId',
   organisationId: 'organisationId',
+  previousOwnerId: 'previousOwnerId',
   leadId: 'leadId',
   branchId: 'branchId'
 };
@@ -334,6 +337,7 @@ exports.Prisma.OpportunityScalarFieldEnum = {
   organisationId: 'organisationId',
   paymentStatus: 'paymentStatus',
   paymentDate: 'paymentDate',
+  previousOwnerId: 'previousOwnerId',
   leadId: 'leadId',
   pipelineId: 'pipelineId',
   type: 'type',
@@ -416,7 +420,8 @@ exports.Prisma.QuoteScalarFieldEnum = {
   contactId: 'contactId',
   assignedToId: 'assignedToId',
   createdById: 'createdById',
-  organisationId: 'organisationId'
+  organisationId: 'organisationId',
+  previousOwnerId: 'previousOwnerId'
 };
 
 exports.Prisma.QuoteLineItemScalarFieldEnum = {
@@ -451,6 +456,7 @@ exports.Prisma.TaskScalarFieldEnum = {
   notifiedAt: 'notifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  previousOwnerId: 'previousOwnerId',
   branchId: 'branchId'
 };
 
@@ -712,7 +718,8 @@ exports.Prisma.SalesTargetScalarFieldEnum = {
   opportunityType: 'opportunityType',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  previousOwnerId: 'previousOwnerId'
 };
 
 exports.Prisma.GoalScalarFieldEnum = {
@@ -732,7 +739,8 @@ exports.Prisma.GoalScalarFieldEnum = {
   createdById: 'createdById',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  previousOwnerId: 'previousOwnerId'
 };
 
 exports.Prisma.CaseScalarFieldEnum = {
@@ -752,7 +760,8 @@ exports.Prisma.CaseScalarFieldEnum = {
   organisationId: 'organisationId',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  previousOwnerId: 'previousOwnerId'
 };
 
 exports.Prisma.CheckInScalarFieldEnum = {

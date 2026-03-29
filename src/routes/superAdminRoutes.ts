@@ -16,8 +16,13 @@ import {
 import { protect } from '../middleware/authMiddleware';
 import { getSystemSettings, updateSystemSettings } from '../controllers/systemSettingsController';
 import { getGlobalRoles, upsertGlobalRole } from '../controllers/roleController';
+import { exportPlatformData, restorePlatformData } from '../controllers/backupController';
 
 const router = express.Router();
+
+// Full Platform Data Export/Restore
+router.get('/platform/export', protect, exportPlatformData);
+router.post('/platform/restore', protect, restorePlatformData);
 
 // System Settings
 router.get('/settings', protect, getSystemSettings);

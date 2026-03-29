@@ -1,215 +1,287 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import archiver from 'archiver';
-import path from 'path';
+import { logger } from '../utils/logger';
+import { logAudit } from '../utils/auditLogger';
 
-export const generateBackup = async (req: Request, res: Response) => {
+// Full model list in dependency order (Insertion Order)
+const MODEL_ORDER = [
+    'organisation',
+    'systemSetting',
+    'subscriptionPlan',
+    'smsTemplate',
+    'documentTemplate',
+    'customField',
+    'callSettings',
+    'branch',
+    'role',
+    'user',
+    'license',
+    'apiKey',
+    'assignmentRule',
+    'team',
+    'territory',
+    'pipeline',
+    'webForm',
+    'workflow',
+    'workflowRule',
+    'emailList',
+    'campaign',
+    'smsCampaign',
+    'whatsAppCampaign',
+    'product',
+    'goal',
+    'salesTarget',
+    'case',
+    'lead',
+    'account',
+    'contact',
+    'opportunity',
+    'emiSchedule',
+    'emiInstallment',
+    'interaction',
+    'calendarEvent',
+    'checkIn',
+    'task',
+    'quote',
+    'quoteLineItem',
+    'leadProduct',
+    'accountProduct',
+    'productShare',
+    'document',
+    'whatsAppMessage',
+    'paymentRecord',
+    'commission',
+    'landingPage',
+    'leadHistory',
+    'notification',
+    'auditLog',
+    'searchHistory',
+    'userLeadQuotaTracker',
+    'workflowQueue',
+    'importJob',
+    'callRecording'
+];
+
+/**
+ * GET /api/super-admin/platform/export
+ * Exports the entire platform database to JSON
+ */
+export const exportPlatformData = async (req: Request, res: Response) => {
     try {
-        const { organisationId } = req.params;
-        const user = (req as any).user;
-
-        // Extra safety check just in case
-        if (user.role !== 'super_admin') {
-            return res.status(403).json({ message: 'Forbidden. Only super admins can backup data.' });
+        const currentUser = (req as any).user;
+        if (currentUser.role !== 'super_admin') {
+            return res.status(403).json({ message: 'Only super admins can export platform data' });
         }
 
-        const org = await prisma.organisation.findUnique({
-            where: { id: organisationId },
-            select: { name: true, slug: true }
-        });
-
-        if (!org) {
-            return res.status(404).json({ message: 'Organisation not found' });
-        }
-
-        // Fetch data simultaneously
-        const [
-            users, teams, branches, leads, contacts, accounts, opportunities,
-            products, quotes, quoteLineItems, tasks, interactions, calendarEvents,
-            customFields, campaigns, emailLists
-        ] = await Promise.all([
-            prisma.user.findMany({ where: { organisationId } }),
-            prisma.team.findMany({ where: { organisationId } }),
-            prisma.branch.findMany({ where: { organisationId } }),
-            prisma.lead.findMany({ where: { organisationId } }),
-            prisma.contact.findMany({ where: { organisationId } }),
-            prisma.account.findMany({ where: { organisationId } }),
-            prisma.opportunity.findMany({ where: { organisationId } }),
-            prisma.product.findMany({ where: { organisationId } }),
-            prisma.quote.findMany({ where: { organisationId } }),
-            prisma.quoteLineItem.findMany({ where: { quote: { organisationId } } }), // Line items are tied to Quotes
-            prisma.task.findMany({ where: { organisationId } }),
-            prisma.interaction.findMany({ where: { organisationId } }),
-            prisma.calendarEvent.findMany({ where: { organisationId } }),
-            prisma.customField.findMany({ where: { organisationId } }),
-            prisma.campaign.findMany({ where: { organisationId } }),
-            prisma.emailList.findMany({ where: { organisationId } })
-        ]);
-
-        const backupData = {
-            metadata: {
-                organisation: org,
-                generatedAt: new Date().toISOString(),
-                generatedBy: user.id
-            },
-            data: {
-                users,
-                teams,
-                branches,
-                customFields,
-                leads,
-                accounts,
-                contacts,
-                opportunities,
-                products,
-                quotes,
-                quoteLineItems,
-                tasks,
-                interactions,
-                calendarEvents,
-                campaigns,
-                emailLists
-            }
+        logger.info('Starting full platform export...', 'BackupController');
+        const backupData: any = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            exportedBy: currentUser.id,
+            tables: {}
         };
 
-        // Stream as a Zip file
-        const filename = `backup-${org.slug}-${new Date().toISOString().split('T')[0]}.zip`;
+        for (const modelName of MODEL_ORDER) {
+            if ((prisma as any)[modelName]) {
+                logger.info(`Exporting ${modelName}...`, 'BackupController');
+                backupData.tables[modelName] = await (prisma as any)[modelName].findMany();
+            } else {
+                logger.warn(`Model ${modelName} not found in Prisma client`, 'BackupController');
+            }
+        }
 
-        res.setHeader('Content-Type', 'application/zip');
-        res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename=platform-backup-${new Date().toISOString().split('T')[0]}.json`);
+        res.send(JSON.stringify(backupData, null, 2));
 
-        const archive = archiver('zip', {
-            zlib: { level: 9 } // Maximum compression
+        logAudit({
+            action: 'PLATFORM_BACKUP_EXPORT',
+            entity: 'System',
+            entityId: 'ALL',
+            actorId: currentUser.id,
+            organisationId: currentUser.organisationId,
+            details: { message: 'Full platform backup generated' }
         });
-
-        archive.on('error', (err) => {
-            console.error('Archive error:', err);
-            res.status(500).send({ error: err.message });
-        });
-
-        archive.pipe(res);
-
-        // Append the JSON data to the zip file as 'backup.json'
-        archive.append(JSON.stringify(backupData, null, 2), { name: 'backup.json' });
-
-        await archive.finalize();
 
     } catch (error) {
-        console.error('Backup Error:', error);
-        if (!res.headersSent) {
-            res.status(500).json({ message: (error as Error).message });
-        }
+        logger.error('Export Error', error, 'BackupController');
+        res.status(500).json({ message: (error as Error).message });
     }
 };
 
-import AdmZip from 'adm-zip';
+/**
+ * POST /api/super-admin/platform/restore
+ * Restores the platform database from a JSON file
+ */
+export const restorePlatformData = async (req: Request, res: Response) => {
+    try {
+        const currentUser = (req as any).user;
+        if (currentUser.role !== 'super_admin') {
+            return res.status(403).json({ message: 'Only super admins can restore platform data' });
+        }
 
+        const { backupData, confirmDelete } = req.body;
+
+        if (!backupData || !backupData.tables) {
+            return res.status(400).json({ message: 'Invalid backup data' });
+        }
+
+        if (confirmDelete !== 'PERMANENTLY_DELETE_ALL_DATA') {
+            return res.status(400).json({ message: 'Deletion confirmation string is incorrect' });
+        }
+
+        logger.info('Starting full platform restoration...', 'BackupController');
+
+        // 1. Transactional restoration
+        await prisma.$transaction(async (tx) => {
+            // STEP 1: Delete all data in reverse order
+            const REVERSE_ORDER = [...MODEL_ORDER].reverse();
+            for (const modelName of REVERSE_ORDER) {
+                if ((tx as any)[modelName]) {
+                    logger.info(`Clearing ${modelName}...`, 'BackupController');
+                    await (tx as any)[modelName].deleteMany({});
+                }
+            }
+
+            // STEP 2: Insert data in forward order
+            for (const modelName of MODEL_ORDER) {
+                const records = backupData.tables[modelName];
+                if (records && records.length > 0 && (tx as any)[modelName]) {
+                    logger.info(`Restoring ${records.length} records for ${modelName}...`, 'BackupController');
+                    
+                    // Use createMany for speed if possible
+                    // Note: This assumes the records contain all necessary fields including @id
+                    await (tx as any)[modelName].createMany({
+                        data: records,
+                        skipDuplicates: false // We want to know if there's an error
+                    });
+                }
+            }
+        }, {
+            timeout: 60000 // 60 seconds timeout
+        });
+
+        logAudit({
+            action: 'PLATFORM_BACKUP_RESTORE',
+            entity: 'System',
+            entityId: 'ALL',
+            actorId: currentUser.id,
+            organisationId: currentUser.organisationId,
+            details: { message: 'Full platform backup restored' }
+        });
+
+        res.json({ message: 'Platform restoration successful' });
+
+    } catch (error) {
+        logger.error('Restore Error', error, 'BackupController');
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+/**
+ * GET /api/backup/:organisationId
+ * Exports data for a specific organisation
+ */
+export const generateBackup = async (req: Request, res: Response) => {
+    try {
+        const { organisationId } = req.params;
+        const currentUser = (req as any).user;
+
+        // Only super admin can backup any org, or org admin can backup their own
+        if (currentUser.role !== 'super_admin' && currentUser.organisationId !== organisationId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        logger.info(`Starting backup for organisation ${organisationId}...`, 'BackupController');
+        
+        const backupData: any = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            organisationId,
+            tables: {}
+        };
+
+        for (const modelName of MODEL_ORDER) {
+            if ((prisma as any)[modelName]) {
+                // Models that have organisationId field
+                const hasOrgId = (prisma as any)[modelName].fields?.organisationId || 
+                                 ['user', 'team', 'lead', 'account', 'contact', 'opportunity', 'product', 'workflow'].includes(modelName);
+
+                if (modelName === 'organisation') {
+                    backupData.tables[modelName] = await (prisma as any)[modelName].findMany({
+                        where: { id: organisationId }
+                    });
+                } else if (hasOrgId) {
+                    backupData.tables[modelName] = await (prisma as any)[modelName].findMany({
+                        where: { organisationId }
+                    });
+                }
+            }
+        }
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename=org-backup-${organisationId}-${new Date().toISOString().split('T')[0]}.json`);
+        res.send(JSON.stringify(backupData, null, 2));
+
+    } catch (error) {
+        logger.error('Org Export Error', error, 'BackupController');
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+/**
+ * POST /api/backup/restore/:organisationId
+ * Restores data for a specific organisation
+ */
 export const restoreBackup = async (req: Request, res: Response) => {
     try {
         const { organisationId } = req.params;
-        const user = (req as any).user;
+        const currentUser = (req as any).user;
+        const backupData = req.body; // Assuming JSON body for now, or handled by multer
 
-        // Extra safety check just in case
-        if (user.role !== 'super_admin') {
-            return res.status(403).json({ message: 'Forbidden. Only super admins can restore data.' });
+        if (currentUser.role !== 'super_admin') {
+            return res.status(403).json({ message: 'Only super admins can restore data' });
         }
 
-        if (!req.file) {
-            return res.status(400).json({ message: 'No backup file uploaded' });
+        if (!backupData || !backupData.tables) {
+            return res.status(400).json({ message: 'Invalid backup data' });
         }
 
-        const org = await prisma.organisation.findUnique({
-            where: { id: organisationId }
-        });
+        logger.info(`Starting restoration for organisation ${organisationId}...`, 'BackupController');
 
-        if (!org) {
-            return res.status(404).json({ message: 'Target Organisation not found' });
-        }
-
-        // 1. Read the Zip file from memory
-        const zip = new AdmZip(req.file.buffer);
-        const backupEntry = zip.getEntry('backup.json');
-
-        if (!backupEntry) {
-            return res.status(400).json({ message: 'Invalid backup archive. Missing backup.json.' });
-        }
-
-        // 2. Parse the JSON
-        const backupDataString = backupEntry.getData().toString('utf8');
-        const parsed = JSON.parse(backupDataString);
-
-        const data = parsed.data;
-
-        if (!data) {
-            return res.status(400).json({ message: 'Malformed backup data.' });
-        }
-
-        // 3. Clear existing organisation data and insert new data in a single transaction
         await prisma.$transaction(async (tx) => {
-            // Retrieve Quote IDs to delete line items
-            const quotes = await tx.quote.findMany({ where: { organisationId }, select: { id: true } });
-            const quoteIds = quotes.map(q => q.id);
-
-            // Delete child properties first to prevent FK constraint violations
-            if (quoteIds.length > 0) {
-                await tx.quoteLineItem.deleteMany({ where: { quoteId: { in: quoteIds } } });
-            }
-            await tx.quote.deleteMany({ where: { organisationId } });
-            await tx.calendarEvent.deleteMany({ where: { organisationId } });
-            await tx.interaction.deleteMany({ where: { organisationId } });
-            await tx.task.deleteMany({ where: { organisationId } });
-            await tx.opportunity.deleteMany({ where: { organisationId } });
-            await tx.contact.deleteMany({ where: { organisationId } });
-            await tx.account.deleteMany({ where: { organisationId } });
-            await tx.lead.deleteMany({ where: { organisationId } });
-            await tx.product.deleteMany({ where: { organisationId } });
-            await tx.customField.deleteMany({ where: { organisationId } });
-            await tx.branch.deleteMany({ where: { organisationId } });
-            await tx.emailList.deleteMany({ where: { organisationId } });
-            await tx.campaign.deleteMany({ where: { organisationId } });
-
-            // Delete users and teams last
-            await tx.team.deleteMany({ where: { organisationId } });
-
-            // Do not delete super_admins if they happen to exist in an org (highly rare)
-            await tx.user.deleteMany({
-                where: {
-                    organisationId,
-                    role: { not: 'super_admin' }
+            const REVERSE_ORDER = [...MODEL_ORDER].reverse();
+            for (const modelName of REVERSE_ORDER) {
+                if ((tx as any)[modelName]) {
+                    if (modelName === 'organisation') {
+                        // Don't delete the org itself usually during per-org restore unless force?
+                        // For now just clear nested data
+                    } else {
+                        try {
+                            await (tx as any)[modelName].deleteMany({
+                                where: { organisationId }
+                            });
+                        } catch (e) {
+                            // Some tables might not have organisationId, skip them
+                        }
+                    }
                 }
-            });
+            }
 
-            // 4. Insert imported data in dependency order
-            // Users and teams
-            if (data.users?.length > 0) await tx.user.createMany({ data: data.users });
-            if (data.teams?.length > 0) await tx.team.createMany({ data: data.teams });
-            if (data.branches?.length > 0) await tx.branch.createMany({ data: data.branches });
-            if (data.customFields?.length > 0) await tx.customField.createMany({ data: data.customFields });
-            if (data.campaigns?.length > 0) await tx.campaign.createMany({ data: data.campaigns });
-            if (data.emailLists?.length > 0) await tx.emailList.createMany({ data: data.emailLists });
-
-            // CRM Core
-            if (data.accounts?.length > 0) await tx.account.createMany({ data: data.accounts });
-            if (data.contacts?.length > 0) await tx.contact.createMany({ data: data.contacts });
-            if (data.leads?.length > 0) await tx.lead.createMany({ data: data.leads });
-            if (data.opportunities?.length > 0) await tx.opportunity.createMany({ data: data.opportunities });
-
-            // Products & Quotes
-            if (data.products?.length > 0) await tx.product.createMany({ data: data.products });
-            if (data.quotes?.length > 0) await tx.quote.createMany({ data: data.quotes });
-            if (data.quoteLineItems?.length > 0) await tx.quoteLineItem.createMany({ data: data.quoteLineItems });
-
-            // Activities
-            if (data.tasks?.length > 0) await tx.task.createMany({ data: data.tasks });
-            if (data.interactions?.length > 0) await tx.interaction.createMany({ data: data.interactions });
-            if (data.calendarEvents?.length > 0) await tx.calendarEvent.createMany({ data: data.calendarEvents });
-        }, {
-            timeout: 120000 // Allow up to 2 mins for large restorations
+            for (const modelName of MODEL_ORDER) {
+                const records = backupData.tables[modelName];
+                if (records && records.length > 0 && (tx as any)[modelName]) {
+                    await (tx as any)[modelName].createMany({
+                        data: records,
+                        skipDuplicates: true
+                    });
+                }
+            }
         });
 
-        res.json({ message: 'Backup restored successfully!' });
+        res.json({ message: 'Organisation restoration successful' });
+
     } catch (error) {
-        console.error('Restore Error:', error);
-        res.status(500).json({ message: 'Failed to restore backup.', error: (error as Error).message });
+        logger.error('Org Restore Error', error, 'BackupController');
+        res.status(500).json({ message: (error as Error).message });
     }
 };

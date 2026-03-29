@@ -807,6 +807,20 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'phoneNumber and messageText are required.' });
         }
 
+        // 0. Check if WhatsApp sync is enabled for this organisation
+        const organisation = await prisma.organisation.findUnique({
+            where: { id: user.organisationId },
+            select: { whatsAppScrapingEnabled: true }
+        });
+
+        if (!organisation?.whatsAppScrapingEnabled) {
+            console.log(`[WhatsAppSync] Request rejected: Sync is disabled for org ${user.organisationId}`);
+            return res.status(200).json({ 
+                success: false, 
+                message: 'WhatsApp synchronization is currently disabled by the administrator.' 
+            });
+        }
+
         console.log(`[WhatsAppSync] Request: phone=${phoneNumber}, leadId=${leadId}, direction=${direction}`);
 
         let targetLeadId = leadId;
