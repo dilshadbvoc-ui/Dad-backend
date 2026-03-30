@@ -119,7 +119,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             data: {
                 lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                 duration: parseInt(duration, 10) || 0,
-                fileUrl: file ? `/uploads/${file.filename}` : '',
+                fileUrl: file ? `/uploads/recordings/${file.filename}` : '',
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
             }

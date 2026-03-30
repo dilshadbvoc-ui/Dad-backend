@@ -11,7 +11,7 @@ const router = express.Router();
 // Configure multer for audio uploads
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        const uploadDir = path.join(process.cwd(), 'uploads');
+        const uploadDir = path.join(process.cwd(), 'uploads', 'recordings');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }

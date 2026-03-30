@@ -65,6 +65,10 @@ export const getTimeline = async (req: Request, res: Response) => {
             })
         ]);
 
+        // Filter out CallRecordings that are already attached to Interactions to avoid timeline duplicates
+        const interactionRecordingUrls = new Set(interactions.map(i => i.recordingUrl).filter(Boolean));
+        const standaloneRecordings = callRecordings.filter(c => !interactionRecordingUrls.has(c.fileUrl));
+
         // Normalize data for UI
         const timeline = [
             ...interactions.map(i => ({
@@ -78,7 +82,8 @@ export const getTimeline = async (req: Request, res: Response) => {
                 meta: {
                     direction: i.direction,
                     duration: i.duration,
-                    recordingDuration: i.recordingDuration
+                    recordingDuration: i.recordingDuration,
+                    recordingUrl: i.recordingUrl
                 }
             })),
             ...tasks.map(t => ({
@@ -156,7 +161,7 @@ export const getTimeline = async (req: Request, res: Response) => {
                     meta: {}
                 };
             }),
-            ...callRecordings.map(c => ({
+            ...standaloneRecordings.map(c => ({
                 id: c.id,
                 type: 'recording',
                 subType: c.callType,
