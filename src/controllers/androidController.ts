@@ -215,3 +215,174 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to upload recording' });
     }
 };
+
+// POST /api/android/bulk-sync
+// Accepts a JSON array of call log entries from the Android app's background worker.
+// Only imports calls whose phone number matches an existing CRM Lead.
+// Deduplicates against existing Interactions by phone + timestamp.
+export const syncCallLogs = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        if (!user || !user.organisationId) {
+            return res.status(401).json({ error: 'Unauthorized. Organisation ID missing.' });
+        }
+
+        const { calls } = req.body;
+        if (!Array.isArray(calls) || calls.length === 0) {
+            return res.status(400).json({ error: 'Expected a non-empty "calls" array.' });
+        }
+
+        console.log(`[BulkSync] Received ${calls.length} call entries from user ${user.id}`);
+
+        // 1. Fetch all CRM leads with phone numbers for this organisation
+        const crmLeads = await prisma.lead.findMany({
+            where: {
+                organisationId: user.organisationId,
+                isDeleted: false,
+                phone: { not: '' }
+            },
+            select: { id: true, phone: true, secondaryPhone: true, firstName: true, lastName: true }
+        });
+
+        // Build a lookup map: last 10 digits of phone -> lead
+        const phoneToLead = new Map<string, { id: string; phone: string; firstName: string | null; lastName: string | null }>();
+        for (const lead of crmLeads) {
+            if (lead.phone) {
+                const clean = lead.phone.replace(/[^0-9]/g, '').slice(-10);
+                if (clean.length >= 10) phoneToLead.set(clean, lead);
+            }
+            if (lead.secondaryPhone) {
+                const clean = lead.secondaryPhone.replace(/[^0-9]/g, '').slice(-10);
+                if (clean.length >= 10 && !phoneToLead.has(clean)) phoneToLead.set(clean, lead);
+            }
+        }
+
+        console.log(`[BulkSync] Built lookup map with ${phoneToLead.size} phone entries from ${crmLeads.length} leads`);
+
+        // 2. Process each call entry
+        const results: { synced: string[]; skipped: number; errors: number } = {
+            synced: [],
+            skipped: 0,
+            errors: 0
+        };
+
+        for (const call of calls) {
+            try {
+                const { phoneNumber, duration, callType, timestamp } = call;
+                if (!phoneNumber) {
+                    results.skipped++;
+                    continue;
+                }
+
+                // Normalize and check against CRM leads
+                const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+                const last10 = cleanPhone.slice(-10);
+
+                if (last10.length < 10) {
+                    results.skipped++;
+                    continue;
+                }
+
+                const matchedLead = phoneToLead.get(last10);
+                if (!matchedLead) {
+                    // Not a CRM number — skip silently (personal / spam)
+                    results.skipped++;
+                    continue;
+                }
+
+                // 3. Deduplicate: check if an Interaction already exists for this phone + timestamp window
+                const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
+                const windowStart = new Date(callDate.getTime() - 60_000); // 1 min before
+                const windowEnd = new Date(callDate.getTime() + 60_000);   // 1 min after
+
+                const existingInteraction = await prisma.interaction.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        type: 'call',
+                        leadId: matchedLead.id,
+                        date: { gte: windowStart, lte: windowEnd }
+                    }
+                });
+
+                if (existingInteraction) {
+                    // Already synced — skip
+                    results.skipped++;
+                    continue;
+                }
+
+                // 4. Map call type to direction and status
+                const rawType = String(callType || 'UNKNOWN').toUpperCase();
+                let direction: 'inbound' | 'outbound' = 'inbound';
+                let subject = 'Mobile Call';
+                let status = 'completed';
+
+                if (rawType === 'OUTGOING' || rawType === '2' || rawType === 'OUT') {
+                    direction = 'outbound';
+                    subject = 'Mobile Outbound Call';
+                } else if (rawType === 'MISSED' || rawType === '3') {
+                    direction = 'inbound';
+                    subject = 'Missed Call from Lead';
+                    status = 'missed';
+                } else if (rawType === 'REJECTED' || rawType === '5') {
+                    direction = 'inbound';
+                    subject = 'Rejected Call from Lead';
+                    status = 'rejected';
+                } else if (rawType === 'INCOMING' || rawType === '1' || rawType === 'IN') {
+                    direction = 'inbound';
+                    subject = 'Mobile Inbound Call';
+                }
+
+                const durationSecs = parseInt(duration, 10) || 0;
+                const durationMinutes = durationSecs / 60;
+                const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s`;
+
+                // 5. Create the CallRecording record (no audio file for bulk sync)
+                await prisma.callRecording.create({
+                    data: {
+                        lead: { connect: { id: matchedLead.id } },
+                        duration: durationSecs,
+                        fileUrl: '',
+                        callType: callType || 'UNKNOWN',
+                        timestamp: callDate
+                    }
+                });
+
+                // 6. Create the Interaction record (makes it visible in Call Logs + Timeline)
+                await prisma.interaction.create({
+                    data: {
+                        type: 'call',
+                        direction,
+                        subject,
+                        description: formattedDescription,
+                        date: callDate,
+                        duration: Math.round(durationMinutes * 100) / 100,
+                        recordingDuration: durationSecs,
+                        recordingUrl: null,
+                        callStatus: status,
+                        lead: { connect: { id: matchedLead.id } },
+                        organisationId: user.organisationId,
+                        createdById: user.id,
+                        phoneNumber: matchedLead.phone
+                    }
+                });
+
+                results.synced.push(phoneNumber);
+            } catch (entryError) {
+                console.error(`[BulkSync] Error processing entry:`, entryError);
+                results.errors++;
+            }
+        }
+
+        console.log(`[BulkSync] Complete: synced=${results.synced.length}, skipped=${results.skipped}, errors=${results.errors}`);
+        res.status(200).json({
+            message: 'Bulk sync completed',
+            synced: results.synced.length,
+            skipped: results.skipped,
+            errors: results.errors,
+            syncedNumbers: results.synced
+        });
+    } catch (error) {
+        console.error('[BulkSync] CRITICAL ERROR:', error);
+        res.status(500).json({ error: 'Bulk sync failed' });
+    }
+};

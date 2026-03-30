@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { getAndroidLeads, uploadCallRecording } from '../controllers/androidController';
+import { getAndroidLeads, uploadCallRecording, syncCallLogs } from '../controllers/androidController';
 import { logExternalMessage } from '../controllers/whatsAppController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -31,5 +31,6 @@ const upload = multer({
 router.get('/leads', protect, getAndroidLeads as any);
 router.post('/recordings', protect, upload.single('audio'), uploadCallRecording as any);
 router.post('/whatsapp/sync', protect, logExternalMessage as any);
+router.post('/bulk-sync', protect, syncCallLogs as any);
 
 export default router;
