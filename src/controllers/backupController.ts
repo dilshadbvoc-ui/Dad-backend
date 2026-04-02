@@ -59,7 +59,8 @@ const MODEL_ORDER = [
     'userLeadQuotaTracker',
     'workflowQueue',
     'importJob',
-    'callRecording'
+    'callRecording',
+    'followUp'
 ];
 
 /**

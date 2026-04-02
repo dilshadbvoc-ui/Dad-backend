@@ -176,39 +176,17 @@ export const createTask = async (req: Request, res: Response) => {
             else if (onModel === 'Opportunity') data.opportunity = { connect: { id: relatedTo } };
         }
 
-        let task: any;
-        if (onModel === 'Lead' && relatedTo && dueDateISO) {
-            // Use the deduplication logic for Lead follow-ups
-            task = await TaskService.rescheduleOrCreateFollowUp({
-                subject: req.body.subject,
-                description: req.body.description,
-                status: req.body.status || 'not_started',
-                priority: req.body.priority || 'medium',
-                dueDate: new Date(dueDateISO),
-                organisationId: orgId!,
-                createdById: user.id,
-                leadId: relatedTo,
-                assignedToId: req.body.assignedTo,
-                branchId: user.branchId || req.body.branchId
-            });
-        } else {
-            // Standard task creation
-            task = await prisma.task.create({
-                data,
-                include: {
-                    assignedTo: { select: { firstName: true, lastName: true } },
-                    lead: { select: { firstName: true, lastName: true } },
-                    contact: { select: { firstName: true, lastName: true } },
-                    account: { select: { name: true } },
-                    opportunity: { select: { name: true } }
-                }
-            });
-        }
-
-        // Sync Lead follow-up date
-        if (task.leadId) {
-            await TaskService.syncLeadFollowUp(task.leadId);
-        }
+        // Standard task creation
+        const task = await prisma.task.create({
+            data,
+            include: {
+                assignedTo: { select: { firstName: true, lastName: true } },
+                lead: { select: { firstName: true, lastName: true } },
+                contact: { select: { firstName: true, lastName: true } },
+                account: { select: { name: true } },
+                opportunity: { select: { name: true } }
+            }
+        });
 
         if (orgId) {
             await logAudit({
@@ -316,11 +294,6 @@ export const updateTask = async (req: Request, res: Response) => {
             }
         });
 
-        // Sync Lead follow-up date
-        if (task.leadId) {
-            await TaskService.syncLeadFollowUp(task.leadId);
-        }
-
         await logAudit({
             organisationId: requester.organisationId || getOrgId(requester),
             actorId: requester.id,
@@ -352,12 +325,6 @@ export const deleteTask = async (req: Request, res: Response) => {
             where,
             data: { isDeleted: true }
         });
-
-        // Sync Lead follow-up date (task is now deleted)
-        const task = await prisma.task.findUnique({ where: { id: req.params.id } });
-        if (task?.leadId) {
-            await TaskService.syncLeadFollowUp(task.leadId);
-        }
 
         await logAudit({
             organisationId: (orgId || getOrgId(user)) as string,

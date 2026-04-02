@@ -460,6 +460,27 @@ exports.Prisma.TaskScalarFieldEnum = {
   branchId: 'branchId'
 };
 
+exports.Prisma.FollowUpScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  leadId: 'leadId',
+  contactId: 'contactId',
+  accountId: 'accountId',
+  opportunityId: 'opportunityId',
+  assignedToId: 'assignedToId',
+  createdById: 'createdById',
+  organisationId: 'organisationId',
+  branchId: 'branchId',
+  isDeleted: 'isDeleted',
+  notifiedAt: 'notifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.InteractionScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -1246,6 +1267,19 @@ exports.TaskPriority = exports.$Enums.TaskPriority = {
   low: 'low'
 };
 
+exports.FollowUpStatus = exports.$Enums.FollowUpStatus = {
+  not_started: 'not_started',
+  in_progress: 'in_progress',
+  completed: 'completed',
+  deferred: 'deferred'
+};
+
+exports.FollowUpPriority = exports.$Enums.FollowUpPriority = {
+  high: 'high',
+  medium: 'medium',
+  low: 'low'
+};
+
 exports.InteractionType = exports.$Enums.InteractionType = {
   call: 'call',
   email: 'email',
@@ -1307,6 +1341,7 @@ exports.Prisma.ModelName = {
   Quote: 'Quote',
   QuoteLineItem: 'QuoteLineItem',
   Task: 'Task',
+  FollowUp: 'FollowUp',
   Interaction: 'Interaction',
   CalendarEvent: 'CalendarEvent',
   EmailList: 'EmailList',

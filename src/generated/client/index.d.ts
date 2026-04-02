@@ -89,6 +89,11 @@ export type QuoteLineItem = $Result.DefaultSelection<Prisma.$QuoteLineItemPayloa
  */
 export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
 /**
+ * Model FollowUp
+ * 
+ */
+export type FollowUp = $Result.DefaultSelection<Prisma.$FollowUpPayload>
+/**
  * Model Interaction
  * 
  */
@@ -363,6 +368,25 @@ export const TaskPriority: {
 export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority]
 
 
+export const FollowUpStatus: {
+  not_started: 'not_started',
+  in_progress: 'in_progress',
+  completed: 'completed',
+  deferred: 'deferred'
+};
+
+export type FollowUpStatus = (typeof FollowUpStatus)[keyof typeof FollowUpStatus]
+
+
+export const FollowUpPriority: {
+  high: 'high',
+  medium: 'medium',
+  low: 'low'
+};
+
+export type FollowUpPriority = (typeof FollowUpPriority)[keyof typeof FollowUpPriority]
+
+
 export const InteractionType: {
   call: 'call',
   email: 'email',
@@ -449,6 +473,14 @@ export const TaskStatus: typeof $Enums.TaskStatus
 export type TaskPriority = $Enums.TaskPriority
 
 export const TaskPriority: typeof $Enums.TaskPriority
+
+export type FollowUpStatus = $Enums.FollowUpStatus
+
+export const FollowUpStatus: typeof $Enums.FollowUpStatus
+
+export type FollowUpPriority = $Enums.FollowUpPriority
+
+export const FollowUpPriority: typeof $Enums.FollowUpPriority
 
 export type InteractionType = $Enums.InteractionType
 
@@ -750,6 +782,16 @@ export class PrismaClient<
     * ```
     */
   get task(): Prisma.TaskDelegate<ExtArgs>;
+
+  /**
+   * `prisma.followUp`: Exposes CRUD operations for the **FollowUp** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FollowUps
+    * const followUps = await prisma.followUp.findMany()
+    * ```
+    */
+  get followUp(): Prisma.FollowUpDelegate<ExtArgs>;
 
   /**
    * `prisma.interaction`: Exposes CRUD operations for the **Interaction** model.
@@ -1616,6 +1658,7 @@ export namespace Prisma {
     Quote: 'Quote',
     QuoteLineItem: 'QuoteLineItem',
     Task: 'Task',
+    FollowUp: 'FollowUp',
     Interaction: 'Interaction',
     CalendarEvent: 'CalendarEvent',
     EmailList: 'EmailList',
@@ -1672,7 +1715,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "callRecording" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord"
+      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "callRecording" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "followUp" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2723,6 +2766,76 @@ export namespace Prisma {
           count: {
             args: Prisma.TaskCountArgs<ExtArgs>
             result: $Utils.Optional<TaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      FollowUp: {
+        payload: Prisma.$FollowUpPayload<ExtArgs>
+        fields: Prisma.FollowUpFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FollowUpFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FollowUpFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>
+          }
+          findFirst: {
+            args: Prisma.FollowUpFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FollowUpFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>
+          }
+          findMany: {
+            args: Prisma.FollowUpFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>[]
+          }
+          create: {
+            args: Prisma.FollowUpCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>
+          }
+          createMany: {
+            args: Prisma.FollowUpCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FollowUpCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>[]
+          }
+          delete: {
+            args: Prisma.FollowUpDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>
+          }
+          update: {
+            args: Prisma.FollowUpUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>
+          }
+          deleteMany: {
+            args: Prisma.FollowUpDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FollowUpUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FollowUpUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FollowUpPayload>
+          }
+          aggregate: {
+            args: Prisma.FollowUpAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFollowUp>
+          }
+          groupBy: {
+            args: Prisma.FollowUpGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FollowUpGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FollowUpCountArgs<ExtArgs>
+            result: $Utils.Optional<FollowUpCountAggregateOutputType> | number
           }
         }
       }
@@ -5776,6 +5889,7 @@ export namespace Prisma {
     quotes: number
     salesTargets: number
     tasks: number
+    followUps: number
     territories: number
     users: number
     webhooks: number
@@ -5821,6 +5935,7 @@ export namespace Prisma {
     quotes?: boolean | OrganisationCountOutputTypeCountQuotesArgs
     salesTargets?: boolean | OrganisationCountOutputTypeCountSalesTargetsArgs
     tasks?: boolean | OrganisationCountOutputTypeCountTasksArgs
+    followUps?: boolean | OrganisationCountOutputTypeCountFollowUpsArgs
     territories?: boolean | OrganisationCountOutputTypeCountTerritoriesArgs
     users?: boolean | OrganisationCountOutputTypeCountUsersArgs
     webhooks?: boolean | OrganisationCountOutputTypeCountWebhooksArgs
@@ -5988,6 +6103,13 @@ export namespace Prisma {
    */
   export type OrganisationCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
   }
 
   /**
@@ -6192,6 +6314,8 @@ export namespace Prisma {
     assignedSalesTargets: number
     assignedTasks: number
     createdTasks: number
+    assignedFollowUps: number
+    createdFollowUps: number
     managedTerritories: number
     previousAccounts: number
     previousContacts: number
@@ -6261,6 +6385,8 @@ export namespace Prisma {
     assignedSalesTargets?: boolean | UserCountOutputTypeCountAssignedSalesTargetsArgs
     assignedTasks?: boolean | UserCountOutputTypeCountAssignedTasksArgs
     createdTasks?: boolean | UserCountOutputTypeCountCreatedTasksArgs
+    assignedFollowUps?: boolean | UserCountOutputTypeCountAssignedFollowUpsArgs
+    createdFollowUps?: boolean | UserCountOutputTypeCountCreatedFollowUpsArgs
     managedTerritories?: boolean | UserCountOutputTypeCountManagedTerritoriesArgs
     previousAccounts?: boolean | UserCountOutputTypeCountPreviousAccountsArgs
     previousContacts?: boolean | UserCountOutputTypeCountPreviousContactsArgs
@@ -6553,6 +6679,20 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountAssignedFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCreatedFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountManagedTerritoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TerritoryWhereInput
   }
@@ -6818,6 +6958,7 @@ export namespace Prisma {
     interactions: number
     history: number
     tasks: number
+    followUps: number
     emailLists: number
     whatsAppMessages: number
     documents: number
@@ -6834,6 +6975,7 @@ export namespace Prisma {
     interactions?: boolean | LeadCountOutputTypeCountInteractionsArgs
     history?: boolean | LeadCountOutputTypeCountHistoryArgs
     tasks?: boolean | LeadCountOutputTypeCountTasksArgs
+    followUps?: boolean | LeadCountOutputTypeCountFollowUpsArgs
     emailLists?: boolean | LeadCountOutputTypeCountEmailListsArgs
     whatsAppMessages?: boolean | LeadCountOutputTypeCountWhatsAppMessagesArgs
     documents?: boolean | LeadCountOutputTypeCountDocumentsArgs
@@ -6888,6 +7030,13 @@ export namespace Prisma {
    */
   export type LeadCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
+  }
+
+  /**
+   * LeadCountOutputType without action
+   */
+  export type LeadCountOutputTypeCountFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
   }
 
   /**
@@ -6961,6 +7110,7 @@ export namespace Prisma {
     opportunities: number
     quotes: number
     tasks: number
+    followUps: number
     documents: number
     accountProducts: number
   }
@@ -6975,6 +7125,7 @@ export namespace Prisma {
     opportunities?: boolean | AccountCountOutputTypeCountOpportunitiesArgs
     quotes?: boolean | AccountCountOutputTypeCountQuotesArgs
     tasks?: boolean | AccountCountOutputTypeCountTasksArgs
+    followUps?: boolean | AccountCountOutputTypeCountFollowUpsArgs
     documents?: boolean | AccountCountOutputTypeCountDocumentsArgs
     accountProducts?: boolean | AccountCountOutputTypeCountAccountProductsArgs
   }
@@ -7056,6 +7207,13 @@ export namespace Prisma {
   /**
    * AccountCountOutputType without action
    */
+  export type AccountCountOutputTypeCountFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
+  }
+
+  /**
+   * AccountCountOutputType without action
+   */
   export type AccountCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentWhereInput
   }
@@ -7079,6 +7237,7 @@ export namespace Prisma {
     interactions: number
     quotes: number
     tasks: number
+    followUps: number
     emailLists: number
     opportunities: number
     whatsAppMessages: number
@@ -7092,6 +7251,7 @@ export namespace Prisma {
     interactions?: boolean | ContactCountOutputTypeCountInteractionsArgs
     quotes?: boolean | ContactCountOutputTypeCountQuotesArgs
     tasks?: boolean | ContactCountOutputTypeCountTasksArgs
+    followUps?: boolean | ContactCountOutputTypeCountFollowUpsArgs
     emailLists?: boolean | ContactCountOutputTypeCountEmailListsArgs
     opportunities?: boolean | ContactCountOutputTypeCountOpportunitiesArgs
     whatsAppMessages?: boolean | ContactCountOutputTypeCountWhatsAppMessagesArgs
@@ -7154,6 +7314,13 @@ export namespace Prisma {
   /**
    * ContactCountOutputType without action
    */
+  export type ContactCountOutputTypeCountFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
+  }
+
+  /**
+   * ContactCountOutputType without action
+   */
   export type ContactCountOutputTypeCountEmailListsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmailListWhereInput
   }
@@ -7189,6 +7356,7 @@ export namespace Prisma {
     interactions: number
     quotes: number
     tasks: number
+    followUps: number
     contacts: number
     documents: number
     paymentRecords: number
@@ -7199,6 +7367,7 @@ export namespace Prisma {
     interactions?: boolean | OpportunityCountOutputTypeCountInteractionsArgs
     quotes?: boolean | OpportunityCountOutputTypeCountQuotesArgs
     tasks?: boolean | OpportunityCountOutputTypeCountTasksArgs
+    followUps?: boolean | OpportunityCountOutputTypeCountFollowUpsArgs
     contacts?: boolean | OpportunityCountOutputTypeCountContactsArgs
     documents?: boolean | OpportunityCountOutputTypeCountDocumentsArgs
     paymentRecords?: boolean | OpportunityCountOutputTypeCountPaymentRecordsArgs
@@ -7241,6 +7410,13 @@ export namespace Prisma {
    */
   export type OpportunityCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
+  }
+
+  /**
+   * OpportunityCountOutputType without action
+   */
+  export type OpportunityCountOutputTypeCountFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
   }
 
   /**
@@ -7618,6 +7794,7 @@ export namespace Prisma {
     opportunities: number
     accounts: number
     tasks: number
+    followUps: number
     interactions: number
     assignmentRules: number
     products: number
@@ -7630,6 +7807,7 @@ export namespace Prisma {
     opportunities?: boolean | BranchCountOutputTypeCountOpportunitiesArgs
     accounts?: boolean | BranchCountOutputTypeCountAccountsArgs
     tasks?: boolean | BranchCountOutputTypeCountTasksArgs
+    followUps?: boolean | BranchCountOutputTypeCountFollowUpsArgs
     interactions?: boolean | BranchCountOutputTypeCountInteractionsArgs
     assignmentRules?: boolean | BranchCountOutputTypeCountAssignmentRulesArgs
     products?: boolean | BranchCountOutputTypeCountProductsArgs
@@ -7686,6 +7864,13 @@ export namespace Prisma {
    */
   export type BranchCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
   }
 
   /**
@@ -8154,6 +8339,7 @@ export namespace Prisma {
     quotes?: boolean | Organisation$quotesArgs<ExtArgs>
     salesTargets?: boolean | Organisation$salesTargetsArgs<ExtArgs>
     tasks?: boolean | Organisation$tasksArgs<ExtArgs>
+    followUps?: boolean | Organisation$followUpsArgs<ExtArgs>
     territories?: boolean | Organisation$territoriesArgs<ExtArgs>
     users?: boolean | Organisation$usersArgs<ExtArgs>
     webhooks?: boolean | Organisation$webhooksArgs<ExtArgs>
@@ -8259,6 +8445,7 @@ export namespace Prisma {
     quotes?: boolean | Organisation$quotesArgs<ExtArgs>
     salesTargets?: boolean | Organisation$salesTargetsArgs<ExtArgs>
     tasks?: boolean | Organisation$tasksArgs<ExtArgs>
+    followUps?: boolean | Organisation$followUpsArgs<ExtArgs>
     territories?: boolean | Organisation$territoriesArgs<ExtArgs>
     users?: boolean | Organisation$usersArgs<ExtArgs>
     webhooks?: boolean | Organisation$webhooksArgs<ExtArgs>
@@ -8309,6 +8496,7 @@ export namespace Prisma {
       quotes: Prisma.$QuotePayload<ExtArgs>[]
       salesTargets: Prisma.$SalesTargetPayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      followUps: Prisma.$FollowUpPayload<ExtArgs>[]
       territories: Prisma.$TerritoryPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
       webhooks: Prisma.$WebhookPayload<ExtArgs>[]
@@ -8744,6 +8932,7 @@ export namespace Prisma {
     quotes<T extends Organisation$quotesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$quotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, "findMany"> | Null>
     salesTargets<T extends Organisation$salesTargetsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$salesTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesTargetPayload<ExtArgs>, T, "findMany"> | Null>
     tasks<T extends Organisation$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    followUps<T extends Organisation$followUpsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     territories<T extends Organisation$territoriesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$territoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TerritoryPayload<ExtArgs>, T, "findMany"> | Null>
     users<T extends Organisation$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany"> | Null>
     webhooks<T extends Organisation$webhooksArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$webhooksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookPayload<ExtArgs>, T, "findMany"> | Null>
@@ -9528,6 +9717,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.followUps
+   */
+  export type Organisation$followUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
   }
 
   /**
@@ -10414,6 +10623,8 @@ export namespace Prisma {
     assignedSalesTargets?: boolean | User$assignedSalesTargetsArgs<ExtArgs>
     assignedTasks?: boolean | User$assignedTasksArgs<ExtArgs>
     createdTasks?: boolean | User$createdTasksArgs<ExtArgs>
+    assignedFollowUps?: boolean | User$assignedFollowUpsArgs<ExtArgs>
+    createdFollowUps?: boolean | User$createdFollowUpsArgs<ExtArgs>
     managedTerritories?: boolean | User$managedTerritoriesArgs<ExtArgs>
     previousAccounts?: boolean | User$previousAccountsArgs<ExtArgs>
     previousContacts?: boolean | User$previousContactsArgs<ExtArgs>
@@ -10556,6 +10767,8 @@ export namespace Prisma {
     assignedSalesTargets?: boolean | User$assignedSalesTargetsArgs<ExtArgs>
     assignedTasks?: boolean | User$assignedTasksArgs<ExtArgs>
     createdTasks?: boolean | User$createdTasksArgs<ExtArgs>
+    assignedFollowUps?: boolean | User$assignedFollowUpsArgs<ExtArgs>
+    createdFollowUps?: boolean | User$createdFollowUpsArgs<ExtArgs>
     managedTerritories?: boolean | User$managedTerritoriesArgs<ExtArgs>
     previousAccounts?: boolean | User$previousAccountsArgs<ExtArgs>
     previousContacts?: boolean | User$previousContactsArgs<ExtArgs>
@@ -10638,6 +10851,8 @@ export namespace Prisma {
       assignedSalesTargets: Prisma.$SalesTargetPayload<ExtArgs>[]
       assignedTasks: Prisma.$TaskPayload<ExtArgs>[]
       createdTasks: Prisma.$TaskPayload<ExtArgs>[]
+      assignedFollowUps: Prisma.$FollowUpPayload<ExtArgs>[]
+      createdFollowUps: Prisma.$FollowUpPayload<ExtArgs>[]
       managedTerritories: Prisma.$TerritoryPayload<ExtArgs>[]
       previousAccounts: Prisma.$AccountPayload<ExtArgs>[]
       previousContacts: Prisma.$ContactPayload<ExtArgs>[]
@@ -11103,6 +11318,8 @@ export namespace Prisma {
     assignedSalesTargets<T extends User$assignedSalesTargetsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedSalesTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesTargetPayload<ExtArgs>, T, "findMany"> | Null>
     assignedTasks<T extends User$assignedTasksArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
     createdTasks<T extends User$createdTasksArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    assignedFollowUps<T extends User$assignedFollowUpsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedFollowUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
+    createdFollowUps<T extends User$createdFollowUpsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFollowUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     managedTerritories<T extends User$managedTerritoriesArgs<ExtArgs> = {}>(args?: Subset<T, User$managedTerritoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TerritoryPayload<ExtArgs>, T, "findMany"> | Null>
     previousAccounts<T extends User$previousAccountsArgs<ExtArgs> = {}>(args?: Subset<T, User$previousAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany"> | Null>
     previousContacts<T extends User$previousContactsArgs<ExtArgs> = {}>(args?: Subset<T, User$previousContactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany"> | Null>
@@ -12211,6 +12428,46 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * User.assignedFollowUps
+   */
+  export type User$assignedFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
+  }
+
+  /**
+   * User.createdFollowUps
+   */
+  export type User$createdFollowUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
   }
 
   /**
@@ -15494,6 +15751,7 @@ export namespace Prisma {
     createdBy?: boolean | Lead$createdByArgs<ExtArgs>
     history?: boolean | Lead$historyArgs<ExtArgs>
     tasks?: boolean | Lead$tasksArgs<ExtArgs>
+    followUps?: boolean | Lead$followUpsArgs<ExtArgs>
     emailLists?: boolean | Lead$emailListsArgs<ExtArgs>
     whatsAppMessages?: boolean | Lead$whatsAppMessagesArgs<ExtArgs>
     documents?: boolean | Lead$documentsArgs<ExtArgs>
@@ -15619,6 +15877,7 @@ export namespace Prisma {
     createdBy?: boolean | Lead$createdByArgs<ExtArgs>
     history?: boolean | Lead$historyArgs<ExtArgs>
     tasks?: boolean | Lead$tasksArgs<ExtArgs>
+    followUps?: boolean | Lead$followUpsArgs<ExtArgs>
     emailLists?: boolean | Lead$emailListsArgs<ExtArgs>
     whatsAppMessages?: boolean | Lead$whatsAppMessagesArgs<ExtArgs>
     documents?: boolean | Lead$documentsArgs<ExtArgs>
@@ -15652,6 +15911,7 @@ export namespace Prisma {
       createdBy: Prisma.$UserPayload<ExtArgs> | null
       history: Prisma.$LeadHistoryPayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      followUps: Prisma.$FollowUpPayload<ExtArgs>[]
       emailLists: Prisma.$EmailListPayload<ExtArgs>[]
       whatsAppMessages: Prisma.$WhatsAppMessagePayload<ExtArgs>[]
       documents: Prisma.$DocumentPayload<ExtArgs>[]
@@ -16082,6 +16342,7 @@ export namespace Prisma {
     createdBy<T extends Lead$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Lead$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     history<T extends Lead$historyArgs<ExtArgs> = {}>(args?: Subset<T, Lead$historyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeadHistoryPayload<ExtArgs>, T, "findMany"> | Null>
     tasks<T extends Lead$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Lead$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    followUps<T extends Lead$followUpsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     emailLists<T extends Lead$emailListsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$emailListsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailListPayload<ExtArgs>, T, "findMany"> | Null>
     whatsAppMessages<T extends Lead$whatsAppMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$whatsAppMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany"> | Null>
     documents<T extends Lead$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany"> | Null>
@@ -16626,6 +16887,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Lead.followUps
+   */
+  export type Lead$followUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
   }
 
   /**
@@ -18170,6 +18451,7 @@ export namespace Prisma {
     opportunities?: boolean | Account$opportunitiesArgs<ExtArgs>
     quotes?: boolean | Account$quotesArgs<ExtArgs>
     tasks?: boolean | Account$tasksArgs<ExtArgs>
+    followUps?: boolean | Account$followUpsArgs<ExtArgs>
     documents?: boolean | Account$documentsArgs<ExtArgs>
     lead?: boolean | Account$leadArgs<ExtArgs>
     accountProducts?: boolean | Account$accountProductsArgs<ExtArgs>
@@ -18243,6 +18525,7 @@ export namespace Prisma {
     opportunities?: boolean | Account$opportunitiesArgs<ExtArgs>
     quotes?: boolean | Account$quotesArgs<ExtArgs>
     tasks?: boolean | Account$tasksArgs<ExtArgs>
+    followUps?: boolean | Account$followUpsArgs<ExtArgs>
     documents?: boolean | Account$documentsArgs<ExtArgs>
     lead?: boolean | Account$leadArgs<ExtArgs>
     accountProducts?: boolean | Account$accountProductsArgs<ExtArgs>
@@ -18274,6 +18557,7 @@ export namespace Prisma {
       opportunities: Prisma.$OpportunityPayload<ExtArgs>[]
       quotes: Prisma.$QuotePayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      followUps: Prisma.$FollowUpPayload<ExtArgs>[]
       documents: Prisma.$DocumentPayload<ExtArgs>[]
       lead: Prisma.$LeadPayload<ExtArgs> | null
       accountProducts: Prisma.$AccountProductPayload<ExtArgs>[]
@@ -18677,6 +18961,7 @@ export namespace Prisma {
     opportunities<T extends Account$opportunitiesArgs<ExtArgs> = {}>(args?: Subset<T, Account$opportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findMany"> | Null>
     quotes<T extends Account$quotesArgs<ExtArgs> = {}>(args?: Subset<T, Account$quotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, "findMany"> | Null>
     tasks<T extends Account$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Account$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    followUps<T extends Account$followUpsArgs<ExtArgs> = {}>(args?: Subset<T, Account$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     documents<T extends Account$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Account$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany"> | Null>
     lead<T extends Account$leadArgs<ExtArgs> = {}>(args?: Subset<T, Account$leadArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     accountProducts<T extends Account$accountProductsArgs<ExtArgs> = {}>(args?: Subset<T, Account$accountProductsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountProductPayload<ExtArgs>, T, "findMany"> | Null>
@@ -19273,6 +19558,26 @@ export namespace Prisma {
   }
 
   /**
+   * Account.followUps
+   */
+  export type Account$followUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
+  }
+
+  /**
    * Account.documents
    */
   export type Account$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19663,6 +19968,7 @@ export namespace Prisma {
     interactions?: boolean | Contact$interactionsArgs<ExtArgs>
     quotes?: boolean | Contact$quotesArgs<ExtArgs>
     tasks?: boolean | Contact$tasksArgs<ExtArgs>
+    followUps?: boolean | Contact$followUpsArgs<ExtArgs>
     emailLists?: boolean | Contact$emailListsArgs<ExtArgs>
     opportunities?: boolean | Contact$opportunitiesArgs<ExtArgs>
     whatsAppMessages?: boolean | Contact$whatsAppMessagesArgs<ExtArgs>
@@ -19743,6 +20049,7 @@ export namespace Prisma {
     interactions?: boolean | Contact$interactionsArgs<ExtArgs>
     quotes?: boolean | Contact$quotesArgs<ExtArgs>
     tasks?: boolean | Contact$tasksArgs<ExtArgs>
+    followUps?: boolean | Contact$followUpsArgs<ExtArgs>
     emailLists?: boolean | Contact$emailListsArgs<ExtArgs>
     opportunities?: boolean | Contact$opportunitiesArgs<ExtArgs>
     whatsAppMessages?: boolean | Contact$whatsAppMessagesArgs<ExtArgs>
@@ -19773,6 +20080,7 @@ export namespace Prisma {
       interactions: Prisma.$InteractionPayload<ExtArgs>[]
       quotes: Prisma.$QuotePayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      followUps: Prisma.$FollowUpPayload<ExtArgs>[]
       emailLists: Prisma.$EmailListPayload<ExtArgs>[]
       opportunities: Prisma.$OpportunityPayload<ExtArgs>[]
       whatsAppMessages: Prisma.$WhatsAppMessagePayload<ExtArgs>[]
@@ -20179,6 +20487,7 @@ export namespace Prisma {
     interactions<T extends Contact$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InteractionPayload<ExtArgs>, T, "findMany"> | Null>
     quotes<T extends Contact$quotesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$quotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, "findMany"> | Null>
     tasks<T extends Contact$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Contact$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    followUps<T extends Contact$followUpsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     emailLists<T extends Contact$emailListsArgs<ExtArgs> = {}>(args?: Subset<T, Contact$emailListsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailListPayload<ExtArgs>, T, "findMany"> | Null>
     opportunities<T extends Contact$opportunitiesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$opportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findMany"> | Null>
     whatsAppMessages<T extends Contact$whatsAppMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Contact$whatsAppMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany"> | Null>
@@ -20721,6 +21030,26 @@ export namespace Prisma {
   }
 
   /**
+   * Contact.followUps
+   */
+  export type Contact$followUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
+  }
+
+  /**
    * Contact.emailLists
    */
   export type Contact$emailListsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -21191,6 +21520,7 @@ export namespace Prisma {
     previousOwner?: boolean | Opportunity$previousOwnerArgs<ExtArgs>
     quotes?: boolean | Opportunity$quotesArgs<ExtArgs>
     tasks?: boolean | Opportunity$tasksArgs<ExtArgs>
+    followUps?: boolean | Opportunity$followUpsArgs<ExtArgs>
     contacts?: boolean | Opportunity$contactsArgs<ExtArgs>
     documents?: boolean | Opportunity$documentsArgs<ExtArgs>
     lead?: boolean | Opportunity$leadArgs<ExtArgs>
@@ -21269,6 +21599,7 @@ export namespace Prisma {
     previousOwner?: boolean | Opportunity$previousOwnerArgs<ExtArgs>
     quotes?: boolean | Opportunity$quotesArgs<ExtArgs>
     tasks?: boolean | Opportunity$tasksArgs<ExtArgs>
+    followUps?: boolean | Opportunity$followUpsArgs<ExtArgs>
     contacts?: boolean | Opportunity$contactsArgs<ExtArgs>
     documents?: boolean | Opportunity$documentsArgs<ExtArgs>
     lead?: boolean | Opportunity$leadArgs<ExtArgs>
@@ -21299,6 +21630,7 @@ export namespace Prisma {
       previousOwner: Prisma.$UserPayload<ExtArgs> | null
       quotes: Prisma.$QuotePayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      followUps: Prisma.$FollowUpPayload<ExtArgs>[]
       contacts: Prisma.$ContactPayload<ExtArgs>[]
       documents: Prisma.$DocumentPayload<ExtArgs>[]
       lead: Prisma.$LeadPayload<ExtArgs> | null
@@ -21703,6 +22035,7 @@ export namespace Prisma {
     previousOwner<T extends Opportunity$previousOwnerArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$previousOwnerArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     quotes<T extends Opportunity$quotesArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$quotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuotePayload<ExtArgs>, T, "findMany"> | Null>
     tasks<T extends Opportunity$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    followUps<T extends Opportunity$followUpsArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     contacts<T extends Opportunity$contactsArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findMany"> | Null>
     documents<T extends Opportunity$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany"> | Null>
     lead<T extends Opportunity$leadArgs<ExtArgs> = {}>(args?: Subset<T, Opportunity$leadArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
@@ -22187,6 +22520,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Opportunity.followUps
+   */
+  export type Opportunity$followUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
   }
 
   /**
@@ -29472,6 +29825,1257 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FollowUp
+   */
+
+  export type AggregateFollowUp = {
+    _count: FollowUpCountAggregateOutputType | null
+    _min: FollowUpMinAggregateOutputType | null
+    _max: FollowUpMaxAggregateOutputType | null
+  }
+
+  export type FollowUpMinAggregateOutputType = {
+    id: string | null
+    subject: string | null
+    description: string | null
+    status: $Enums.FollowUpStatus | null
+    priority: $Enums.FollowUpPriority | null
+    dueDate: Date | null
+    leadId: string | null
+    contactId: string | null
+    accountId: string | null
+    opportunityId: string | null
+    assignedToId: string | null
+    createdById: string | null
+    organisationId: string | null
+    branchId: string | null
+    isDeleted: boolean | null
+    notifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FollowUpMaxAggregateOutputType = {
+    id: string | null
+    subject: string | null
+    description: string | null
+    status: $Enums.FollowUpStatus | null
+    priority: $Enums.FollowUpPriority | null
+    dueDate: Date | null
+    leadId: string | null
+    contactId: string | null
+    accountId: string | null
+    opportunityId: string | null
+    assignedToId: string | null
+    createdById: string | null
+    organisationId: string | null
+    branchId: string | null
+    isDeleted: boolean | null
+    notifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FollowUpCountAggregateOutputType = {
+    id: number
+    subject: number
+    description: number
+    status: number
+    priority: number
+    dueDate: number
+    leadId: number
+    contactId: number
+    accountId: number
+    opportunityId: number
+    assignedToId: number
+    createdById: number
+    organisationId: number
+    branchId: number
+    isDeleted: number
+    notifiedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FollowUpMinAggregateInputType = {
+    id?: true
+    subject?: true
+    description?: true
+    status?: true
+    priority?: true
+    dueDate?: true
+    leadId?: true
+    contactId?: true
+    accountId?: true
+    opportunityId?: true
+    assignedToId?: true
+    createdById?: true
+    organisationId?: true
+    branchId?: true
+    isDeleted?: true
+    notifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FollowUpMaxAggregateInputType = {
+    id?: true
+    subject?: true
+    description?: true
+    status?: true
+    priority?: true
+    dueDate?: true
+    leadId?: true
+    contactId?: true
+    accountId?: true
+    opportunityId?: true
+    assignedToId?: true
+    createdById?: true
+    organisationId?: true
+    branchId?: true
+    isDeleted?: true
+    notifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FollowUpCountAggregateInputType = {
+    id?: true
+    subject?: true
+    description?: true
+    status?: true
+    priority?: true
+    dueDate?: true
+    leadId?: true
+    contactId?: true
+    accountId?: true
+    opportunityId?: true
+    assignedToId?: true
+    createdById?: true
+    organisationId?: true
+    branchId?: true
+    isDeleted?: true
+    notifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FollowUpAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FollowUp to aggregate.
+     */
+    where?: FollowUpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUps to fetch.
+     */
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FollowUpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FollowUps
+    **/
+    _count?: true | FollowUpCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FollowUpMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FollowUpMaxAggregateInputType
+  }
+
+  export type GetFollowUpAggregateType<T extends FollowUpAggregateArgs> = {
+        [P in keyof T & keyof AggregateFollowUp]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFollowUp[P]>
+      : GetScalarType<T[P], AggregateFollowUp[P]>
+  }
+
+
+
+
+  export type FollowUpGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithAggregationInput | FollowUpOrderByWithAggregationInput[]
+    by: FollowUpScalarFieldEnum[] | FollowUpScalarFieldEnum
+    having?: FollowUpScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FollowUpCountAggregateInputType | true
+    _min?: FollowUpMinAggregateInputType
+    _max?: FollowUpMaxAggregateInputType
+  }
+
+  export type FollowUpGroupByOutputType = {
+    id: string
+    subject: string
+    description: string | null
+    status: $Enums.FollowUpStatus
+    priority: $Enums.FollowUpPriority
+    dueDate: Date
+    leadId: string | null
+    contactId: string | null
+    accountId: string | null
+    opportunityId: string | null
+    assignedToId: string | null
+    createdById: string | null
+    organisationId: string | null
+    branchId: string | null
+    isDeleted: boolean
+    notifiedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FollowUpCountAggregateOutputType | null
+    _min: FollowUpMinAggregateOutputType | null
+    _max: FollowUpMaxAggregateOutputType | null
+  }
+
+  type GetFollowUpGroupByPayload<T extends FollowUpGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FollowUpGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FollowUpGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FollowUpGroupByOutputType[P]>
+            : GetScalarType<T[P], FollowUpGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FollowUpSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    leadId?: boolean
+    contactId?: boolean
+    accountId?: boolean
+    opportunityId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    organisationId?: boolean
+    branchId?: boolean
+    isDeleted?: boolean
+    notifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    account?: boolean | FollowUp$accountArgs<ExtArgs>
+    assignedTo?: boolean | FollowUp$assignedToArgs<ExtArgs>
+    contact?: boolean | FollowUp$contactArgs<ExtArgs>
+    createdBy?: boolean | FollowUp$createdByArgs<ExtArgs>
+    lead?: boolean | FollowUp$leadArgs<ExtArgs>
+    opportunity?: boolean | FollowUp$opportunityArgs<ExtArgs>
+    organisation?: boolean | FollowUp$organisationArgs<ExtArgs>
+    branch?: boolean | FollowUp$branchArgs<ExtArgs>
+  }, ExtArgs["result"]["followUp"]>
+
+  export type FollowUpSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    leadId?: boolean
+    contactId?: boolean
+    accountId?: boolean
+    opportunityId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    organisationId?: boolean
+    branchId?: boolean
+    isDeleted?: boolean
+    notifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    account?: boolean | FollowUp$accountArgs<ExtArgs>
+    assignedTo?: boolean | FollowUp$assignedToArgs<ExtArgs>
+    contact?: boolean | FollowUp$contactArgs<ExtArgs>
+    createdBy?: boolean | FollowUp$createdByArgs<ExtArgs>
+    lead?: boolean | FollowUp$leadArgs<ExtArgs>
+    opportunity?: boolean | FollowUp$opportunityArgs<ExtArgs>
+    organisation?: boolean | FollowUp$organisationArgs<ExtArgs>
+    branch?: boolean | FollowUp$branchArgs<ExtArgs>
+  }, ExtArgs["result"]["followUp"]>
+
+  export type FollowUpSelectScalar = {
+    id?: boolean
+    subject?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    leadId?: boolean
+    contactId?: boolean
+    accountId?: boolean
+    opportunityId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    organisationId?: boolean
+    branchId?: boolean
+    isDeleted?: boolean
+    notifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FollowUpInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    account?: boolean | FollowUp$accountArgs<ExtArgs>
+    assignedTo?: boolean | FollowUp$assignedToArgs<ExtArgs>
+    contact?: boolean | FollowUp$contactArgs<ExtArgs>
+    createdBy?: boolean | FollowUp$createdByArgs<ExtArgs>
+    lead?: boolean | FollowUp$leadArgs<ExtArgs>
+    opportunity?: boolean | FollowUp$opportunityArgs<ExtArgs>
+    organisation?: boolean | FollowUp$organisationArgs<ExtArgs>
+    branch?: boolean | FollowUp$branchArgs<ExtArgs>
+  }
+  export type FollowUpIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    account?: boolean | FollowUp$accountArgs<ExtArgs>
+    assignedTo?: boolean | FollowUp$assignedToArgs<ExtArgs>
+    contact?: boolean | FollowUp$contactArgs<ExtArgs>
+    createdBy?: boolean | FollowUp$createdByArgs<ExtArgs>
+    lead?: boolean | FollowUp$leadArgs<ExtArgs>
+    opportunity?: boolean | FollowUp$opportunityArgs<ExtArgs>
+    organisation?: boolean | FollowUp$organisationArgs<ExtArgs>
+    branch?: boolean | FollowUp$branchArgs<ExtArgs>
+  }
+
+  export type $FollowUpPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FollowUp"
+    objects: {
+      account: Prisma.$AccountPayload<ExtArgs> | null
+      assignedTo: Prisma.$UserPayload<ExtArgs> | null
+      contact: Prisma.$ContactPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+      lead: Prisma.$LeadPayload<ExtArgs> | null
+      opportunity: Prisma.$OpportunityPayload<ExtArgs> | null
+      organisation: Prisma.$OrganisationPayload<ExtArgs> | null
+      branch: Prisma.$BranchPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      subject: string
+      description: string | null
+      status: $Enums.FollowUpStatus
+      priority: $Enums.FollowUpPriority
+      dueDate: Date
+      leadId: string | null
+      contactId: string | null
+      accountId: string | null
+      opportunityId: string | null
+      assignedToId: string | null
+      createdById: string | null
+      organisationId: string | null
+      branchId: string | null
+      isDeleted: boolean
+      notifiedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["followUp"]>
+    composites: {}
+  }
+
+  type FollowUpGetPayload<S extends boolean | null | undefined | FollowUpDefaultArgs> = $Result.GetResult<Prisma.$FollowUpPayload, S>
+
+  type FollowUpCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<FollowUpFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: FollowUpCountAggregateInputType | true
+    }
+
+  export interface FollowUpDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FollowUp'], meta: { name: 'FollowUp' } }
+    /**
+     * Find zero or one FollowUp that matches the filter.
+     * @param {FollowUpFindUniqueArgs} args - Arguments to find a FollowUp
+     * @example
+     * // Get one FollowUp
+     * const followUp = await prisma.followUp.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FollowUpFindUniqueArgs>(args: SelectSubset<T, FollowUpFindUniqueArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one FollowUp that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {FollowUpFindUniqueOrThrowArgs} args - Arguments to find a FollowUp
+     * @example
+     * // Get one FollowUp
+     * const followUp = await prisma.followUp.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FollowUpFindUniqueOrThrowArgs>(args: SelectSubset<T, FollowUpFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first FollowUp that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpFindFirstArgs} args - Arguments to find a FollowUp
+     * @example
+     * // Get one FollowUp
+     * const followUp = await prisma.followUp.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FollowUpFindFirstArgs>(args?: SelectSubset<T, FollowUpFindFirstArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first FollowUp that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpFindFirstOrThrowArgs} args - Arguments to find a FollowUp
+     * @example
+     * // Get one FollowUp
+     * const followUp = await prisma.followUp.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FollowUpFindFirstOrThrowArgs>(args?: SelectSubset<T, FollowUpFindFirstOrThrowArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more FollowUps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FollowUps
+     * const followUps = await prisma.followUp.findMany()
+     * 
+     * // Get first 10 FollowUps
+     * const followUps = await prisma.followUp.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const followUpWithIdOnly = await prisma.followUp.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FollowUpFindManyArgs>(args?: SelectSubset<T, FollowUpFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a FollowUp.
+     * @param {FollowUpCreateArgs} args - Arguments to create a FollowUp.
+     * @example
+     * // Create one FollowUp
+     * const FollowUp = await prisma.followUp.create({
+     *   data: {
+     *     // ... data to create a FollowUp
+     *   }
+     * })
+     * 
+     */
+    create<T extends FollowUpCreateArgs>(args: SelectSubset<T, FollowUpCreateArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many FollowUps.
+     * @param {FollowUpCreateManyArgs} args - Arguments to create many FollowUps.
+     * @example
+     * // Create many FollowUps
+     * const followUp = await prisma.followUp.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FollowUpCreateManyArgs>(args?: SelectSubset<T, FollowUpCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FollowUps and returns the data saved in the database.
+     * @param {FollowUpCreateManyAndReturnArgs} args - Arguments to create many FollowUps.
+     * @example
+     * // Create many FollowUps
+     * const followUp = await prisma.followUp.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FollowUps and only return the `id`
+     * const followUpWithIdOnly = await prisma.followUp.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FollowUpCreateManyAndReturnArgs>(args?: SelectSubset<T, FollowUpCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a FollowUp.
+     * @param {FollowUpDeleteArgs} args - Arguments to delete one FollowUp.
+     * @example
+     * // Delete one FollowUp
+     * const FollowUp = await prisma.followUp.delete({
+     *   where: {
+     *     // ... filter to delete one FollowUp
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FollowUpDeleteArgs>(args: SelectSubset<T, FollowUpDeleteArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one FollowUp.
+     * @param {FollowUpUpdateArgs} args - Arguments to update one FollowUp.
+     * @example
+     * // Update one FollowUp
+     * const followUp = await prisma.followUp.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FollowUpUpdateArgs>(args: SelectSubset<T, FollowUpUpdateArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more FollowUps.
+     * @param {FollowUpDeleteManyArgs} args - Arguments to filter FollowUps to delete.
+     * @example
+     * // Delete a few FollowUps
+     * const { count } = await prisma.followUp.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FollowUpDeleteManyArgs>(args?: SelectSubset<T, FollowUpDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FollowUps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FollowUps
+     * const followUp = await prisma.followUp.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FollowUpUpdateManyArgs>(args: SelectSubset<T, FollowUpUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one FollowUp.
+     * @param {FollowUpUpsertArgs} args - Arguments to update or create a FollowUp.
+     * @example
+     * // Update or create a FollowUp
+     * const followUp = await prisma.followUp.upsert({
+     *   create: {
+     *     // ... data to create a FollowUp
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FollowUp we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FollowUpUpsertArgs>(args: SelectSubset<T, FollowUpUpsertArgs<ExtArgs>>): Prisma__FollowUpClient<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of FollowUps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpCountArgs} args - Arguments to filter FollowUps to count.
+     * @example
+     * // Count the number of FollowUps
+     * const count = await prisma.followUp.count({
+     *   where: {
+     *     // ... the filter for the FollowUps we want to count
+     *   }
+     * })
+    **/
+    count<T extends FollowUpCountArgs>(
+      args?: Subset<T, FollowUpCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FollowUpCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FollowUp.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FollowUpAggregateArgs>(args: Subset<T, FollowUpAggregateArgs>): Prisma.PrismaPromise<GetFollowUpAggregateType<T>>
+
+    /**
+     * Group by FollowUp.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FollowUpGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FollowUpGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FollowUpGroupByArgs['orderBy'] }
+        : { orderBy?: FollowUpGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FollowUpGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFollowUpGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FollowUp model
+   */
+  readonly fields: FollowUpFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FollowUp.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FollowUpClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    account<T extends FollowUp$accountArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$accountArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    assignedTo<T extends FollowUp$assignedToArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$assignedToArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    contact<T extends FollowUp$contactArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$contactArgs<ExtArgs>>): Prisma__ContactClient<$Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    createdBy<T extends FollowUp$createdByArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    lead<T extends FollowUp$leadArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$leadArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    opportunity<T extends FollowUp$opportunityArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$opportunityArgs<ExtArgs>>): Prisma__OpportunityClient<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    organisation<T extends FollowUp$organisationArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$organisationArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    branch<T extends FollowUp$branchArgs<ExtArgs> = {}>(args?: Subset<T, FollowUp$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FollowUp model
+   */ 
+  interface FollowUpFieldRefs {
+    readonly id: FieldRef<"FollowUp", 'String'>
+    readonly subject: FieldRef<"FollowUp", 'String'>
+    readonly description: FieldRef<"FollowUp", 'String'>
+    readonly status: FieldRef<"FollowUp", 'FollowUpStatus'>
+    readonly priority: FieldRef<"FollowUp", 'FollowUpPriority'>
+    readonly dueDate: FieldRef<"FollowUp", 'DateTime'>
+    readonly leadId: FieldRef<"FollowUp", 'String'>
+    readonly contactId: FieldRef<"FollowUp", 'String'>
+    readonly accountId: FieldRef<"FollowUp", 'String'>
+    readonly opportunityId: FieldRef<"FollowUp", 'String'>
+    readonly assignedToId: FieldRef<"FollowUp", 'String'>
+    readonly createdById: FieldRef<"FollowUp", 'String'>
+    readonly organisationId: FieldRef<"FollowUp", 'String'>
+    readonly branchId: FieldRef<"FollowUp", 'String'>
+    readonly isDeleted: FieldRef<"FollowUp", 'Boolean'>
+    readonly notifiedAt: FieldRef<"FollowUp", 'DateTime'>
+    readonly createdAt: FieldRef<"FollowUp", 'DateTime'>
+    readonly updatedAt: FieldRef<"FollowUp", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FollowUp findUnique
+   */
+  export type FollowUpFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUp to fetch.
+     */
+    where: FollowUpWhereUniqueInput
+  }
+
+  /**
+   * FollowUp findUniqueOrThrow
+   */
+  export type FollowUpFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUp to fetch.
+     */
+    where: FollowUpWhereUniqueInput
+  }
+
+  /**
+   * FollowUp findFirst
+   */
+  export type FollowUpFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUp to fetch.
+     */
+    where?: FollowUpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUps to fetch.
+     */
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FollowUps.
+     */
+    cursor?: FollowUpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FollowUps.
+     */
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
+  }
+
+  /**
+   * FollowUp findFirstOrThrow
+   */
+  export type FollowUpFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUp to fetch.
+     */
+    where?: FollowUpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUps to fetch.
+     */
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FollowUps.
+     */
+    cursor?: FollowUpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FollowUps.
+     */
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
+  }
+
+  /**
+   * FollowUp findMany
+   */
+  export type FollowUpFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * Filter, which FollowUps to fetch.
+     */
+    where?: FollowUpWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FollowUps to fetch.
+     */
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FollowUps.
+     */
+    cursor?: FollowUpWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FollowUps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FollowUps.
+     */
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
+  }
+
+  /**
+   * FollowUp create
+   */
+  export type FollowUpCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FollowUp.
+     */
+    data: XOR<FollowUpCreateInput, FollowUpUncheckedCreateInput>
+  }
+
+  /**
+   * FollowUp createMany
+   */
+  export type FollowUpCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FollowUps.
+     */
+    data: FollowUpCreateManyInput | FollowUpCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FollowUp createManyAndReturn
+   */
+  export type FollowUpCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many FollowUps.
+     */
+    data: FollowUpCreateManyInput | FollowUpCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FollowUp update
+   */
+  export type FollowUpUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FollowUp.
+     */
+    data: XOR<FollowUpUpdateInput, FollowUpUncheckedUpdateInput>
+    /**
+     * Choose, which FollowUp to update.
+     */
+    where: FollowUpWhereUniqueInput
+  }
+
+  /**
+   * FollowUp updateMany
+   */
+  export type FollowUpUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FollowUps.
+     */
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyInput>
+    /**
+     * Filter which FollowUps to update
+     */
+    where?: FollowUpWhereInput
+  }
+
+  /**
+   * FollowUp upsert
+   */
+  export type FollowUpUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FollowUp to update in case it exists.
+     */
+    where: FollowUpWhereUniqueInput
+    /**
+     * In case the FollowUp found by the `where` argument doesn't exist, create a new FollowUp with this data.
+     */
+    create: XOR<FollowUpCreateInput, FollowUpUncheckedCreateInput>
+    /**
+     * In case the FollowUp was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FollowUpUpdateInput, FollowUpUncheckedUpdateInput>
+  }
+
+  /**
+   * FollowUp delete
+   */
+  export type FollowUpDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    /**
+     * Filter which FollowUp to delete.
+     */
+    where: FollowUpWhereUniqueInput
+  }
+
+  /**
+   * FollowUp deleteMany
+   */
+  export type FollowUpDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FollowUps to delete
+     */
+    where?: FollowUpWhereInput
+  }
+
+  /**
+   * FollowUp.account
+   */
+  export type FollowUp$accountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Account
+     */
+    select?: AccountSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountInclude<ExtArgs> | null
+    where?: AccountWhereInput
+  }
+
+  /**
+   * FollowUp.assignedTo
+   */
+  export type FollowUp$assignedToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * FollowUp.contact
+   */
+  export type FollowUp$contactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contact
+     */
+    select?: ContactSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContactInclude<ExtArgs> | null
+    where?: ContactWhereInput
+  }
+
+  /**
+   * FollowUp.createdBy
+   */
+  export type FollowUp$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * FollowUp.lead
+   */
+  export type FollowUp$leadArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Lead
+     */
+    select?: LeadSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LeadInclude<ExtArgs> | null
+    where?: LeadWhereInput
+  }
+
+  /**
+   * FollowUp.opportunity
+   */
+  export type FollowUp$opportunityArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Opportunity
+     */
+    select?: OpportunitySelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OpportunityInclude<ExtArgs> | null
+    where?: OpportunityWhereInput
+  }
+
+  /**
+   * FollowUp.organisation
+   */
+  export type FollowUp$organisationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organisation
+     */
+    select?: OrganisationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationInclude<ExtArgs> | null
+    where?: OrganisationWhereInput
+  }
+
+  /**
+   * FollowUp.branch
+   */
+  export type FollowUp$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
+  }
+
+  /**
+   * FollowUp without action
+   */
+  export type FollowUpDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
   }
 
 
@@ -68842,6 +70446,7 @@ export namespace Prisma {
     opportunities?: boolean | Branch$opportunitiesArgs<ExtArgs>
     accounts?: boolean | Branch$accountsArgs<ExtArgs>
     tasks?: boolean | Branch$tasksArgs<ExtArgs>
+    followUps?: boolean | Branch$followUpsArgs<ExtArgs>
     interactions?: boolean | Branch$interactionsArgs<ExtArgs>
     assignmentRules?: boolean | Branch$assignmentRulesArgs<ExtArgs>
     products?: boolean | Branch$productsArgs<ExtArgs>
@@ -68885,6 +70490,7 @@ export namespace Prisma {
     opportunities?: boolean | Branch$opportunitiesArgs<ExtArgs>
     accounts?: boolean | Branch$accountsArgs<ExtArgs>
     tasks?: boolean | Branch$tasksArgs<ExtArgs>
+    followUps?: boolean | Branch$followUpsArgs<ExtArgs>
     interactions?: boolean | Branch$interactionsArgs<ExtArgs>
     assignmentRules?: boolean | Branch$assignmentRulesArgs<ExtArgs>
     products?: boolean | Branch$productsArgs<ExtArgs>
@@ -68906,6 +70512,7 @@ export namespace Prisma {
       opportunities: Prisma.$OpportunityPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      followUps: Prisma.$FollowUpPayload<ExtArgs>[]
       interactions: Prisma.$InteractionPayload<ExtArgs>[]
       assignmentRules: Prisma.$AssignmentRulePayload<ExtArgs>[]
       products: Prisma.$ProductPayload<ExtArgs>[]
@@ -69293,6 +70900,7 @@ export namespace Prisma {
     opportunities<T extends Branch$opportunitiesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$opportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OpportunityPayload<ExtArgs>, T, "findMany"> | Null>
     accounts<T extends Branch$accountsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany"> | Null>
     tasks<T extends Branch$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Branch$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany"> | Null>
+    followUps<T extends Branch$followUpsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FollowUpPayload<ExtArgs>, T, "findMany"> | Null>
     interactions<T extends Branch$interactionsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$interactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InteractionPayload<ExtArgs>, T, "findMany"> | Null>
     assignmentRules<T extends Branch$assignmentRulesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$assignmentRulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssignmentRulePayload<ExtArgs>, T, "findMany"> | Null>
     products<T extends Branch$productsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany"> | Null>
@@ -69785,6 +71393,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.followUps
+   */
+  export type Branch$followUpsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FollowUp
+     */
+    select?: FollowUpSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FollowUpInclude<ExtArgs> | null
+    where?: FollowUpWhereInput
+    orderBy?: FollowUpOrderByWithRelationInput | FollowUpOrderByWithRelationInput[]
+    cursor?: FollowUpWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FollowUpScalarFieldEnum | FollowUpScalarFieldEnum[]
   }
 
   /**
@@ -75329,6 +76957,30 @@ export namespace Prisma {
   export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
 
 
+  export const FollowUpScalarFieldEnum: {
+    id: 'id',
+    subject: 'subject',
+    description: 'description',
+    status: 'status',
+    priority: 'priority',
+    dueDate: 'dueDate',
+    leadId: 'leadId',
+    contactId: 'contactId',
+    accountId: 'accountId',
+    opportunityId: 'opportunityId',
+    assignedToId: 'assignedToId',
+    createdById: 'createdById',
+    organisationId: 'organisationId',
+    branchId: 'branchId',
+    isDeleted: 'isDeleted',
+    notifiedAt: 'notifiedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FollowUpScalarFieldEnum = (typeof FollowUpScalarFieldEnum)[keyof typeof FollowUpScalarFieldEnum]
+
+
   export const InteractionScalarFieldEnum: {
     id: 'id',
     type: 'type',
@@ -76350,6 +78002,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'FollowUpStatus'
+   */
+  export type EnumFollowUpStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FollowUpStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FollowUpStatus[]'
+   */
+  export type ListEnumFollowUpStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FollowUpStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FollowUpPriority'
+   */
+  export type EnumFollowUpPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FollowUpPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'FollowUpPriority[]'
+   */
+  export type ListEnumFollowUpPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FollowUpPriority[]'>
+    
+
+
+  /**
    * Reference to a field of type 'InteractionType'
    */
   export type EnumInteractionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InteractionType'>
@@ -76514,6 +78194,7 @@ export namespace Prisma {
     quotes?: QuoteListRelationFilter
     salesTargets?: SalesTargetListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     territories?: TerritoryListRelationFilter
     users?: UserListRelationFilter
     webhooks?: WebhookListRelationFilter
@@ -76586,6 +78267,7 @@ export namespace Prisma {
     quotes?: QuoteOrderByRelationAggregateInput
     salesTargets?: SalesTargetOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
+    followUps?: FollowUpOrderByRelationAggregateInput
     territories?: TerritoryOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
     webhooks?: WebhookOrderByRelationAggregateInput
@@ -76661,6 +78343,7 @@ export namespace Prisma {
     quotes?: QuoteListRelationFilter
     salesTargets?: SalesTargetListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     territories?: TerritoryListRelationFilter
     users?: UserListRelationFilter
     webhooks?: WebhookListRelationFilter
@@ -76820,6 +78503,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetListRelationFilter
     assignedTasks?: TaskListRelationFilter
     createdTasks?: TaskListRelationFilter
+    assignedFollowUps?: FollowUpListRelationFilter
+    createdFollowUps?: FollowUpListRelationFilter
     managedTerritories?: TerritoryListRelationFilter
     previousAccounts?: AccountListRelationFilter
     previousContacts?: ContactListRelationFilter
@@ -76922,6 +78607,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetOrderByRelationAggregateInput
     assignedTasks?: TaskOrderByRelationAggregateInput
     createdTasks?: TaskOrderByRelationAggregateInput
+    assignedFollowUps?: FollowUpOrderByRelationAggregateInput
+    createdFollowUps?: FollowUpOrderByRelationAggregateInput
     managedTerritories?: TerritoryOrderByRelationAggregateInput
     previousAccounts?: AccountOrderByRelationAggregateInput
     previousContacts?: ContactOrderByRelationAggregateInput
@@ -77027,6 +78714,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetListRelationFilter
     assignedTasks?: TaskListRelationFilter
     createdTasks?: TaskListRelationFilter
+    assignedFollowUps?: FollowUpListRelationFilter
+    createdFollowUps?: FollowUpListRelationFilter
     managedTerritories?: TerritoryListRelationFilter
     previousAccounts?: AccountListRelationFilter
     previousContacts?: ContactListRelationFilter
@@ -77366,6 +79055,7 @@ export namespace Prisma {
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     history?: LeadHistoryListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     emailLists?: EmailListListRelationFilter
     whatsAppMessages?: WhatsAppMessageListRelationFilter
     documents?: DocumentListRelationFilter
@@ -77433,6 +79123,7 @@ export namespace Prisma {
     createdBy?: UserOrderByWithRelationInput
     history?: LeadHistoryOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
+    followUps?: FollowUpOrderByRelationAggregateInput
     emailLists?: EmailListOrderByRelationAggregateInput
     whatsAppMessages?: WhatsAppMessageOrderByRelationAggregateInput
     documents?: DocumentOrderByRelationAggregateInput
@@ -77504,6 +79195,7 @@ export namespace Prisma {
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     history?: LeadHistoryListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     emailLists?: EmailListListRelationFilter
     whatsAppMessages?: WhatsAppMessageListRelationFilter
     documents?: DocumentListRelationFilter
@@ -77729,6 +79421,7 @@ export namespace Prisma {
     opportunities?: OpportunityListRelationFilter
     quotes?: QuoteListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     documents?: DocumentListRelationFilter
     lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
     accountProducts?: AccountProductListRelationFilter
@@ -77769,6 +79462,7 @@ export namespace Prisma {
     opportunities?: OpportunityOrderByRelationAggregateInput
     quotes?: QuoteOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
+    followUps?: FollowUpOrderByRelationAggregateInput
     documents?: DocumentOrderByRelationAggregateInput
     lead?: LeadOrderByWithRelationInput
     accountProducts?: AccountProductOrderByRelationAggregateInput
@@ -77812,6 +79506,7 @@ export namespace Prisma {
     opportunities?: OpportunityListRelationFilter
     quotes?: QuoteListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     documents?: DocumentListRelationFilter
     lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
     accountProducts?: AccountProductListRelationFilter
@@ -77910,6 +79605,7 @@ export namespace Prisma {
     interactions?: InteractionListRelationFilter
     quotes?: QuoteListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     emailLists?: EmailListListRelationFilter
     opportunities?: OpportunityListRelationFilter
     whatsAppMessages?: WhatsAppMessageListRelationFilter
@@ -77953,6 +79649,7 @@ export namespace Prisma {
     interactions?: InteractionOrderByRelationAggregateInput
     quotes?: QuoteOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
+    followUps?: FollowUpOrderByRelationAggregateInput
     emailLists?: EmailListOrderByRelationAggregateInput
     opportunities?: OpportunityOrderByRelationAggregateInput
     whatsAppMessages?: WhatsAppMessageOrderByRelationAggregateInput
@@ -77999,6 +79696,7 @@ export namespace Prisma {
     interactions?: InteractionListRelationFilter
     quotes?: QuoteListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     emailLists?: EmailListListRelationFilter
     opportunities?: OpportunityListRelationFilter
     whatsAppMessages?: WhatsAppMessageListRelationFilter
@@ -78102,6 +79800,7 @@ export namespace Prisma {
     previousOwner?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     quotes?: QuoteListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     contacts?: ContactListRelationFilter
     documents?: DocumentListRelationFilter
     lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
@@ -78143,6 +79842,7 @@ export namespace Prisma {
     previousOwner?: UserOrderByWithRelationInput
     quotes?: QuoteOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
+    followUps?: FollowUpOrderByRelationAggregateInput
     contacts?: ContactOrderByRelationAggregateInput
     documents?: DocumentOrderByRelationAggregateInput
     lead?: LeadOrderByWithRelationInput
@@ -78187,6 +79887,7 @@ export namespace Prisma {
     previousOwner?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     quotes?: QuoteListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     contacts?: ContactListRelationFilter
     documents?: DocumentListRelationFilter
     lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
@@ -79013,6 +80714,147 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     previousOwnerId?: StringNullableWithAggregatesFilter<"Task"> | string | null
     branchId?: StringNullableWithAggregatesFilter<"Task"> | string | null
+  }
+
+  export type FollowUpWhereInput = {
+    AND?: FollowUpWhereInput | FollowUpWhereInput[]
+    OR?: FollowUpWhereInput[]
+    NOT?: FollowUpWhereInput | FollowUpWhereInput[]
+    id?: StringFilter<"FollowUp"> | string
+    subject?: StringFilter<"FollowUp"> | string
+    description?: StringNullableFilter<"FollowUp"> | string | null
+    status?: EnumFollowUpStatusFilter<"FollowUp"> | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFilter<"FollowUp"> | $Enums.FollowUpPriority
+    dueDate?: DateTimeFilter<"FollowUp"> | Date | string
+    leadId?: StringNullableFilter<"FollowUp"> | string | null
+    contactId?: StringNullableFilter<"FollowUp"> | string | null
+    accountId?: StringNullableFilter<"FollowUp"> | string | null
+    opportunityId?: StringNullableFilter<"FollowUp"> | string | null
+    assignedToId?: StringNullableFilter<"FollowUp"> | string | null
+    createdById?: StringNullableFilter<"FollowUp"> | string | null
+    organisationId?: StringNullableFilter<"FollowUp"> | string | null
+    branchId?: StringNullableFilter<"FollowUp"> | string | null
+    isDeleted?: BoolFilter<"FollowUp"> | boolean
+    notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    createdAt?: DateTimeFilter<"FollowUp"> | Date | string
+    updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
+    account?: XOR<AccountNullableRelationFilter, AccountWhereInput> | null
+    assignedTo?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    contact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
+    opportunity?: XOR<OpportunityNullableRelationFilter, OpportunityWhereInput> | null
+    organisation?: XOR<OrganisationNullableRelationFilter, OrganisationWhereInput> | null
+    branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
+  }
+
+  export type FollowUpOrderByWithRelationInput = {
+    id?: SortOrder
+    subject?: SortOrder
+    description?: SortOrderInput | SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    contactId?: SortOrderInput | SortOrder
+    accountId?: SortOrderInput | SortOrder
+    opportunityId?: SortOrderInput | SortOrder
+    assignedToId?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    organisationId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    isDeleted?: SortOrder
+    notifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    account?: AccountOrderByWithRelationInput
+    assignedTo?: UserOrderByWithRelationInput
+    contact?: ContactOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+    lead?: LeadOrderByWithRelationInput
+    opportunity?: OpportunityOrderByWithRelationInput
+    organisation?: OrganisationOrderByWithRelationInput
+    branch?: BranchOrderByWithRelationInput
+  }
+
+  export type FollowUpWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FollowUpWhereInput | FollowUpWhereInput[]
+    OR?: FollowUpWhereInput[]
+    NOT?: FollowUpWhereInput | FollowUpWhereInput[]
+    subject?: StringFilter<"FollowUp"> | string
+    description?: StringNullableFilter<"FollowUp"> | string | null
+    status?: EnumFollowUpStatusFilter<"FollowUp"> | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFilter<"FollowUp"> | $Enums.FollowUpPriority
+    dueDate?: DateTimeFilter<"FollowUp"> | Date | string
+    leadId?: StringNullableFilter<"FollowUp"> | string | null
+    contactId?: StringNullableFilter<"FollowUp"> | string | null
+    accountId?: StringNullableFilter<"FollowUp"> | string | null
+    opportunityId?: StringNullableFilter<"FollowUp"> | string | null
+    assignedToId?: StringNullableFilter<"FollowUp"> | string | null
+    createdById?: StringNullableFilter<"FollowUp"> | string | null
+    organisationId?: StringNullableFilter<"FollowUp"> | string | null
+    branchId?: StringNullableFilter<"FollowUp"> | string | null
+    isDeleted?: BoolFilter<"FollowUp"> | boolean
+    notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    createdAt?: DateTimeFilter<"FollowUp"> | Date | string
+    updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
+    account?: XOR<AccountNullableRelationFilter, AccountWhereInput> | null
+    assignedTo?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    contact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
+    createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
+    lead?: XOR<LeadNullableRelationFilter, LeadWhereInput> | null
+    opportunity?: XOR<OpportunityNullableRelationFilter, OpportunityWhereInput> | null
+    organisation?: XOR<OrganisationNullableRelationFilter, OrganisationWhereInput> | null
+    branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
+  }, "id">
+
+  export type FollowUpOrderByWithAggregationInput = {
+    id?: SortOrder
+    subject?: SortOrder
+    description?: SortOrderInput | SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    contactId?: SortOrderInput | SortOrder
+    accountId?: SortOrderInput | SortOrder
+    opportunityId?: SortOrderInput | SortOrder
+    assignedToId?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    organisationId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    isDeleted?: SortOrder
+    notifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FollowUpCountOrderByAggregateInput
+    _max?: FollowUpMaxOrderByAggregateInput
+    _min?: FollowUpMinOrderByAggregateInput
+  }
+
+  export type FollowUpScalarWhereWithAggregatesInput = {
+    AND?: FollowUpScalarWhereWithAggregatesInput | FollowUpScalarWhereWithAggregatesInput[]
+    OR?: FollowUpScalarWhereWithAggregatesInput[]
+    NOT?: FollowUpScalarWhereWithAggregatesInput | FollowUpScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FollowUp"> | string
+    subject?: StringWithAggregatesFilter<"FollowUp"> | string
+    description?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    status?: EnumFollowUpStatusWithAggregatesFilter<"FollowUp"> | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityWithAggregatesFilter<"FollowUp"> | $Enums.FollowUpPriority
+    dueDate?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
+    leadId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    contactId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    accountId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    opportunityId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    assignedToId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    createdById?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    organisationId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
+    isDeleted?: BoolWithAggregatesFilter<"FollowUp"> | boolean
+    notifiedAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
   }
 
   export type InteractionWhereInput = {
@@ -83033,6 +84875,7 @@ export namespace Prisma {
     opportunities?: OpportunityListRelationFilter
     accounts?: AccountListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     interactions?: InteractionListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
     products?: ProductListRelationFilter
@@ -83057,6 +84900,7 @@ export namespace Prisma {
     opportunities?: OpportunityOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
+    followUps?: FollowUpOrderByRelationAggregateInput
     interactions?: InteractionOrderByRelationAggregateInput
     assignmentRules?: AssignmentRuleOrderByRelationAggregateInput
     products?: ProductOrderByRelationAggregateInput
@@ -83084,6 +84928,7 @@ export namespace Prisma {
     opportunities?: OpportunityListRelationFilter
     accounts?: AccountListRelationFilter
     tasks?: TaskListRelationFilter
+    followUps?: FollowUpListRelationFilter
     interactions?: InteractionListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
     products?: ProductListRelationFilter
@@ -83565,6 +85410,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -83637,6 +85483,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -83709,6 +85556,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -83781,6 +85629,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -83954,6 +85803,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -84056,6 +85907,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -84150,6 +86003,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -84252,6 +86107,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -84612,6 +86469,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -84675,6 +86533,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -84734,6 +86593,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -84797,6 +86657,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -85049,6 +86910,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -85085,6 +86947,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -85117,6 +86980,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -85153,6 +87017,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -85249,6 +87114,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -85288,6 +87154,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -85323,6 +87190,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -85362,6 +87230,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -85468,6 +87337,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -85505,6 +87375,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -85536,6 +87407,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -85573,6 +87445,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -86458,6 +88331,145 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FollowUpCreateInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpCreateManyInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InteractionCreateInput = {
@@ -90879,6 +92891,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -90901,6 +92914,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -90923,6 +92937,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -90945,6 +92960,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -91605,6 +93621,12 @@ export namespace Prisma {
     none?: TaskWhereInput
   }
 
+  export type FollowUpListRelationFilter = {
+    every?: FollowUpWhereInput
+    some?: FollowUpWhereInput
+    none?: FollowUpWhereInput
+  }
+
   export type TerritoryListRelationFilter = {
     every?: TerritoryWhereInput
     some?: TerritoryWhereInput
@@ -91821,6 +93843,10 @@ export namespace Prisma {
   }
 
   export type TaskOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FollowUpOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -93490,6 +95516,103 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTaskPriorityFilter<$PrismaModel>
     _max?: NestedEnumTaskPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumFollowUpStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpStatus | EnumFollowUpStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpStatusFilter<$PrismaModel> | $Enums.FollowUpStatus
+  }
+
+  export type EnumFollowUpPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpPriority | EnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpPriorityFilter<$PrismaModel> | $Enums.FollowUpPriority
+  }
+
+  export type FollowUpCountOrderByAggregateInput = {
+    id?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    leadId?: SortOrder
+    contactId?: SortOrder
+    accountId?: SortOrder
+    opportunityId?: SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+    branchId?: SortOrder
+    isDeleted?: SortOrder
+    notifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FollowUpMaxOrderByAggregateInput = {
+    id?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    leadId?: SortOrder
+    contactId?: SortOrder
+    accountId?: SortOrder
+    opportunityId?: SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+    branchId?: SortOrder
+    isDeleted?: SortOrder
+    notifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FollowUpMinOrderByAggregateInput = {
+    id?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    leadId?: SortOrder
+    contactId?: SortOrder
+    accountId?: SortOrder
+    opportunityId?: SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    organisationId?: SortOrder
+    branchId?: SortOrder
+    isDeleted?: SortOrder
+    notifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumFollowUpStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpStatus | EnumFollowUpStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpStatusWithAggregatesFilter<$PrismaModel> | $Enums.FollowUpStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFollowUpStatusFilter<$PrismaModel>
+    _max?: NestedEnumFollowUpStatusFilter<$PrismaModel>
+  }
+
+  export type EnumFollowUpPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpPriority | EnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpPriorityWithAggregatesFilter<$PrismaModel> | $Enums.FollowUpPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFollowUpPriorityFilter<$PrismaModel>
+    _max?: NestedEnumFollowUpPriorityFilter<$PrismaModel>
   }
 
   export type EnumInteractionTypeFilter<$PrismaModel = never> = {
@@ -96142,6 +98265,13 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<FollowUpCreateWithoutOrganisationInput, FollowUpUncheckedCreateWithoutOrganisationInput> | FollowUpCreateWithoutOrganisationInput[] | FollowUpUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOrganisationInput | FollowUpCreateOrConnectWithoutOrganisationInput[]
+    createMany?: FollowUpCreateManyOrganisationInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type TerritoryCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<TerritoryCreateWithoutOrganisationInput, TerritoryUncheckedCreateWithoutOrganisationInput> | TerritoryCreateWithoutOrganisationInput[] | TerritoryUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: TerritoryCreateOrConnectWithoutOrganisationInput | TerritoryCreateOrConnectWithoutOrganisationInput[]
@@ -96440,6 +98570,13 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutOrganisationInput | TaskCreateOrConnectWithoutOrganisationInput[]
     createMany?: TaskCreateManyOrganisationInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<FollowUpCreateWithoutOrganisationInput, FollowUpUncheckedCreateWithoutOrganisationInput> | FollowUpCreateWithoutOrganisationInput[] | FollowUpUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOrganisationInput | FollowUpCreateOrConnectWithoutOrganisationInput[]
+    createMany?: FollowUpCreateManyOrganisationInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type TerritoryUncheckedCreateNestedManyWithoutOrganisationInput = {
@@ -96901,6 +99038,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutOrganisationInput | TaskUpdateWithWhereUniqueWithoutOrganisationInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutOrganisationInput | TaskUpdateManyWithWhereWithoutOrganisationInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<FollowUpCreateWithoutOrganisationInput, FollowUpUncheckedCreateWithoutOrganisationInput> | FollowUpCreateWithoutOrganisationInput[] | FollowUpUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOrganisationInput | FollowUpCreateOrConnectWithoutOrganisationInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutOrganisationInput | FollowUpUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: FollowUpCreateManyOrganisationInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutOrganisationInput | FollowUpUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutOrganisationInput | FollowUpUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type TerritoryUpdateManyWithoutOrganisationNestedInput = {
@@ -97501,6 +99652,20 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<FollowUpCreateWithoutOrganisationInput, FollowUpUncheckedCreateWithoutOrganisationInput> | FollowUpCreateWithoutOrganisationInput[] | FollowUpUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOrganisationInput | FollowUpCreateOrConnectWithoutOrganisationInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutOrganisationInput | FollowUpUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: FollowUpCreateManyOrganisationInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutOrganisationInput | FollowUpUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutOrganisationInput | FollowUpUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
   export type TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput = {
     create?: XOR<TerritoryCreateWithoutOrganisationInput, TerritoryUncheckedCreateWithoutOrganisationInput> | TerritoryCreateWithoutOrganisationInput[] | TerritoryUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: TerritoryCreateOrConnectWithoutOrganisationInput | TerritoryCreateOrConnectWithoutOrganisationInput[]
@@ -98072,6 +100237,20 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutAssignedToInput = {
+    create?: XOR<FollowUpCreateWithoutAssignedToInput, FollowUpUncheckedCreateWithoutAssignedToInput> | FollowUpCreateWithoutAssignedToInput[] | FollowUpUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAssignedToInput | FollowUpCreateOrConnectWithoutAssignedToInput[]
+    createMany?: FollowUpCreateManyAssignedToInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
+  export type FollowUpCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<FollowUpCreateWithoutCreatedByInput, FollowUpUncheckedCreateWithoutCreatedByInput> | FollowUpCreateWithoutCreatedByInput[] | FollowUpUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutCreatedByInput | FollowUpCreateOrConnectWithoutCreatedByInput[]
+    createMany?: FollowUpCreateManyCreatedByInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type TerritoryCreateNestedManyWithoutManagerInput = {
     create?: XOR<TerritoryCreateWithoutManagerInput, TerritoryUncheckedCreateWithoutManagerInput> | TerritoryCreateWithoutManagerInput[] | TerritoryUncheckedCreateWithoutManagerInput[]
     connectOrCreate?: TerritoryCreateOrConnectWithoutManagerInput | TerritoryCreateOrConnectWithoutManagerInput[]
@@ -98556,6 +100735,20 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutCreatedByInput | TaskCreateOrConnectWithoutCreatedByInput[]
     createMany?: TaskCreateManyCreatedByInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutAssignedToInput = {
+    create?: XOR<FollowUpCreateWithoutAssignedToInput, FollowUpUncheckedCreateWithoutAssignedToInput> | FollowUpCreateWithoutAssignedToInput[] | FollowUpUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAssignedToInput | FollowUpCreateOrConnectWithoutAssignedToInput[]
+    createMany?: FollowUpCreateManyAssignedToInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<FollowUpCreateWithoutCreatedByInput, FollowUpUncheckedCreateWithoutCreatedByInput> | FollowUpCreateWithoutCreatedByInput[] | FollowUpUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutCreatedByInput | FollowUpCreateOrConnectWithoutCreatedByInput[]
+    createMany?: FollowUpCreateManyCreatedByInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type TerritoryUncheckedCreateNestedManyWithoutManagerInput = {
@@ -99280,6 +101473,34 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutCreatedByInput | TaskUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutCreatedByInput | TaskUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutAssignedToNestedInput = {
+    create?: XOR<FollowUpCreateWithoutAssignedToInput, FollowUpUncheckedCreateWithoutAssignedToInput> | FollowUpCreateWithoutAssignedToInput[] | FollowUpUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAssignedToInput | FollowUpCreateOrConnectWithoutAssignedToInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutAssignedToInput | FollowUpUpsertWithWhereUniqueWithoutAssignedToInput[]
+    createMany?: FollowUpCreateManyAssignedToInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutAssignedToInput | FollowUpUpdateWithWhereUniqueWithoutAssignedToInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutAssignedToInput | FollowUpUpdateManyWithWhereWithoutAssignedToInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<FollowUpCreateWithoutCreatedByInput, FollowUpUncheckedCreateWithoutCreatedByInput> | FollowUpCreateWithoutCreatedByInput[] | FollowUpUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutCreatedByInput | FollowUpCreateOrConnectWithoutCreatedByInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutCreatedByInput | FollowUpUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: FollowUpCreateManyCreatedByInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutCreatedByInput | FollowUpUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutCreatedByInput | FollowUpUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type TerritoryUpdateManyWithoutManagerNestedInput = {
@@ -100246,6 +102467,34 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput = {
+    create?: XOR<FollowUpCreateWithoutAssignedToInput, FollowUpUncheckedCreateWithoutAssignedToInput> | FollowUpCreateWithoutAssignedToInput[] | FollowUpUncheckedCreateWithoutAssignedToInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAssignedToInput | FollowUpCreateOrConnectWithoutAssignedToInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutAssignedToInput | FollowUpUpsertWithWhereUniqueWithoutAssignedToInput[]
+    createMany?: FollowUpCreateManyAssignedToInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutAssignedToInput | FollowUpUpdateWithWhereUniqueWithoutAssignedToInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutAssignedToInput | FollowUpUpdateManyWithWhereWithoutAssignedToInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<FollowUpCreateWithoutCreatedByInput, FollowUpUncheckedCreateWithoutCreatedByInput> | FollowUpCreateWithoutCreatedByInput[] | FollowUpUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutCreatedByInput | FollowUpCreateOrConnectWithoutCreatedByInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutCreatedByInput | FollowUpUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: FollowUpCreateManyCreatedByInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutCreatedByInput | FollowUpUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutCreatedByInput | FollowUpUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
   export type TerritoryUncheckedUpdateManyWithoutManagerNestedInput = {
     create?: XOR<TerritoryCreateWithoutManagerInput, TerritoryUncheckedCreateWithoutManagerInput> | TerritoryCreateWithoutManagerInput[] | TerritoryUncheckedCreateWithoutManagerInput[]
     connectOrCreate?: TerritoryCreateOrConnectWithoutManagerInput | TerritoryCreateOrConnectWithoutManagerInput[]
@@ -100885,6 +103134,13 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutLeadInput = {
+    create?: XOR<FollowUpCreateWithoutLeadInput, FollowUpUncheckedCreateWithoutLeadInput> | FollowUpCreateWithoutLeadInput[] | FollowUpUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutLeadInput | FollowUpCreateOrConnectWithoutLeadInput[]
+    createMany?: FollowUpCreateManyLeadInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type EmailListCreateNestedManyWithoutLeadsInput = {
     create?: XOR<EmailListCreateWithoutLeadsInput, EmailListUncheckedCreateWithoutLeadsInput> | EmailListCreateWithoutLeadsInput[] | EmailListUncheckedCreateWithoutLeadsInput[]
     connectOrCreate?: EmailListCreateOrConnectWithoutLeadsInput | EmailListCreateOrConnectWithoutLeadsInput[]
@@ -100985,6 +103241,13 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutLeadInput | TaskCreateOrConnectWithoutLeadInput[]
     createMany?: TaskCreateManyLeadInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutLeadInput = {
+    create?: XOR<FollowUpCreateWithoutLeadInput, FollowUpUncheckedCreateWithoutLeadInput> | FollowUpCreateWithoutLeadInput[] | FollowUpUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutLeadInput | FollowUpCreateOrConnectWithoutLeadInput[]
+    createMany?: FollowUpCreateManyLeadInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type EmailListUncheckedCreateNestedManyWithoutLeadsInput = {
@@ -101169,6 +103432,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutLeadInput | TaskUpdateWithWhereUniqueWithoutLeadInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutLeadInput | TaskUpdateManyWithWhereWithoutLeadInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<FollowUpCreateWithoutLeadInput, FollowUpUncheckedCreateWithoutLeadInput> | FollowUpCreateWithoutLeadInput[] | FollowUpUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutLeadInput | FollowUpCreateOrConnectWithoutLeadInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutLeadInput | FollowUpUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: FollowUpCreateManyLeadInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutLeadInput | FollowUpUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutLeadInput | FollowUpUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type EmailListUpdateManyWithoutLeadsNestedInput = {
@@ -101370,6 +103647,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutLeadInput | TaskUpdateWithWhereUniqueWithoutLeadInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutLeadInput | TaskUpdateManyWithWhereWithoutLeadInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<FollowUpCreateWithoutLeadInput, FollowUpUncheckedCreateWithoutLeadInput> | FollowUpCreateWithoutLeadInput[] | FollowUpUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutLeadInput | FollowUpCreateOrConnectWithoutLeadInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutLeadInput | FollowUpUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: FollowUpCreateManyLeadInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutLeadInput | FollowUpUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutLeadInput | FollowUpUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type EmailListUncheckedUpdateManyWithoutLeadsNestedInput = {
@@ -101590,6 +103881,13 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutAccountInput = {
+    create?: XOR<FollowUpCreateWithoutAccountInput, FollowUpUncheckedCreateWithoutAccountInput> | FollowUpCreateWithoutAccountInput[] | FollowUpUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAccountInput | FollowUpCreateOrConnectWithoutAccountInput[]
+    createMany?: FollowUpCreateManyAccountInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type DocumentCreateNestedManyWithoutAccountInput = {
     create?: XOR<DocumentCreateWithoutAccountInput, DocumentUncheckedCreateWithoutAccountInput> | DocumentCreateWithoutAccountInput[] | DocumentUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutAccountInput | DocumentCreateOrConnectWithoutAccountInput[]
@@ -101677,6 +103975,13 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutAccountInput | TaskCreateOrConnectWithoutAccountInput[]
     createMany?: TaskCreateManyAccountInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<FollowUpCreateWithoutAccountInput, FollowUpUncheckedCreateWithoutAccountInput> | FollowUpCreateWithoutAccountInput[] | FollowUpUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAccountInput | FollowUpCreateOrConnectWithoutAccountInput[]
+    createMany?: FollowUpCreateManyAccountInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type DocumentUncheckedCreateNestedManyWithoutAccountInput = {
@@ -101870,6 +104175,20 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type FollowUpUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<FollowUpCreateWithoutAccountInput, FollowUpUncheckedCreateWithoutAccountInput> | FollowUpCreateWithoutAccountInput[] | FollowUpUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAccountInput | FollowUpCreateOrConnectWithoutAccountInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutAccountInput | FollowUpUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: FollowUpCreateManyAccountInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutAccountInput | FollowUpUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutAccountInput | FollowUpUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
   export type DocumentUpdateManyWithoutAccountNestedInput = {
     create?: XOR<DocumentCreateWithoutAccountInput, DocumentUncheckedCreateWithoutAccountInput> | DocumentCreateWithoutAccountInput[] | DocumentUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutAccountInput | DocumentCreateOrConnectWithoutAccountInput[]
@@ -102044,6 +104363,20 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type FollowUpUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<FollowUpCreateWithoutAccountInput, FollowUpUncheckedCreateWithoutAccountInput> | FollowUpCreateWithoutAccountInput[] | FollowUpUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutAccountInput | FollowUpCreateOrConnectWithoutAccountInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutAccountInput | FollowUpUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: FollowUpCreateManyAccountInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutAccountInput | FollowUpUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutAccountInput | FollowUpUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
   export type DocumentUncheckedUpdateManyWithoutAccountNestedInput = {
     create?: XOR<DocumentCreateWithoutAccountInput, DocumentUncheckedCreateWithoutAccountInput> | DocumentCreateWithoutAccountInput[] | DocumentUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutAccountInput | DocumentCreateOrConnectWithoutAccountInput[]
@@ -102142,6 +104475,13 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutContactInput = {
+    create?: XOR<FollowUpCreateWithoutContactInput, FollowUpUncheckedCreateWithoutContactInput> | FollowUpCreateWithoutContactInput[] | FollowUpUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutContactInput | FollowUpCreateOrConnectWithoutContactInput[]
+    createMany?: FollowUpCreateManyContactInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type EmailListCreateNestedManyWithoutContactsInput = {
     create?: XOR<EmailListCreateWithoutContactsInput, EmailListUncheckedCreateWithoutContactsInput> | EmailListCreateWithoutContactsInput[] | EmailListUncheckedCreateWithoutContactsInput[]
     connectOrCreate?: EmailListCreateOrConnectWithoutContactsInput | EmailListCreateOrConnectWithoutContactsInput[]
@@ -102220,6 +104560,13 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutContactInput | TaskCreateOrConnectWithoutContactInput[]
     createMany?: TaskCreateManyContactInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutContactInput = {
+    create?: XOR<FollowUpCreateWithoutContactInput, FollowUpUncheckedCreateWithoutContactInput> | FollowUpCreateWithoutContactInput[] | FollowUpUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutContactInput | FollowUpCreateOrConnectWithoutContactInput[]
+    createMany?: FollowUpCreateManyContactInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type EmailListUncheckedCreateNestedManyWithoutContactsInput = {
@@ -102373,6 +104720,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutContactInput | TaskUpdateWithWhereUniqueWithoutContactInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutContactInput | TaskUpdateManyWithWhereWithoutContactInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutContactNestedInput = {
+    create?: XOR<FollowUpCreateWithoutContactInput, FollowUpUncheckedCreateWithoutContactInput> | FollowUpCreateWithoutContactInput[] | FollowUpUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutContactInput | FollowUpCreateOrConnectWithoutContactInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutContactInput | FollowUpUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: FollowUpCreateManyContactInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutContactInput | FollowUpUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutContactInput | FollowUpUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type EmailListUpdateManyWithoutContactsNestedInput = {
@@ -102533,6 +104894,20 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type FollowUpUncheckedUpdateManyWithoutContactNestedInput = {
+    create?: XOR<FollowUpCreateWithoutContactInput, FollowUpUncheckedCreateWithoutContactInput> | FollowUpCreateWithoutContactInput[] | FollowUpUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutContactInput | FollowUpCreateOrConnectWithoutContactInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutContactInput | FollowUpUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: FollowUpCreateManyContactInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutContactInput | FollowUpUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutContactInput | FollowUpUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+  }
+
   export type EmailListUncheckedUpdateManyWithoutContactsNestedInput = {
     create?: XOR<EmailListCreateWithoutContactsInput, EmailListUncheckedCreateWithoutContactsInput> | EmailListCreateWithoutContactsInput[] | EmailListUncheckedCreateWithoutContactsInput[]
     connectOrCreate?: EmailListCreateOrConnectWithoutContactsInput | EmailListCreateOrConnectWithoutContactsInput[]
@@ -102643,6 +105018,13 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutOpportunityInput = {
+    create?: XOR<FollowUpCreateWithoutOpportunityInput, FollowUpUncheckedCreateWithoutOpportunityInput> | FollowUpCreateWithoutOpportunityInput[] | FollowUpUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOpportunityInput | FollowUpCreateOrConnectWithoutOpportunityInput[]
+    createMany?: FollowUpCreateManyOpportunityInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type ContactCreateNestedManyWithoutOpportunitiesInput = {
     create?: XOR<ContactCreateWithoutOpportunitiesInput, ContactUncheckedCreateWithoutOpportunitiesInput> | ContactCreateWithoutOpportunitiesInput[] | ContactUncheckedCreateWithoutOpportunitiesInput[]
     connectOrCreate?: ContactCreateOrConnectWithoutOpportunitiesInput | ContactCreateOrConnectWithoutOpportunitiesInput[]
@@ -102713,6 +105095,13 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutOpportunityInput | TaskCreateOrConnectWithoutOpportunityInput[]
     createMany?: TaskCreateManyOpportunityInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutOpportunityInput = {
+    create?: XOR<FollowUpCreateWithoutOpportunityInput, FollowUpUncheckedCreateWithoutOpportunityInput> | FollowUpCreateWithoutOpportunityInput[] | FollowUpUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOpportunityInput | FollowUpCreateOrConnectWithoutOpportunityInput[]
+    createMany?: FollowUpCreateManyOpportunityInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type ContactUncheckedCreateNestedManyWithoutOpportunitiesInput = {
@@ -102840,6 +105229,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutOpportunityInput | TaskUpdateWithWhereUniqueWithoutOpportunityInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutOpportunityInput | TaskUpdateManyWithWhereWithoutOpportunityInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutOpportunityNestedInput = {
+    create?: XOR<FollowUpCreateWithoutOpportunityInput, FollowUpUncheckedCreateWithoutOpportunityInput> | FollowUpCreateWithoutOpportunityInput[] | FollowUpUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOpportunityInput | FollowUpCreateOrConnectWithoutOpportunityInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutOpportunityInput | FollowUpUpsertWithWhereUniqueWithoutOpportunityInput[]
+    createMany?: FollowUpCreateManyOpportunityInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutOpportunityInput | FollowUpUpdateWithWhereUniqueWithoutOpportunityInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutOpportunityInput | FollowUpUpdateManyWithWhereWithoutOpportunityInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type ContactUpdateManyWithoutOpportunitiesNestedInput = {
@@ -102977,6 +105380,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutOpportunityInput | TaskUpdateWithWhereUniqueWithoutOpportunityInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutOpportunityInput | TaskUpdateManyWithWhereWithoutOpportunityInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput = {
+    create?: XOR<FollowUpCreateWithoutOpportunityInput, FollowUpUncheckedCreateWithoutOpportunityInput> | FollowUpCreateWithoutOpportunityInput[] | FollowUpUncheckedCreateWithoutOpportunityInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutOpportunityInput | FollowUpCreateOrConnectWithoutOpportunityInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutOpportunityInput | FollowUpUpsertWithWhereUniqueWithoutOpportunityInput[]
+    createMany?: FollowUpCreateManyOpportunityInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutOpportunityInput | FollowUpUpdateWithWhereUniqueWithoutOpportunityInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutOpportunityInput | FollowUpUpdateManyWithWhereWithoutOpportunityInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput = {
@@ -103695,6 +106112,142 @@ export namespace Prisma {
     delete?: BranchWhereInput | boolean
     connect?: BranchWhereUniqueInput
     update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutTasksInput, BranchUpdateWithoutTasksInput>, BranchUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type AccountCreateNestedOneWithoutFollowUpsInput = {
+    create?: XOR<AccountCreateWithoutFollowUpsInput, AccountUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutFollowUpsInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAssignedFollowUpsInput = {
+    create?: XOR<UserCreateWithoutAssignedFollowUpsInput, UserUncheckedCreateWithoutAssignedFollowUpsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedFollowUpsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ContactCreateNestedOneWithoutFollowUpsInput = {
+    create?: XOR<ContactCreateWithoutFollowUpsInput, ContactUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutFollowUpsInput
+    connect?: ContactWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedFollowUpsInput = {
+    create?: XOR<UserCreateWithoutCreatedFollowUpsInput, UserUncheckedCreateWithoutCreatedFollowUpsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedFollowUpsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type LeadCreateNestedOneWithoutFollowUpsInput = {
+    create?: XOR<LeadCreateWithoutFollowUpsInput, LeadUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutFollowUpsInput
+    connect?: LeadWhereUniqueInput
+  }
+
+  export type OpportunityCreateNestedOneWithoutFollowUpsInput = {
+    create?: XOR<OpportunityCreateWithoutFollowUpsInput, OpportunityUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: OpportunityCreateOrConnectWithoutFollowUpsInput
+    connect?: OpportunityWhereUniqueInput
+  }
+
+  export type OrganisationCreateNestedOneWithoutFollowUpsInput = {
+    create?: XOR<OrganisationCreateWithoutFollowUpsInput, OrganisationUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutFollowUpsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type BranchCreateNestedOneWithoutFollowUpsInput = {
+    create?: XOR<BranchCreateWithoutFollowUpsInput, BranchUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutFollowUpsInput
+    connect?: BranchWhereUniqueInput
+  }
+
+  export type EnumFollowUpStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FollowUpStatus
+  }
+
+  export type EnumFollowUpPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.FollowUpPriority
+  }
+
+  export type AccountUpdateOneWithoutFollowUpsNestedInput = {
+    create?: XOR<AccountCreateWithoutFollowUpsInput, AccountUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutFollowUpsInput
+    upsert?: AccountUpsertWithoutFollowUpsInput
+    disconnect?: AccountWhereInput | boolean
+    delete?: AccountWhereInput | boolean
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutFollowUpsInput, AccountUpdateWithoutFollowUpsInput>, AccountUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type UserUpdateOneWithoutAssignedFollowUpsNestedInput = {
+    create?: XOR<UserCreateWithoutAssignedFollowUpsInput, UserUncheckedCreateWithoutAssignedFollowUpsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedFollowUpsInput
+    upsert?: UserUpsertWithoutAssignedFollowUpsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedFollowUpsInput, UserUpdateWithoutAssignedFollowUpsInput>, UserUncheckedUpdateWithoutAssignedFollowUpsInput>
+  }
+
+  export type ContactUpdateOneWithoutFollowUpsNestedInput = {
+    create?: XOR<ContactCreateWithoutFollowUpsInput, ContactUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: ContactCreateOrConnectWithoutFollowUpsInput
+    upsert?: ContactUpsertWithoutFollowUpsInput
+    disconnect?: ContactWhereInput | boolean
+    delete?: ContactWhereInput | boolean
+    connect?: ContactWhereUniqueInput
+    update?: XOR<XOR<ContactUpdateToOneWithWhereWithoutFollowUpsInput, ContactUpdateWithoutFollowUpsInput>, ContactUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type UserUpdateOneWithoutCreatedFollowUpsNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedFollowUpsInput, UserUncheckedCreateWithoutCreatedFollowUpsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedFollowUpsInput
+    upsert?: UserUpsertWithoutCreatedFollowUpsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedFollowUpsInput, UserUpdateWithoutCreatedFollowUpsInput>, UserUncheckedUpdateWithoutCreatedFollowUpsInput>
+  }
+
+  export type LeadUpdateOneWithoutFollowUpsNestedInput = {
+    create?: XOR<LeadCreateWithoutFollowUpsInput, LeadUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutFollowUpsInput
+    upsert?: LeadUpsertWithoutFollowUpsInput
+    disconnect?: LeadWhereInput | boolean
+    delete?: LeadWhereInput | boolean
+    connect?: LeadWhereUniqueInput
+    update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutFollowUpsInput, LeadUpdateWithoutFollowUpsInput>, LeadUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type OpportunityUpdateOneWithoutFollowUpsNestedInput = {
+    create?: XOR<OpportunityCreateWithoutFollowUpsInput, OpportunityUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: OpportunityCreateOrConnectWithoutFollowUpsInput
+    upsert?: OpportunityUpsertWithoutFollowUpsInput
+    disconnect?: OpportunityWhereInput | boolean
+    delete?: OpportunityWhereInput | boolean
+    connect?: OpportunityWhereUniqueInput
+    update?: XOR<XOR<OpportunityUpdateToOneWithWhereWithoutFollowUpsInput, OpportunityUpdateWithoutFollowUpsInput>, OpportunityUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type OrganisationUpdateOneWithoutFollowUpsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutFollowUpsInput, OrganisationUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutFollowUpsInput
+    upsert?: OrganisationUpsertWithoutFollowUpsInput
+    disconnect?: OrganisationWhereInput | boolean
+    delete?: OrganisationWhereInput | boolean
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutFollowUpsInput, OrganisationUpdateWithoutFollowUpsInput>, OrganisationUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type BranchUpdateOneWithoutFollowUpsNestedInput = {
+    create?: XOR<BranchCreateWithoutFollowUpsInput, BranchUncheckedCreateWithoutFollowUpsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutFollowUpsInput
+    upsert?: BranchUpsertWithoutFollowUpsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutFollowUpsInput, BranchUpdateWithoutFollowUpsInput>, BranchUncheckedUpdateWithoutFollowUpsInput>
   }
 
   export type DocumentCreateNestedOneWithoutInteractionsInput = {
@@ -105855,6 +108408,13 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type FollowUpCreateNestedManyWithoutBranchInput = {
+    create?: XOR<FollowUpCreateWithoutBranchInput, FollowUpUncheckedCreateWithoutBranchInput> | FollowUpCreateWithoutBranchInput[] | FollowUpUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutBranchInput | FollowUpCreateOrConnectWithoutBranchInput[]
+    createMany?: FollowUpCreateManyBranchInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+  }
+
   export type InteractionCreateNestedManyWithoutBranchInput = {
     create?: XOR<InteractionCreateWithoutBranchInput, InteractionUncheckedCreateWithoutBranchInput> | InteractionCreateWithoutBranchInput[] | InteractionUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: InteractionCreateOrConnectWithoutBranchInput | InteractionCreateOrConnectWithoutBranchInput[]
@@ -105916,6 +108476,13 @@ export namespace Prisma {
     connectOrCreate?: TaskCreateOrConnectWithoutBranchInput | TaskCreateOrConnectWithoutBranchInput[]
     createMany?: TaskCreateManyBranchInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type FollowUpUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<FollowUpCreateWithoutBranchInput, FollowUpUncheckedCreateWithoutBranchInput> | FollowUpCreateWithoutBranchInput[] | FollowUpUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutBranchInput | FollowUpCreateOrConnectWithoutBranchInput[]
+    createMany?: FollowUpCreateManyBranchInputEnvelope
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
   }
 
   export type InteractionUncheckedCreateNestedManyWithoutBranchInput = {
@@ -106039,6 +108606,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutBranchInput | TaskUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutBranchInput | TaskUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<FollowUpCreateWithoutBranchInput, FollowUpUncheckedCreateWithoutBranchInput> | FollowUpCreateWithoutBranchInput[] | FollowUpUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutBranchInput | FollowUpCreateOrConnectWithoutBranchInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutBranchInput | FollowUpUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: FollowUpCreateManyBranchInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutBranchInput | FollowUpUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutBranchInput | FollowUpUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type InteractionUpdateManyWithoutBranchNestedInput = {
@@ -106165,6 +108746,20 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutBranchInput | TaskUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutBranchInput | TaskUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<FollowUpCreateWithoutBranchInput, FollowUpUncheckedCreateWithoutBranchInput> | FollowUpCreateWithoutBranchInput[] | FollowUpUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FollowUpCreateOrConnectWithoutBranchInput | FollowUpCreateOrConnectWithoutBranchInput[]
+    upsert?: FollowUpUpsertWithWhereUniqueWithoutBranchInput | FollowUpUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: FollowUpCreateManyBranchInputEnvelope
+    set?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    disconnect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    delete?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    connect?: FollowUpWhereUniqueInput | FollowUpWhereUniqueInput[]
+    update?: FollowUpUpdateWithWhereUniqueWithoutBranchInput | FollowUpUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: FollowUpUpdateManyWithWhereWithoutBranchInput | FollowUpUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
   }
 
   export type InteractionUncheckedUpdateManyWithoutBranchNestedInput = {
@@ -106770,6 +109365,40 @@ export namespace Prisma {
     _max?: NestedEnumTaskPriorityFilter<$PrismaModel>
   }
 
+  export type NestedEnumFollowUpStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpStatus | EnumFollowUpStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpStatusFilter<$PrismaModel> | $Enums.FollowUpStatus
+  }
+
+  export type NestedEnumFollowUpPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpPriority | EnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpPriorityFilter<$PrismaModel> | $Enums.FollowUpPriority
+  }
+
+  export type NestedEnumFollowUpStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpStatus | EnumFollowUpStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpStatus[] | ListEnumFollowUpStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpStatusWithAggregatesFilter<$PrismaModel> | $Enums.FollowUpStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFollowUpStatusFilter<$PrismaModel>
+    _max?: NestedEnumFollowUpStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFollowUpPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FollowUpPriority | EnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FollowUpPriority[] | ListEnumFollowUpPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumFollowUpPriorityWithAggregatesFilter<$PrismaModel> | $Enums.FollowUpPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFollowUpPriorityFilter<$PrismaModel>
+    _max?: NestedEnumFollowUpPriorityFilter<$PrismaModel>
+  }
+
   export type NestedEnumInteractionTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.InteractionType | EnumInteractionTypeFieldRefInput<$PrismaModel>
     in?: $Enums.InteractionType[] | ListEnumInteractionTypeFieldRefInput<$PrismaModel>
@@ -106950,6 +109579,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -106985,6 +109615,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -107376,6 +110007,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -107414,6 +110046,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -107674,6 +110307,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -107736,6 +110370,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -107830,6 +110465,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -107866,6 +110502,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -108138,6 +110775,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FollowUpCreateWithoutOrganisationInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutOrganisationInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutOrganisationInput, FollowUpUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type FollowUpCreateManyOrganisationInputEnvelope = {
+    data: FollowUpCreateManyOrganisationInput | FollowUpCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TerritoryCreateWithoutOrganisationInput = {
     id?: string
     name: string
@@ -108241,6 +110928,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -108341,6 +111030,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -109128,6 +111819,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -109149,6 +111841,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -110128,6 +112821,46 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"Task"> | string | null
   }
 
+  export type FollowUpUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutOrganisationInput, FollowUpUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<FollowUpCreateWithoutOrganisationInput, FollowUpUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutOrganisationInput, FollowUpUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutOrganisationInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type FollowUpScalarWhereInput = {
+    AND?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+    OR?: FollowUpScalarWhereInput[]
+    NOT?: FollowUpScalarWhereInput | FollowUpScalarWhereInput[]
+    id?: StringFilter<"FollowUp"> | string
+    subject?: StringFilter<"FollowUp"> | string
+    description?: StringNullableFilter<"FollowUp"> | string | null
+    status?: EnumFollowUpStatusFilter<"FollowUp"> | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFilter<"FollowUp"> | $Enums.FollowUpPriority
+    dueDate?: DateTimeFilter<"FollowUp"> | Date | string
+    leadId?: StringNullableFilter<"FollowUp"> | string | null
+    contactId?: StringNullableFilter<"FollowUp"> | string | null
+    accountId?: StringNullableFilter<"FollowUp"> | string | null
+    opportunityId?: StringNullableFilter<"FollowUp"> | string | null
+    assignedToId?: StringNullableFilter<"FollowUp"> | string | null
+    createdById?: StringNullableFilter<"FollowUp"> | string | null
+    organisationId?: StringNullableFilter<"FollowUp"> | string | null
+    branchId?: StringNullableFilter<"FollowUp"> | string | null
+    isDeleted?: BoolFilter<"FollowUp"> | boolean
+    notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    createdAt?: DateTimeFilter<"FollowUp"> | Date | string
+    updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
+  }
+
   export type TerritoryUpsertWithWhereUniqueWithoutOrganisationInput = {
     where: TerritoryWhereUniqueInput
     update: XOR<TerritoryUpdateWithoutOrganisationInput, TerritoryUncheckedUpdateWithoutOrganisationInput>
@@ -110980,6 +113713,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -111015,6 +113749,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -111557,6 +114292,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -111595,6 +114331,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -111949,6 +114686,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -112011,6 +114749,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -112079,6 +114818,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -112141,6 +114881,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -112209,6 +114950,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -112271,6 +115013,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -112553,6 +115296,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -112589,6 +115333,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -113087,6 +115832,106 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FollowUpCreateWithoutAssignedToInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutAssignedToInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutAssignedToInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutAssignedToInput, FollowUpUncheckedCreateWithoutAssignedToInput>
+  }
+
+  export type FollowUpCreateManyAssignedToInputEnvelope = {
+    data: FollowUpCreateManyAssignedToInput | FollowUpCreateManyAssignedToInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FollowUpCreateWithoutCreatedByInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutCreatedByInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutCreatedByInput, FollowUpUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type FollowUpCreateManyCreatedByInputEnvelope = {
+    data: FollowUpCreateManyCreatedByInput | FollowUpCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TerritoryCreateWithoutManagerInput = {
     id?: string
     name: string
@@ -113156,6 +116001,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -113191,6 +116037,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -113233,6 +116080,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -113271,6 +116119,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -113311,6 +116160,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutOwnedOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -113347,6 +116197,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -113696,6 +116547,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
     workflows?: WorkflowCreateNestedManyWithoutOrganisationInput
@@ -113767,6 +116619,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutOrganisationInput
@@ -113857,6 +116710,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -113958,6 +116813,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -114056,6 +116913,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -114156,6 +117015,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -115034,6 +117895,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -115055,6 +117917,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -115081,6 +117944,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -115102,6 +117966,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -115786,6 +118651,38 @@ export namespace Prisma {
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutCreatedByInput>
   }
 
+  export type FollowUpUpsertWithWhereUniqueWithoutAssignedToInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutAssignedToInput, FollowUpUncheckedUpdateWithoutAssignedToInput>
+    create: XOR<FollowUpCreateWithoutAssignedToInput, FollowUpUncheckedCreateWithoutAssignedToInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutAssignedToInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutAssignedToInput, FollowUpUncheckedUpdateWithoutAssignedToInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutAssignedToInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutAssignedToInput>
+  }
+
+  export type FollowUpUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutCreatedByInput, FollowUpUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<FollowUpCreateWithoutCreatedByInput, FollowUpUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutCreatedByInput, FollowUpUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutCreatedByInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
   export type TerritoryUpsertWithWhereUniqueWithoutManagerInput = {
     where: TerritoryWhereUniqueInput
     update: XOR<TerritoryUpdateWithoutManagerInput, TerritoryUncheckedUpdateWithoutManagerInput>
@@ -115988,6 +118885,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
     workflows?: WorkflowUpdateManyWithoutOrganisationNestedInput
@@ -116059,6 +118957,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -116155,6 +119054,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -116256,6 +119157,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -116694,6 +119597,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -116715,6 +119619,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -116813,6 +119718,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -116913,6 +119820,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -117017,6 +119926,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -117118,6 +120029,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -117216,6 +120129,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -117317,6 +120232,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -117401,6 +120318,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -117472,6 +120390,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -117649,6 +120568,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -117750,6 +120671,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -117854,6 +120777,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -117955,6 +120880,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -118045,6 +120972,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -118116,6 +121044,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -118216,6 +121145,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -118317,6 +121248,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -118426,6 +121359,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -118527,6 +121462,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -118786,6 +121723,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -118887,6 +121826,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -118971,6 +121912,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -119042,6 +121984,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -119132,6 +122075,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -119233,6 +122178,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -119331,6 +122278,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -119432,6 +122381,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -119553,6 +122504,56 @@ export namespace Prisma {
 
   export type TaskCreateManyLeadInputEnvelope = {
     data: TaskCreateManyLeadInput | TaskCreateManyLeadInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FollowUpCreateWithoutLeadInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutLeadInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutLeadInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutLeadInput, FollowUpUncheckedCreateWithoutLeadInput>
+  }
+
+  export type FollowUpCreateManyLeadInputEnvelope = {
+    data: FollowUpCreateManyLeadInput | FollowUpCreateManyLeadInput[]
     skipDuplicates?: boolean
   }
 
@@ -119786,6 +122787,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
     branch?: BranchCreateNestedOneWithoutAccountsInput
@@ -119820,6 +122822,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -119863,6 +122866,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -119900,6 +122904,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -119941,6 +122946,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
@@ -119976,6 +122982,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -120038,6 +123045,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -120059,6 +123067,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -120188,6 +123197,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -120289,6 +123300,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -120379,6 +123392,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -120450,6 +123464,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -120546,6 +123561,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -120647,6 +123664,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -120751,6 +123770,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -120852,6 +123873,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -120915,6 +123938,22 @@ export namespace Prisma {
   export type TaskUpdateManyWithWhereWithoutLeadInput = {
     where: TaskScalarWhereInput
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutLeadInput>
+  }
+
+  export type FollowUpUpsertWithWhereUniqueWithoutLeadInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutLeadInput, FollowUpUncheckedUpdateWithoutLeadInput>
+    create: XOR<FollowUpCreateWithoutLeadInput, FollowUpUncheckedCreateWithoutLeadInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutLeadInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutLeadInput, FollowUpUncheckedUpdateWithoutLeadInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutLeadInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutLeadInput>
   }
 
   export type EmailListUpsertWithWhereUniqueWithoutLeadsInput = {
@@ -121138,6 +124177,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -121159,6 +124199,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -121213,6 +124254,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -121275,6 +124317,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -121349,6 +124392,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -121411,6 +124455,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -121466,6 +124511,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -121537,6 +124583,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -121627,6 +124674,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -121728,6 +124777,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -121827,6 +124878,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
     previousOpportunities?: OpportunityCreateNestedManyWithoutPreviousOwnerInput
@@ -121928,6 +124981,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousOpportunities?: OpportunityUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -121992,6 +125047,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -122027,6 +125083,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -122063,6 +125120,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -122098,6 +125156,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -122296,6 +125355,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -122334,6 +125394,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -122434,6 +125495,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -122470,6 +125532,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -122612,6 +125675,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FollowUpCreateWithoutAccountInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutAccountInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutAccountInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutAccountInput, FollowUpUncheckedCreateWithoutAccountInput>
+  }
+
+  export type FollowUpCreateManyAccountInputEnvelope = {
+    data: FollowUpCreateManyAccountInput | FollowUpCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DocumentCreateWithoutAccountInput = {
     id?: string
     name: string
@@ -122715,6 +125828,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -122777,6 +125891,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -122843,6 +125958,7 @@ export namespace Prisma {
     contacts?: ContactCreateNestedManyWithoutBranchInput
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -122864,6 +125980,7 @@ export namespace Prisma {
     contacts?: ContactUncheckedCreateNestedManyWithoutBranchInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -122931,6 +126048,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -123002,6 +126120,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -123098,6 +126217,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -123199,6 +126320,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -123304,6 +126427,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
     previousOpportunities?: OpportunityUpdateManyWithoutPreviousOwnerNestedInput
@@ -123405,6 +126530,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousOpportunities?: OpportunityUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -123475,6 +126602,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -123510,6 +126638,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -123658,6 +126787,22 @@ export namespace Prisma {
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutAccountInput>
   }
 
+  export type FollowUpUpsertWithWhereUniqueWithoutAccountInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutAccountInput, FollowUpUncheckedUpdateWithoutAccountInput>
+    create: XOR<FollowUpCreateWithoutAccountInput, FollowUpUncheckedCreateWithoutAccountInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutAccountInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutAccountInput, FollowUpUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutAccountInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutAccountInput>
+  }
+
   export type DocumentUpsertWithWhereUniqueWithoutAccountInput = {
     where: DocumentWhereUniqueInput
     update: XOR<DocumentUpdateWithoutAccountInput, DocumentUncheckedUpdateWithoutAccountInput>
@@ -123734,6 +126879,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -123796,6 +126942,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -123848,6 +126995,7 @@ export namespace Prisma {
     contacts?: ContactUpdateManyWithoutBranchNestedInput
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -123869,6 +127017,7 @@ export namespace Prisma {
     contacts?: ContactUncheckedUpdateManyWithoutBranchNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -124057,6 +127206,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -124092,6 +127242,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -124147,6 +127298,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -124218,6 +127370,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -124308,6 +127461,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -124409,6 +127564,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -124508,6 +127665,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousOpportunities?: OpportunityCreateNestedManyWithoutPreviousOwnerInput
@@ -124609,6 +127768,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousOpportunities?: OpportunityUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -124832,6 +127993,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FollowUpCreateWithoutContactInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutContactInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutContactInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutContactInput, FollowUpUncheckedCreateWithoutContactInput>
+  }
+
+  export type FollowUpCreateManyContactInputEnvelope = {
+    data: FollowUpCreateManyContactInput | FollowUpCreateManyContactInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmailListCreateWithoutContactsInput = {
     id?: string
     name: string
@@ -124888,6 +128099,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
@@ -124924,6 +128136,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
@@ -125095,6 +128308,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -125157,6 +128371,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -125187,6 +128402,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -125208,6 +128424,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -125304,6 +128521,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -125339,6 +128557,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -125400,6 +128619,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -125471,6 +128691,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -125567,6 +128788,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -125668,6 +128891,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -125773,6 +128998,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousOpportunities?: OpportunityUpdateManyWithoutPreviousOwnerNestedInput
@@ -125874,6 +129101,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousOpportunities?: OpportunityUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -125952,6 +129181,22 @@ export namespace Prisma {
   export type TaskUpdateManyWithWhereWithoutContactInput = {
     where: TaskScalarWhereInput
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutContactInput>
+  }
+
+  export type FollowUpUpsertWithWhereUniqueWithoutContactInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutContactInput, FollowUpUncheckedUpdateWithoutContactInput>
+    create: XOR<FollowUpCreateWithoutContactInput, FollowUpUncheckedCreateWithoutContactInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutContactInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutContactInput, FollowUpUncheckedUpdateWithoutContactInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutContactInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutContactInput>
   }
 
   export type EmailListUpsertWithWhereUniqueWithoutContactsInput = {
@@ -126078,6 +129323,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -126140,6 +129386,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -126176,6 +129423,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -126197,6 +129445,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -126353,6 +129602,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -126388,6 +129638,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -126443,6 +129694,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -126514,6 +129766,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -126604,6 +129857,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -126705,6 +129960,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -126804,6 +130061,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -126905,6 +130164,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -127068,6 +130329,56 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FollowUpCreateWithoutOpportunityInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+    branch?: BranchCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutOpportunityInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutOpportunityInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutOpportunityInput, FollowUpUncheckedCreateWithoutOpportunityInput>
+  }
+
+  export type FollowUpCreateManyOpportunityInputEnvelope = {
+    data: FollowUpCreateManyOpportunityInput | FollowUpCreateManyOpportunityInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ContactCreateWithoutOpportunitiesInput = {
     id?: string
     firstName: string
@@ -127097,6 +130408,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
     documents?: DocumentCreateNestedManyWithoutContactInput
@@ -127135,6 +130447,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
     documents?: DocumentUncheckedCreateNestedManyWithoutContactInput
@@ -127248,6 +130561,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -127310,6 +130624,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -127440,6 +130755,7 @@ export namespace Prisma {
     contacts?: ContactCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -127461,6 +130777,7 @@ export namespace Prisma {
     contacts?: ContactUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -127541,6 +130858,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -127576,6 +130894,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -127637,6 +130956,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -127708,6 +131028,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -127804,6 +131125,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -127905,6 +131228,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -128010,6 +131335,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -128111,6 +131438,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -128173,6 +131502,22 @@ export namespace Prisma {
   export type TaskUpdateManyWithWhereWithoutOpportunityInput = {
     where: TaskScalarWhereInput
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutOpportunityInput>
+  }
+
+  export type FollowUpUpsertWithWhereUniqueWithoutOpportunityInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutOpportunityInput, FollowUpUncheckedUpdateWithoutOpportunityInput>
+    create: XOR<FollowUpCreateWithoutOpportunityInput, FollowUpUncheckedCreateWithoutOpportunityInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutOpportunityInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutOpportunityInput, FollowUpUncheckedUpdateWithoutOpportunityInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutOpportunityInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutOpportunityInput>
   }
 
   export type ContactUpsertWithWhereUniqueWithoutOpportunitiesInput = {
@@ -128267,6 +131612,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -128329,6 +131675,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -128457,6 +131804,7 @@ export namespace Prisma {
     contacts?: ContactUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -128478,6 +131826,7 @@ export namespace Prisma {
     contacts?: ContactUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -128543,6 +131892,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -128644,6 +131995,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -128728,6 +132081,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -128799,6 +132153,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -129040,6 +132395,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
   }
@@ -129061,6 +132417,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
   }
@@ -129141,6 +132498,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -129242,6 +132601,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -129332,6 +132693,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -129403,6 +132765,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -129553,6 +132916,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
   }
@@ -129574,6 +132938,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
   }
@@ -129627,6 +132992,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -129689,6 +133055,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -129828,6 +133195,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -129890,6 +133258,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -129998,6 +133367,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     branch?: BranchCreateNestedOneWithoutAccountsInput
@@ -130033,6 +133403,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -130153,6 +133524,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -130224,6 +133596,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -130292,6 +133665,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     branch?: BranchUpdateOneWithoutAccountsNestedInput
@@ -130327,6 +133701,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -130459,6 +133834,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -130530,6 +133906,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -130581,6 +133958,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutAccountInput
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -130616,6 +133994,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutAccountInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -130685,6 +134064,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -130786,6 +134167,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -130885,6 +134268,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -130986,6 +134371,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -131051,6 +134438,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousContactsInput
     interactions?: InteractionCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -131089,6 +134477,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedCreateNestedManyWithoutContactInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -131160,6 +134549,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -131261,6 +134652,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -131323,6 +134716,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutOwnedOpportunitiesInput
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -131359,6 +134753,7 @@ export namespace Prisma {
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -131416,6 +134811,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -131487,6 +134883,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -131591,6 +134988,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutAccountNestedInput
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -131626,6 +135024,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutAccountNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -131701,6 +135100,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -131802,6 +135203,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -131907,6 +135310,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -132008,6 +135413,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -132079,6 +135486,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousContactsNestedInput
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -132117,6 +135525,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedUpdateManyWithoutContactNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -132194,6 +135603,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -132295,6 +135706,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -132363,6 +135776,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutOwnedOpportunitiesNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -132399,6 +135813,7 @@ export namespace Prisma {
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -132462,6 +135877,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -132533,6 +135949,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -132881,6 +136298,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutAccountInput
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -132916,6 +136334,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutAccountInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -132985,6 +136404,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -133086,6 +136507,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -133185,6 +136608,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -133286,6 +136711,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -133351,6 +136778,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousContactsInput
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -133389,6 +136817,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedCreateNestedManyWithoutContactInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -133460,6 +136889,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -133561,6 +136992,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -133647,6 +137080,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousLeadsInput
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -133709,6 +137143,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedCreateNestedManyWithoutLeadInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -133748,6 +137183,7 @@ export namespace Prisma {
     owner?: UserCreateNestedOneWithoutOwnedOpportunitiesInput
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -133784,6 +137220,7 @@ export namespace Prisma {
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -133841,6 +137278,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutOrganisationInput
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -133912,6 +137350,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutOrganisationInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -133958,6 +137397,7 @@ export namespace Prisma {
     contacts?: ContactCreateNestedManyWithoutBranchInput
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
@@ -133979,6 +137419,7 @@ export namespace Prisma {
     contacts?: ContactUncheckedCreateNestedManyWithoutBranchInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -134027,6 +137468,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutAccountNestedInput
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -134062,6 +137504,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutAccountNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -134137,6 +137580,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -134238,6 +137683,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -134343,6 +137790,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -134444,6 +137893,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -134515,6 +137966,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousContactsNestedInput
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -134553,6 +138005,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedUpdateManyWithoutContactNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -134630,6 +138083,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -134731,6 +138186,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -134823,6 +138280,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousLeadsNestedInput
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -134885,6 +138343,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedUpdateManyWithoutLeadNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -134930,6 +138389,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutOwnedOpportunitiesNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -134966,6 +138426,7 @@ export namespace Prisma {
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -135029,6 +138490,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutOrganisationNestedInput
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -135100,6 +138562,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutOrganisationNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -135152,6 +138615,7 @@ export namespace Prisma {
     contacts?: ContactUpdateManyWithoutBranchNestedInput
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -135173,6 +138637,1967 @@ export namespace Prisma {
     contacts?: ContactUncheckedUpdateManyWithoutBranchNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
+    assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
+    products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
+  export type AccountCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    industry?: string | null
+    website?: string | null
+    size?: string | null
+    annualRevenue?: number | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    phone?: string | null
+    type?: string
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: AccountCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    organisation: OrganisationCreateNestedOneWithoutAccountsInput
+    owner?: UserCreateNestedOneWithoutOwnedAccountsInput
+    previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
+    parentAccount?: AccountCreateNestedOneWithoutChildAccountsInput
+    childAccounts?: AccountCreateNestedManyWithoutParentAccountInput
+    events?: CalendarEventCreateNestedManyWithoutAccountInput
+    cases?: CaseCreateNestedManyWithoutAccountInput
+    checkIns?: CheckInCreateNestedManyWithoutAccountInput
+    contacts?: ContactCreateNestedManyWithoutAccountInput
+    interactions?: InteractionCreateNestedManyWithoutAccountInput
+    opportunities?: OpportunityCreateNestedManyWithoutAccountInput
+    quotes?: QuoteCreateNestedManyWithoutAccountInput
+    tasks?: TaskCreateNestedManyWithoutAccountInput
+    documents?: DocumentCreateNestedManyWithoutAccountInput
+    lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
+    accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
+    branch?: BranchCreateNestedOneWithoutAccountsInput
+  }
+
+  export type AccountUncheckedCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    industry?: string | null
+    website?: string | null
+    size?: string | null
+    annualRevenue?: number | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    phone?: string | null
+    type?: string
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: AccountCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    ownerId?: string | null
+    organisationId: string
+    parentAccountId?: string | null
+    previousOwnerId?: string | null
+    leadId?: string | null
+    branchId?: string | null
+    childAccounts?: AccountUncheckedCreateNestedManyWithoutParentAccountInput
+    events?: CalendarEventUncheckedCreateNestedManyWithoutAccountInput
+    cases?: CaseUncheckedCreateNestedManyWithoutAccountInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutAccountInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutAccountInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutAccountInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
+    accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutFollowUpsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutFollowUpsInput, AccountUncheckedCreateWithoutFollowUpsInput>
+  }
+
+  export type UserCreateWithoutAssignedFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: string
+    position?: string | null
+    phone?: string | null
+    profileImage?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: string | null
+    metaUserId?: string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: string | null
+    resetPasswordExpire?: Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: UserCreatepermissionsInput | string[]
+    dailyLeadQuota?: number | null
+    ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
+    createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleCreateNestedManyWithoutCreatedByInput
+    lastAssignedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutLastAssignedUserInput
+    managedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutTargetManagerInput
+    createdEvents?: CalendarEventCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInCreateNestedManyWithoutUserInput
+    ownedContacts?: ContactCreateNestedManyWithoutOwnerInput
+    createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListCreateNestedManyWithoutCreatedByInput
+    assignedGoals?: GoalCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionCreateNestedManyWithoutCreatedByInput
+    assignedLeads?: LeadCreateNestedManyWithoutAssignedToInput
+    previousLeads?: LeadCreateNestedManyWithoutPreviousOwnerInput
+    createdLeads?: LeadCreateNestedManyWithoutCreatedByInput
+    historyChanger?: LeadHistoryCreateNestedManyWithoutChangedByInput
+    historyNewOwner?: LeadHistoryCreateNestedManyWithoutNewOwnerInput
+    historyOldOwner?: LeadHistoryCreateNestedManyWithoutOldOwnerInput
+    activatedLicenses?: LicenseCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseCreateNestedManyWithoutCancelledByInput
+    notifications?: NotificationCreateNestedManyWithoutRecipientInput
+    ownedOpportunities?: OpportunityCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateCreateNestedManyWithoutCreatedByInput
+    createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
+    assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
+    assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
+    managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
+    previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
+    previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
+    previousOpportunities?: OpportunityCreateNestedManyWithoutPreviousOwnerInput
+    previousTasks?: TaskCreateNestedManyWithoutPreviousOwnerInput
+    previousCases?: CaseCreateNestedManyWithoutPreviousOwnerInput
+    previousQuotes?: QuoteCreateNestedManyWithoutPreviousOwnerInput
+    previousGoals?: GoalCreateNestedManyWithoutPreviousOwnerInput
+    previousSalesTargets?: SalesTargetCreateNestedManyWithoutPreviousOwnerInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    reportsTo?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutReportsToInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
+    createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleCreateNestedManyWithoutCreatedByInput
+    createdImportJobs?: ImportJobCreateNestedManyWithoutCreatedByInput
+    createdPipelines?: PipelineCreateNestedManyWithoutCreatedByInput
+    createdWebForms?: WebFormCreateNestedManyWithoutCreatedByInput
+    createdSMSCampaigns?: SMSCampaignCreateNestedManyWithoutCreatedByInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignCreateNestedManyWithoutCreatedByInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutAgentInput
+    commissions?: CommissionCreateNestedManyWithoutUserInput
+    createdCommissions?: CommissionCreateNestedManyWithoutCreatedByInput
+    createdLandingPages?: LandingPageCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    createdDocuments?: DocumentCreateNestedManyWithoutCreatedByInput
+    team?: TeamCreateNestedOneWithoutMembersInput
+    createdTeams?: TeamCreateNestedManyWithoutCreatedByInput
+    managedTeams?: TeamCreateNestedManyWithoutManagerInput
+    sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutAssignedFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: string
+    position?: string | null
+    phone?: string | null
+    profileImage?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: string | null
+    metaUserId?: string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: string | null
+    resetPasswordExpire?: Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId?: string | null
+    reportsToId?: string | null
+    permissions?: UserCreatepermissionsInput | string[]
+    dailyLeadQuota?: number | null
+    teamId?: string | null
+    branchId?: string | null
+    ownedAccounts?: AccountUncheckedCreateNestedManyWithoutOwnerInput
+    createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutLastAssignedUserInput
+    managedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutTargetManagerInput
+    createdEvents?: CalendarEventUncheckedCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseUncheckedCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseUncheckedCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutUserInput
+    ownedContacts?: ContactUncheckedCreateNestedManyWithoutOwnerInput
+    createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedGoals?: GoalUncheckedCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalUncheckedCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedLeads?: LeadUncheckedCreateNestedManyWithoutAssignedToInput
+    previousLeads?: LeadUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    createdLeads?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    historyChanger?: LeadHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    historyNewOwner?: LeadHistoryUncheckedCreateNestedManyWithoutNewOwnerInput
+    historyOldOwner?: LeadHistoryUncheckedCreateNestedManyWithoutOldOwnerInput
+    activatedLicenses?: LicenseUncheckedCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseUncheckedCreateNestedManyWithoutCancelledByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutRecipientInput
+    ownedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteUncheckedCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
+    assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
+    managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
+    previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousOpportunities?: OpportunityUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousTasks?: TaskUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousCases?: CaseUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousQuotes?: QuoteUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousGoals?: GoalUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutReportsToInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
+    createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    createdImportJobs?: ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+    createdPipelines?: PipelineUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWebForms?: WebFormUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSCampaigns?: SMSCampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutAgentInput
+    commissions?: CommissionUncheckedCreateNestedManyWithoutUserInput
+    createdCommissions?: CommissionUncheckedCreateNestedManyWithoutCreatedByInput
+    createdLandingPages?: LandingPageUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    createdDocuments?: DocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTeams?: TeamUncheckedCreateNestedManyWithoutCreatedByInput
+    managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
+    sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
+    managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutAssignedFollowUpsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAssignedFollowUpsInput, UserUncheckedCreateWithoutAssignedFollowUpsInput>
+  }
+
+  export type ContactCreateWithoutFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email?: string | null
+    phones?: NullableJsonNullValueInput | InputJsonValue
+    jobTitle?: string | null
+    department?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    socialProfiles?: NullableJsonNullValueInput | InputJsonValue
+    doNotEmail?: boolean
+    doNotCall?: boolean
+    leadSource?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ContactCreatetagsInput | string[]
+    lastActivity?: Date | string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: CalendarEventCreateNestedManyWithoutContactInput
+    cases?: CaseCreateNestedManyWithoutContactInput
+    checkIns?: CheckInCreateNestedManyWithoutContactInput
+    account?: AccountCreateNestedOneWithoutContactsInput
+    organisation: OrganisationCreateNestedOneWithoutContactsInput
+    owner?: UserCreateNestedOneWithoutOwnedContactsInput
+    previousOwner?: UserCreateNestedOneWithoutPreviousContactsInput
+    interactions?: InteractionCreateNestedManyWithoutContactInput
+    quotes?: QuoteCreateNestedManyWithoutContactInput
+    tasks?: TaskCreateNestedManyWithoutContactInput
+    emailLists?: EmailListCreateNestedManyWithoutContactsInput
+    opportunities?: OpportunityCreateNestedManyWithoutContactsInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
+    documents?: DocumentCreateNestedManyWithoutContactInput
+    lead?: LeadCreateNestedOneWithoutConvertedContactsInput
+    branch?: BranchCreateNestedOneWithoutContactsInput
+  }
+
+  export type ContactUncheckedCreateWithoutFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email?: string | null
+    phones?: NullableJsonNullValueInput | InputJsonValue
+    jobTitle?: string | null
+    department?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    socialProfiles?: NullableJsonNullValueInput | InputJsonValue
+    doNotEmail?: boolean
+    doNotCall?: boolean
+    leadSource?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ContactCreatetagsInput | string[]
+    lastActivity?: Date | string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accountId?: string | null
+    ownerId?: string | null
+    organisationId: string
+    previousOwnerId?: string | null
+    leadId?: string | null
+    branchId?: string | null
+    events?: CalendarEventUncheckedCreateNestedManyWithoutContactInput
+    cases?: CaseUncheckedCreateNestedManyWithoutContactInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutContactInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type ContactCreateOrConnectWithoutFollowUpsInput = {
+    where: ContactWhereUniqueInput
+    create: XOR<ContactCreateWithoutFollowUpsInput, ContactUncheckedCreateWithoutFollowUpsInput>
+  }
+
+  export type UserCreateWithoutCreatedFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: string
+    position?: string | null
+    phone?: string | null
+    profileImage?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: string | null
+    metaUserId?: string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: string | null
+    resetPasswordExpire?: Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissions?: UserCreatepermissionsInput | string[]
+    dailyLeadQuota?: number | null
+    ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
+    createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleCreateNestedManyWithoutCreatedByInput
+    lastAssignedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutLastAssignedUserInput
+    managedAssignmentRules?: AssignmentRuleCreateNestedManyWithoutTargetManagerInput
+    createdEvents?: CalendarEventCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInCreateNestedManyWithoutUserInput
+    ownedContacts?: ContactCreateNestedManyWithoutOwnerInput
+    createdCustomFields?: CustomFieldCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListCreateNestedManyWithoutCreatedByInput
+    assignedGoals?: GoalCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionCreateNestedManyWithoutCreatedByInput
+    assignedLeads?: LeadCreateNestedManyWithoutAssignedToInput
+    previousLeads?: LeadCreateNestedManyWithoutPreviousOwnerInput
+    createdLeads?: LeadCreateNestedManyWithoutCreatedByInput
+    historyChanger?: LeadHistoryCreateNestedManyWithoutChangedByInput
+    historyNewOwner?: LeadHistoryCreateNestedManyWithoutNewOwnerInput
+    historyOldOwner?: LeadHistoryCreateNestedManyWithoutOldOwnerInput
+    activatedLicenses?: LicenseCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseCreateNestedManyWithoutCancelledByInput
+    notifications?: NotificationCreateNestedManyWithoutRecipientInput
+    ownedOpportunities?: OpportunityCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateCreateNestedManyWithoutCreatedByInput
+    createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
+    assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
+    assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
+    previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
+    previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
+    previousOpportunities?: OpportunityCreateNestedManyWithoutPreviousOwnerInput
+    previousTasks?: TaskCreateNestedManyWithoutPreviousOwnerInput
+    previousCases?: CaseCreateNestedManyWithoutPreviousOwnerInput
+    previousQuotes?: QuoteCreateNestedManyWithoutPreviousOwnerInput
+    previousGoals?: GoalCreateNestedManyWithoutPreviousOwnerInput
+    previousSalesTargets?: SalesTargetCreateNestedManyWithoutPreviousOwnerInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    reportsTo?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutReportsToInput
+    leadQuotaTracking?: UserLeadQuotaTrackerCreateNestedManyWithoutUserInput
+    createdWebhooks?: WebhookCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleCreateNestedManyWithoutCreatedByInput
+    createdImportJobs?: ImportJobCreateNestedManyWithoutCreatedByInput
+    createdPipelines?: PipelineCreateNestedManyWithoutCreatedByInput
+    createdWebForms?: WebFormCreateNestedManyWithoutCreatedByInput
+    createdSMSCampaigns?: SMSCampaignCreateNestedManyWithoutCreatedByInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignCreateNestedManyWithoutCreatedByInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutAgentInput
+    commissions?: CommissionCreateNestedManyWithoutUserInput
+    createdCommissions?: CommissionCreateNestedManyWithoutCreatedByInput
+    createdLandingPages?: LandingPageCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    createdDocuments?: DocumentCreateNestedManyWithoutCreatedByInput
+    team?: TeamCreateNestedOneWithoutMembersInput
+    createdTeams?: TeamCreateNestedManyWithoutCreatedByInput
+    managedTeams?: TeamCreateNestedManyWithoutManagerInput
+    sharedProducts?: ProductShareCreateNestedManyWithoutCreatedByInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    managedBranches?: BranchCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    email: string
+    userId?: string | null
+    password: string
+    role?: string
+    position?: string | null
+    phone?: string | null
+    profileImage?: string | null
+    isPlaceholder?: boolean
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: string | null
+    metaUserId?: string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: string | null
+    resetPasswordExpire?: Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId?: string | null
+    reportsToId?: string | null
+    permissions?: UserCreatepermissionsInput | string[]
+    dailyLeadQuota?: number | null
+    teamId?: string | null
+    branchId?: string | null
+    ownedAccounts?: AccountUncheckedCreateNestedManyWithoutOwnerInput
+    createdApiKeys?: ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+    createdAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutLastAssignedUserInput
+    managedAssignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutTargetManagerInput
+    createdEvents?: CalendarEventUncheckedCreateNestedManyWithoutCreatedByInput
+    createdCampaigns?: CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedCases?: CaseUncheckedCreateNestedManyWithoutAssignedToInput
+    createdCases?: CaseUncheckedCreateNestedManyWithoutCreatedByInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutUserInput
+    ownedContacts?: ContactUncheckedCreateNestedManyWithoutOwnerInput
+    createdCustomFields?: CustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+    createdDocTemplates?: DocumentTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdEmailLists?: EmailListUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedGoals?: GoalUncheckedCreateNestedManyWithoutAssignedToInput
+    createdGoals?: GoalUncheckedCreateNestedManyWithoutCreatedByInput
+    createdInteractions?: InteractionUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedLeads?: LeadUncheckedCreateNestedManyWithoutAssignedToInput
+    previousLeads?: LeadUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    createdLeads?: LeadUncheckedCreateNestedManyWithoutCreatedByInput
+    historyChanger?: LeadHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    historyNewOwner?: LeadHistoryUncheckedCreateNestedManyWithoutNewOwnerInput
+    historyOldOwner?: LeadHistoryUncheckedCreateNestedManyWithoutOldOwnerInput
+    activatedLicenses?: LicenseUncheckedCreateNestedManyWithoutActivatedByInput
+    cancelledLicenses?: LicenseUncheckedCreateNestedManyWithoutCancelledByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutRecipientInput
+    ownedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutOwnerInput
+    createdProducts?: ProductUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedQuotes?: QuoteUncheckedCreateNestedManyWithoutAssignedToInput
+    createdQuotes?: QuoteUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSTemplates?: SMSTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
+    assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
+    assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
+    createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
+    previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousOpportunities?: OpportunityUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousTasks?: TaskUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousCases?: CaseUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousQuotes?: QuoteUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousGoals?: GoalUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    previousSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutPreviousOwnerInput
+    subordinates?: UserUncheckedCreateNestedManyWithoutReportsToInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedCreateNestedManyWithoutUserInput
+    createdWebhooks?: WebhookUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWorkflows?: WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+    createdRules?: WorkflowRuleUncheckedCreateNestedManyWithoutCreatedByInput
+    createdImportJobs?: ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+    createdPipelines?: PipelineUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWebForms?: WebFormUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSMSCampaigns?: SMSCampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutAgentInput
+    commissions?: CommissionUncheckedCreateNestedManyWithoutUserInput
+    createdCommissions?: CommissionUncheckedCreateNestedManyWithoutCreatedByInput
+    createdLandingPages?: LandingPageUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    createdDocuments?: DocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTeams?: TeamUncheckedCreateNestedManyWithoutCreatedByInput
+    managedTeams?: TeamUncheckedCreateNestedManyWithoutManagerInput
+    sharedProducts?: ProductShareUncheckedCreateNestedManyWithoutCreatedByInput
+    managedBranches?: BranchUncheckedCreateNestedManyWithoutManagerInput
+    createdPaymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedFollowUpsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedFollowUpsInput, UserUncheckedCreateWithoutCreatedFollowUpsInput>
+  }
+
+  export type LeadCreateWithoutFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName?: string | null
+    email?: string | null
+    phone: string
+    secondaryPhone?: string | null
+    phoneCountryCode?: string | null
+    country?: string | null
+    countryCode?: string | null
+    company?: string | null
+    enquiryAbout?: string | null
+    jobTitle?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: number
+    engagementScore?: number
+    qualityScore?: number
+    isHotLead?: boolean
+    lastScoredAt?: Date | string | null
+    status?: $Enums.LeadStatus
+    stage?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId?: string | null
+    managerExplanation?: string | null
+    rotationViolation?: boolean
+    userExplanation?: string | null
+    violationTime?: Date | string | null
+    nextFollowUp?: Date | string | null
+    isReEnquiry?: boolean
+    reEnquiryCount?: number
+    lastEnquiryDate?: Date | string | null
+    originalLeadId?: string | null
+    potentialValue?: number
+    events?: CalendarEventCreateNestedManyWithoutLeadInput
+    checkIns?: CheckInCreateNestedManyWithoutLeadInput
+    interactions?: InteractionCreateNestedManyWithoutLeadInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedLeadsInput
+    organisation: OrganisationCreateNestedOneWithoutLeadsInput
+    previousOwner?: UserCreateNestedOneWithoutPreviousLeadsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
+    history?: LeadHistoryCreateNestedManyWithoutLeadInput
+    tasks?: TaskCreateNestedManyWithoutLeadInput
+    emailLists?: EmailListCreateNestedManyWithoutLeadsInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
+    documents?: DocumentCreateNestedManyWithoutLeadInput
+    pipeline?: PipelineCreateNestedOneWithoutLeadsInput
+    products?: LeadProductCreateNestedManyWithoutLeadInput
+    convertedAccounts?: AccountCreateNestedManyWithoutLeadInput
+    convertedContacts?: ContactCreateNestedManyWithoutLeadInput
+    convertedOpportunities?: OpportunityCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingCreateNestedManyWithoutLeadInput
+    branch?: BranchCreateNestedOneWithoutLeadsInput
+  }
+
+  export type LeadUncheckedCreateWithoutFollowUpsInput = {
+    id?: string
+    firstName: string
+    lastName?: string | null
+    email?: string | null
+    phone: string
+    secondaryPhone?: string | null
+    phoneCountryCode?: string | null
+    country?: string | null
+    countryCode?: string | null
+    company?: string | null
+    enquiryAbout?: string | null
+    jobTitle?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: number
+    engagementScore?: number
+    qualityScore?: number
+    isHotLead?: boolean
+    lastScoredAt?: Date | string | null
+    status?: $Enums.LeadStatus
+    stage?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId: string
+    assignedToId?: string | null
+    teamId?: string | null
+    managerExplanation?: string | null
+    previousOwnerId?: string | null
+    rotationViolation?: boolean
+    userExplanation?: string | null
+    violationTime?: Date | string | null
+    nextFollowUp?: Date | string | null
+    isReEnquiry?: boolean
+    reEnquiryCount?: number
+    lastEnquiryDate?: Date | string | null
+    originalLeadId?: string | null
+    createdById?: string | null
+    pipelineId?: string | null
+    potentialValue?: number
+    branchId?: string | null
+    events?: CalendarEventUncheckedCreateNestedManyWithoutLeadInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutLeadInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
+    history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
+    products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
+    convertedAccounts?: AccountUncheckedCreateNestedManyWithoutLeadInput
+    convertedContacts?: ContactUncheckedCreateNestedManyWithoutLeadInput
+    convertedOpportunities?: OpportunityUncheckedCreateNestedManyWithoutLeadInput
+    callRecordings?: CallRecordingUncheckedCreateNestedManyWithoutLeadInput
+  }
+
+  export type LeadCreateOrConnectWithoutFollowUpsInput = {
+    where: LeadWhereUniqueInput
+    create: XOR<LeadCreateWithoutFollowUpsInput, LeadUncheckedCreateWithoutFollowUpsInput>
+  }
+
+  export type OpportunityCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    amount: number
+    stage?: string
+    probability?: number
+    closeDate?: Date | string | null
+    leadSource?: string | null
+    description?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    paymentStatus?: string
+    paymentDate?: Date | string | null
+    type?: $Enums.OpportunityType
+    events?: CalendarEventCreateNestedManyWithoutOpportunityInput
+    interactions?: InteractionCreateNestedManyWithoutOpportunityInput
+    account: AccountCreateNestedOneWithoutOpportunitiesInput
+    organisation: OrganisationCreateNestedOneWithoutOpportunitiesInput
+    owner?: UserCreateNestedOneWithoutOwnedOpportunitiesInput
+    previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
+    quotes?: QuoteCreateNestedManyWithoutOpportunityInput
+    tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
+    documents?: DocumentCreateNestedManyWithoutOpportunityInput
+    lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
+    pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
+    emiSchedule?: EMIScheduleCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOpportunityInput
+    branch?: BranchCreateNestedOneWithoutOpportunitiesInput
+  }
+
+  export type OpportunityUncheckedCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    amount: number
+    stage?: string
+    probability?: number
+    closeDate?: Date | string | null
+    leadSource?: string | null
+    description?: string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityCreatetagsInput | string[]
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accountId: string
+    ownerId?: string | null
+    organisationId: string
+    paymentStatus?: string
+    paymentDate?: Date | string | null
+    previousOwnerId?: string | null
+    leadId?: string | null
+    pipelineId?: string | null
+    type?: $Enums.OpportunityType
+    branchId?: string | null
+    events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
+    emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
+  }
+
+  export type OpportunityCreateOrConnectWithoutFollowUpsInput = {
+    where: OpportunityWhereUniqueInput
+    create: XOR<OpportunityCreateWithoutFollowUpsInput, OpportunityUncheckedCreateWithoutFollowUpsInput>
+  }
+
+  export type OrganisationCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    logo?: string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    status?: string
+    userLimit?: number
+    contactLimit?: number
+    storageLimit?: number
+    currency?: string
+    userIdCounter?: number
+    apiKey?: string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    createdBy?: string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    whatsAppScrapingEnabled?: boolean
+    accounts?: AccountCreateNestedManyWithoutOrganisationInput
+    apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
+    assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
+    events?: CalendarEventCreateNestedManyWithoutOrganisationInput
+    callSettings?: CallSettingsCreateNestedOneWithoutOrganisationInput
+    campaigns?: CampaignCreateNestedManyWithoutOrganisationInput
+    cases?: CaseCreateNestedManyWithoutOrganisationInput
+    checkIns?: CheckInCreateNestedManyWithoutOrganisationInput
+    contacts?: ContactCreateNestedManyWithoutOrganisationInput
+    customFields?: CustomFieldCreateNestedManyWithoutOrganisationInput
+    emailLists?: EmailListCreateNestedManyWithoutOrganisationInput
+    goals?: GoalCreateNestedManyWithoutOrganisationInput
+    interactions?: InteractionCreateNestedManyWithoutOrganisationInput
+    leads?: LeadCreateNestedManyWithoutOrganisationInput
+    licenses?: LicenseCreateNestedManyWithoutOrganisationInput
+    opportunities?: OpportunityCreateNestedManyWithoutOrganisationInput
+    products?: ProductCreateNestedManyWithoutOrganisationInput
+    quotes?: QuoteCreateNestedManyWithoutOrganisationInput
+    salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
+    tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    territories?: TerritoryCreateNestedManyWithoutOrganisationInput
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
+    workflows?: WorkflowCreateNestedManyWithoutOrganisationInput
+    workflowRules?: WorkflowRuleCreateNestedManyWithoutOrganisationInput
+    importJobs?: ImportJobCreateNestedManyWithoutOrganisationInput
+    pipelines?: PipelineCreateNestedManyWithoutOrganisationInput
+    webForms?: WebFormCreateNestedManyWithoutOrganisationInput
+    smsCampaigns?: SMSCampaignCreateNestedManyWithoutOrganisationInput
+    whatsAppCampaigns?: WhatsAppCampaignCreateNestedManyWithoutOrganisationInput
+    whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutOrganisationInput
+    commissions?: CommissionCreateNestedManyWithoutOrganisationInput
+    landingPages?: LandingPageCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    queueItems?: WorkflowQueueCreateNestedManyWithoutOrganisationInput
+    teams?: TeamCreateNestedManyWithoutOrganisationInput
+    accountProducts?: AccountProductCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    productShares?: ProductShareCreateNestedManyWithoutOrganisationInput
+    branches?: BranchCreateNestedManyWithoutOrganisationInput
+    rolePermissions?: RoleCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    slug: string
+    domain?: string | null
+    logo?: string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    status?: string
+    userLimit?: number
+    contactLimit?: number
+    storageLimit?: number
+    currency?: string
+    userIdCounter?: number
+    apiKey?: string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isDeleted?: boolean
+    createdBy?: string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    whatsAppScrapingEnabled?: boolean
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
+    apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
+    assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
+    events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
+    callSettings?: CallSettingsUncheckedCreateNestedOneWithoutOrganisationInput
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    cases?: CaseUncheckedCreateNestedManyWithoutOrganisationInput
+    checkIns?: CheckInUncheckedCreateNestedManyWithoutOrganisationInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutOrganisationInput
+    customFields?: CustomFieldUncheckedCreateNestedManyWithoutOrganisationInput
+    emailLists?: EmailListUncheckedCreateNestedManyWithoutOrganisationInput
+    goals?: GoalUncheckedCreateNestedManyWithoutOrganisationInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutOrganisationInput
+    leads?: LeadUncheckedCreateNestedManyWithoutOrganisationInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutOrganisationInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutOrganisationInput
+    products?: ProductUncheckedCreateNestedManyWithoutOrganisationInput
+    quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
+    salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
+    workflows?: WorkflowUncheckedCreateNestedManyWithoutOrganisationInput
+    workflowRules?: WorkflowRuleUncheckedCreateNestedManyWithoutOrganisationInput
+    importJobs?: ImportJobUncheckedCreateNestedManyWithoutOrganisationInput
+    pipelines?: PipelineUncheckedCreateNestedManyWithoutOrganisationInput
+    webForms?: WebFormUncheckedCreateNestedManyWithoutOrganisationInput
+    smsCampaigns?: SMSCampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    whatsAppCampaigns?: WhatsAppCampaignUncheckedCreateNestedManyWithoutOrganisationInput
+    whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutOrganisationInput
+    commissions?: CommissionUncheckedCreateNestedManyWithoutOrganisationInput
+    landingPages?: LandingPageUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    queueItems?: WorkflowQueueUncheckedCreateNestedManyWithoutOrganisationInput
+    teams?: TeamUncheckedCreateNestedManyWithoutOrganisationInput
+    accountProducts?: AccountProductUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    productShares?: ProductShareUncheckedCreateNestedManyWithoutOrganisationInput
+    branches?: BranchUncheckedCreateNestedManyWithoutOrganisationInput
+    rolePermissions?: RoleUncheckedCreateNestedManyWithoutOrganisationInput
+    emiSchedules?: EMIScheduleUncheckedCreateNestedManyWithoutOrganisationInput
+    paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutFollowUpsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutFollowUpsInput, OrganisationUncheckedCreateWithoutFollowUpsInput>
+  }
+
+  export type BranchCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutBranchesInput
+    manager?: UserCreateNestedOneWithoutManagedBranchesInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    leads?: LeadCreateNestedManyWithoutBranchInput
+    contacts?: ContactCreateNestedManyWithoutBranchInput
+    opportunities?: OpportunityCreateNestedManyWithoutBranchInput
+    accounts?: AccountCreateNestedManyWithoutBranchInput
+    tasks?: TaskCreateNestedManyWithoutBranchInput
+    interactions?: InteractionCreateNestedManyWithoutBranchInput
+    assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
+    products?: ProductCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutFollowUpsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    managerId?: string | null
+    organisationId: string
+    isDeleted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    leads?: LeadUncheckedCreateNestedManyWithoutBranchInput
+    contacts?: ContactUncheckedCreateNestedManyWithoutBranchInput
+    opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
+    assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
+    products?: ProductUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutFollowUpsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutFollowUpsInput, BranchUncheckedCreateWithoutFollowUpsInput>
+  }
+
+  export type AccountUpsertWithoutFollowUpsInput = {
+    update: XOR<AccountUpdateWithoutFollowUpsInput, AccountUncheckedUpdateWithoutFollowUpsInput>
+    create: XOR<AccountCreateWithoutFollowUpsInput, AccountUncheckedCreateWithoutFollowUpsInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutFollowUpsInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutFollowUpsInput, AccountUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type AccountUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableStringFieldUpdateOperationsInput | string | null
+    annualRevenue?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: AccountUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
+    owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
+    previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
+    parentAccount?: AccountUpdateOneWithoutChildAccountsNestedInput
+    childAccounts?: AccountUpdateManyWithoutParentAccountNestedInput
+    events?: CalendarEventUpdateManyWithoutAccountNestedInput
+    cases?: CaseUpdateManyWithoutAccountNestedInput
+    checkIns?: CheckInUpdateManyWithoutAccountNestedInput
+    contacts?: ContactUpdateManyWithoutAccountNestedInput
+    interactions?: InteractionUpdateManyWithoutAccountNestedInput
+    opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
+    quotes?: QuoteUpdateManyWithoutAccountNestedInput
+    tasks?: TaskUpdateManyWithoutAccountNestedInput
+    documents?: DocumentUpdateManyWithoutAccountNestedInput
+    lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
+    accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
+    branch?: BranchUpdateOneWithoutAccountsNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableStringFieldUpdateOperationsInput | string | null
+    annualRevenue?: NullableFloatFieldUpdateOperationsInput | number | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: AccountUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    childAccounts?: AccountUncheckedUpdateManyWithoutParentAccountNestedInput
+    events?: CalendarEventUncheckedUpdateManyWithoutAccountNestedInput
+    cases?: CaseUncheckedUpdateManyWithoutAccountNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutAccountNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutAccountNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutAccountNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
+    accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type UserUpsertWithoutAssignedFollowUpsInput = {
+    update: XOR<UserUpdateWithoutAssignedFollowUpsInput, UserUncheckedUpdateWithoutAssignedFollowUpsInput>
+    create: XOR<UserCreateWithoutAssignedFollowUpsInput, UserUncheckedCreateWithoutAssignedFollowUpsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAssignedFollowUpsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAssignedFollowUpsInput, UserUncheckedUpdateWithoutAssignedFollowUpsInput>
+  }
+
+  export type UserUpdateWithoutAssignedFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
+    metaUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: UserUpdatepermissionsInput | string[]
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
+    createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUpdateManyWithoutCreatedByNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUpdateManyWithoutLastAssignedUserNestedInput
+    managedAssignmentRules?: AssignmentRuleUpdateManyWithoutTargetManagerNestedInput
+    createdEvents?: CalendarEventUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUpdateManyWithoutUserNestedInput
+    ownedContacts?: ContactUpdateManyWithoutOwnerNestedInput
+    createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUpdateManyWithoutCreatedByNestedInput
+    assignedGoals?: GoalUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUpdateManyWithoutCreatedByNestedInput
+    assignedLeads?: LeadUpdateManyWithoutAssignedToNestedInput
+    previousLeads?: LeadUpdateManyWithoutPreviousOwnerNestedInput
+    createdLeads?: LeadUpdateManyWithoutCreatedByNestedInput
+    historyChanger?: LeadHistoryUpdateManyWithoutChangedByNestedInput
+    historyNewOwner?: LeadHistoryUpdateManyWithoutNewOwnerNestedInput
+    historyOldOwner?: LeadHistoryUpdateManyWithoutOldOwnerNestedInput
+    activatedLicenses?: LicenseUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUpdateManyWithoutCancelledByNestedInput
+    notifications?: NotificationUpdateManyWithoutRecipientNestedInput
+    ownedOpportunities?: OpportunityUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUpdateManyWithoutCreatedByNestedInput
+    createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
+    assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
+    assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
+    managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
+    previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
+    previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
+    previousOpportunities?: OpportunityUpdateManyWithoutPreviousOwnerNestedInput
+    previousTasks?: TaskUpdateManyWithoutPreviousOwnerNestedInput
+    previousCases?: CaseUpdateManyWithoutPreviousOwnerNestedInput
+    previousQuotes?: QuoteUpdateManyWithoutPreviousOwnerNestedInput
+    previousGoals?: GoalUpdateManyWithoutPreviousOwnerNestedInput
+    previousSalesTargets?: SalesTargetUpdateManyWithoutPreviousOwnerNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    reportsTo?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutReportsToNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
+    createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUpdateManyWithoutCreatedByNestedInput
+    createdImportJobs?: ImportJobUpdateManyWithoutCreatedByNestedInput
+    createdPipelines?: PipelineUpdateManyWithoutCreatedByNestedInput
+    createdWebForms?: WebFormUpdateManyWithoutCreatedByNestedInput
+    createdSMSCampaigns?: SMSCampaignUpdateManyWithoutCreatedByNestedInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUpdateManyWithoutCreatedByNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutAgentNestedInput
+    commissions?: CommissionUpdateManyWithoutUserNestedInput
+    createdCommissions?: CommissionUpdateManyWithoutCreatedByNestedInput
+    createdLandingPages?: LandingPageUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    createdDocuments?: DocumentUpdateManyWithoutCreatedByNestedInput
+    team?: TeamUpdateOneWithoutMembersNestedInput
+    createdTeams?: TeamUpdateManyWithoutCreatedByNestedInput
+    managedTeams?: TeamUpdateManyWithoutManagerNestedInput
+    sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAssignedFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
+    metaUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
+    permissions?: UserUpdatepermissionsInput | string[]
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownedAccounts?: AccountUncheckedUpdateManyWithoutOwnerNestedInput
+    createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutLastAssignedUserNestedInput
+    managedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutTargetManagerNestedInput
+    createdEvents?: CalendarEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUncheckedUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutUserNestedInput
+    ownedContacts?: ContactUncheckedUpdateManyWithoutOwnerNestedInput
+    createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedGoals?: GoalUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedLeads?: LeadUncheckedUpdateManyWithoutAssignedToNestedInput
+    previousLeads?: LeadUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    createdLeads?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyChanger?: LeadHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    historyNewOwner?: LeadHistoryUncheckedUpdateManyWithoutNewOwnerNestedInput
+    historyOldOwner?: LeadHistoryUncheckedUpdateManyWithoutOldOwnerNestedInput
+    activatedLicenses?: LicenseUncheckedUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUncheckedUpdateManyWithoutCancelledByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+    ownedOpportunities?: OpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
+    assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
+    assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
+    previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousOpportunities?: OpportunityUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousTasks?: TaskUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousCases?: CaseUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousQuotes?: QuoteUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousGoals?: GoalUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousSalesTargets?: SalesTargetUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutReportsToNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
+    createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdImportJobs?: ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdPipelines?: PipelineUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWebForms?: WebFormUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSCampaigns?: SMSCampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutAgentNestedInput
+    commissions?: CommissionUncheckedUpdateManyWithoutUserNestedInput
+    createdCommissions?: CommissionUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdLandingPages?: LandingPageUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    createdDocuments?: DocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTeams?: TeamUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
+    sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type ContactUpsertWithoutFollowUpsInput = {
+    update: XOR<ContactUpdateWithoutFollowUpsInput, ContactUncheckedUpdateWithoutFollowUpsInput>
+    create: XOR<ContactCreateWithoutFollowUpsInput, ContactUncheckedCreateWithoutFollowUpsInput>
+    where?: ContactWhereInput
+  }
+
+  export type ContactUpdateToOneWithWhereWithoutFollowUpsInput = {
+    where?: ContactWhereInput
+    data: XOR<ContactUpdateWithoutFollowUpsInput, ContactUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type ContactUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phones?: NullableJsonNullValueInput | InputJsonValue
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    socialProfiles?: NullableJsonNullValueInput | InputJsonValue
+    doNotEmail?: BoolFieldUpdateOperationsInput | boolean
+    doNotCall?: BoolFieldUpdateOperationsInput | boolean
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ContactUpdatetagsInput | string[]
+    lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: CalendarEventUpdateManyWithoutContactNestedInput
+    cases?: CaseUpdateManyWithoutContactNestedInput
+    checkIns?: CheckInUpdateManyWithoutContactNestedInput
+    account?: AccountUpdateOneWithoutContactsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutContactsNestedInput
+    owner?: UserUpdateOneWithoutOwnedContactsNestedInput
+    previousOwner?: UserUpdateOneWithoutPreviousContactsNestedInput
+    interactions?: InteractionUpdateManyWithoutContactNestedInput
+    quotes?: QuoteUpdateManyWithoutContactNestedInput
+    tasks?: TaskUpdateManyWithoutContactNestedInput
+    emailLists?: EmailListUpdateManyWithoutContactsNestedInput
+    opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
+    documents?: DocumentUpdateManyWithoutContactNestedInput
+    lead?: LeadUpdateOneWithoutConvertedContactsNestedInput
+    branch?: BranchUpdateOneWithoutContactsNestedInput
+  }
+
+  export type ContactUncheckedUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phones?: NullableJsonNullValueInput | InputJsonValue
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    socialProfiles?: NullableJsonNullValueInput | InputJsonValue
+    doNotEmail?: BoolFieldUpdateOperationsInput | boolean
+    doNotCall?: BoolFieldUpdateOperationsInput | boolean
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ContactUpdatetagsInput | string[]
+    lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    events?: CalendarEventUncheckedUpdateManyWithoutContactNestedInput
+    cases?: CaseUncheckedUpdateManyWithoutContactNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutContactNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type UserUpsertWithoutCreatedFollowUpsInput = {
+    update: XOR<UserUpdateWithoutCreatedFollowUpsInput, UserUncheckedUpdateWithoutCreatedFollowUpsInput>
+    create: XOR<UserCreateWithoutCreatedFollowUpsInput, UserUncheckedCreateWithoutCreatedFollowUpsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedFollowUpsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedFollowUpsInput, UserUncheckedUpdateWithoutCreatedFollowUpsInput>
+  }
+
+  export type UserUpdateWithoutCreatedFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
+    metaUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissions?: UserUpdatepermissionsInput | string[]
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
+    createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUpdateManyWithoutCreatedByNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUpdateManyWithoutLastAssignedUserNestedInput
+    managedAssignmentRules?: AssignmentRuleUpdateManyWithoutTargetManagerNestedInput
+    createdEvents?: CalendarEventUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUpdateManyWithoutUserNestedInput
+    ownedContacts?: ContactUpdateManyWithoutOwnerNestedInput
+    createdCustomFields?: CustomFieldUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUpdateManyWithoutCreatedByNestedInput
+    assignedGoals?: GoalUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUpdateManyWithoutCreatedByNestedInput
+    assignedLeads?: LeadUpdateManyWithoutAssignedToNestedInput
+    previousLeads?: LeadUpdateManyWithoutPreviousOwnerNestedInput
+    createdLeads?: LeadUpdateManyWithoutCreatedByNestedInput
+    historyChanger?: LeadHistoryUpdateManyWithoutChangedByNestedInput
+    historyNewOwner?: LeadHistoryUpdateManyWithoutNewOwnerNestedInput
+    historyOldOwner?: LeadHistoryUpdateManyWithoutOldOwnerNestedInput
+    activatedLicenses?: LicenseUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUpdateManyWithoutCancelledByNestedInput
+    notifications?: NotificationUpdateManyWithoutRecipientNestedInput
+    ownedOpportunities?: OpportunityUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUpdateManyWithoutCreatedByNestedInput
+    createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
+    assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
+    assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
+    previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
+    previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
+    previousOpportunities?: OpportunityUpdateManyWithoutPreviousOwnerNestedInput
+    previousTasks?: TaskUpdateManyWithoutPreviousOwnerNestedInput
+    previousCases?: CaseUpdateManyWithoutPreviousOwnerNestedInput
+    previousQuotes?: QuoteUpdateManyWithoutPreviousOwnerNestedInput
+    previousGoals?: GoalUpdateManyWithoutPreviousOwnerNestedInput
+    previousSalesTargets?: SalesTargetUpdateManyWithoutPreviousOwnerNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    reportsTo?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutReportsToNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUpdateManyWithoutUserNestedInput
+    createdWebhooks?: WebhookUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUpdateManyWithoutCreatedByNestedInput
+    createdImportJobs?: ImportJobUpdateManyWithoutCreatedByNestedInput
+    createdPipelines?: PipelineUpdateManyWithoutCreatedByNestedInput
+    createdWebForms?: WebFormUpdateManyWithoutCreatedByNestedInput
+    createdSMSCampaigns?: SMSCampaignUpdateManyWithoutCreatedByNestedInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUpdateManyWithoutCreatedByNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutAgentNestedInput
+    commissions?: CommissionUpdateManyWithoutUserNestedInput
+    createdCommissions?: CommissionUpdateManyWithoutCreatedByNestedInput
+    createdLandingPages?: LandingPageUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    createdDocuments?: DocumentUpdateManyWithoutCreatedByNestedInput
+    team?: TeamUpdateOneWithoutMembersNestedInput
+    createdTeams?: TeamUpdateManyWithoutCreatedByNestedInput
+    managedTeams?: TeamUpdateManyWithoutManagerNestedInput
+    sharedProducts?: ProductShareUpdateManyWithoutCreatedByNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    managedBranches?: BranchUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
+    isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
+    metaUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationPreferences?: NullableJsonNullValueInput | InputJsonValue
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    workingHours?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
+    permissions?: UserUpdatepermissionsInput | string[]
+    dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownedAccounts?: AccountUncheckedUpdateManyWithoutOwnerNestedInput
+    createdApiKeys?: ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    lastAssignedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutLastAssignedUserNestedInput
+    managedAssignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutTargetManagerNestedInput
+    createdEvents?: CalendarEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdCampaigns?: CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedCases?: CaseUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdCases?: CaseUncheckedUpdateManyWithoutCreatedByNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutUserNestedInput
+    ownedContacts?: ContactUncheckedUpdateManyWithoutOwnerNestedInput
+    createdCustomFields?: CustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdDocTemplates?: DocumentTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdEmailLists?: EmailListUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedGoals?: GoalUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdGoals?: GoalUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdInteractions?: InteractionUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedLeads?: LeadUncheckedUpdateManyWithoutAssignedToNestedInput
+    previousLeads?: LeadUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    createdLeads?: LeadUncheckedUpdateManyWithoutCreatedByNestedInput
+    historyChanger?: LeadHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    historyNewOwner?: LeadHistoryUncheckedUpdateManyWithoutNewOwnerNestedInput
+    historyOldOwner?: LeadHistoryUncheckedUpdateManyWithoutOldOwnerNestedInput
+    activatedLicenses?: LicenseUncheckedUpdateManyWithoutActivatedByNestedInput
+    cancelledLicenses?: LicenseUncheckedUpdateManyWithoutCancelledByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+    ownedOpportunities?: OpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+    createdProducts?: ProductUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedQuotes?: QuoteUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdQuotes?: QuoteUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSTemplates?: SMSTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
+    assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
+    assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
+    previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousOpportunities?: OpportunityUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousTasks?: TaskUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousCases?: CaseUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousQuotes?: QuoteUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousGoals?: GoalUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    previousSalesTargets?: SalesTargetUncheckedUpdateManyWithoutPreviousOwnerNestedInput
+    subordinates?: UserUncheckedUpdateManyWithoutReportsToNestedInput
+    leadQuotaTracking?: UserLeadQuotaTrackerUncheckedUpdateManyWithoutUserNestedInput
+    createdWebhooks?: WebhookUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWorkflows?: WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdRules?: WorkflowRuleUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdImportJobs?: ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdPipelines?: PipelineUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWebForms?: WebFormUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSMSCampaigns?: SMSCampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdWhatsAppCampaigns?: WhatsAppCampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutAgentNestedInput
+    commissions?: CommissionUncheckedUpdateManyWithoutUserNestedInput
+    createdCommissions?: CommissionUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdLandingPages?: LandingPageUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    createdDocuments?: DocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTeams?: TeamUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedTeams?: TeamUncheckedUpdateManyWithoutManagerNestedInput
+    sharedProducts?: ProductShareUncheckedUpdateManyWithoutCreatedByNestedInput
+    managedBranches?: BranchUncheckedUpdateManyWithoutManagerNestedInput
+    createdPaymentRecords?: PaymentRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type LeadUpsertWithoutFollowUpsInput = {
+    update: XOR<LeadUpdateWithoutFollowUpsInput, LeadUncheckedUpdateWithoutFollowUpsInput>
+    create: XOR<LeadCreateWithoutFollowUpsInput, LeadUncheckedCreateWithoutFollowUpsInput>
+    where?: LeadWhereInput
+  }
+
+  export type LeadUpdateToOneWithWhereWithoutFollowUpsInput = {
+    where?: LeadWhereInput
+    data: XOR<LeadUpdateWithoutFollowUpsInput, LeadUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type LeadUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: IntFieldUpdateOperationsInput | number
+    engagementScore?: IntFieldUpdateOperationsInput | number
+    qualityScore?: IntFieldUpdateOperationsInput | number
+    isHotLead?: BoolFieldUpdateOperationsInput | boolean
+    lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    stage?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    managerExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    rotationViolation?: BoolFieldUpdateOperationsInput | boolean
+    userExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    violationTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextFollowUp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
+    reEnquiryCount?: IntFieldUpdateOperationsInput | number
+    lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
+    potentialValue?: FloatFieldUpdateOperationsInput | number
+    events?: CalendarEventUpdateManyWithoutLeadNestedInput
+    checkIns?: CheckInUpdateManyWithoutLeadNestedInput
+    interactions?: InteractionUpdateManyWithoutLeadNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedLeadsNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutLeadsNestedInput
+    previousOwner?: UserUpdateOneWithoutPreviousLeadsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
+    history?: LeadHistoryUpdateManyWithoutLeadNestedInput
+    tasks?: TaskUpdateManyWithoutLeadNestedInput
+    emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
+    documents?: DocumentUpdateManyWithoutLeadNestedInput
+    pipeline?: PipelineUpdateOneWithoutLeadsNestedInput
+    products?: LeadProductUpdateManyWithoutLeadNestedInput
+    convertedAccounts?: AccountUpdateManyWithoutLeadNestedInput
+    convertedContacts?: ContactUpdateManyWithoutLeadNestedInput
+    convertedOpportunities?: OpportunityUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUpdateManyWithoutLeadNestedInput
+    branch?: BranchUpdateOneWithoutLeadsNestedInput
+  }
+
+  export type LeadUncheckedUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    secondaryPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneCountryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    enquiryAbout?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    source?: EnumLeadSourceFieldUpdateOperationsInput | $Enums.LeadSource
+    sourceDetails?: NullableJsonNullValueInput | InputJsonValue
+    leadScore?: IntFieldUpdateOperationsInput | number
+    engagementScore?: IntFieldUpdateOperationsInput | number
+    qualityScore?: IntFieldUpdateOperationsInput | number
+    isHotLead?: BoolFieldUpdateOperationsInput | boolean
+    lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    stage?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    activities?: NullableJsonNullValueInput | InputJsonValue
+    tags?: LeadUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    teamId?: NullableStringFieldUpdateOperationsInput | string | null
+    managerExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    rotationViolation?: BoolFieldUpdateOperationsInput | boolean
+    userExplanation?: NullableStringFieldUpdateOperationsInput | string | null
+    violationTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextFollowUp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
+    reEnquiryCount?: IntFieldUpdateOperationsInput | number
+    lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    potentialValue?: FloatFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    events?: CalendarEventUncheckedUpdateManyWithoutLeadNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutLeadNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
+    history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
+    products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
+    convertedAccounts?: AccountUncheckedUpdateManyWithoutLeadNestedInput
+    convertedContacts?: ContactUncheckedUpdateManyWithoutLeadNestedInput
+    convertedOpportunities?: OpportunityUncheckedUpdateManyWithoutLeadNestedInput
+    callRecordings?: CallRecordingUncheckedUpdateManyWithoutLeadNestedInput
+  }
+
+  export type OpportunityUpsertWithoutFollowUpsInput = {
+    update: XOR<OpportunityUpdateWithoutFollowUpsInput, OpportunityUncheckedUpdateWithoutFollowUpsInput>
+    create: XOR<OpportunityCreateWithoutFollowUpsInput, OpportunityUncheckedCreateWithoutFollowUpsInput>
+    where?: OpportunityWhereInput
+  }
+
+  export type OpportunityUpdateToOneWithWhereWithoutFollowUpsInput = {
+    where?: OpportunityWhereInput
+    data: XOR<OpportunityUpdateWithoutFollowUpsInput, OpportunityUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type OpportunityUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    stage?: StringFieldUpdateOperationsInput | string
+    probability?: FloatFieldUpdateOperationsInput | number
+    closeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
+    events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
+    interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
+    account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutOpportunitiesNestedInput
+    owner?: UserUpdateOneWithoutOwnedOpportunitiesNestedInput
+    previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
+    quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
+    tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
+    documents?: DocumentUpdateManyWithoutOpportunityNestedInput
+    lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
+    pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
+    emiSchedule?: EMIScheduleUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOpportunityNestedInput
+    branch?: BranchUpdateOneWithoutOpportunitiesNestedInput
+  }
+
+  export type OpportunityUncheckedUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    stage?: StringFieldUpdateOperationsInput | string
+    probability?: FloatFieldUpdateOperationsInput | number
+    closeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    leadSource?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    customFields?: NullableJsonNullValueInput | InputJsonValue
+    tags?: OpportunityUpdatetagsInput | string[]
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    paymentStatus?: StringFieldUpdateOperationsInput | string
+    paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
+    emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
+  }
+
+  export type OrganisationUpsertWithoutFollowUpsInput = {
+    update: XOR<OrganisationUpdateWithoutFollowUpsInput, OrganisationUncheckedUpdateWithoutFollowUpsInput>
+    create: XOR<OrganisationCreateWithoutFollowUpsInput, OrganisationUncheckedCreateWithoutFollowUpsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutFollowUpsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutFollowUpsInput, OrganisationUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type OrganisationUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    userLimit?: IntFieldUpdateOperationsInput | number
+    contactLimit?: IntFieldUpdateOperationsInput | number
+    storageLimit?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    userIdCounter?: IntFieldUpdateOperationsInput | number
+    apiKey?: NullableStringFieldUpdateOperationsInput | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    accounts?: AccountUpdateManyWithoutOrganisationNestedInput
+    apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
+    assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
+    events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
+    callSettings?: CallSettingsUpdateOneWithoutOrganisationNestedInput
+    campaigns?: CampaignUpdateManyWithoutOrganisationNestedInput
+    cases?: CaseUpdateManyWithoutOrganisationNestedInput
+    checkIns?: CheckInUpdateManyWithoutOrganisationNestedInput
+    contacts?: ContactUpdateManyWithoutOrganisationNestedInput
+    customFields?: CustomFieldUpdateManyWithoutOrganisationNestedInput
+    emailLists?: EmailListUpdateManyWithoutOrganisationNestedInput
+    goals?: GoalUpdateManyWithoutOrganisationNestedInput
+    interactions?: InteractionUpdateManyWithoutOrganisationNestedInput
+    leads?: LeadUpdateManyWithoutOrganisationNestedInput
+    licenses?: LicenseUpdateManyWithoutOrganisationNestedInput
+    opportunities?: OpportunityUpdateManyWithoutOrganisationNestedInput
+    products?: ProductUpdateManyWithoutOrganisationNestedInput
+    quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
+    salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
+    tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
+    workflows?: WorkflowUpdateManyWithoutOrganisationNestedInput
+    workflowRules?: WorkflowRuleUpdateManyWithoutOrganisationNestedInput
+    importJobs?: ImportJobUpdateManyWithoutOrganisationNestedInput
+    pipelines?: PipelineUpdateManyWithoutOrganisationNestedInput
+    webForms?: WebFormUpdateManyWithoutOrganisationNestedInput
+    smsCampaigns?: SMSCampaignUpdateManyWithoutOrganisationNestedInput
+    whatsAppCampaigns?: WhatsAppCampaignUpdateManyWithoutOrganisationNestedInput
+    whatsAppMessages?: WhatsAppMessageUpdateManyWithoutOrganisationNestedInput
+    commissions?: CommissionUpdateManyWithoutOrganisationNestedInput
+    landingPages?: LandingPageUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    queueItems?: WorkflowQueueUpdateManyWithoutOrganisationNestedInput
+    teams?: TeamUpdateManyWithoutOrganisationNestedInput
+    accountProducts?: AccountProductUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    productShares?: ProductShareUpdateManyWithoutOrganisationNestedInput
+    branches?: BranchUpdateManyWithoutOrganisationNestedInput
+    rolePermissions?: RoleUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    domain?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: NullableJsonNullValueInput | InputJsonValue
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    userLimit?: IntFieldUpdateOperationsInput | number
+    contactLimit?: IntFieldUpdateOperationsInput | number
+    storageLimit?: IntFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    userIdCounter?: IntFieldUpdateOperationsInput | number
+    apiKey?: NullableStringFieldUpdateOperationsInput | string | null
+    integrations?: NullableJsonNullValueInput | InputJsonValue
+    leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
+    dailyReportTime?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    upsellConfig?: NullableJsonNullValueInput | InputJsonValue
+    ssoConfig?: NullableJsonNullValueInput | InputJsonValue
+    whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
+    apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
+    assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
+    events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    callSettings?: CallSettingsUncheckedUpdateOneWithoutOrganisationNestedInput
+    campaigns?: CampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    cases?: CaseUncheckedUpdateManyWithoutOrganisationNestedInput
+    checkIns?: CheckInUncheckedUpdateManyWithoutOrganisationNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutOrganisationNestedInput
+    customFields?: CustomFieldUncheckedUpdateManyWithoutOrganisationNestedInput
+    emailLists?: EmailListUncheckedUpdateManyWithoutOrganisationNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutOrganisationNestedInput
+    interactions?: InteractionUncheckedUpdateManyWithoutOrganisationNestedInput
+    leads?: LeadUncheckedUpdateManyWithoutOrganisationNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutOrganisationNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutOrganisationNestedInput
+    products?: ProductUncheckedUpdateManyWithoutOrganisationNestedInput
+    quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
+    salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
+    workflows?: WorkflowUncheckedUpdateManyWithoutOrganisationNestedInput
+    workflowRules?: WorkflowRuleUncheckedUpdateManyWithoutOrganisationNestedInput
+    importJobs?: ImportJobUncheckedUpdateManyWithoutOrganisationNestedInput
+    pipelines?: PipelineUncheckedUpdateManyWithoutOrganisationNestedInput
+    webForms?: WebFormUncheckedUpdateManyWithoutOrganisationNestedInput
+    smsCampaigns?: SMSCampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    whatsAppCampaigns?: WhatsAppCampaignUncheckedUpdateManyWithoutOrganisationNestedInput
+    whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutOrganisationNestedInput
+    commissions?: CommissionUncheckedUpdateManyWithoutOrganisationNestedInput
+    landingPages?: LandingPageUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    queueItems?: WorkflowQueueUncheckedUpdateManyWithoutOrganisationNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutOrganisationNestedInput
+    accountProducts?: AccountProductUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    productShares?: ProductShareUncheckedUpdateManyWithoutOrganisationNestedInput
+    branches?: BranchUncheckedUpdateManyWithoutOrganisationNestedInput
+    rolePermissions?: RoleUncheckedUpdateManyWithoutOrganisationNestedInput
+    emiSchedules?: EMIScheduleUncheckedUpdateManyWithoutOrganisationNestedInput
+    paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type BranchUpsertWithoutFollowUpsInput = {
+    update: XOR<BranchUpdateWithoutFollowUpsInput, BranchUncheckedUpdateWithoutFollowUpsInput>
+    create: XOR<BranchCreateWithoutFollowUpsInput, BranchUncheckedCreateWithoutFollowUpsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutFollowUpsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutFollowUpsInput, BranchUncheckedUpdateWithoutFollowUpsInput>
+  }
+
+  export type BranchUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
+    manager?: UserUpdateOneWithoutManagedBranchesNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    leads?: LeadUpdateManyWithoutBranchNestedInput
+    contacts?: ContactUpdateManyWithoutBranchNestedInput
+    opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
+    accounts?: AccountUpdateManyWithoutBranchNestedInput
+    tasks?: TaskUpdateManyWithoutBranchNestedInput
+    interactions?: InteractionUpdateManyWithoutBranchNestedInput
+    assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
+    products?: ProductUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutFollowUpsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: StringFieldUpdateOperationsInput | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    leads?: LeadUncheckedUpdateManyWithoutBranchNestedInput
+    contacts?: ContactUncheckedUpdateManyWithoutBranchNestedInput
+    opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -135254,6 +140679,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -135289,6 +140715,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -135326,6 +140753,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousContactsInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -135364,6 +140792,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -135435,6 +140864,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -135536,6 +140967,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -135622,6 +141055,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -135684,6 +141118,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -135723,6 +141158,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -135759,6 +141195,7 @@ export namespace Prisma {
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -135816,6 +141253,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -135887,6 +141325,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -135934,6 +141373,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
   }
@@ -135955,6 +141395,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
@@ -136057,6 +141498,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -136092,6 +141534,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -136135,6 +141578,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousContactsNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -136173,6 +141617,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -136250,6 +141695,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -136351,6 +141798,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -136443,6 +141892,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -136505,6 +141955,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -136550,6 +142001,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -136586,6 +142038,7 @@ export namespace Prisma {
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -136649,6 +142102,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -136720,6 +142174,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -136773,6 +142228,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
   }
@@ -136794,6 +142250,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
@@ -136825,6 +142282,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -136860,6 +142318,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -136897,6 +142356,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -136935,6 +142395,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -137006,6 +142467,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -137107,6 +142570,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -137193,6 +142658,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -137255,6 +142721,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -137294,6 +142761,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -137330,6 +142798,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -137387,6 +142856,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -137458,6 +142928,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -137526,6 +142997,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -137561,6 +143033,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -137604,6 +143077,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -137642,6 +143116,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -137719,6 +143194,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -137820,6 +143297,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -137912,6 +143391,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -137974,6 +143454,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -138019,6 +143500,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -138055,6 +143537,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -138118,6 +143601,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -138189,6 +143673,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -138318,6 +143803,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -138419,6 +143906,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -138503,6 +143992,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -138574,6 +144064,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -138633,6 +144124,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
     documents?: DocumentCreateNestedManyWithoutContactInput
@@ -138671,6 +144163,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
     documents?: DocumentUncheckedCreateNestedManyWithoutContactInput
@@ -138730,6 +144223,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
     pipeline?: PipelineCreateNestedOneWithoutLeadsInput
@@ -138792,6 +144286,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
     products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
@@ -138893,6 +144388,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -138994,6 +144491,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -139084,6 +144583,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -139155,6 +144655,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -139272,6 +144773,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -139373,6 +144876,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -139488,6 +144993,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -139559,6 +145065,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -139660,6 +145167,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -139761,6 +145270,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -139888,6 +145399,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -139959,6 +145471,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -140045,6 +145558,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -140146,6 +145661,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -140230,6 +145747,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -140301,6 +145819,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -140432,6 +145951,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -140533,6 +146054,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -140623,6 +146146,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -140694,6 +146218,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -140822,6 +146347,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -140893,6 +146419,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -141027,6 +146554,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -141098,6 +146626,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -141183,6 +146712,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -141284,6 +146815,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -141368,6 +146901,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -141439,6 +146973,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -141540,6 +147075,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -141641,6 +147178,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -141731,6 +147270,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -141802,6 +147342,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -141886,6 +147427,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -141987,6 +147530,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -142096,6 +147641,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -142197,6 +147744,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -142290,6 +147839,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -142391,6 +147942,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -142500,6 +148053,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -142601,6 +148156,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -142760,6 +148317,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -142861,6 +148420,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -142959,6 +148520,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -143060,6 +148623,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -143144,6 +148709,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -143215,6 +148781,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -143363,6 +148930,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -143464,6 +149033,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -143568,6 +149139,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -143669,6 +149242,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -143759,6 +149334,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -143830,6 +149406,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -143968,6 +149545,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -144069,6 +149648,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -144167,6 +149748,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -144268,6 +149851,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -144352,6 +149937,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -144423,6 +150009,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -144513,6 +150100,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -144614,6 +150203,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -144669,6 +150260,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutBranchInput
     accounts?: AccountCreateNestedManyWithoutBranchInput
     tasks?: TaskCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpCreateNestedManyWithoutBranchInput
     interactions?: InteractionCreateNestedManyWithoutBranchInput
     products?: ProductCreateNestedManyWithoutBranchInput
   }
@@ -144690,6 +150282,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutBranchInput
     accounts?: AccountUncheckedCreateNestedManyWithoutBranchInput
     tasks?: TaskUncheckedCreateNestedManyWithoutBranchInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutBranchInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutBranchInput
     products?: ProductUncheckedCreateNestedManyWithoutBranchInput
   }
@@ -144770,6 +150363,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -144871,6 +150466,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -144975,6 +150572,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -145076,6 +150675,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -145166,6 +150767,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -145237,6 +150839,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -145333,6 +150936,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -145434,6 +151039,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -145495,6 +151102,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
   }
@@ -145516,6 +151124,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
   }
@@ -145580,6 +151189,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedByInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -145681,6 +151292,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedByInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -145780,6 +151393,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -145881,6 +151496,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -145978,6 +151595,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -146079,6 +151698,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -146194,6 +151815,7 @@ export namespace Prisma {
     products?: ProductCreateNestedManyWithoutOrganisationInput
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -146265,6 +151887,7 @@ export namespace Prisma {
     products?: ProductUncheckedCreateNestedManyWithoutOrganisationInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -146546,6 +152169,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUpdateManyWithoutAssignedByNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -146647,6 +152272,8 @@ export namespace Prisma {
     createdSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedByNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -146752,6 +152379,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -146853,6 +152482,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -146956,6 +152587,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -147057,6 +152690,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -147184,6 +152819,7 @@ export namespace Prisma {
     products?: ProductUpdateManyWithoutOrganisationNestedInput
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -147255,6 +152891,7 @@ export namespace Prisma {
     products?: ProductUncheckedUpdateManyWithoutOrganisationNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -147488,6 +153125,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -147589,6 +153228,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -147688,6 +153329,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -147789,6 +153432,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -147886,6 +153531,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -147987,6 +153634,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -148071,6 +153720,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -148142,6 +153792,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -148243,6 +153894,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -148344,6 +153997,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -148449,6 +154104,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -148550,6 +154207,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -148653,6 +154312,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -148754,6 +154415,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -148844,6 +154507,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -148915,6 +154579,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -148967,6 +154632,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -149002,6 +154668,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -149071,6 +154738,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -149172,6 +154841,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -149271,6 +154942,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -149372,6 +155045,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -149437,6 +155112,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -149475,6 +155151,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -149546,6 +155223,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -149647,6 +155326,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -149731,6 +155412,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -149802,6 +155484,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -149870,6 +155553,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -149905,6 +155589,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -149980,6 +155665,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -150081,6 +155768,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -150186,6 +155875,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -150287,6 +155978,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -150358,6 +156051,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -150396,6 +156090,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -150473,6 +156168,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -150574,6 +156271,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -150664,6 +156363,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -150735,6 +156435,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -150787,6 +156488,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -150822,6 +156524,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -150859,6 +156562,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -150897,6 +156601,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -150956,6 +156661,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -151018,6 +156724,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -151079,6 +156786,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -151150,6 +156858,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -151240,6 +156949,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -151341,6 +157052,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -151417,6 +157130,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -151452,6 +157166,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -151495,6 +157210,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -151533,6 +157249,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -151598,6 +157315,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -151660,6 +157378,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -151727,6 +157446,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -151798,6 +157518,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -151894,6 +157615,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -151995,6 +157718,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -152088,6 +157813,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -152189,6 +157916,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -152273,6 +158002,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -152344,6 +158074,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -152445,6 +158176,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -152546,6 +158279,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -152636,6 +158371,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -152707,6 +158443,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -152793,6 +158530,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -152894,6 +158633,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -153003,6 +158744,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -153104,6 +158847,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -153196,6 +158941,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -153297,6 +159044,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -153381,6 +159130,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -153452,6 +159202,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -153553,6 +159304,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -153654,6 +159407,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -153744,6 +159499,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -153815,6 +159571,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -153901,6 +159658,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
     previousOpportunities?: OpportunityCreateNestedManyWithoutPreviousOwnerInput
@@ -154002,6 +159761,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousOpportunities?: OpportunityUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -154086,6 +159847,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
     workflows?: WorkflowCreateNestedManyWithoutOrganisationInput
@@ -154157,6 +159919,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutOrganisationInput
@@ -154258,6 +160021,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
     previousOpportunities?: OpportunityUpdateManyWithoutPreviousOwnerNestedInput
@@ -154359,6 +160124,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousOpportunities?: OpportunityUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -154449,6 +160216,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
     workflows?: WorkflowUpdateManyWithoutOrganisationNestedInput
@@ -154520,6 +160288,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -154605,6 +160374,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -154706,6 +160477,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -154790,6 +160563,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     workflows?: WorkflowCreateNestedManyWithoutOrganisationInput
@@ -154861,6 +160635,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutOrganisationInput
@@ -154962,6 +160737,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -155063,6 +160840,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -155153,6 +160932,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     workflows?: WorkflowUpdateManyWithoutOrganisationNestedInput
@@ -155224,6 +161004,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -155309,6 +161090,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -155410,6 +161193,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -155519,6 +161304,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -155620,6 +161407,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -155698,6 +161487,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -155769,6 +161559,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -155856,6 +161647,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -155927,6 +161719,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -156012,6 +161805,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -156113,6 +161908,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -156199,6 +161996,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousLeadsInput
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -156261,6 +162059,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedCreateNestedManyWithoutLeadInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -156336,6 +162135,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -156437,6 +162238,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -156535,6 +162338,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -156636,6 +162441,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -156745,6 +162552,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -156846,6 +162655,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -156938,6 +162749,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousLeadsNestedInput
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -157000,6 +162812,7 @@ export namespace Prisma {
     checkIns?: CheckInUncheckedUpdateManyWithoutLeadNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -157081,6 +162894,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -157182,6 +162997,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -157286,6 +163103,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -157387,6 +163206,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -157481,6 +163302,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -157582,6 +163405,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -157666,6 +163491,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -157737,6 +163563,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -157838,6 +163665,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -157939,6 +163768,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -158029,6 +163860,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -158100,6 +163932,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -158171,6 +164004,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -158242,6 +164076,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -158332,6 +164167,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -158433,6 +164270,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -158519,6 +164358,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -158580,6 +164420,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -158625,6 +164466,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -158660,6 +164502,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -158734,6 +164577,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -158805,6 +164649,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -158901,6 +164746,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -159002,6 +164849,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -159113,6 +164962,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -159184,6 +165034,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -159274,6 +165125,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -159375,6 +165228,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -159470,6 +165325,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -159541,6 +165397,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -159637,6 +165494,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -159738,6 +165597,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -159817,6 +165678,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -159888,6 +165750,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -159978,6 +165841,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -160079,6 +165944,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -160174,6 +166041,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -160245,6 +166113,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -160341,6 +166210,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -160442,6 +166313,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -160521,6 +166394,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -160592,6 +166466,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -160682,6 +166557,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -160783,6 +166660,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -160936,6 +166815,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -161007,6 +166887,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -161103,6 +166984,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -161204,6 +167087,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -161299,6 +167184,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -161370,6 +167256,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -161448,6 +167335,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
     pipeline?: PipelineCreateNestedOneWithoutLeadsInput
@@ -161510,6 +167398,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
     products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
@@ -161553,6 +167442,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     documents?: DocumentCreateNestedManyWithoutContactInput
@@ -161591,6 +167481,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     documents?: DocumentUncheckedCreateNestedManyWithoutContactInput
@@ -161662,6 +167553,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -161763,6 +167656,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -161901,6 +167796,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -161972,6 +167868,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -162056,6 +167953,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
     pipeline?: PipelineUpdateOneWithoutLeadsNestedInput
@@ -162118,6 +168016,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
     products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
@@ -162167,6 +168066,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     documents?: DocumentUpdateManyWithoutContactNestedInput
@@ -162205,6 +168105,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutContactNestedInput
@@ -162282,6 +168183,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -162383,6 +168286,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -162525,6 +168430,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -162626,6 +168533,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -162710,6 +168619,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -162781,6 +168691,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -162871,6 +168782,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -162972,6 +168885,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -163081,6 +168996,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -163182,6 +169099,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -163272,6 +169191,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -163343,6 +169263,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -163439,6 +169360,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -163540,6 +169463,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -163619,6 +169544,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -163690,6 +169616,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -163780,6 +169707,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -163881,6 +169810,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -163976,6 +169907,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -164047,6 +169979,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -164143,6 +170076,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -164244,6 +170179,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -164323,6 +170260,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -164394,6 +170332,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -164484,6 +170423,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -164585,6 +170526,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -164680,6 +170623,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -164751,6 +170695,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -164847,6 +170792,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -164948,6 +170895,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -165027,6 +170976,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -165098,6 +171048,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -165188,6 +171139,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -165289,6 +171242,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -165375,6 +171330,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     pipeline?: PipelineCreateNestedOneWithoutLeadsInput
@@ -165437,6 +171393,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     products?: LeadProductUncheckedCreateNestedManyWithoutLeadInput
@@ -165480,6 +171437,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -165518,6 +171476,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -165556,6 +171515,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
     branch?: BranchCreateNestedOneWithoutAccountsInput
@@ -165591,6 +171551,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -165624,6 +171585,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
     pipeline?: PipelineCreateNestedOneWithoutOpportunitiesInput
@@ -165660,6 +171622,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
@@ -165788,6 +171751,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -165859,6 +171823,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -165955,6 +171920,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -166056,6 +172023,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -166148,6 +172117,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     pipeline?: PipelineUpdateOneWithoutLeadsNestedInput
@@ -166210,6 +172180,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
@@ -166259,6 +172230,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -166297,6 +172269,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -166341,6 +172314,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
     branch?: BranchUpdateOneWithoutAccountsNestedInput
@@ -166376,6 +172350,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -166415,6 +172390,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
@@ -166451,6 +172427,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -166598,6 +172575,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -166699,6 +172678,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -166783,6 +172764,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -166854,6 +172836,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -167026,6 +173009,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -167127,6 +173112,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -167217,6 +173204,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -167288,6 +173276,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -167359,6 +173348,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -167430,6 +173420,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -167520,6 +173511,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -167621,6 +173614,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -167719,6 +173714,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -167819,6 +173816,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -167911,6 +173910,7 @@ export namespace Prisma {
     createdBy?: UserCreateNestedOneWithoutCreatedLeadsInput
     history?: LeadHistoryCreateNestedManyWithoutLeadInput
     tasks?: TaskCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpCreateNestedManyWithoutLeadInput
     emailLists?: EmailListCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutLeadInput
     documents?: DocumentCreateNestedManyWithoutLeadInput
@@ -167972,6 +173972,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutLeadInput
     history?: LeadHistoryUncheckedCreateNestedManyWithoutLeadInput
     tasks?: TaskUncheckedCreateNestedManyWithoutLeadInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutLeadInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutLeadsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutLeadInput
     documents?: DocumentUncheckedCreateNestedManyWithoutLeadInput
@@ -168021,6 +174022,7 @@ export namespace Prisma {
     interactions?: InteractionCreateNestedManyWithoutContactInput
     quotes?: QuoteCreateNestedManyWithoutContactInput
     tasks?: TaskCreateNestedManyWithoutContactInput
+    followUps?: FollowUpCreateNestedManyWithoutContactInput
     emailLists?: EmailListCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageCreateNestedManyWithoutContactInput
@@ -168058,6 +174060,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutContactInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutContactInput
     tasks?: TaskUncheckedCreateNestedManyWithoutContactInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutContactInput
     emailLists?: EmailListUncheckedCreateNestedManyWithoutContactsInput
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutContactsInput
     whatsAppMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
@@ -168099,6 +174102,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -168134,6 +174138,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -168178,6 +174183,7 @@ export namespace Prisma {
     opportunities?: OpportunityCreateNestedManyWithoutAccountInput
     quotes?: QuoteCreateNestedManyWithoutAccountInput
     tasks?: TaskCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpCreateNestedManyWithoutAccountInput
     documents?: DocumentCreateNestedManyWithoutAccountInput
     lead?: LeadCreateNestedOneWithoutConvertedAccountsInput
     accountProducts?: AccountProductCreateNestedManyWithoutAccountInput
@@ -168212,6 +174218,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedCreateNestedManyWithoutAccountInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutAccountInput
     tasks?: TaskUncheckedCreateNestedManyWithoutAccountInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutAccountInput
     documents?: DocumentUncheckedCreateNestedManyWithoutAccountInput
     accountProducts?: AccountProductUncheckedCreateNestedManyWithoutAccountInput
   }
@@ -168275,6 +174282,56 @@ export namespace Prisma {
 
   export type TaskCreateManyBranchInputEnvelope = {
     data: TaskCreateManyBranchInput | TaskCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FollowUpCreateWithoutBranchInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account?: AccountCreateNestedOneWithoutFollowUpsInput
+    assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
+    contact?: ContactCreateNestedOneWithoutFollowUpsInput
+    createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
+    lead?: LeadCreateNestedOneWithoutFollowUpsInput
+    opportunity?: OpportunityCreateNestedOneWithoutFollowUpsInput
+    organisation?: OrganisationCreateNestedOneWithoutFollowUpsInput
+  }
+
+  export type FollowUpUncheckedCreateWithoutBranchInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateOrConnectWithoutBranchInput = {
+    where: FollowUpWhereUniqueInput
+    create: XOR<FollowUpCreateWithoutBranchInput, FollowUpUncheckedCreateWithoutBranchInput>
+  }
+
+  export type FollowUpCreateManyBranchInputEnvelope = {
+    data: FollowUpCreateManyBranchInput | FollowUpCreateManyBranchInput[]
     skipDuplicates?: boolean
   }
 
@@ -168534,6 +174591,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -168605,6 +174663,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -168701,6 +174760,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -168802,6 +174863,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -168930,6 +174993,22 @@ export namespace Prisma {
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutBranchInput>
   }
 
+  export type FollowUpUpsertWithWhereUniqueWithoutBranchInput = {
+    where: FollowUpWhereUniqueInput
+    update: XOR<FollowUpUpdateWithoutBranchInput, FollowUpUncheckedUpdateWithoutBranchInput>
+    create: XOR<FollowUpCreateWithoutBranchInput, FollowUpUncheckedCreateWithoutBranchInput>
+  }
+
+  export type FollowUpUpdateWithWhereUniqueWithoutBranchInput = {
+    where: FollowUpWhereUniqueInput
+    data: XOR<FollowUpUpdateWithoutBranchInput, FollowUpUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type FollowUpUpdateManyWithWhereWithoutBranchInput = {
+    where: FollowUpScalarWhereInput
+    data: XOR<FollowUpUpdateManyMutationInput, FollowUpUncheckedUpdateManyWithoutBranchInput>
+  }
+
   export type InteractionUpsertWithWhereUniqueWithoutBranchInput = {
     where: InteractionWhereUniqueInput
     update: XOR<InteractionUpdateWithoutBranchInput, InteractionUncheckedUpdateWithoutBranchInput>
@@ -169025,6 +175104,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -169096,6 +175176,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -169183,6 +175264,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -169254,6 +175336,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -169303,6 +175386,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -169339,6 +175423,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     paymentRecords?: PaymentRecordUncheckedCreateNestedManyWithoutOpportunityInput
@@ -169396,6 +175481,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -169467,6 +175553,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -169570,6 +175657,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -169606,6 +175694,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -169669,6 +175758,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -169740,6 +175830,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -169938,6 +176029,7 @@ export namespace Prisma {
     previousOwner?: UserCreateNestedOneWithoutPreviousOpportunitiesInput
     quotes?: QuoteCreateNestedManyWithoutOpportunityInput
     tasks?: TaskCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpCreateNestedManyWithoutOpportunityInput
     contacts?: ContactCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentCreateNestedManyWithoutOpportunityInput
     lead?: LeadCreateNestedOneWithoutConvertedOpportunitiesInput
@@ -169974,6 +176066,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
     quotes?: QuoteUncheckedCreateNestedManyWithoutOpportunityInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOpportunityInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOpportunityInput
     contacts?: ContactUncheckedCreateNestedManyWithoutOpportunitiesInput
     documents?: DocumentUncheckedCreateNestedManyWithoutOpportunityInput
     emiSchedule?: EMIScheduleUncheckedCreateNestedOneWithoutOpportunityInput
@@ -170078,6 +176171,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactCreateNestedManyWithoutPreviousOwnerInput
@@ -170179,6 +176274,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedCreateNestedManyWithoutAssignedToInput
     assignedTasks?: TaskUncheckedCreateNestedManyWithoutAssignedToInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedFollowUps?: FollowUpUncheckedCreateNestedManyWithoutAssignedToInput
+    createdFollowUps?: FollowUpUncheckedCreateNestedManyWithoutCreatedByInput
     managedTerritories?: TerritoryUncheckedCreateNestedManyWithoutManagerInput
     previousAccounts?: AccountUncheckedCreateNestedManyWithoutPreviousOwnerInput
     previousContacts?: ContactUncheckedCreateNestedManyWithoutPreviousOwnerInput
@@ -170263,6 +176360,7 @@ export namespace Prisma {
     quotes?: QuoteCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetCreateNestedManyWithoutOrganisationInput
     tasks?: TaskCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryCreateNestedManyWithoutOrganisationInput
     users?: UserCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookCreateNestedManyWithoutOrganisationInput
@@ -170334,6 +176432,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedCreateNestedManyWithoutOrganisationInput
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutOrganisationInput
     tasks?: TaskUncheckedCreateNestedManyWithoutOrganisationInput
+    followUps?: FollowUpUncheckedCreateNestedManyWithoutOrganisationInput
     territories?: TerritoryUncheckedCreateNestedManyWithoutOrganisationInput
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     webhooks?: WebhookUncheckedCreateNestedManyWithoutOrganisationInput
@@ -170399,6 +176498,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -170435,6 +176535,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -170551,6 +176652,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -170652,6 +176755,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -170742,6 +176847,7 @@ export namespace Prisma {
     quotes?: QuoteUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUpdateManyWithoutOrganisationNestedInput
     users?: UserUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUpdateManyWithoutOrganisationNestedInput
@@ -170813,6 +176919,7 @@ export namespace Prisma {
     quotes?: QuoteUncheckedUpdateManyWithoutOrganisationNestedInput
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutOrganisationNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOrganisationNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOrganisationNestedInput
     territories?: TerritoryUncheckedUpdateManyWithoutOrganisationNestedInput
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     webhooks?: WebhookUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -171280,6 +177387,26 @@ export namespace Prisma {
     branchId?: string | null
   }
 
+  export type FollowUpCreateManyOrganisationInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type TerritoryCreateManyOrganisationInput = {
     id?: string
     name: string
@@ -171672,6 +177799,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -171707,6 +177835,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -172142,6 +178271,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -172180,6 +178310,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -172491,6 +178622,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -172553,6 +178685,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -172694,6 +178827,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -172730,6 +178864,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -173078,6 +179213,66 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type FollowUpUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TerritoryUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -173187,6 +179382,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -173287,6 +179484,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -174197,6 +180396,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -174218,6 +180418,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -175151,6 +181352,46 @@ export namespace Prisma {
     branchId?: string | null
   }
 
+  export type FollowUpCreateManyAssignedToInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FollowUpCreateManyCreatedByInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type TerritoryCreateManyManagerInput = {
     id?: string
     name: string
@@ -175729,6 +181970,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -175764,6 +182006,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -176433,6 +182676,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -176471,6 +182715,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -176893,6 +183138,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -176955,6 +183201,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -177060,6 +183307,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -177122,6 +183370,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -177227,6 +183476,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -177289,6 +183539,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -177637,6 +183888,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -177673,6 +183925,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -178298,6 +184551,126 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type FollowUpUpdateWithoutAssignedToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutAssignedToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutAssignedToInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TerritoryUpdateWithoutManagerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -178373,6 +184746,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -178408,6 +184782,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -178462,6 +184837,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -178500,6 +184876,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -178556,6 +184933,7 @@ export namespace Prisma {
     owner?: UserUpdateOneWithoutOwnedOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -178592,6 +184970,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -179036,6 +185415,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -179136,6 +185517,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -180104,6 +186487,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutBranchNestedInput
     accounts?: AccountUpdateManyWithoutBranchNestedInput
     tasks?: TaskUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutBranchNestedInput
     products?: ProductUpdateManyWithoutBranchNestedInput
@@ -180125,6 +186509,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutBranchNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutBranchNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutBranchNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutBranchNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutBranchNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutBranchNestedInput
     products?: ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -180297,6 +186682,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -180397,6 +186784,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -180634,6 +187023,26 @@ export namespace Prisma {
     updatedAt?: Date | string
     previousOwnerId?: string | null
     branchId?: string | null
+  }
+
+  export type FollowUpCreateManyLeadInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type WhatsAppMessageCreateManyLeadInput = {
@@ -181074,6 +187483,66 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type FollowUpUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EmailListUpdateWithoutLeadsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -181297,6 +187766,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
     branch?: BranchUpdateOneWithoutAccountsNestedInput
@@ -181331,6 +187801,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -181386,6 +187857,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -181423,6 +187895,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -181480,6 +187953,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
@@ -181515,6 +187989,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -181789,6 +188264,26 @@ export namespace Prisma {
     branchId?: string | null
   }
 
+  export type FollowUpCreateManyAccountInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type DocumentCreateManyAccountInput = {
     id?: string
     name: string
@@ -181850,6 +188345,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -181885,6 +188381,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -182128,6 +188625,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -182166,6 +188664,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -182297,6 +188796,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -182333,6 +188833,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -182520,6 +189021,66 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FollowUpUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DocumentUpdateWithoutAccountInput = {
@@ -182764,6 +189325,26 @@ export namespace Prisma {
     updatedAt?: Date | string
     previousOwnerId?: string | null
     branchId?: string | null
+  }
+
+  export type FollowUpCreateManyContactInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type WhatsAppMessageCreateManyContactInput = {
@@ -183233,6 +189814,66 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type FollowUpUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EmailListUpdateWithoutContactsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -183295,6 +189936,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
     pipeline?: PipelineUpdateOneWithoutOpportunitiesNestedInput
@@ -183331,6 +189973,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
     paymentRecords?: PaymentRecordUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -183601,6 +190244,26 @@ export namespace Prisma {
     updatedAt?: Date | string
     previousOwnerId?: string | null
     branchId?: string | null
+  }
+
+  export type FollowUpCreateManyOpportunityInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    branchId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type DocumentCreateManyOpportunityInput = {
@@ -183951,6 +190614,66 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type FollowUpUpdateWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+    branch?: BranchUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutOpportunityInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ContactUpdateWithoutOpportunitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
@@ -183980,6 +190703,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
     documents?: DocumentUpdateManyWithoutContactNestedInput
@@ -184018,6 +190742,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutContactNestedInput
@@ -184589,6 +191314,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
     documents?: DocumentUpdateManyWithoutContactNestedInput
@@ -184627,6 +191353,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutContactNestedInput
@@ -184708,6 +191435,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
     pipeline?: PipelineUpdateOneWithoutLeadsNestedInput
@@ -184770,6 +191498,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
     products?: LeadProductUncheckedUpdateManyWithoutLeadNestedInput
@@ -185166,6 +191895,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -185227,6 +191957,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -185309,6 +192040,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -185344,6 +192076,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -185743,6 +192476,26 @@ export namespace Prisma {
     previousOwnerId?: string | null
   }
 
+  export type FollowUpCreateManyBranchInput = {
+    id?: string
+    subject: string
+    description?: string | null
+    status?: $Enums.FollowUpStatus
+    priority?: $Enums.FollowUpPriority
+    dueDate: Date | string
+    leadId?: string | null
+    contactId?: string | null
+    accountId?: string | null
+    opportunityId?: string | null
+    assignedToId?: string | null
+    createdById?: string | null
+    organisationId?: string | null
+    isDeleted?: boolean
+    notifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type InteractionCreateManyBranchInput = {
     id?: string
     type: $Enums.InteractionType
@@ -185883,6 +192636,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUpdateManyWithoutPreviousOwnerNestedInput
@@ -185983,6 +192738,8 @@ export namespace Prisma {
     assignedSalesTargets?: SalesTargetUncheckedUpdateManyWithoutAssignedToNestedInput
     assignedTasks?: TaskUncheckedUpdateManyWithoutAssignedToNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedFollowUps?: FollowUpUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdFollowUps?: FollowUpUncheckedUpdateManyWithoutCreatedByNestedInput
     managedTerritories?: TerritoryUncheckedUpdateManyWithoutManagerNestedInput
     previousAccounts?: AccountUncheckedUpdateManyWithoutPreviousOwnerNestedInput
     previousContacts?: ContactUncheckedUpdateManyWithoutPreviousOwnerNestedInput
@@ -186096,6 +192853,7 @@ export namespace Prisma {
     createdBy?: UserUpdateOneWithoutCreatedLeadsNestedInput
     history?: LeadHistoryUpdateManyWithoutLeadNestedInput
     tasks?: TaskUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutLeadNestedInput
     documents?: DocumentUpdateManyWithoutLeadNestedInput
@@ -186157,6 +192915,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutLeadNestedInput
     history?: LeadHistoryUncheckedUpdateManyWithoutLeadNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutLeadNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutLeadNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutLeadsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutLeadNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutLeadNestedInput
@@ -186243,6 +193002,7 @@ export namespace Prisma {
     interactions?: InteractionUpdateManyWithoutContactNestedInput
     quotes?: QuoteUpdateManyWithoutContactNestedInput
     tasks?: TaskUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
@@ -186280,6 +193040,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutContactNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutContactNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutContactNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutContactNestedInput
     emailLists?: EmailListUncheckedUpdateManyWithoutContactsNestedInput
     opportunities?: OpportunityUncheckedUpdateManyWithoutContactsNestedInput
     whatsAppMessages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
@@ -186337,6 +193098,7 @@ export namespace Prisma {
     previousOwner?: UserUpdateOneWithoutPreviousOpportunitiesNestedInput
     quotes?: QuoteUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUpdateManyWithoutOpportunityNestedInput
     lead?: LeadUpdateOneWithoutConvertedOpportunitiesNestedInput
@@ -186372,6 +193134,7 @@ export namespace Prisma {
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutOpportunityNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutOpportunityNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutOpportunityNestedInput
     contacts?: ContactUncheckedUpdateManyWithoutOpportunitiesNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutOpportunityNestedInput
     emiSchedule?: EMIScheduleUncheckedUpdateOneWithoutOpportunityNestedInput
@@ -186431,6 +193194,7 @@ export namespace Prisma {
     opportunities?: OpportunityUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUpdateManyWithoutAccountNestedInput
     tasks?: TaskUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUpdateManyWithoutAccountNestedInput
     documents?: DocumentUpdateManyWithoutAccountNestedInput
     lead?: LeadUpdateOneWithoutConvertedAccountsNestedInput
     accountProducts?: AccountProductUpdateManyWithoutAccountNestedInput
@@ -186465,6 +193229,7 @@ export namespace Prisma {
     opportunities?: OpportunityUncheckedUpdateManyWithoutAccountNestedInput
     quotes?: QuoteUncheckedUpdateManyWithoutAccountNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutAccountNestedInput
+    followUps?: FollowUpUncheckedUpdateManyWithoutAccountNestedInput
     documents?: DocumentUncheckedUpdateManyWithoutAccountNestedInput
     accountProducts?: AccountProductUncheckedUpdateManyWithoutAccountNestedInput
   }
@@ -186552,6 +193317,66 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FollowUpUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneWithoutFollowUpsNestedInput
+    assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
+    contact?: ContactUpdateOneWithoutFollowUpsNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
+    lead?: LeadUpdateOneWithoutFollowUpsNestedInput
+    opportunity?: OpportunityUpdateOneWithoutFollowUpsNestedInput
+    organisation?: OrganisationUpdateOneWithoutFollowUpsNestedInput
+  }
+
+  export type FollowUpUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FollowUpUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumFollowUpStatusFieldUpdateOperationsInput | $Enums.FollowUpStatus
+    priority?: EnumFollowUpPriorityFieldUpdateOperationsInput | $Enums.FollowUpPriority
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InteractionUpdateWithoutBranchInput = {
@@ -187048,6 +193873,10 @@ export namespace Prisma {
      * @deprecated Use TaskDefaultArgs instead
      */
     export type TaskArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = TaskDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use FollowUpDefaultArgs instead
+     */
+    export type FollowUpArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = FollowUpDefaultArgs<ExtArgs>
     /**
      * @deprecated Use InteractionDefaultArgs instead
      */
