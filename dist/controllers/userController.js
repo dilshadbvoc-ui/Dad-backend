@@ -104,7 +104,7 @@ const getUsers = async (req, res) => {
     try {
         logger_1.logger.info('getUsers called', 'UserController', undefined, req.user?.organisationId);
         const currentUser = req.user;
-        const where = { isActive: true }; // Default to active? Original was isDeleted: {$ne: true}, but schema uses isActive.
+        const where = {}; // Show all users by default so admins can reactivate them
         // Wait, Mongoose schema had isDeleted check?
         // Original: const query: any = { isDeleted: { $ne: true } };
         // Prisma schema: isPlaceholder (default false). 
@@ -598,6 +598,48 @@ const deactivateUser = async (req, res) => {
         const existing = await prisma_1.default.user.findFirst({ where });
         if (!existing)
             return res.status(404).json({ message: 'User not found or access denied' });
+        if (!existing.isActive)
+            return res.status(400).json({ message: 'User is already inactive' });
+        // 1. Determine transfer target
+        let transferTargetId = existing.reportsToId;
+        if (!transferTargetId) {
+            // Find an admin in the same organisation
+            const adminUser = await prisma_1.default.user.findFirst({
+                where: {
+                    organisationId: existing.organisationId,
+                    role: 'admin',
+                    isActive: true,
+                    id: { not: userId }
+                }
+            });
+            transferTargetId = adminUser ? adminUser.id : currentUser.id;
+        }
+        // 2. Perform bulk transfers
+        const entitiesToTransfer = [
+            { model: 'lead', ownerField: 'assignedToId' },
+            { model: 'account', ownerField: 'ownerId' },
+            { model: 'contact', ownerField: 'ownerId' },
+            { model: 'opportunity', ownerField: 'ownerId' },
+            { model: 'task', ownerField: 'assignedToId' },
+            { model: 'case', ownerField: 'assignedToId' },
+            { model: 'quote', ownerField: 'assignedToId' },
+            { model: 'goal', ownerField: 'assignedToId' },
+            { model: 'salesTarget', ownerField: 'assignedToId' }
+        ];
+        const transferResults = {};
+        for (const entity of entitiesToTransfer) {
+            const result = await prisma_1.default[entity.model].updateMany({
+                where: {
+                    [entity.ownerField]: userId,
+                    isDeleted: false
+                },
+                data: {
+                    [entity.ownerField]: transferTargetId,
+                    previousOwnerId: userId
+                }
+            });
+            transferResults[entity.model] = result.count;
+        }
         const user = await prisma_1.default.user.update({
             where: { id: userId },
             data: { isActive: false }
@@ -607,9 +649,13 @@ const deactivateUser = async (req, res) => {
             action: 'DEACTIVATE_USER',
             entity: 'User',
             entityId: user.id,
-            actorId: req.user.id,
-            organisationId: user.organisationId || req.user.organisationId,
-            details: { email: user.email }
+            actorId: currentUser.id,
+            organisationId: user.organisationId || currentUser.organisationId,
+            details: {
+                email: user.email,
+                transferredTo: transferTargetId,
+                transferCounts: transferResults
+            }
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _pw, ...sanitizedUser } = user;
@@ -634,6 +680,34 @@ const activateUser = async (req, res) => {
         const existing = await prisma_1.default.user.findFirst({ where });
         if (!existing)
             return res.status(404).json({ message: 'User not found or access denied' });
+        const moveBack = req.body.moveBack === true;
+        const transferResults = {};
+        if (moveBack) {
+            const entitiesToRestore = [
+                { model: 'lead', ownerField: 'assignedToId' },
+                { model: 'account', ownerField: 'ownerId' },
+                { model: 'contact', ownerField: 'ownerId' },
+                { model: 'opportunity', ownerField: 'ownerId' },
+                { model: 'task', ownerField: 'assignedToId' },
+                { model: 'case', ownerField: 'assignedToId' },
+                { model: 'quote', ownerField: 'assignedToId' },
+                { model: 'goal', ownerField: 'assignedToId' },
+                { model: 'salesTarget', ownerField: 'assignedToId' }
+            ];
+            for (const entity of entitiesToRestore) {
+                const result = await prisma_1.default[entity.model].updateMany({
+                    where: {
+                        previousOwnerId: userId,
+                        isDeleted: false
+                    },
+                    data: {
+                        [entity.ownerField]: userId,
+                        previousOwnerId: null
+                    }
+                });
+                transferResults[entity.model] = result.count;
+            }
+        }
         const user = await prisma_1.default.user.update({
             where: { id: userId },
             data: { isActive: true }
@@ -643,9 +717,13 @@ const activateUser = async (req, res) => {
             action: 'ACTIVATE_USER',
             entity: 'User',
             entityId: user.id,
-            actorId: req.user.id,
-            organisationId: user.organisationId || req.user.organisationId,
-            details: { email: user.email }
+            actorId: currentUser.id,
+            organisationId: user.organisationId || currentUser.organisationId,
+            details: {
+                email: user.email,
+                restoredEntities: moveBack,
+                transferCounts: transferResults
+            }
         });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _pw, ...sanitizedUser } = user;

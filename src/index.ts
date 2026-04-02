@@ -115,6 +115,7 @@ app.use(helmet({
             objectSrc: ["'self'", "data:", "blob:"],
             baseUri: ["'self'"],
             formAction: ["'self'"],
+            mediaSrc: ["'self'", "blob:", "data:", "https:", "*"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
     },

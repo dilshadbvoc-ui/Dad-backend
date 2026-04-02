@@ -22,8 +22,14 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
             select: {
                 id: true,
                 phone: true,
+                secondaryPhone: true,
                 firstName: true,
-                lastName: true
+                lastName: true,
+                email: true,
+                enquiryAbout: true,
+                status: true,
+                company: true,
+                updatedAt: true
             }
         });
 
@@ -202,8 +208,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     recordingUrl: recording.fileUrl || null,
                     callStatus: status,
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
-                    organisationId: user.organisationId,
-                    createdById: user.id,
+                    organisation: { connect: { id: user.organisationId } },
+                    createdBy: { connect: { id: user.id } },
                     phoneNumber: finalPhone
                 }
             });
@@ -360,8 +366,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         recordingUrl: null,
                         callStatus: status,
                         lead: { connect: { id: matchedLead.id } },
-                        organisationId: user.organisationId,
-                        createdById: user.id,
+                        organisation: { connect: { id: user.organisationId } },
+                        createdBy: { connect: { id: user.id } },
                         phoneNumber: matchedLead.phone
                     }
                 });

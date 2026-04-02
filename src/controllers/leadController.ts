@@ -89,6 +89,19 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             where.AND = andConditions;
         }
 
+        // 3. Sorting
+        let orderBy: any = { updatedAt: 'desc' };
+        const sortBy = req.query.sortBy as string;
+        const sortOrder = (req.query.sortOrder as string) || 'desc';
+
+        if (sortBy) {
+            if (sortBy === 'owner') {
+                orderBy = { assignedTo: { firstName: sortOrder } };
+            } else if (['firstName', 'lastName', 'createdAt', 'updatedAt', 'leadScore', 'status'].includes(sortBy)) {
+                orderBy = { [sortBy]: sortOrder };
+            }
+        }
+
         console.log('[getLeads] Prisma Where:', JSON.stringify(where, null, 2)); // DEBUG LOG
 
         const total = await prisma.lead.count({ where });
@@ -101,7 +114,7 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             },
             skip: (page - 1) * pageSize,
             take: pageSize,
-            orderBy: { updatedAt: 'desc' }
+            orderBy
         });
 
         res.json({ leads, page, pages: Math.ceil(total / pageSize), total });

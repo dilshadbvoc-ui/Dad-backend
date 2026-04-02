@@ -34,7 +34,7 @@ const handleVoiceWebhook = async (req, res) => {
         const twilioConfig = integrations?.twilio;
         // Check recording settings
         const shouldRecord = org.callSettings?.autoRecordInbound ?? true;
-        // Prepare Interaction Data
+        // Create Interaction Data
         const interactionData = {
             type: 'call',
             direction: 'inbound', // Default to inbound, but could be outbound if triggered via API 
@@ -50,6 +50,28 @@ const handleVoiceWebhook = async (req, res) => {
             interactionData.lead = { connect: { id: leadId } };
             interactionData.direction = 'outbound'; // If we have a leadId, it's likely our initiated outbound call
             interactionData.subject = `Outbound Call to ${From}`;
+        }
+        else if (From) {
+            // Fix: Automatic lead lookup for inbound calls
+            const last10 = From.replace(/[^0-9]/g, '').slice(-10);
+            if (last10.length >= 10) {
+                const foundLead = await prisma_1.default.lead.findFirst({
+                    where: {
+                        organisationId: orgId,
+                        OR: [
+                            { phone: { contains: last10 } },
+                            { secondaryPhone: { contains: last10 } }
+                        ],
+                        isDeleted: false
+                    },
+                    select: { id: true, firstName: true, lastName: true }
+                });
+                if (foundLead) {
+                    interactionData.lead = { connect: { id: foundLead.id } };
+                    interactionData.subject = `Call from ${foundLead.firstName} ${foundLead.lastName || ''}`;
+                    console.log(`[Telephony] Inbound call matched to Lead: ${foundLead.id} (${foundLead.firstName})`);
+                }
+            }
         }
         // Create Interaction Record
         await prisma_1.default.interaction.create({

@@ -24,6 +24,7 @@ router.get('/messages/media/:mediaId', authMiddleware_1.protect, whatsAppControl
 router.get('/templates', authMiddleware_1.protect, rateLimiter_1.whatsappLimiter, whatsAppController_1.getTemplates);
 router.post('/templates', authMiddleware_1.protect, rateLimiter_1.whatsappLimiter, (0, validation_1.validate)(validation_1.whatsappTemplateSchema), whatsAppController_1.createTemplate);
 router.get('/analytics', authMiddleware_1.protect, rateLimiter_1.whatsappLimiter, whatsAppController_1.getConversationAnalytics);
+router.get('/lead/:leadId', authMiddleware_1.protect, rateLimiter_1.whatsappLimiter, whatsAppController_1.getLeadWhatsAppMessages);
 router.post('/test', authMiddleware_1.protect, rateLimiter_1.whatsappLimiter, whatsAppController_1.testConnection);
 router.get('/webhook', whatsAppController_1.verifyWebhook);
 router.post('/webhook', whatsAppController_1.handleWebhook);

@@ -8,6 +8,7 @@ import {
     getRecording,
     getAllCalls,
     getCallStats,
+    getUserCallAnalytics,
     deleteRecording
 } from '../controllers/callController';
 import { protect } from '../middleware/authMiddleware';
@@ -33,6 +34,7 @@ const upload = multer({ storage });
 // Call logs and stats routes
 router.route('/').get(protect, getAllCalls);
 router.route('/stats').get(protect, getCallStats);
+router.route('/reports/user-analytics').get(protect, getUserCallAnalytics);
 
 // Call actions
 router.route('/initiate').post(protect, initiateCall);

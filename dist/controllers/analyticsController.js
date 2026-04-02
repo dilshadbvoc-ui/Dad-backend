@@ -249,16 +249,33 @@ const getSalesChartData = async (req, res) => {
         const orgFilter = orgId ? { organisationId: orgId } : {};
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
+        const requestedUserId = req.query.userId;
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Go back 5 months to include current month = 6 total
         sixMonthsAgo.setDate(1); // Start of that month
         sixMonthsAgo.setHours(0, 0, 0, 0);
-        // Base filter for visibility
+        // Visibility & User Filtering
         const visibilityFilter = {};
         if (user.role !== 'admin' && !isSuperAdmin) {
             const { getVisibleUserIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
             const visibleUserIds = await getVisibleUserIds(user.id);
-            visibilityFilter.ownerId = { in: visibleUserIds };
+            if (requestedUserId) {
+                // If specific user requested, verify they are in visibility scope
+                if (visibleUserIds.includes(requestedUserId)) {
+                    visibilityFilter.ownerId = requestedUserId;
+                }
+                else {
+                    // Not authorized to see this user's data
+                    return res.status(403).json({ message: 'Unauthorized access to user data' });
+                }
+            }
+            else {
+                visibilityFilter.ownerId = { in: visibleUserIds };
+            }
+        }
+        else if (requestedUserId) {
+            // Admin can see any user
+            visibilityFilter.ownerId = requestedUserId;
         }
         // Fetch closed_won opportunities
         const wonOpportunities = await prisma_1.default.opportunity.findMany({
@@ -734,13 +751,25 @@ const getUserWiseSales = async (req, res) => {
                 _count: { id: true },
                 _avg: { amount: true }
             });
+            const totalOpportunities = await prisma_1.default.opportunity.count({
+                where: {
+                    ownerId: uid,
+                    isDeleted: false,
+                    ...orgFilter,
+                    ...dateFilter
+                }
+            });
+            const dealsCount = aggregates._count.id || 0;
+            const winRate = totalOpportunities > 0 ? (dealsCount / totalOpportunities) * 100 : 0;
             return {
                 userId: uid,
                 name: `${userDetails.firstName} ${userDetails.lastName}`,
                 email: userDetails.email,
                 totalRevenue: aggregates._sum.amount || 0,
-                dealsCount: aggregates._count.id || 0,
-                avgDealSize: Math.round(aggregates._avg.amount || 0)
+                dealsCount: dealsCount,
+                avgDealSize: Math.round(aggregates._avg.amount || 0),
+                totalOpportunities,
+                winRate: Math.round(winRate)
             };
         }));
         const cleanStats = userStats.filter(s => s !== null).sort((a, b) => (b?.totalRevenue || 0) - (a?.totalRevenue || 0));

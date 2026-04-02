@@ -459,3 +459,124 @@ export const deleteRecording = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+// Get per-user call analytics for reports
+export const getUserCallAnalytics = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const { period = 'today', direction } = req.query; // direction: all, inbound, outbound
+
+        // Calculate date range
+        const now = new Date();
+        let startDate: Date;
+
+        switch (period) {
+            case 'today':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
+            case 'yesterday':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
+            case 'week':
+                startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                break;
+            case 'month':
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                break;
+            default:
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        }
+
+        const baseWhere: any = {
+            organisationId: orgId,
+            type: 'call' as const,
+            isDeleted: false,
+            date: { gte: startDate }
+        };
+
+        if (period === 'yesterday') {
+            const yesterdayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            baseWhere.date = { gte: startDate, lt: yesterdayEnd };
+        }
+
+        if (direction && direction !== 'all') {
+            baseWhere.direction = direction;
+        }
+
+        // Hierarchy filtering
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        baseWhere.createdById = { in: visibleUserIds };
+
+        // Fetch all relevant interactions
+        const interactions = await prisma.interaction.findMany({
+            where: baseWhere,
+            select: {
+                createdById: true,
+                callStatus: true,
+                duration: true,
+                recordingDuration: true,
+                direction: true
+            }
+        });
+
+        // Fetch users to map names
+        const users = await prisma.user.findMany({
+            where: { id: { in: visibleUserIds } },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true
+            }
+        });
+
+        // Aggregate by user
+        const userStatsMap: Record<string, any> = {};
+
+        // Initialize for all visible users
+        users.forEach(u => {
+            userStatsMap[u.id] = {
+                userId: u.id,
+                agentName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                totalCalls: 0,
+                connectedCalls: 0,
+                totalDurationSeconds: 0
+            };
+        });
+
+        interactions.forEach(i => {
+            if (i.createdById && userStatsMap[i.createdById]) {
+                const stats = userStatsMap[i.createdById];
+                stats.totalCalls++;
+
+                if (i.callStatus === 'completed') {
+                    stats.connectedCalls++;
+                    
+                    // Duration: duration is in mins, recordingDuration is in seconds
+                    if (i.recordingDuration && i.recordingDuration > 0) {
+                        stats.totalDurationSeconds += i.recordingDuration;
+                    } else if (i.duration && i.duration > 0) {
+                        stats.totalDurationSeconds += i.duration * 60;
+                    }
+                }
+            }
+        });
+
+        const reportData = Object.values(userStatsMap)
+            .sort((a, b) => b.totalCalls - a.totalCalls);
+
+        res.json({
+            reportData,
+            period,
+            direction: direction || 'all'
+        });
+    } catch (error) {
+        console.error('Get user call analytics error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+

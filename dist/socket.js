@@ -40,6 +40,25 @@ exports.emitToOrg = exports.emitToUser = exports.getIO = exports.initSocket = vo
 const socket_io_1 = require("socket.io");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const logger_1 = require("./utils/logger");
+// Track online users globally (in-memory for now)
+// Map of userId -> Set of active socket IDs
+const activeUserSockets = new Map();
+// Map of organisationId -> Set of online user IDs
+const onlineUsersByOrg = new Map();
+/**
+ * Helper to get online users for an organisation
+ */
+const getOnlineUsersForOrg = (orgId) => {
+    return Array.from(onlineUsersByOrg.get(orgId) || []);
+};
+/**
+ * Broadcast online users list to an organisation
+ */
+const broadcastOnlineUsers = (io, orgId) => {
+    const onlineUsers = getOnlineUsersForOrg(orgId);
+    io.to(`org:${orgId}`).emit('online_users_update', { onlineUsers });
+    logger_1.logger.debug(`Broadcasted online users for org ${orgId}: ${onlineUsers.length} users`, 'SocketPresence');
+};
 const initSocket = (httpServer) => {
     const allowedOrigins = [
         'http://localhost:5173',
@@ -79,11 +98,36 @@ const initSocket = (httpServer) => {
     });
     io.on('connection', (socket) => {
         const userId = socket.userId;
+        const organisationId = socket.organisationId;
         logger_1.logger.info(`Socket connected: ${socket.id}`, 'SocketID', userId);
+        // Presence Tracking
+        if (userId && organisationId) {
+            // Track active socket for user
+            if (!activeUserSockets.has(userId)) {
+                activeUserSockets.set(userId, new Set());
+            }
+            activeUserSockets.get(userId)?.add(socket.id);
+            // Track online user for org
+            if (!onlineUsersByOrg.has(organisationId)) {
+                onlineUsersByOrg.set(organisationId, new Set());
+            }
+            const isFirstSocket = activeUserSockets.get(userId)?.size === 1;
+            if (isFirstSocket) {
+                onlineUsersByOrg.get(organisationId)?.add(userId);
+                // Wait a bit for the socket to join the org room before broadcasting
+                setTimeout(() => {
+                    if (ioInstance)
+                        broadcastOnlineUsers(ioInstance, organisationId);
+                }, 500);
+            }
+            else {
+                // Even if not first socket, send current list to the newly connected socket
+                socket.emit('online_users_update', { onlineUsers: getOnlineUsersForOrg(organisationId) });
+            }
+        }
         // Automatically join user room
         if (userId) {
             socket.join(userId);
-            const organisationId = socket.organisationId;
             if (organisationId) {
                 socket.join(`org:${organisationId}`);
                 logger_1.logger.debug(`User ${userId} auto-joined room org:${organisationId}`, 'SocketID', userId, organisationId);
@@ -117,50 +161,6 @@ const initSocket = (httpServer) => {
         });
         // Mobile Device reports call connected
         socket.on('call_connected', async (data) => {
-            // We assume the mobile app sends { phoneNumber, timestamp }
-            // We need to know WHICH user this socket belongs to. 
-            // Ideally, the mobile socket "joins" the room with the userId on connection.
-            // For now, we'll assume the mobile socket joined the room `userId`.
-            // But wait, the mobile code emits 'call_connected' but doesn't pass userId explicitly in that event, 
-            // relying on the socket being in the room? 
-            // Actually, looking at mobile App.tsx, it emits: newSocket.emit('call_connected', ...). 
-            // But it doesn't join a room explicitly in the `useEffect` for `callDetector`.
-            // It DOES call `checkAuth` but the socket logic is separate.
-            // I need to update Mobile App to join the room OR pass userId in the event.
-            // *Correction*: The Mobile App creates a NEW socket connection in the `useEffect`. 
-            // It does NOT emit `join_room`.
-            // I must fix the Mobile App to join the room first. 
-            // However, for this step, I will add the server handlers assuming the socket IS identified. 
-            // Better yet, I will update the server to broadcast to all clients if I can't identify the user easily 
-            // (which is bad security), OR I simply update the Mobile App next.
-            // Let's implement generic forwarding first, assuming the socket `handshake.query` or `join_room` happened. 
-            // Since I can't change Mobile right this second without a rebuild, I'll rely on the Mobile App sending `userId` in the body?
-            // Mobile code: `newSocket.emit('call_connected', { phoneNumber, timestamp })`. No userId.
-            // OK, I need to update the Mobile App to `emit('join_room', userId)` in that useEffect hook.
-            // But the user just installed the APK. 
-            // Is there a way to identify them? Authentication token?
-            // The mobile app sends Authorization header in fetch, but socket?
-            // To fix this PROPERLY without forcing another immediate valid APK rebuild if possible:
-            // The mobile socket connects. It doesn't join a room.
-            // So `socket.rooms` only has the socketId.
-            // If I want to broadcast to the "Web Client" of the same user... 
-            // I need to link them.
-            // Valid Plan:
-            // 1. Update Server to handle these events.
-            // 2. Realize Mobile needs to identify itself.
-            // 3. I will have to ask the user to rebuild/update mobile if I want this feature to work.
-            // OR, I can use the `token` (JWT) if I pass it in socket options on mobile.
-            // Let's look at `App.tsx` again. usage: `const newSocket = io(SERVER_URL);`
-            // It does NOT pass the token.
-            // So the server doesn't know who the mobile user is.
-            // CRITICAL MISS: The mobile app's socket is anonymous. 
-            // I MUST update the mobile app to pass the token or userId.
-            // Since I just gave the user an APK, this is awkward. 
-            // BUT the user asked "add the logic to webcrm to reflect". 
-            // I will start with the Server/Web changes. 
-            // I will *also* have to update the mobile app to make it work.
-            // Server side change:
-            // We'll require `userId` in the payload for these events.
             const { userId, phoneNumber, timestamp } = data;
             if (userId) {
                 // Find Organisation for this user
@@ -168,24 +168,18 @@ const initSocket = (httpServer) => {
                     where: { id: userId },
                     select: { organisationId: true }
                 }));
-                // Ensure organisationId is valid string
                 const orgId = user?.organisationId;
                 if (orgId) {
-                    // Try to find matching Lead using 'phone' field (Lead has direct string)
                     const lead = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.lead.findFirst({
                         where: {
                             organisationId: orgId,
                             phone: { contains: phoneNumber }
                         }
                     }));
-                    // Note: Contact matching removed for now as 'phones' is JSON and requires raw query or specific structure knowledge
-                    const contactId = null;
-                    // Check if an initiated call already exists (web dialer flow)
-                    // We look for a call created in the last 2 minutes to same number
                     const recentCall = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.findFirst({
                         where: {
                             createdById: userId,
-                            phoneNumber: { contains: phoneNumber }, // Loose match
+                            phoneNumber: { contains: phoneNumber },
                             type: 'call',
                             callStatus: 'initiated',
                             date: { gte: new Date(Date.now() - 2 * 60 * 1000) }
@@ -193,14 +187,12 @@ const initSocket = (httpServer) => {
                         orderBy: { date: 'desc' }
                     }));
                     if (recentCall) {
-                        // Update existing
                         await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.update({
                             where: { id: recentCall.id },
                             data: { callStatus: 'in-progress' }
                         }));
                     }
                     else {
-                        // Create new "Manual Outbound" call detected from phone
                         await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.create({
                             data: {
                                 type: 'call',
@@ -212,8 +204,7 @@ const initSocket = (httpServer) => {
                                 description: 'Auto-logged via Mobile App',
                                 organisationId: orgId,
                                 createdById: userId,
-                                leadId: lead?.id,
-                                contactId: undefined
+                                leadId: lead?.id
                             }
                         }));
                     }
@@ -224,7 +215,6 @@ const initSocket = (httpServer) => {
         socket.on('call_ended', async (data) => {
             const { userId, phoneNumber, timestamp, duration } = data;
             if (userId) {
-                // Find the active call to close
                 const activeCall = await Promise.resolve().then(() => __importStar(require('./config/prisma'))).then(m => m.default.interaction.findFirst({
                     where: {
                         createdById: userId,
@@ -253,8 +243,6 @@ const initSocket = (httpServer) => {
             if (userId && resourceId) {
                 socket.join(`collaboration:${resourceId}`);
                 logger_1.logger.debug(`User ${userId} joined collaboration on ${resourceId}`, 'SocketID', userId, undefined, { resourceId });
-                // Fetch all users currently in this resource room
-                // Note: We'll broadcast a 'presence_update' to the room
                 io.to(`collaboration:${resourceId}`).emit('presence_update', {
                     resourceId,
                     action: 'join',
@@ -277,8 +265,18 @@ const initSocket = (httpServer) => {
         });
         socket.on('disconnect', () => {
             logger_1.logger.info(`Socket disconnected: ${socket.id}`, 'SocketID');
-            // Note: In a production app, we would ideally track which rooms the user was in
-            // and emit 'leave' events for all of them. For now, simple disconnect log.
+            if (userId && organisationId) {
+                const sockets = activeUserSockets.get(userId);
+                if (sockets) {
+                    sockets.delete(socket.id);
+                    if (sockets.size === 0) {
+                        activeUserSockets.delete(userId);
+                        onlineUsersByOrg.get(organisationId)?.delete(userId);
+                        if (ioInstance)
+                            broadcastOnlineUsers(ioInstance, organisationId);
+                    }
+                }
+            }
         });
     });
     return io;

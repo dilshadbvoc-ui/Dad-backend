@@ -118,6 +118,9 @@ const passport_1 = __importDefault(require("passport"));
 const ssoService_1 = require("./services/ssoService");
 const app = (0, express_1.default)();
 const httpServer = (0, http_1.createServer)(app);
+httpServer.timeout = 1800000; // 30 minutes
+httpServer.keepAliveTimeout = 1810000; // Slightly more than timeout
+httpServer.headersTimeout = 1820000; // Slightly more than keepAliveTimeout
 // Initialize Passport/SSO
 (0, ssoService_1.setupPassport)();
 // Trust Proxy for Render/Vercel
@@ -136,6 +139,7 @@ app.use((0, helmet_1.default)({
             objectSrc: ["'self'", "data:", "blob:"],
             baseUri: ["'self'"],
             formAction: ["'self'"],
+            mediaSrc: ["'self'", "blob:", "data:", "https:"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
     },

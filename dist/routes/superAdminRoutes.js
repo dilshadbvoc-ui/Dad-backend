@@ -10,7 +10,11 @@ const subscriptionPlanController_1 = require("../controllers/subscriptionPlanCon
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const systemSettingsController_1 = require("../controllers/systemSettingsController");
 const roleController_1 = require("../controllers/roleController");
+const backupController_1 = require("../controllers/backupController");
 const router = express_1.default.Router();
+// Full Platform Data Export/Restore
+router.get('/platform/export', authMiddleware_1.protect, backupController_1.exportPlatformData);
+router.post('/platform/restore', authMiddleware_1.protect, backupController_1.restorePlatformData);
 // System Settings
 router.get('/settings', authMiddleware_1.protect, systemSettingsController_1.getSystemSettings);
 router.put('/settings', authMiddleware_1.protect, systemSettingsController_1.updateSystemSettings);

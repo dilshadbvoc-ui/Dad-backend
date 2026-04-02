@@ -64,6 +64,29 @@ const getTimeline = async (req, res) => {
                 orderBy: { timestamp: 'desc' }
             })
         ]);
+        // Filter out CallRecordings that are already represented by Interactions to avoid timeline duplicates.
+        // A recording is considered "covered" by an interaction if:
+        //   1. Its fileUrl matches the interaction's recordingUrl, OR
+        //   2. It has an empty fileUrl AND shares the same leadId as an interaction within a 2-minute window.
+        const interactionRecordingUrls = new Set(interactions.map(i => i.recordingUrl).filter(Boolean));
+        const interactionLeadTimestamps = interactions.map(i => ({
+            leadId: i.leadId,
+            time: new Date(i.date).getTime()
+        }));
+        const standaloneRecordings = callRecordings.filter(c => {
+            // If the fileUrl matches an interaction's recordingUrl, it's a duplicate
+            if (c.fileUrl && interactionRecordingUrls.has(c.fileUrl))
+                return false;
+            // If the recording has an empty fileUrl (metadata-only from bulk sync),
+            // check if an Interaction already covers this lead+timestamp window
+            if (!c.fileUrl || c.fileUrl === '') {
+                const recTime = new Date(c.timestamp).getTime();
+                const hasCoveringInteraction = interactionLeadTimestamps.some(it => it.leadId === c.leadId && Math.abs(it.time - recTime) < 120000);
+                if (hasCoveringInteraction)
+                    return false;
+            }
+            return true;
+        });
         // Normalize data for UI
         const timeline = [
             ...interactions.map(i => ({
@@ -77,7 +100,8 @@ const getTimeline = async (req, res) => {
                 meta: {
                     direction: i.direction,
                     duration: i.duration,
-                    recordingDuration: i.recordingDuration
+                    recordingDuration: i.recordingDuration,
+                    recordingUrl: i.recordingUrl
                 }
             })),
             ...tasks.map(t => ({
@@ -155,7 +179,7 @@ const getTimeline = async (req, res) => {
                     meta: {}
                 };
             }),
-            ...callRecordings.map(c => ({
+            ...standaloneRecordings.map(c => ({
                 id: c.id,
                 type: 'recording',
                 subType: c.callType,

@@ -1222,6 +1222,9 @@ enum LeadSource {
 enum LeadStatus {
   new
   contacted
+  interested
+  not_interested
+  call_not_connected
   qualified
   nurturing
   converted

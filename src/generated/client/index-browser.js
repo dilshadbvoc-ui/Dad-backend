@@ -1217,6 +1217,9 @@ exports.LeadSource = exports.$Enums.LeadSource = {
 exports.LeadStatus = exports.$Enums.LeadStatus = {
   new: 'new',
   contacted: 'contacted',
+  interested: 'interested',
+  not_interested: 'not_interested',
+  call_not_connected: 'call_not_connected',
   qualified: 'qualified',
   nurturing: 'nurturing',
   converted: 'converted',
