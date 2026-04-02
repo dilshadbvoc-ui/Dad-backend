@@ -26,3 +26,4 @@ dist-ssr
 lint_results.txt
 .env
 node_modules/
+full-backup-*.json

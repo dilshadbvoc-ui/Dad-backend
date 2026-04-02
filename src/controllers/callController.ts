@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
-import { TaskService } from '../services/taskService';
+import { FollowUpService } from '../services/followUpService';
 import path from 'path';
 import fs from 'fs';
 
@@ -99,10 +99,10 @@ export const completeCall = async (req: Request, res: Response) => {
             const dueDate = new Date();
             dueDate.setMinutes(dueDate.getMinutes() + delay);
 
-            await prisma.task.create({
+            await prisma.followUp.create({
                 data: {
                     subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
-                    description: `Follow-up task from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
+                    description: `Follow-up scheduled from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
                     dueDate: dueDate,
                     status: 'not_started',
                     priority: 'medium',
@@ -113,9 +113,9 @@ export const completeCall = async (req: Request, res: Response) => {
                 }
             });
 
-            // Sync Lead follow-up date
+            // Sync Lead follow-up date using the dedicated service
             if (interaction.leadId) {
-                await TaskService.syncLeadFollowUp(interaction.leadId);
+                await FollowUpService.syncLeadFollowUp(interaction.leadId);
             }
         }
 

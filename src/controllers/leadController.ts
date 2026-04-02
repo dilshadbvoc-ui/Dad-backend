@@ -8,6 +8,7 @@ import { NotificationService } from '../services/notificationService';
 import { LeadSource, LeadStatus } from '../generated/client';
 import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 import { GeoLocationService } from '../services/geoLocationService';
+import { FollowUpService } from '../services/followUpService';
 import { TaskService } from '../services/taskService';
 // Dynamic import used for OpenAI to avoid startup errors if missing
 
@@ -509,7 +510,7 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
             const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
             const dueDate = new Date(updates.nextFollowUp);
 
-            await TaskService.rescheduleOrCreateFollowUp({
+            await FollowUpService.rescheduleOrCreateFollowUp({
                 subject: `Follow up with ${leadName}`,
                 description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
                 status: 'not_started',

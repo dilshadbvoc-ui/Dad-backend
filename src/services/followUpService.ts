@@ -122,4 +122,31 @@ export class FollowUpService {
             });
         }
     }
+
+    static async rolloverFollowUpForLead(leadId: string, newDueDate: Date) {
+        if (!leadId) return;
+
+        // Find the earliest upcoming follow-up that isn't completed
+        const overdueFollowUp = await prisma.followUp.findFirst({
+            where: {
+                leadId,
+                isDeleted: false,
+                status: { notIn: ['completed', 'deferred'] },
+                dueDate: { lt: new Date() }
+            },
+            orderBy: {
+                dueDate: 'asc'
+            }
+        });
+
+        if (overdueFollowUp) {
+            await prisma.followUp.update({
+                where: { id: overdueFollowUp.id },
+                data: {
+                    dueDate: newDueDate,
+                    notifiedAt: null
+                }
+            });
+        }
+    }
 }
