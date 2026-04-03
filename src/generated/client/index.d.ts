@@ -55974,6 +55974,7 @@ export namespace Prisma {
     popupOnIncoming: boolean | null
     autoFollowupReminder: boolean | null
     followupDelayMinutes: number | null
+    syncNonCrmContacts: boolean | null
     organisationId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -55990,6 +55991,7 @@ export namespace Prisma {
     popupOnIncoming: boolean | null
     autoFollowupReminder: boolean | null
     followupDelayMinutes: number | null
+    syncNonCrmContacts: boolean | null
     organisationId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -56006,6 +56008,7 @@ export namespace Prisma {
     popupOnIncoming: number
     autoFollowupReminder: number
     followupDelayMinutes: number
+    syncNonCrmContacts: number
     organisationId: number
     createdAt: number
     updatedAt: number
@@ -56034,6 +56037,7 @@ export namespace Prisma {
     popupOnIncoming?: true
     autoFollowupReminder?: true
     followupDelayMinutes?: true
+    syncNonCrmContacts?: true
     organisationId?: true
     createdAt?: true
     updatedAt?: true
@@ -56050,6 +56054,7 @@ export namespace Prisma {
     popupOnIncoming?: true
     autoFollowupReminder?: true
     followupDelayMinutes?: true
+    syncNonCrmContacts?: true
     organisationId?: true
     createdAt?: true
     updatedAt?: true
@@ -56066,6 +56071,7 @@ export namespace Prisma {
     popupOnIncoming?: true
     autoFollowupReminder?: true
     followupDelayMinutes?: true
+    syncNonCrmContacts?: true
     organisationId?: true
     createdAt?: true
     updatedAt?: true
@@ -56169,6 +56175,7 @@ export namespace Prisma {
     popupOnIncoming: boolean
     autoFollowupReminder: boolean
     followupDelayMinutes: number
+    syncNonCrmContacts: boolean
     organisationId: string
     createdAt: Date
     updatedAt: Date
@@ -56204,6 +56211,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: boolean
+    syncNonCrmContacts?: boolean
     organisationId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -56221,6 +56229,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: boolean
+    syncNonCrmContacts?: boolean
     organisationId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -56238,6 +56247,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: boolean
+    syncNonCrmContacts?: boolean
     organisationId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -56266,6 +56276,7 @@ export namespace Prisma {
       popupOnIncoming: boolean
       autoFollowupReminder: boolean
       followupDelayMinutes: number
+      syncNonCrmContacts: boolean
       organisationId: string
       createdAt: Date
       updatedAt: Date
@@ -56673,6 +56684,7 @@ export namespace Prisma {
     readonly popupOnIncoming: FieldRef<"CallSettings", 'Boolean'>
     readonly autoFollowupReminder: FieldRef<"CallSettings", 'Boolean'>
     readonly followupDelayMinutes: FieldRef<"CallSettings", 'Int'>
+    readonly syncNonCrmContacts: FieldRef<"CallSettings", 'Boolean'>
     readonly organisationId: FieldRef<"CallSettings", 'String'>
     readonly createdAt: FieldRef<"CallSettings", 'DateTime'>
     readonly updatedAt: FieldRef<"CallSettings", 'DateTime'>
@@ -77471,6 +77483,7 @@ export namespace Prisma {
     popupOnIncoming: 'popupOnIncoming',
     autoFollowupReminder: 'autoFollowupReminder',
     followupDelayMinutes: 'followupDelayMinutes',
+    syncNonCrmContacts: 'syncNonCrmContacts',
     organisationId: 'organisationId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -83452,6 +83465,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFilter<"CallSettings"> | boolean
     autoFollowupReminder?: BoolFilter<"CallSettings"> | boolean
     followupDelayMinutes?: IntFilter<"CallSettings"> | number
+    syncNonCrmContacts?: BoolFilter<"CallSettings"> | boolean
     organisationId?: StringFilter<"CallSettings"> | string
     createdAt?: DateTimeFilter<"CallSettings"> | Date | string
     updatedAt?: DateTimeFilter<"CallSettings"> | Date | string
@@ -83469,6 +83483,7 @@ export namespace Prisma {
     popupOnIncoming?: SortOrder
     autoFollowupReminder?: SortOrder
     followupDelayMinutes?: SortOrder
+    syncNonCrmContacts?: SortOrder
     organisationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -83490,6 +83505,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFilter<"CallSettings"> | boolean
     autoFollowupReminder?: BoolFilter<"CallSettings"> | boolean
     followupDelayMinutes?: IntFilter<"CallSettings"> | number
+    syncNonCrmContacts?: BoolFilter<"CallSettings"> | boolean
     createdAt?: DateTimeFilter<"CallSettings"> | Date | string
     updatedAt?: DateTimeFilter<"CallSettings"> | Date | string
     organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
@@ -83506,6 +83522,7 @@ export namespace Prisma {
     popupOnIncoming?: SortOrder
     autoFollowupReminder?: SortOrder
     followupDelayMinutes?: SortOrder
+    syncNonCrmContacts?: SortOrder
     organisationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -83530,6 +83547,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolWithAggregatesFilter<"CallSettings"> | boolean
     autoFollowupReminder?: BoolWithAggregatesFilter<"CallSettings"> | boolean
     followupDelayMinutes?: IntWithAggregatesFilter<"CallSettings"> | number
+    syncNonCrmContacts?: BoolWithAggregatesFilter<"CallSettings"> | boolean
     organisationId?: StringWithAggregatesFilter<"CallSettings"> | string
     createdAt?: DateTimeWithAggregatesFilter<"CallSettings"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CallSettings"> | Date | string
@@ -91330,6 +91348,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: number
+    syncNonCrmContacts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutCallSettingsInput
@@ -91346,6 +91365,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: number
+    syncNonCrmContacts?: boolean
     organisationId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -91362,6 +91382,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFieldUpdateOperationsInput | boolean
     autoFollowupReminder?: BoolFieldUpdateOperationsInput | boolean
     followupDelayMinutes?: IntFieldUpdateOperationsInput | number
+    syncNonCrmContacts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutCallSettingsNestedInput
@@ -91378,6 +91399,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFieldUpdateOperationsInput | boolean
     autoFollowupReminder?: BoolFieldUpdateOperationsInput | boolean
     followupDelayMinutes?: IntFieldUpdateOperationsInput | number
+    syncNonCrmContacts?: BoolFieldUpdateOperationsInput | boolean
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -91394,6 +91416,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: number
+    syncNonCrmContacts?: boolean
     organisationId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -91410,6 +91433,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFieldUpdateOperationsInput | boolean
     autoFollowupReminder?: BoolFieldUpdateOperationsInput | boolean
     followupDelayMinutes?: IntFieldUpdateOperationsInput | number
+    syncNonCrmContacts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -91425,6 +91449,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFieldUpdateOperationsInput | boolean
     autoFollowupReminder?: BoolFieldUpdateOperationsInput | boolean
     followupDelayMinutes?: IntFieldUpdateOperationsInput | number
+    syncNonCrmContacts?: BoolFieldUpdateOperationsInput | boolean
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -97072,6 +97097,7 @@ export namespace Prisma {
     popupOnIncoming?: SortOrder
     autoFollowupReminder?: SortOrder
     followupDelayMinutes?: SortOrder
+    syncNonCrmContacts?: SortOrder
     organisationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -97093,6 +97119,7 @@ export namespace Prisma {
     popupOnIncoming?: SortOrder
     autoFollowupReminder?: SortOrder
     followupDelayMinutes?: SortOrder
+    syncNonCrmContacts?: SortOrder
     organisationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -97109,6 +97136,7 @@ export namespace Prisma {
     popupOnIncoming?: SortOrder
     autoFollowupReminder?: SortOrder
     followupDelayMinutes?: SortOrder
+    syncNonCrmContacts?: SortOrder
     organisationId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -109819,6 +109847,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: number
+    syncNonCrmContacts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -109834,6 +109863,7 @@ export namespace Prisma {
     popupOnIncoming?: boolean
     autoFollowupReminder?: boolean
     followupDelayMinutes?: number
+    syncNonCrmContacts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -112155,6 +112185,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFieldUpdateOperationsInput | boolean
     autoFollowupReminder?: BoolFieldUpdateOperationsInput | boolean
     followupDelayMinutes?: IntFieldUpdateOperationsInput | number
+    syncNonCrmContacts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -112170,6 +112201,7 @@ export namespace Prisma {
     popupOnIncoming?: BoolFieldUpdateOperationsInput | boolean
     autoFollowupReminder?: BoolFieldUpdateOperationsInput | boolean
     followupDelayMinutes?: IntFieldUpdateOperationsInput | number
+    syncNonCrmContacts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -1218,6 +1218,7 @@ model CallSettings {
   popupOnIncoming      Boolean      @default(true)
   autoFollowupReminder Boolean      @default(true)
   followupDelayMinutes Int          @default(30)
+  syncNonCrmContacts   Boolean      @default(false)
   organisationId       String       @unique
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt

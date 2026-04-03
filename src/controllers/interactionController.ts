@@ -67,6 +67,21 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
             else if (onModel === 'Opportunity') data.opportunity = { connect: { id: relatedTo } };
         }
 
+        // Logic for Non-CRM Contact Synchronization
+        // If it's a call and not connected to any known entity, check settings
+        const isConnected = data.lead || data.contact || data.account || data.opportunity;
+        if (type === 'call' && !isConnected && orgId) {
+            const settings = await prisma.callSettings.findUnique({
+                where: { organisationId: orgId }
+            });
+            
+            if (settings && !settings.syncNonCrmContacts) {
+                return res.status(400).json({ 
+                    message: 'Contact synchronization is disabled. Interactions can only be logged for existing Leads or Contacts.' 
+                });
+            }
+        }
+
         const interaction = await prisma.interaction.create({
             data
         });

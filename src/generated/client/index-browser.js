@@ -905,6 +905,7 @@ exports.Prisma.CallSettingsScalarFieldEnum = {
   popupOnIncoming: 'popupOnIncoming',
   autoFollowupReminder: 'autoFollowupReminder',
   followupDelayMinutes: 'followupDelayMinutes',
+  syncNonCrmContacts: 'syncNonCrmContacts',
   organisationId: 'organisationId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

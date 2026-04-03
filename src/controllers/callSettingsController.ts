@@ -52,7 +52,8 @@ export const updateCallSettings = async (req: Request, res: Response) => {
             autoDeleteEnabled,
             popupOnIncoming,
             autoFollowupReminder,
-            followupDelayMinutes
+            followupDelayMinutes,
+            syncNonCrmContacts
         } = req.body;
 
         // Upsert settings
@@ -67,7 +68,8 @@ export const updateCallSettings = async (req: Request, res: Response) => {
                 autoDeleteEnabled: autoDeleteEnabled ?? undefined,
                 popupOnIncoming: popupOnIncoming ?? undefined,
                 autoFollowupReminder: autoFollowupReminder ?? undefined,
-                followupDelayMinutes: followupDelayMinutes ?? undefined
+                followupDelayMinutes: followupDelayMinutes ?? undefined,
+                syncNonCrmContacts: syncNonCrmContacts ?? undefined
             },
             create: {
                 organisationId: orgId,
@@ -79,7 +81,8 @@ export const updateCallSettings = async (req: Request, res: Response) => {
                 autoDeleteEnabled: autoDeleteEnabled ?? false,
                 popupOnIncoming: popupOnIncoming ?? true,
                 autoFollowupReminder: autoFollowupReminder ?? true,
-                followupDelayMinutes: followupDelayMinutes ?? 30
+                followupDelayMinutes: followupDelayMinutes ?? 30,
+                syncNonCrmContacts: syncNonCrmContacts ?? true // Default to true if not specified on first create
             }
         });
 
