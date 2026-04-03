@@ -77,7 +77,10 @@ export const handleVoiceWebhook = async (req: Request, res: Response) => {
                     console.log(`[Telephony] Inbound call matched to Lead: ${foundLead.id} (${foundLead.firstName})`);
                 } else {
                     // Check if we should sync unknown numbers
-                    if (!org.callSettings?.syncNonCrmContacts) {
+                    // If settings are missing, default to true (to match previous behavior)
+                    const canSync = org.callSettings ? org.callSettings.syncNonCrmContacts : true;
+                    
+                    if (!canSync) {
                         console.log(`[Telephony] Inbound call from unknown number ${From} ignored (Sync Settings)`);
                         
                         // Still need to handle the voice response (Dial/Forward) but skip Interaction creation

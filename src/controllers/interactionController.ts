@@ -75,7 +75,10 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
                 where: { organisationId: orgId }
             });
             
-            if (settings && !settings.syncNonCrmContacts) {
+            // If settings missing, default to true (to match previous behavior)
+            const canSync = settings ? settings.syncNonCrmContacts : true;
+
+            if (!canSync) {
                 return res.status(400).json({ 
                     message: 'Contact synchronization is disabled. Interactions can only be logged for existing Leads or Contacts.' 
                 });

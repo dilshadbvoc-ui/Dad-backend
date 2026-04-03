@@ -216,7 +216,7 @@ export const getAllCalls = async (req: Request, res: Response) => {
                     where.createdById = 'none';
                 }
             } else {
-                where.createdById = { in: visibleUserIds };
+                where.createdById = { in: [...visibleUserIds, null] };
             }
         } else if (userId && userId !== 'all') {
             // Admin/Super Admin can filter by any user
@@ -330,7 +330,7 @@ export const getCallStats = async (req: Request, res: Response) => {
         // Hierarchy filtering
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            baseWhere.createdById = { in: visibleUserIds };
+            baseWhere.createdById = { in: [...visibleUserIds, null] };
         }
 
         // Total calls
