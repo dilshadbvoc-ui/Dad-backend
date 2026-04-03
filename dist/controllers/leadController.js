@@ -46,7 +46,7 @@ const notificationService_1 = require("../services/notificationService");
 const client_1 = require("../generated/client");
 const roleUtils_1 = require("../utils/roleUtils");
 const geoLocationService_1 = require("../services/geoLocationService");
-const taskService_1 = require("../services/taskService");
+const followUpService_1 = require("../services/followUpService");
 // Dynamic import used for OpenAI to avoid startup errors if missing
 // GET /api/leads
 const getLeads = async (req, res) => {
@@ -116,6 +116,18 @@ const getLeads = async (req, res) => {
         if (andConditions.length > 0) {
             where.AND = andConditions;
         }
+        // 3. Sorting
+        let orderBy = { updatedAt: 'desc' };
+        const sortBy = req.query.sortBy;
+        const sortOrder = req.query.sortOrder || 'desc';
+        if (sortBy) {
+            if (sortBy === 'owner') {
+                orderBy = { assignedTo: { firstName: sortOrder } };
+            }
+            else if (['firstName', 'lastName', 'createdAt', 'updatedAt', 'leadScore', 'status'].includes(sortBy)) {
+                orderBy = { [sortBy]: sortOrder };
+            }
+        }
         console.log('[getLeads] Prisma Where:', JSON.stringify(where, null, 2)); // DEBUG LOG
         const total = await prisma_1.default.lead.count({ where });
         const leads = await prisma_1.default.lead.findMany({
@@ -127,7 +139,7 @@ const getLeads = async (req, res) => {
             },
             skip: (page - 1) * pageSize,
             take: pageSize,
-            orderBy: { updatedAt: 'desc' }
+            orderBy
         });
         res.json({ leads, page, pages: Math.ceil(total / pageSize), total });
     }
@@ -146,7 +158,16 @@ const createLead = async (req, res) => {
             return res.status(400).json({ message: 'Phone number is required' });
         // Sanitize Phone
         let cleanPhone = phone.toString().replace(/\D/g, '');
-        if (cleanPhone.length > 10 && cleanPhone.endsWith(cleanPhone.slice(-10))) {
+        const phoneCountryCode = req.body.phoneCountryCode;
+        if (phoneCountryCode) {
+            const prefixNoPlus = phoneCountryCode.replace('+', '');
+            if (cleanPhone.startsWith(prefixNoPlus)) {
+                cleanPhone = cleanPhone.slice(prefixNoPlus.length);
+            }
+        }
+        else if (cleanPhone.length > 10) {
+            // Backward compatibility: strip last 10 if no country code provided
+            // This handles cases like 919876543210 -> 9876543210
             cleanPhone = cleanPhone.slice(-10);
         }
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
@@ -479,7 +500,7 @@ const updateLead = async (req, res) => {
             // Auto-create or reschedule follow-up task
             const leadName = `${currentLead.firstName} ${currentLead.lastName || ''}`.trim();
             const dueDate = new Date(updates.nextFollowUp);
-            await taskService_1.TaskService.rescheduleOrCreateFollowUp({
+            await followUpService_1.FollowUpService.rescheduleOrCreateFollowUp({
                 subject: `Follow up with ${leadName}`,
                 description: `Follow-up scheduled for ${leadName} from ${currentLead.company || 'Unknown Company'}`,
                 status: 'not_started',

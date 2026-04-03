@@ -139,7 +139,7 @@ app.use((0, helmet_1.default)({
             objectSrc: ["'self'", "data:", "blob:"],
             baseUri: ["'self'"],
             formAction: ["'self'"],
-            mediaSrc: ["'self'", "blob:", "data:", "https:"],
+            mediaSrc: ["'self'", "blob:", "data:", "https:", "*"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
     },

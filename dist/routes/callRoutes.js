@@ -26,6 +26,7 @@ const upload = (0, multer_1.default)({ storage });
 // Call logs and stats routes
 router.route('/').get(authMiddleware_1.protect, callController_1.getAllCalls);
 router.route('/stats').get(authMiddleware_1.protect, callController_1.getCallStats);
+router.route('/reports/user-analytics').get(authMiddleware_1.protect, callController_1.getUserCallAnalytics);
 // Call actions
 router.route('/initiate').post(authMiddleware_1.protect, callController_1.initiateCall);
 router.route('/:id/complete').post(authMiddleware_1.protect, upload.single('recording'), callController_1.completeCall);

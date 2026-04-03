@@ -73,7 +73,7 @@ export const getCheckIns = async (req: AuthRequest, res: Response) => {
     try {
         const organisationId = req.user?.organisationId;
         const userId = req.user?.id;
-        const { date, userId: queryUserId } = req.query;
+        const { date, userId: queryUserId, sortBy, sortOrder } = req.query;
 
         if (!organisationId || !userId) {
             return res.status(401).json({ error: 'Unauthorized' });
@@ -112,6 +112,10 @@ export const getCheckIns = async (req: AuthRequest, res: Response) => {
         const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
         const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
 
+        // Dynamic sorting
+        const orderField = sortBy ? String(sortBy) : 'createdAt';
+        const orderDir = (sortOrder === 'asc' || sortOrder === 'desc') ? sortOrder : 'desc';
+
         const checkIns = await prisma.checkIn.findMany({
             where,
             include: {
@@ -122,7 +126,7 @@ export const getCheckIns = async (req: AuthRequest, res: Response) => {
             },
             take: limit,
             skip: offset,
-            orderBy: { createdAt: 'desc' }
+            orderBy: { [orderField]: orderDir }
         });
 
         res.json(checkIns);

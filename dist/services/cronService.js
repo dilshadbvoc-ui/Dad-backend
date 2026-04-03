@@ -59,7 +59,7 @@ const initCronJobs = () => {
             });
             console.log(`[Cron] Found ${overdueLeads.length} leads with overdue follow-ups.`);
             if (overdueLeads.length > 0) {
-                const { TaskService } = await Promise.resolve().then(() => __importStar(require('./taskService')));
+                const { FollowUpService } = await Promise.resolve().then(() => __importStar(require('./followUpService')));
                 // Set nextFollowUp to Today at 10 AM IST (04:30 AM UTC)
                 const rolloverTime = new Date(today);
                 rolloverTime.setUTCHours(4, 30, 0, 0);
@@ -69,8 +69,8 @@ const initCronJobs = () => {
                         where: { id: lead.id },
                         data: { nextFollowUp: rolloverTime }
                     });
-                    // Also rollover the associated task
-                    await TaskService.rolloverTaskForLead(lead.id, rolloverTime);
+                    // Also rollover the associated follow-up
+                    await FollowUpService.rolloverFollowUpForLead(lead.id, rolloverTime);
                 }
                 console.log(`[Cron] Rolled over ${overdueLeads.length} leads and their tasks to today.`);
             }

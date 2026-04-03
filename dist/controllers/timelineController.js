@@ -29,7 +29,7 @@ const getTimeline = async (req, res) => {
             return res.status(400).json({ message: 'Invalid entity type or ID' });
         }
         // Fetch related data concurrently
-        const [interactions, tasks, events, auditLogs, callRecordings] = await Promise.all([
+        const [interactions, tasks, events, auditLogs, callRecordings, followUpsData] = await Promise.all([
             prisma_1.default.interaction.findMany({
                 where: {
                     [`${type}Id`]: id,
@@ -62,6 +62,14 @@ const getTimeline = async (req, res) => {
             prisma_1.default.callRecording.findMany({
                 where: { leadId: id },
                 orderBy: { timestamp: 'desc' }
+            }),
+            prisma_1.default.followUp.findMany({
+                where: {
+                    [`${type}Id`]: id,
+                    isDeleted: false
+                },
+                orderBy: { dueDate: 'desc' },
+                include: { assignedTo: { select: { firstName: true, lastName: true } } }
             })
         ]);
         // Filter out CallRecordings that are already represented by Interactions to avoid timeline duplicates.
@@ -188,6 +196,16 @@ const getTimeline = async (req, res) => {
                 date: c.timestamp,
                 actor: null, // Call logs are from the device, usually specific to the assigned user
                 meta: { fileUrl: c.fileUrl, duration: c.duration, callType: c.callType }
+            })),
+            ...followUpsData.map(f => ({
+                id: f.id,
+                type: 'followUp',
+                subType: f.status,
+                title: f.subject,
+                description: f.description,
+                date: f.dueDate,
+                actor: f.assignedTo,
+                meta: { priority: f.priority }
             }))
         ];
         // Sort by date descending

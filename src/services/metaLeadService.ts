@@ -1,6 +1,7 @@
 import axios from 'axios';
 import prisma from '../config/prisma';
 import { DistributionService } from './distributionService';
+import { NotificationService } from './notificationService';
 import { LeadSource, LeadStatus, Prisma } from '../generated/client';
 import { decrypt } from '../utils/encryption';
 
@@ -10,7 +11,8 @@ export const MetaLeadService = {
      */
     async processIncomingLead(leadgenId: string, pageId: string, adId?: string, formId?: string) {
         try {
-            console.log(`[MetaLeadService] Processing lead ${leadgenId}...`);
+            const META_API_VERSION = 'v18.0'; // Stay consistent with other routes
+            console.log(`[MetaLeadService] Processing lead ${leadgenId} from Page ${pageId}...`);
 
             // 1. Find the organisation connected to this Page ID
             // Try matching valid accounts in metaAccounts array or legacy meta object
@@ -19,13 +21,11 @@ export const MetaLeadService = {
                     isDeleted: false,
                     OR: [
                         { integrations: { path: ['meta', 'pageId'], equals: pageId } },
-                        // Fallback/Optimization: In production, consider a 'pageIds' array for faster lookup
                     ]
                 }
             });
 
-            // If not found via primary, we might need to scan. 
-            // For MVP, if not found, we fetch orgs with metaAccounts and filter.
+            // If not found via primary, scan metaAccounts array
             if (!org) {
                 const candidates = await prisma.organisation.findMany({
                     where: { isDeleted: false, integrations: { path: ['metaAccounts'], not: Prisma.JsonNull } }
@@ -37,14 +37,14 @@ export const MetaLeadService = {
             }
 
             if (!org) {
-                console.error(`[MetaLeadService] No organisation found with Meta Page ID: ${pageId}`);
+                console.error(`[MetaLeadService] No organisation found with Meta Page ID: ${pageId}. Ensure the Page is connected in Settings.`);
                 return;
             }
 
             // Extract the correct account config
             const integrations = (org.integrations as any) || {};
-            const accounts = integrations.metaAccounts || [];
-            if (integrations.meta) accounts.push(integrations.meta); // Include legacy/primary
+            const accounts = [...(integrations.metaAccounts || [])];
+            if (integrations.meta) accounts.push(integrations.meta);
 
             const matchedAccount = accounts.find((acc: any) => acc.pageId === pageId);
 
@@ -54,16 +54,11 @@ export const MetaLeadService = {
             }
 
             const metaConfig = matchedAccount;
-            if (metaConfig.accessToken) {
-                metaConfig.accessToken = decrypt(metaConfig.accessToken);
-            }
-            // Proceed using metaConfig.accessToken
+            const accessToken = decrypt(metaConfig.accessToken);
 
             // 2. Fetch Lead details from Meta Graph API
-            const response = await axios.get(`https://graph.facebook.com/v18.0/${leadgenId}`, {
-                params: {
-                    access_token: metaConfig.accessToken
-                }
+            const response = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
+                params: { access_token: accessToken }
             });
 
             const metaLeadData = response.data;
@@ -72,11 +67,11 @@ export const MetaLeadService = {
                 return;
             }
 
-            // 3. Map Meta field_data to CRM fields
+            // 3. Map Meta field_data to CRM fields with better coverage
             const fieldMap: Record<string, string> = {};
             metaLeadData.field_data.forEach((field: any) => {
                 if (field.values && field.values.length > 0) {
-                    fieldMap[field.name] = field.values[0];
+                    fieldMap[field.name.toLowerCase()] = field.values[0];
                 }
             });
 
@@ -84,15 +79,24 @@ export const MetaLeadService = {
             const { GeoLocationService } = await import('./geoLocationService');
             const geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
 
-            // Common Meta Field Names -> CRM Field Names
+            // Helper to get field with multiple possible keys
+            const getField = (keys: string[]) => {
+                for (const key of keys) {
+                    if (fieldMap[key]) return fieldMap[key];
+                }
+                return null;
+            };
+
             const crmData: any = {
-                firstName: fieldMap.first_name || fieldMap.full_name?.split(' ')[0] || 'Meta',
-                lastName: fieldMap.last_name || fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
-                email: fieldMap.email || null,
-                phone: fieldMap.phone_number || '', // Will be sanitized in createLead or manually here
-                company: fieldMap.company_name || null,
-                jobTitle: fieldMap.job_title || null,
-                country: geoData?.country || null,
+                firstName: getField(['first_name', 'firstname', 'first name', 'fname']) || 
+                           fieldMap.full_name?.split(' ')[0] || 'Meta',
+                lastName: getField(['last_name', 'lastname', 'last name', 'lname']) || 
+                          fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
+                email: getField(['email', 'email_address', 'e-mail']),
+                phone: getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']) || '',
+                company: getField(['company_name', 'company', 'organization', 'organisation']),
+                jobTitle: getField(['job_title', 'position', 'designation']),
+                country: geoData?.country || getField(['country', 'location']),
                 countryCode: geoData?.countryCode || null,
                 phoneCountryCode: geoData?.phoneCountryCode || null,
                 source: LeadSource.meta_leadgen,
@@ -100,14 +104,15 @@ export const MetaLeadService = {
                     metaLeadgenId: leadgenId,
                     metaFormId: formId,
                     metaAdId: adId,
-                    rawMetaFields: fieldMap
+                    rawMetaFields: fieldMap,
+                    metaCreatedTime: metaLeadData.created_time
                 },
                 status: LeadStatus.new,
                 organisationId: org.id,
-                branchId: metaConfig.branchId || null // Assign branch if configured
+                branchId: metaConfig.branchId || null
             };
 
-            // 4. Sanitize Phone Number (distribution logic needs clean phone)
+            // 4. Sanitize Phone Number
             if (crmData.phone) {
                 crmData.phone = crmData.phone.toString().replace(/\D/g, '');
                 if (crmData.phone.length > 10) {
@@ -120,9 +125,7 @@ export const MetaLeadService = {
             const duplicateCheck = await DuplicateLeadService.checkDuplicate(crmData.phone, crmData.email, org.id);
 
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                console.log(`[MetaLeadService] Duplicate lead detected. Handling as re-enquiry for lead ${duplicateCheck.existingLead.id}`);
-
-                // Handle as re-enquiry
+                console.log(`[MetaLeadService] Duplicate lead detected (${duplicateCheck.existingLead.id}). Handling as re-enquiry.`);
                 await DuplicateLeadService.handleReEnquiry(
                     duplicateCheck.existingLead,
                     {
@@ -136,7 +139,6 @@ export const MetaLeadService = {
                     },
                     org.id
                 );
-
                 return;
             }
 
@@ -147,8 +149,28 @@ export const MetaLeadService = {
 
             console.log(`[MetaLeadService] Successfully created lead ${lead.id} from Meta`);
 
-            // 7. Auto-assign via DistributionService
-            await DistributionService.assignLead(lead, org.id);
+            // 8. Create Notification for Sales/Admin
+            try {
+                const admins = await prisma.user.findMany({
+                    where: {
+                        organisationId: org.id,
+                        role: { in: ['admin', 'super_admin'] },
+                        isActive: true
+                    },
+                    select: { id: true }
+                });
+
+                for (const admin of admins) {
+                    await NotificationService.send(
+                        admin.id,
+                        'New Meta Lead',
+                        `New lead received: ${crmData.firstName} ${crmData.lastName}`,
+                        'info'
+                    );
+                }
+            } catch (notifyErr) {
+                console.warn('[MetaLeadService] Notification failed:', notifyErr);
+            }
 
         } catch (error: any) {
             console.error('[MetaLeadService] Error processing Meta lead:', error.response?.data || error.message);

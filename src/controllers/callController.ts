@@ -99,18 +99,14 @@ export const completeCall = async (req: Request, res: Response) => {
             const dueDate = new Date();
             dueDate.setMinutes(dueDate.getMinutes() + delay);
 
-            await prisma.followUp.create({
-                data: {
-                    subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
-                    description: `Follow-up scheduled from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
-                    dueDate: dueDate,
-                    status: 'not_started',
-                    priority: 'medium',
-                    organisation: interaction.organisationId ? { connect: { id: interaction.organisationId } } : undefined,
-                    assignedTo: interaction.createdById ? { connect: { id: interaction.createdById } } : undefined,
-                    lead: interaction.leadId ? { connect: { id: interaction.leadId } } : undefined,
-                    contact: interaction.contactId ? { connect: { id: interaction.contactId } } : undefined,
-                }
+            await FollowUpService.rescheduleOrCreateFollowUp({
+                subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
+                description: `Follow-up scheduled from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
+                dueDate: dueDate,
+                organisationId: interaction.organisationId!,
+                createdById: interaction.createdById || undefined,
+                leadId: interaction.leadId!,
+                assignedToId: interaction.createdById || undefined,
             });
 
             // Sync Lead follow-up date using the dedicated service

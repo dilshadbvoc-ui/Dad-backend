@@ -135,7 +135,16 @@ export const createLead = async (req: express.Request, res: express.Response) =>
 
         // Sanitize Phone
         let cleanPhone = phone.toString().replace(/\D/g, '');
-        if (cleanPhone.length > 10 && cleanPhone.endsWith(cleanPhone.slice(-10))) {
+        const phoneCountryCode = req.body.phoneCountryCode;
+
+        if (phoneCountryCode) {
+            const prefixNoPlus = phoneCountryCode.replace('+', '');
+            if (cleanPhone.startsWith(prefixNoPlus)) {
+                cleanPhone = cleanPhone.slice(prefixNoPlus.length);
+            }
+        } else if (cleanPhone.length > 10) {
+            // Backward compatibility: strip last 10 if no country code provided
+            // This handles cases like 919876543210 -> 9876543210
             cleanPhone = cleanPhone.slice(-10);
         }
 
@@ -481,6 +490,16 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
 
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
+            // CRITICAL: Block transition to 'qualified' or 'converted' if no products
+            if (['qualified', 'converted'].includes(updates.status)) {
+                const productCount = await prisma.leadProduct.count({ where: { leadId } });
+                if (productCount === 0) {
+                    return res.status(400).json({ 
+                        message: 'Please add at least one product before qualifying or converting this lead.' 
+                    });
+                }
+            }
+
             const { logAudit } = await import('../utils/auditLogger');
             logAudit({
                 action: 'LEAD_STATUS_CHANGE',
@@ -1019,6 +1038,13 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             }
         });
         if (!lead) return res.status(404).json({ message: 'Lead not found' });
+
+        // CRITICAL: Block conversion if no products
+        if (!lead.products || lead.products.length === 0) {
+            return res.status(400).json({ 
+                message: 'Please add at least one product before converting this lead to an opportunity.' 
+            });
+        }
 
         if (lead.status === LeadStatus.converted) {
             return res.status(400).json({ message: 'Lead already converted' });

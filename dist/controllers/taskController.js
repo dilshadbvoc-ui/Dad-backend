@@ -7,7 +7,6 @@ exports.deleteTask = exports.updateTask = exports.getTaskById = exports.createTa
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const auditLogger_1 = require("../utils/auditLogger");
-const taskService_1 = require("../services/taskService");
 // Helper to consolidate polymorphic 'relatedTo' for Frontend compatibility
 const transformTask = (task) => {
     let relatedTo = null;
@@ -178,39 +177,17 @@ const createTask = async (req, res) => {
             else if (onModel === 'Opportunity')
                 data.opportunity = { connect: { id: relatedTo } };
         }
-        let task;
-        if (onModel === 'Lead' && relatedTo && dueDateISO) {
-            // Use the deduplication logic for Lead follow-ups
-            task = await taskService_1.TaskService.rescheduleOrCreateFollowUp({
-                subject: req.body.subject,
-                description: req.body.description,
-                status: req.body.status || 'not_started',
-                priority: req.body.priority || 'medium',
-                dueDate: new Date(dueDateISO),
-                organisationId: orgId,
-                createdById: user.id,
-                leadId: relatedTo,
-                assignedToId: req.body.assignedTo,
-                branchId: user.branchId || req.body.branchId
-            });
-        }
-        else {
-            // Standard task creation
-            task = await prisma_1.default.task.create({
-                data,
-                include: {
-                    assignedTo: { select: { firstName: true, lastName: true } },
-                    lead: { select: { firstName: true, lastName: true } },
-                    contact: { select: { firstName: true, lastName: true } },
-                    account: { select: { name: true } },
-                    opportunity: { select: { name: true } }
-                }
-            });
-        }
-        // Sync Lead follow-up date
-        if (task.leadId) {
-            await taskService_1.TaskService.syncLeadFollowUp(task.leadId);
-        }
+        // Standard task creation
+        const task = await prisma_1.default.task.create({
+            data,
+            include: {
+                assignedTo: { select: { firstName: true, lastName: true } },
+                lead: { select: { firstName: true, lastName: true } },
+                contact: { select: { firstName: true, lastName: true } },
+                account: { select: { name: true } },
+                opportunity: { select: { name: true } }
+            }
+        });
         if (orgId) {
             await (0, auditLogger_1.logAudit)({
                 organisationId: orgId,
@@ -316,10 +293,6 @@ const updateTask = async (req, res) => {
                 opportunity: { select: { id: true, name: true } },
             }
         });
-        // Sync Lead follow-up date
-        if (task.leadId) {
-            await taskService_1.TaskService.syncLeadFollowUp(task.leadId);
-        }
         await (0, auditLogger_1.logAudit)({
             organisationId: requester.organisationId || (0, hierarchyUtils_1.getOrgId)(requester),
             actorId: requester.id,
@@ -351,11 +324,6 @@ const deleteTask = async (req, res) => {
             where,
             data: { isDeleted: true }
         });
-        // Sync Lead follow-up date (task is now deleted)
-        const task = await prisma_1.default.task.findUnique({ where: { id: req.params.id } });
-        if (task?.leadId) {
-            await taskService_1.TaskService.syncLeadFollowUp(task.leadId);
-        }
         await (0, auditLogger_1.logAudit)({
             organisationId: (orgId || (0, hierarchyUtils_1.getOrgId)(user)),
             actorId: user.id,

@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRecording = exports.getCallStats = exports.getAllCalls = exports.getRecording = exports.getLeadCalls = exports.completeCall = exports.initiateCall = void 0;
+exports.getUserCallAnalytics = exports.deleteRecording = exports.getCallStats = exports.getAllCalls = exports.getRecording = exports.getLeadCalls = exports.completeCall = exports.initiateCall = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
-const taskService_1 = require("../services/taskService");
+const followUpService_1 = require("../services/followUpService");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 // Helper to ensure upload directory exists
@@ -90,10 +90,10 @@ const completeCall = async (req, res) => {
         if (shouldCreateTask) {
             const dueDate = new Date();
             dueDate.setMinutes(dueDate.getMinutes() + delay);
-            await prisma_1.default.task.create({
+            await prisma_1.default.followUp.create({
                 data: {
                     subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
-                    description: `Follow-up task from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
+                    description: `Follow-up scheduled from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
                     dueDate: dueDate,
                     status: 'not_started',
                     priority: 'medium',
@@ -103,9 +103,9 @@ const completeCall = async (req, res) => {
                     contact: interaction.contactId ? { connect: { id: interaction.contactId } } : undefined,
                 }
             });
-            // Sync Lead follow-up date
+            // Sync Lead follow-up date using the dedicated service
             if (interaction.leadId) {
-                await taskService_1.TaskService.syncLeadFollowUp(interaction.leadId);
+                await followUpService_1.FollowUpService.syncLeadFollowUp(interaction.leadId);
             }
         }
         res.json(interaction);
@@ -414,3 +414,109 @@ const deleteRecording = async (req, res) => {
     }
 };
 exports.deleteRecording = deleteRecording;
+// Get per-user call analytics for reports
+const getUserCallAnalytics = async (req, res) => {
+    try {
+        const user = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!orgId)
+            return res.status(400).json({ message: 'No org' });
+        const { period = 'today', direction } = req.query; // direction: all, inbound, outbound
+        // Calculate date range
+        const now = new Date();
+        let startDate;
+        switch (period) {
+            case 'today':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
+            case 'yesterday':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
+            case 'week':
+                startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                break;
+            case 'month':
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                break;
+            default:
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        }
+        const baseWhere = {
+            organisationId: orgId,
+            type: 'call',
+            isDeleted: false,
+            date: { gte: startDate }
+        };
+        if (period === 'yesterday') {
+            const yesterdayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            baseWhere.date = { gte: startDate, lt: yesterdayEnd };
+        }
+        if (direction && direction !== 'all') {
+            baseWhere.direction = direction;
+        }
+        // Hierarchy filtering
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        baseWhere.createdById = { in: visibleUserIds };
+        // Fetch all relevant interactions
+        const interactions = await prisma_1.default.interaction.findMany({
+            where: baseWhere,
+            select: {
+                createdById: true,
+                callStatus: true,
+                duration: true,
+                recordingDuration: true,
+                direction: true
+            }
+        });
+        // Fetch users to map names
+        const users = await prisma_1.default.user.findMany({
+            where: { id: { in: visibleUserIds } },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true
+            }
+        });
+        // Aggregate by user
+        const userStatsMap = {};
+        // Initialize for all visible users
+        users.forEach(u => {
+            userStatsMap[u.id] = {
+                userId: u.id,
+                agentName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                totalCalls: 0,
+                connectedCalls: 0,
+                totalDurationSeconds: 0
+            };
+        });
+        interactions.forEach(i => {
+            if (i.createdById && userStatsMap[i.createdById]) {
+                const stats = userStatsMap[i.createdById];
+                stats.totalCalls++;
+                if (i.callStatus === 'completed') {
+                    stats.connectedCalls++;
+                    // Duration: duration is in mins, recordingDuration is in seconds
+                    if (i.recordingDuration && i.recordingDuration > 0) {
+                        stats.totalDurationSeconds += i.recordingDuration;
+                    }
+                    else if (i.duration && i.duration > 0) {
+                        stats.totalDurationSeconds += i.duration * 60;
+                    }
+                }
+            }
+        });
+        const reportData = Object.values(userStatsMap)
+            .sort((a, b) => b.totalCalls - a.totalCalls);
+        res.json({
+            reportData,
+            period,
+            direction: direction || 'all'
+        });
+    }
+    catch (error) {
+        console.error('Get user call analytics error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.getUserCallAnalytics = getUserCallAnalytics;
