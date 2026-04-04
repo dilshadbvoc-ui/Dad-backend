@@ -44,7 +44,7 @@ export const getCurrentLicense = async (req: Request, res: Response) => {
         });
 
         if (!license) {
-            return res.status(404).json({ message: 'No active license found' });
+            return res.json({ license: null, message: 'No active license found' });
         }
 
         // Get current user count
