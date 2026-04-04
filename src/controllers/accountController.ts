@@ -324,8 +324,7 @@ export const addAccountProduct = async (req: Request, res: Response) => {
                     type: 'UPSALE',
                     organisation: { connect: { id: orgId } },
                     owner: { connect: { id: user.id } },
-                    account: { connect: { id: accountId } },
-                    createdBy: { connect: { id: user.id } }
+                    account: { connect: { id: accountId } }
                 }
             });
             console.log(`[Upsell] Created closed_won opportunity for account ${accountId} (Amount: ${finalAmount})`);
