@@ -385,6 +385,7 @@ exports.Prisma.AccountProductScalarFieldEnum = {
   serialNumber: 'serialNumber',
   status: 'status',
   notes: 'notes',
+  price: 'price',
   accountId: 'accountId',
   productId: 'productId',
   organisationId: 'organisationId',

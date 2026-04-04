@@ -113,14 +113,21 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'leadId or phoneNumber is required' });
         }
 
-        // Only add call data for phone numbers that exist in the CRM setup
-        if (!targetLeadId) {
-            console.warn(`[AndroidUpload] Upload skipped: Phone number ${phoneNumber} is not associated with any Lead in the CRM.`);
-            return res.status(200).json({ message: 'Call dropped: Phone number not found in CRM' });
+        // 1. Fetch Call Settings to check if non-CRM sync is allowed
+        const settings = await prisma.callSettings.findUnique({
+            where: { organisationId: user.organisationId }
+        });
+        const canSyncUnknown = settings ? settings.syncNonCrmContacts : true; // Default to true if not set
+
+        // Only add call data for phone numbers that exist in the CRM setup, 
+        // unless syncNonCrmContacts is enabled
+        if (!targetLeadId && !canSyncUnknown) {
+            console.warn(`[AndroidUpload] Upload skipped: Phone number ${phoneNumber} is not associated with any Lead and Contact Synchronization is OFF.`);
+            return res.status(200).json({ message: 'Call dropped: Contact synchronization disabled for non-CRM numbers' });
         }
 
         // Create recording record (linked to lead if found)
-        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'})`);
+        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'}, canSyncUnknown=${canSyncUnknown})`);
         const recording = await prisma.callRecording.create({
             data: {
                 lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
@@ -240,6 +247,12 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
         console.log(`[BulkSync] Received ${calls.length} call entries from user ${user.id}`);
 
+        // 0. Fetch Call Settings to check if non-CRM sync is allowed
+        const settings = await prisma.callSettings.findUnique({
+            where: { organisationId: user.organisationId }
+        });
+        const canSyncUnknown = settings ? settings.syncNonCrmContacts : true;
+
         // 1. Fetch all CRM leads with phone numbers for this organisation
         const crmLeads = await prisma.lead.findMany({
             where: {
@@ -290,8 +303,10 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 }
 
                 const matchedLead = phoneToLead.get(last10);
-                if (!matchedLead) {
-                    // Not a CRM number — skip silently (personal / spam)
+                
+                // If not matched to a lead, only proceed if Contact Sync is enabled
+                if (!matchedLead && !canSyncUnknown) {
+                    // Not a CRM number and sync disabled — skip silently
                     results.skipped++;
                     continue;
                 }
@@ -305,7 +320,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     where: {
                         organisationId: user.organisationId,
                         type: 'call',
-                        leadId: matchedLead.id,
+                        leadId: matchedLead ? matchedLead.id : null,
+                        phoneNumber: matchedLead ? undefined : phoneNumber, // Match by number if no lead
                         date: { gte: windowStart, lte: windowEnd }
                     }
                 });
@@ -345,7 +361,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 // 5. Create the CallRecording record (no audio file for bulk sync)
                 await prisma.callRecording.create({
                     data: {
-                        lead: { connect: { id: matchedLead.id } },
+                        lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
                         duration: durationSecs,
                         fileUrl: '',
                         callType: callType || 'UNKNOWN',
@@ -365,10 +381,10 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         recordingDuration: durationSecs,
                         recordingUrl: null,
                         callStatus: status,
-                        lead: { connect: { id: matchedLead.id } },
+                        lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
                         organisation: { connect: { id: user.organisationId } },
                         createdBy: { connect: { id: user.id } },
-                        phoneNumber: matchedLead.phone
+                        phoneNumber: matchedLead ? matchedLead.phone : phoneNumber
                     }
                 });
 

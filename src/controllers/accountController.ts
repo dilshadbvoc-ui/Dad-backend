@@ -134,7 +134,11 @@ export const getAccountById = async (req: Request, res: Response) => {
             include: {
                 owner: { select: { firstName: true, lastName: true, email: true } },
                 contacts: { select: { id: true, firstName: true, lastName: true, email: true } },
-                opportunities: { select: { id: true, name: true, amount: true, stage: true } }
+                opportunities: { select: { id: true, name: true, amount: true, stage: true } },
+                accountProducts: {
+                    include: { product: { select: { name: true, basePrice: true } } },
+                    orderBy: { createdAt: 'desc' }
+                }
             }
         });
 
@@ -271,7 +275,7 @@ export const addAccountProduct = async (req: Request, res: Response) => {
         const user = (req as any).user;
         const orgId = getOrgId(user);
         const { accountId } = req.params;
-        const { productId, quantity, purchaseDate, serialNumber, status, notes } = req.body;
+        const { productId, quantity, purchaseDate, serialNumber, status, notes, price, isFinalSale } = req.body;
 
         if (!orgId) return res.status(400).json({ message: 'Organisation context required' });
 
@@ -289,6 +293,7 @@ export const addAccountProduct = async (req: Request, res: Response) => {
                 serialNumber,
                 status: status || 'active',
                 notes,
+                price: Number(price) || 0,
                 organisationId: orgId
             },
             include: { product: true }
@@ -304,6 +309,27 @@ export const addAccountProduct = async (req: Request, res: Response) => {
                 organisationId: orgId
             }
         });
+
+        // 3. If it's a Final Sale (Upsell), create a closed_won Opportunity automatically
+        if (isFinalSale === true) {
+            const finalAmount = (Number(price) || 0) * (Number(quantity) || 1);
+            await prisma.opportunity.create({
+                data: {
+                    name: `Upsell: ${asset.product.name} (${asset.quantity})`,
+                    amount: finalAmount,
+                    stage: 'closed_won',
+                    probability: 100,
+                    closeDate: new Date(),
+                    description: `Automatically created from finalized asset purchase. Product: ${asset.product.name}, Serial: ${serialNumber || 'N/A'}`,
+                    type: 'UPSALE',
+                    organisation: { connect: { id: orgId } },
+                    owner: { connect: { id: user.id } },
+                    account: { connect: { id: accountId } },
+                    createdBy: { connect: { id: user.id } }
+                }
+            });
+            console.log(`[Upsell] Created closed_won opportunity for account ${accountId} (Amount: ${finalAmount})`);
+        }
 
         res.status(201).json(asset);
     } catch (error) {

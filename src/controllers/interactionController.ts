@@ -67,6 +67,48 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
             else if (onModel === 'Opportunity') data.opportunity = { connect: { id: relatedTo } };
         }
 
+        // Automatic Lookup by Phone Number (if no lead/contact ID provided)
+        // This helps associate calls from the mobile app with CRM records even if the app didn't do the lookup
+        if (!data.lead && !data.contact && phoneNumber && orgId) {
+            const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+            const last10 = cleanPhone.slice(-10);
+
+            if (last10.length >= 10) {
+                const matchedLead = await prisma.lead.findFirst({
+                    where: { 
+                        organisationId: orgId, 
+                        isDeleted: false,
+                        OR: [
+                            { phone: { contains: last10 } },
+                            { secondaryPhone: { contains: last10 } }
+                        ]
+                    },
+                    select: { id: true }
+                });
+
+                if (matchedLead) {
+                    data.lead = { connect: { id: matchedLead.id } };
+                } else {
+                    // Try Contact if no lead
+                    const matchedContact = await prisma.contact.findFirst({
+                        where: {
+                            organisationId: orgId,
+                            isDeleted: false,
+                            OR: [
+                                { phones: { path: ['$[*]'], string_contains: last10 } }, // Simplification for json phones
+                                { phones: { string_contains: last10 } }
+                            ]
+                        },
+                        select: { id: true }
+                    });
+                    
+                    if (matchedContact) {
+                        data.contact = { connect: { id: matchedContact.id } };
+                    }
+                }
+            }
+        }
+
         // Logic for Non-CRM Contact Synchronization
         // If it's a call and not connected to any known entity, check settings
         const isConnected = data.lead || data.contact || data.account || data.opportunity;
@@ -75,8 +117,8 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
                 where: { organisationId: orgId }
             });
             
-            // If settings missing, default to true (to match previous behavior)
-            const canSync = settings ? settings.syncNonCrmContacts : true;
+            // If settings missing or null, default to true (to match previous behavior)
+            const canSync = settings?.syncNonCrmContacts ?? true;
 
             if (!canSync) {
                 return res.status(400).json({ 

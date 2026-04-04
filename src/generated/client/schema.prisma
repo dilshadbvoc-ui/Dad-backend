@@ -527,6 +527,7 @@ model AccountProduct {
   serialNumber String?
   status       String    @default("active") // active, churned, returned
   notes        String?
+  price        Float     @default(0)
 
   accountId      String
   productId      String

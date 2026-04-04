@@ -25023,10 +25023,12 @@ export namespace Prisma {
 
   export type AccountProductAvgAggregateOutputType = {
     quantity: number | null
+    price: number | null
   }
 
   export type AccountProductSumAggregateOutputType = {
     quantity: number | null
+    price: number | null
   }
 
   export type AccountProductMinAggregateOutputType = {
@@ -25036,6 +25038,7 @@ export namespace Prisma {
     serialNumber: string | null
     status: string | null
     notes: string | null
+    price: number | null
     accountId: string | null
     productId: string | null
     organisationId: string | null
@@ -25050,6 +25053,7 @@ export namespace Prisma {
     serialNumber: string | null
     status: string | null
     notes: string | null
+    price: number | null
     accountId: string | null
     productId: string | null
     organisationId: string | null
@@ -25064,6 +25068,7 @@ export namespace Prisma {
     serialNumber: number
     status: number
     notes: number
+    price: number
     accountId: number
     productId: number
     organisationId: number
@@ -25075,10 +25080,12 @@ export namespace Prisma {
 
   export type AccountProductAvgAggregateInputType = {
     quantity?: true
+    price?: true
   }
 
   export type AccountProductSumAggregateInputType = {
     quantity?: true
+    price?: true
   }
 
   export type AccountProductMinAggregateInputType = {
@@ -25088,6 +25095,7 @@ export namespace Prisma {
     serialNumber?: true
     status?: true
     notes?: true
+    price?: true
     accountId?: true
     productId?: true
     organisationId?: true
@@ -25102,6 +25110,7 @@ export namespace Prisma {
     serialNumber?: true
     status?: true
     notes?: true
+    price?: true
     accountId?: true
     productId?: true
     organisationId?: true
@@ -25116,6 +25125,7 @@ export namespace Prisma {
     serialNumber?: true
     status?: true
     notes?: true
+    price?: true
     accountId?: true
     productId?: true
     organisationId?: true
@@ -25217,6 +25227,7 @@ export namespace Prisma {
     serialNumber: string | null
     status: string
     notes: string | null
+    price: number
     accountId: string
     productId: string
     organisationId: string
@@ -25250,6 +25261,7 @@ export namespace Prisma {
     serialNumber?: boolean
     status?: boolean
     notes?: boolean
+    price?: boolean
     accountId?: boolean
     productId?: boolean
     organisationId?: boolean
@@ -25267,6 +25279,7 @@ export namespace Prisma {
     serialNumber?: boolean
     status?: boolean
     notes?: boolean
+    price?: boolean
     accountId?: boolean
     productId?: boolean
     organisationId?: boolean
@@ -25284,6 +25297,7 @@ export namespace Prisma {
     serialNumber?: boolean
     status?: boolean
     notes?: boolean
+    price?: boolean
     accountId?: boolean
     productId?: boolean
     organisationId?: boolean
@@ -25316,6 +25330,7 @@ export namespace Prisma {
       serialNumber: string | null
       status: string
       notes: string | null
+      price: number
       accountId: string
       productId: string
       organisationId: string
@@ -25723,6 +25738,7 @@ export namespace Prisma {
     readonly serialNumber: FieldRef<"AccountProduct", 'String'>
     readonly status: FieldRef<"AccountProduct", 'String'>
     readonly notes: FieldRef<"AccountProduct", 'String'>
+    readonly price: FieldRef<"AccountProduct", 'Float'>
     readonly accountId: FieldRef<"AccountProduct", 'String'>
     readonly productId: FieldRef<"AccountProduct", 'String'>
     readonly organisationId: FieldRef<"AccountProduct", 'String'>
@@ -76882,6 +76898,7 @@ export namespace Prisma {
     serialNumber: 'serialNumber',
     status: 'status',
     notes: 'notes',
+    price: 'price',
     accountId: 'accountId',
     productId: 'productId',
     organisationId: 'organisationId',
@@ -80209,6 +80226,7 @@ export namespace Prisma {
     serialNumber?: StringNullableFilter<"AccountProduct"> | string | null
     status?: StringFilter<"AccountProduct"> | string
     notes?: StringNullableFilter<"AccountProduct"> | string | null
+    price?: FloatFilter<"AccountProduct"> | number
     accountId?: StringFilter<"AccountProduct"> | string
     productId?: StringFilter<"AccountProduct"> | string
     organisationId?: StringFilter<"AccountProduct"> | string
@@ -80226,6 +80244,7 @@ export namespace Prisma {
     serialNumber?: SortOrderInput | SortOrder
     status?: SortOrder
     notes?: SortOrderInput | SortOrder
+    price?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -80246,6 +80265,7 @@ export namespace Prisma {
     serialNumber?: StringNullableFilter<"AccountProduct"> | string | null
     status?: StringFilter<"AccountProduct"> | string
     notes?: StringNullableFilter<"AccountProduct"> | string | null
+    price?: FloatFilter<"AccountProduct"> | number
     accountId?: StringFilter<"AccountProduct"> | string
     productId?: StringFilter<"AccountProduct"> | string
     organisationId?: StringFilter<"AccountProduct"> | string
@@ -80263,6 +80283,7 @@ export namespace Prisma {
     serialNumber?: SortOrderInput | SortOrder
     status?: SortOrder
     notes?: SortOrderInput | SortOrder
+    price?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -80285,6 +80306,7 @@ export namespace Prisma {
     serialNumber?: StringNullableWithAggregatesFilter<"AccountProduct"> | string | null
     status?: StringWithAggregatesFilter<"AccountProduct"> | string
     notes?: StringNullableWithAggregatesFilter<"AccountProduct"> | string | null
+    price?: FloatWithAggregatesFilter<"AccountProduct"> | number
     accountId?: StringWithAggregatesFilter<"AccountProduct"> | string
     productId?: StringWithAggregatesFilter<"AccountProduct"> | string
     organisationId?: StringWithAggregatesFilter<"AccountProduct"> | string
@@ -87801,6 +87823,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     account: AccountCreateNestedOneWithoutAccountProductsInput
@@ -87815,6 +87838,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     accountId: string
     productId: string
     organisationId: string
@@ -87829,6 +87853,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -87843,6 +87868,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -87857,6 +87883,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     accountId: string
     productId: string
     organisationId: string
@@ -87871,6 +87898,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -87882,6 +87910,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -95210,6 +95239,7 @@ export namespace Prisma {
     serialNumber?: SortOrder
     status?: SortOrder
     notes?: SortOrder
+    price?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -95219,6 +95249,7 @@ export namespace Prisma {
 
   export type AccountProductAvgOrderByAggregateInput = {
     quantity?: SortOrder
+    price?: SortOrder
   }
 
   export type AccountProductMaxOrderByAggregateInput = {
@@ -95228,6 +95259,7 @@ export namespace Prisma {
     serialNumber?: SortOrder
     status?: SortOrder
     notes?: SortOrder
+    price?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -95242,6 +95274,7 @@ export namespace Prisma {
     serialNumber?: SortOrder
     status?: SortOrder
     notes?: SortOrder
+    price?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -95251,6 +95284,7 @@ export namespace Prisma {
 
   export type AccountProductSumOrderByAggregateInput = {
     quantity?: SortOrder
+    price?: SortOrder
   }
 
   export type ContactNullableRelationFilter = {
@@ -111712,6 +111746,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     account: AccountCreateNestedOneWithoutAccountProductsInput
@@ -111725,6 +111760,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     accountId: string
     productId: string
     createdAt?: Date | string
@@ -113510,6 +113546,7 @@ export namespace Prisma {
     serialNumber?: StringNullableFilter<"AccountProduct"> | string | null
     status?: StringFilter<"AccountProduct"> | string
     notes?: StringNullableFilter<"AccountProduct"> | string | null
+    price?: FloatFilter<"AccountProduct"> | number
     accountId?: StringFilter<"AccountProduct"> | string
     productId?: StringFilter<"AccountProduct"> | string
     organisationId?: StringFilter<"AccountProduct"> | string
@@ -125945,6 +125982,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     product: ProductCreateNestedOneWithoutAccountProductsInput
@@ -125958,6 +125996,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     productId: string
     organisationId: string
     createdAt?: Date | string
@@ -132259,6 +132298,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     account: AccountCreateNestedOneWithoutAccountProductsInput
@@ -132272,6 +132312,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     accountId: string
     organisationId: string
     createdAt?: Date | string
@@ -177717,6 +177758,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     accountId: string
     productId: string
     createdAt?: Date | string
@@ -180273,6 +180315,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -180286,6 +180329,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -180299,6 +180343,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -188344,6 +188389,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     productId: string
     organisationId: string
     createdAt?: Date | string
@@ -189187,6 +189233,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -189200,6 +189247,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -189213,6 +189261,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -190931,6 +190980,7 @@ export namespace Prisma {
     serialNumber?: string | null
     status?: string
     notes?: string | null
+    price?: number
     accountId: string
     organisationId: string
     createdAt?: Date | string
@@ -191028,6 +191078,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -191041,6 +191092,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     accountId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -191054,6 +191106,7 @@ export namespace Prisma {
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
     accountId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
