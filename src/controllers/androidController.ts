@@ -142,35 +142,39 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const durationMinutes = durationSecs / 60;
         const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
-        // 2. Link to existing "initiated" or "completed" interaction (within last 10 mins)
+        // 2. Link to existing "initiated" or "completed" interaction (within last 30 mins)
         // This handles "Tracker vs Accessibility" race conditions and deduplication
-        const tenMinsAgo = new Date(Date.now() - 10 * 60 * 1000);
+        const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
         console.log(`[AndroidUpload] Searching for recent interaction to merge (Lead: ${targetLeadId}, Phone: ${phoneNumber})...`);
         
+        // Deep Normalized Suffix (last 10 digits)
+        const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
+        const phoneSuffix = phoneDigits.slice(-10);
+
         const existingInteraction = await prisma.interaction.findFirst({
             where: {
                 organisationId: user.organisationId,
                 type: 'call',
-                createdAt: { gte: tenMinsAgo },
+                createdAt: { gte: thirtyMinsAgo },
                 OR: [
                     targetLeadId ? { leadId: targetLeadId } : {},
-                    phoneNumber ? { phoneNumber: { contains: phoneNumber.slice(-10) } } : {}
+                    phoneSuffix ? { phoneNumber: { contains: phoneSuffix } } : {}
                 ].filter(condition => Object.keys(condition).length > 0)
             },
             orderBy: { createdAt: 'desc' }
         });
 
         if (existingInteraction) {
-            console.log(`[AndroidUpload] Mapping duration to existing interaction: ${existingInteraction.id} (Status: ${existingInteraction.callStatus})`);
+            console.log(`[AndroidUpload] Healing interaction ${existingInteraction.id} with official duration: ${durationSecs}s`);
             
-            // Only update duration if the incoming value is > 0 OR if the current interaction has 0 dur
-            const shouldUpdateDuration = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
-            
+            // SYSTEM LOG RULE: If the new duration is > 0, we ALWAYS trust it over a 2s estimate
+            const shouldUpdate = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
+
             await prisma.interaction.update({
                 where: { id: existingInteraction.id },
                 data: {
-                    duration: shouldUpdateDuration ? (Math.round(durationMinutes * 100) / 100) : undefined,
-                    recordingDuration: shouldUpdateDuration ? durationSecs : undefined,
+                    duration: shouldUpdate ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                    recordingDuration: shouldUpdate ? durationSecs : undefined,
                     recordingUrl: recording.fileUrl || undefined,
                     callStatus: 'completed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
