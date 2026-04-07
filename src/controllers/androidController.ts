@@ -329,8 +329,24 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 });
 
                 if (existingInteraction) {
-                    // Already synced — skip
-                    results.skipped++;
+                    // HEAL EXISTING: Only update if new duration from Log is longer/better
+                    const durationSecs = parseInt(duration, 10) || 0;
+                    const currentDuration = (existingInteraction.duration || 0) * 60;
+                    
+                    if (durationSecs > currentDuration || !existingInteraction.duration) {
+                        console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${durationSecs}s`);
+                        await prisma.interaction.update({
+                            where: { id: existingInteraction.id },
+                            data: {
+                                duration: Math.round((durationSecs / 60) * 100) / 100,
+                                recordingDuration: durationSecs,
+                                callStatus: 'completed'
+                            }
+                        });
+                        results.synced.push(phoneNumber);
+                    } else {
+                        results.skipped++;
+                    }
                     continue;
                 }
 
