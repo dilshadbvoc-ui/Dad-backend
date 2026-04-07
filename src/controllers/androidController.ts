@@ -142,11 +142,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const durationMinutes = durationSecs / 60;
         const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
-        // 2. Link to existing "initiated" or "completed" interaction (within last 30 mins)
+        // 2. Link to existing "initiated" or "completed" interaction (within last 60 mins)
         // This handles "Tracker vs Accessibility" race conditions and deduplication
         // CRITICAL: Match by actual call 'date' (Start Time) to ensure bit-for-bit sync
+        // Using a 60-minute window to handle even very long calls (e.g. 15-minute conversations)
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-        const tenMinsBefore = new Date(callDate.getTime() - 10 * 60 * 1000);
+        const sixtyMinsBefore = new Date(callDate.getTime() - 60 * 60 * 1000);
         const tenMinsAfter = new Date(callDate.getTime() + 10 * 60 * 1000);
         
         console.log(`[AndroidUpload] Searching for recent interaction to merge (Phone: ${phoneNumber}, Date: ${callDate.toISOString().split('.')[0]})...`);
@@ -159,7 +160,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             where: {
                 organisationId: user.organisationId,
                 type: 'call',
-                date: { gte: tenMinsBefore, lte: tenMinsAfter },
+                date: { gte: sixtyMinsBefore, lte: tenMinsAfter },
                 OR: [
                     targetLeadId ? { leadId: targetLeadId } : {},
                     phoneSuffix ? { phoneNumber: { contains: phoneSuffix } } : {}
