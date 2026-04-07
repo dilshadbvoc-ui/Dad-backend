@@ -142,18 +142,16 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const durationMinutes = durationSecs / 60;
         const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
-        // Link to existing "initiated" or "completed" interaction (that's missing a recording)
-        // Expand window to 4 hours to account for long calls or delayed sync
-        const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
-        console.log(`[AndroidUpload] Searching for interaction within last 4 hours for mapping (Lead: ${targetLeadId}, Phone: ${phoneNumber})...`);
+        // 2. Link to existing "initiated" or "completed" interaction (within last 10 mins)
+        // This handles "Tracker vs Accessibility" race conditions and deduplication
+        const tenMinsAgo = new Date(Date.now() - 10 * 60 * 1000);
+        console.log(`[AndroidUpload] Searching for recent interaction to merge (Lead: ${targetLeadId}, Phone: ${phoneNumber})...`);
         
         const existingInteraction = await prisma.interaction.findFirst({
             where: {
                 organisationId: user.organisationId,
                 type: 'call',
-                callStatus: { in: ['initiated', 'completed'] },
-                recordingUrl: null, // Only link if it doesn't have a recording already
-                createdAt: { gte: fourHoursAgo },
+                createdAt: { gte: tenMinsAgo },
                 OR: [
                     targetLeadId ? { leadId: targetLeadId } : {},
                     phoneNumber ? { phoneNumber: { contains: phoneNumber.slice(-10) } } : {}
