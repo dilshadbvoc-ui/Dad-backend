@@ -162,11 +162,15 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
 
         if (existingInteraction) {
             console.log(`[AndroidUpload] Mapping duration to existing interaction: ${existingInteraction.id} (Status: ${existingInteraction.callStatus})`);
+            
+            // Only update duration if the incoming value is > 0 OR if the current interaction has 0 dur
+            const shouldUpdateDuration = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
+            
             await prisma.interaction.update({
                 where: { id: existingInteraction.id },
                 data: {
-                    duration: Math.round(durationMinutes * 100) / 100,
-                    recordingDuration: durationSecs,
+                    duration: shouldUpdateDuration ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                    recordingDuration: shouldUpdateDuration ? durationSecs : undefined,
                     recordingUrl: recording.fileUrl || undefined,
                     callStatus: 'completed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
