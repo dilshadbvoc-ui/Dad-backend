@@ -866,21 +866,49 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             }
         
 
-        // 2. Create Interaction
-        // Note: We use 'whatsapp' as the type (added to schema.prisma)
-        const interaction = await prisma.interaction.create({
-            data: {
-                type: 'whatsapp' as any,
-                direction: direction === 'inbound' ? 'inbound' : 'outbound',
-                subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
-                description: messageText,
-                date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
-                phoneNumber: phoneNumber,
-                leadId: targetLeadId || undefined,
+        // 2. Deduplicate: Check if a WhatsApp interaction already exists within a 5-min window
+        const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
+        const windowStart = new Date(callDate.getTime() - 5 * 60 * 1000);
+        const windowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);
+
+        const existingInteraction = await prisma.interaction.findFirst({
+            where: {
                 organisationId: user.organisationId,
-                createdById: user.id
-            }
+                type: 'whatsapp' as any,
+                leadId: targetLeadId || undefined,
+                phoneNumber: targetLeadId ? undefined : phoneNumber,
+                date: { gte: windowStart, lte: windowEnd },
+                direction: direction === 'inbound' ? 'inbound' : 'outbound'
+            },
+            orderBy: { date: 'desc' }
         });
+
+        let interaction;
+        if (existingInteraction) {
+            console.log(`[WhatsAppSync] Healing existing interaction ${existingInteraction.id}`);
+            interaction = await prisma.interaction.update({
+                where: { id: existingInteraction.id },
+                data: {
+                    description: messageText,
+                    date: callDate // Keep it fresh
+                }
+            });
+        } else {
+            console.log(`[WhatsAppSync] Creating NEW interaction for ${phoneNumber}`);
+            interaction = await prisma.interaction.create({
+                data: {
+                    type: 'whatsapp' as any,
+                    direction: direction === 'inbound' ? 'inbound' : 'outbound',
+                    subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
+                    description: messageText,
+                    date: callDate,
+                    phoneNumber: phoneNumber,
+                    leadId: targetLeadId || undefined,
+                    organisationId: user.organisationId,
+                    createdById: user.id
+                }
+            });
+        }
 
         console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
         

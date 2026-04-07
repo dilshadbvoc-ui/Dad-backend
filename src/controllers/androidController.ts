@@ -49,7 +49,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
-        const { leadId, duration, callType, timestamp, phoneNumber } = req.body;
+        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId } = req.body;
         const file = req.file;
 
         console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}, hasFile=${!!file}`);
@@ -142,30 +142,39 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const durationMinutes = durationSecs / 60;
         const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
-        // 2. Link to existing "initiated" or "completed" interaction (within last 60 mins)
-        // This handles "Tracker vs Accessibility" race conditions and deduplication
-        // CRITICAL: Match by actual call 'date' (Start Time) to ensure bit-for-bit sync
-        // Using a 60-minute window to handle even very long calls (e.g. 15-minute conversations)
+        // 2. Link to existing interaction
+        // PRIORITY 1: Match by hardwareId (The official Android Record ID - 100% Accuracy)
+        // PRIORITY 2: Match by phone + timestamp window (2 mins)
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-        const sixtyMinsBefore = new Date(callDate.getTime() - 60 * 60 * 1000);
-        const tenMinsAfter = new Date(callDate.getTime() + 10 * 60 * 1000);
+        const twoMinsBefore = new Date(callDate.getTime() - 2 * 60 * 1000);
+        const twoMinsAfter = new Date(callDate.getTime() + 2 * 60 * 1000);
         
-        console.log(`[AndroidUpload] Searching for recent interaction to merge (Phone: ${phoneNumber}, Date: ${callDate.toISOString().split('.')[0]})...`);
+        console.log(`[AndroidUpload] Searching for interaction to merge (Phone: ${phoneNumber}, HardwareId: ${hardwareId || 'none'}, Date: ${callDate.toISOString().split('.')[0]})...`);
         
         // Deep Normalized Suffix (last 10 digits)
         const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
         const phoneSuffix = phoneDigits.slice(-10);
 
+        const whereClause: any = {
+            organisationId: user.organisationId,
+            type: 'call'
+        };
+
+        if (hardwareId) {
+            // STRICT MODE: If we have a hardware ID, we ONLY match by that ID.
+            // This prevents merging separate calls that happen in the same time window.
+            whereClause.hardwareId = hardwareId;
+        } else {
+            // LEGACY/FUZZY MODE: Fallback to time-window for old app versions or missing logs
+            whereClause.date = { gte: twoMinsBefore, lte: twoMinsAfter };
+            whereClause.OR = [
+                targetLeadId ? { leadId: targetLeadId } : {},
+                phoneSuffix ? { phoneNumber: { contains: phoneSuffix } } : {}
+            ].filter(condition => Object.keys(condition).length > 0);
+        }
+
         const existingInteraction = await prisma.interaction.findFirst({
-            where: {
-                organisationId: user.organisationId,
-                type: 'call',
-                date: { gte: sixtyMinsBefore, lte: tenMinsAfter },
-                OR: [
-                    targetLeadId ? { leadId: targetLeadId } : {},
-                    phoneSuffix ? { phoneNumber: { contains: phoneSuffix } } : {}
-                ].filter(condition => Object.keys(condition).length > 0)
-            },
+            where: whereClause,
             orderBy: { date: 'desc' }
         });
 
@@ -185,6 +194,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     callStatus: 'completed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     phoneNumber: phoneNumber || undefined,
+                    hardwareId: hardwareId || undefined,
                     date: callDate // Ensure the date field matches the official timestamp
                 }
             });
@@ -230,7 +240,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     organisation: { connect: { id: user.organisationId } },
                     createdBy: { connect: { id: user.id } },
-                    phoneNumber: finalPhone
+                    phoneNumber: finalPhone,
+                    hardwareId: hardwareId || undefined
                 }
             });
         }
@@ -300,7 +311,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
         for (const call of calls) {
             try {
-                const { phoneNumber, duration, callType, timestamp } = call;
+                const { phoneNumber, duration, callType, timestamp, hardwareId } = call;
                 if (!phoneNumber) {
                     results.skipped++;
                     continue;
@@ -329,14 +340,26 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 const windowStart = new Date(callDate.getTime() - 60_000); // 1 min before
                 const windowEnd = new Date(callDate.getTime() + 60_000);   // 1 min after
 
+                const whereClauseSync: any = {
+                    organisationId: user.organisationId,
+                    type: 'call'
+                };
+
+                if (hardwareId) {
+                    // STRICT MODE: Prioritize unique Record ID identification
+                    whereClauseSync.hardwareId = hardwareId;
+                } else {
+                    // FUZZY FALLBACK: 2-min window matching
+                    whereClauseSync.date = { gte: windowStart, lte: windowEnd };
+                    whereClauseSync.OR = [
+                        matchedLead ? { leadId: matchedLead.id } : {},
+                        phoneNumber ? { phoneNumber: { contains: last10 } } : {}
+                    ].filter(condition => Object.keys(condition).length > 0);
+                }
+
                 const existingInteraction = await prisma.interaction.findFirst({
-                    where: {
-                        organisationId: user.organisationId,
-                        type: 'call',
-                        leadId: matchedLead ? matchedLead.id : null,
-                        phoneNumber: matchedLead ? undefined : phoneNumber, // Match by number if no lead
-                        date: { gte: windowStart, lte: windowEnd }
-                    }
+                    where: whereClauseSync,
+                    orderBy: { date: 'desc' }
                 });
 
                 if (existingInteraction) {
@@ -351,7 +374,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                             data: {
                                 duration: Math.round((durationSecs / 60) * 100) / 100,
                                 recordingDuration: durationSecs,
-                                callStatus: 'completed'
+                                callStatus: 'completed',
+                                hardwareId: hardwareId || undefined
                             }
                         });
                         results.synced.push(phoneNumber);
@@ -413,7 +437,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
                         organisation: { connect: { id: user.organisationId } },
                         createdBy: { connect: { id: user.id } },
-                        phoneNumber: matchedLead ? matchedLead.phone : phoneNumber
+                        phoneNumber: matchedLead ? matchedLead.phone : phoneNumber,
+                        hardwareId: hardwareId || undefined
                     }
                 });
 

@@ -685,6 +685,7 @@ model Interaction {
   callStatus        String?
   phoneNumber       String?
   callerId          String?
+  hardwareId        String?              // Official Android CallLog _ID for zero-error deduplication
   leadId            String?
   contactId         String?
   accountId         String?
