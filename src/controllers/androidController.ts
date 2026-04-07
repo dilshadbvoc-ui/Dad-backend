@@ -144,8 +144,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
 
         // 2. Link to existing "initiated" or "completed" interaction (within last 30 mins)
         // This handles "Tracker vs Accessibility" race conditions and deduplication
-        const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
-        console.log(`[AndroidUpload] Searching for recent interaction to merge (Lead: ${targetLeadId}, Phone: ${phoneNumber})...`);
+        // CRITICAL: Match by actual call 'date' (Start Time) to ensure bit-for-bit sync
+        const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
+        const tenMinsBefore = new Date(callDate.getTime() - 10 * 60 * 1000);
+        const tenMinsAfter = new Date(callDate.getTime() + 10 * 60 * 1000);
+        
+        console.log(`[AndroidUpload] Searching for recent interaction to merge (Phone: ${phoneNumber}, Date: ${callDate.toISOString().split('.')[0]})...`);
         
         // Deep Normalized Suffix (last 10 digits)
         const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
@@ -155,19 +159,20 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             where: {
                 organisationId: user.organisationId,
                 type: 'call',
-                createdAt: { gte: thirtyMinsAgo },
+                date: { gte: tenMinsBefore, lte: tenMinsAfter },
                 OR: [
                     targetLeadId ? { leadId: targetLeadId } : {},
                     phoneSuffix ? { phoneNumber: { contains: phoneSuffix } } : {}
                 ].filter(condition => Object.keys(condition).length > 0)
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { date: 'desc' }
         });
 
         if (existingInteraction) {
             console.log(`[AndroidUpload] Healing interaction ${existingInteraction.id} with official duration: ${durationSecs}s`);
             
             // SYSTEM LOG RULE: If the new duration is > 0, we ALWAYS trust it over a 2s estimate
+            // And if this is an "Official" sync (identified by duration being different from recording length), we trust it.
             const shouldUpdate = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
 
             await prisma.interaction.update({
@@ -178,7 +183,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     recordingUrl: recording.fileUrl || undefined,
                     callStatus: 'completed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
-                    phoneNumber: phoneNumber || undefined
+                    phoneNumber: phoneNumber || undefined,
+                    date: callDate // Ensure the date field matches the official timestamp
                 }
             });
         } else {
