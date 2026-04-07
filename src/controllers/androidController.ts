@@ -49,7 +49,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
-        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId } = req.body;
+        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId, callSessionId } = req.body;
         const file = req.file;
 
         console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}, hasFile=${!!file}`);
@@ -160,17 +160,17 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             type: 'call'
         };
 
-        if (hardwareId) {
-            // STRICT MODE: If we have a hardware ID, we ONLY match by that ID.
-            // This prevents merging separate calls that happen in the same time window.
+        // PRECISION MATCHING STRATEGY:
+        // 1. First priority: Unique Call Session UUID (covers the full lifecycle of a single call)
+        // 2. Second priority: Hardware Record ID (covers reconciliation with phone logs)
+        // 3. Fallback: Create new row (never merge by time guessing)
+        if (callSessionId && callSessionId.length > 0) {
+            whereClause.callSessionId = callSessionId;
+        } else if (hardwareId && hardwareId.length > 0 && hardwareId !== "none") {
             whereClause.hardwareId = hardwareId;
         } else {
-            // LEGACY/FUZZY MODE: Fallback to time-window for old app versions or missing logs
-            whereClause.date = { gte: twoMinsBefore, lte: twoMinsAfter };
-            whereClause.OR = [
-                targetLeadId ? { leadId: targetLeadId } : {},
-                phoneSuffix ? { phoneNumber: { contains: phoneSuffix } } : {}
-            ].filter(condition => Object.keys(condition).length > 0);
+            // Absolute separation for calls without stable IDs (Zero-Merge Policy)
+            whereClause.id = "FORCE_NEW_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5);
         }
 
         const existingInteraction = await prisma.interaction.findFirst({
@@ -195,6 +195,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     phoneNumber: phoneNumber || undefined,
                     hardwareId: hardwareId || undefined,
+                    callSessionId: callSessionId || undefined,
                     date: callDate // Ensure the date field matches the official timestamp
                 }
             });
@@ -241,7 +242,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     organisation: { connect: { id: user.organisationId } },
                     createdBy: { connect: { id: user.id } },
                     phoneNumber: finalPhone,
-                    hardwareId: hardwareId || undefined
+                    hardwareId: hardwareId || undefined,
+                    callSessionId: callSessionId || undefined
                 }
             });
         }
@@ -311,7 +313,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
         for (const call of calls) {
             try {
-                const { phoneNumber, duration, callType, timestamp, hardwareId } = call;
+                const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId } = call;
                 if (!phoneNumber) {
                     results.skipped++;
                     continue;
@@ -345,16 +347,12 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     type: 'call'
                 };
 
-                if (hardwareId) {
-                    // STRICT MODE: Prioritize unique Record ID identification
+                // ABSOLUTE POLICY: Only merge if a valid hardwareId is provided.
+                if (hardwareId && hardwareId.length > 0 && hardwareId !== "none") {
                     whereClauseSync.hardwareId = hardwareId;
                 } else {
-                    // FUZZY FALLBACK: 2-min window matching
-                    whereClauseSync.date = { gte: windowStart, lte: windowEnd };
-                    whereClauseSync.OR = [
-                        matchedLead ? { leadId: matchedLead.id } : {},
-                        phoneNumber ? { phoneNumber: { contains: last10 } } : {}
-                    ].filter(condition => Object.keys(condition).length > 0);
+                    // Force create new
+                    whereClauseSync.id = "FORCE_CREATE_NEW_" + Date.now();
                 }
 
                 const existingInteraction = await prisma.interaction.findFirst({
