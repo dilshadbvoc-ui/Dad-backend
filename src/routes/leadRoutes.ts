@@ -1,5 +1,5 @@
 import express from 'express';
-import { getLeads, createLead, getLeadById, updateLead, deleteLead, createBulkLeads, bulkAssignLeads, convertLead, getViolations, submitExplanation, getLeadHistory, getPendingFollowUpsCount, generateAIResponse, getReEnquiryLeads, getDuplicateLeads } from '../controllers/leadController';
+import { getLeads, createLead, getLeadById, updateLead, deleteLead, createBulkLeads, bulkAssignLeads, convertLead, getViolations, submitExplanation, getLeadHistory, getPendingFollowUpsCount, generateAIResponse, getReEnquiryLeads, getDuplicateLeads, syncToGallabox } from '../controllers/leadController';
 import { protect, admin } from '../middleware/authMiddleware';
 import { checkPlanLimits } from '../middleware/subscriptionMiddleware';
 
@@ -20,6 +20,7 @@ router.get('/:id/history', protect, getLeadHistory as any);
 router.put('/:id', protect, updateLead as any);
 router.post('/:id/generate-response', protect, generateAIResponse as any); // New
 router.post('/:id/convert', protect, convertLead as any);
+router.post('/:id/sync-gallabox', protect, syncToGallabox as any);
 router.delete('/:id', protect, deleteLead as any);
 
 export default router;

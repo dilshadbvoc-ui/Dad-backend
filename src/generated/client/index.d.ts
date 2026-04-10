@@ -324,23 +324,6 @@ export namespace $Enums {
 export type LeadSource = (typeof LeadSource)[keyof typeof LeadSource]
 
 
-export const LeadStatus: {
-  new: 'new',
-  contacted: 'contacted',
-  interested: 'interested',
-  not_interested: 'not_interested',
-  call_not_connected: 'call_not_connected',
-  qualified: 'qualified',
-  nurturing: 'nurturing',
-  converted: 'converted',
-  lost: 'lost',
-  reborn: 'reborn',
-  re_enquiry: 're_enquiry'
-};
-
-export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
-
-
 export const OpportunityType: {
   NEW_BUSINESS: 'NEW_BUSINESS',
   UPSALE: 'UPSALE'
@@ -457,10 +440,6 @@ export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]
 export type LeadSource = $Enums.LeadSource
 
 export const LeadSource: typeof $Enums.LeadSource
-
-export type LeadStatus = $Enums.LeadStatus
-
-export const LeadStatus: typeof $Enums.LeadStatus
 
 export type OpportunityType = $Enums.OpportunityType
 
@@ -8062,6 +8041,7 @@ export namespace Prisma {
     upsellConfig: number
     ssoConfig: number
     whatsAppScrapingEnabled: number
+    leadStatuses: number
     _all: number
   }
 
@@ -8155,6 +8135,7 @@ export namespace Prisma {
     upsellConfig?: true
     ssoConfig?: true
     whatsAppScrapingEnabled?: true
+    leadStatuses?: true
     _all?: true
   }
 
@@ -8271,6 +8252,7 @@ export namespace Prisma {
     upsellConfig: JsonValue | null
     ssoConfig: JsonValue | null
     whatsAppScrapingEnabled: boolean
+    leadStatuses: JsonValue | null
     _count: OrganisationCountAggregateOutputType | null
     _avg: OrganisationAvgAggregateOutputType | null
     _sum: OrganisationSumAggregateOutputType | null
@@ -8319,6 +8301,7 @@ export namespace Prisma {
     upsellConfig?: boolean
     ssoConfig?: boolean
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: boolean
     accounts?: boolean | Organisation$accountsArgs<ExtArgs>
     apiKeys?: boolean | Organisation$apiKeysArgs<ExtArgs>
     assignmentRules?: boolean | Organisation$assignmentRulesArgs<ExtArgs>
@@ -8393,6 +8376,7 @@ export namespace Prisma {
     upsellConfig?: boolean
     ssoConfig?: boolean
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: boolean
   }, ExtArgs["result"]["organisation"]>
 
   export type OrganisationSelectScalar = {
@@ -8422,6 +8406,7 @@ export namespace Prisma {
     upsellConfig?: boolean
     ssoConfig?: boolean
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: boolean
   }
 
   export type OrganisationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8548,6 +8533,7 @@ export namespace Prisma {
       upsellConfig: Prisma.JsonValue | null
       ssoConfig: Prisma.JsonValue | null
       whatsAppScrapingEnabled: boolean
+      leadStatuses: Prisma.JsonValue | null
     }, ExtArgs["result"]["organisation"]>
     composites: {}
   }
@@ -9011,6 +8997,7 @@ export namespace Prisma {
     readonly upsellConfig: FieldRef<"Organisation", 'Json'>
     readonly ssoConfig: FieldRef<"Organisation", 'Json'>
     readonly whatsAppScrapingEnabled: FieldRef<"Organisation", 'Boolean'>
+    readonly leadStatuses: FieldRef<"Organisation", 'Json'>
   }
     
 
@@ -15275,7 +15262,7 @@ export namespace Prisma {
     qualityScore: number | null
     isHotLead: boolean | null
     lastScoredAt: Date | null
-    status: $Enums.LeadStatus | null
+    status: string | null
     stage: string | null
     isDeleted: boolean | null
     createdAt: Date | null
@@ -15318,7 +15305,7 @@ export namespace Prisma {
     qualityScore: number | null
     isHotLead: boolean | null
     lastScoredAt: Date | null
-    status: $Enums.LeadStatus | null
+    status: string | null
     stage: string | null
     isDeleted: boolean | null
     createdAt: Date | null
@@ -15650,7 +15637,7 @@ export namespace Prisma {
     qualityScore: number
     isHotLead: boolean
     lastScoredAt: Date | null
-    status: $Enums.LeadStatus
+    status: string
     stage: string | null
     customFields: JsonValue | null
     activities: JsonValue | null
@@ -15944,7 +15931,7 @@ export namespace Prisma {
       qualityScore: number
       isHotLead: boolean
       lastScoredAt: Date | null
-      status: $Enums.LeadStatus
+      status: string
       stage: string | null
       customFields: Prisma.JsonValue | null
       activities: Prisma.JsonValue | null
@@ -16402,7 +16389,7 @@ export namespace Prisma {
     readonly qualityScore: FieldRef<"Lead", 'Int'>
     readonly isHotLead: FieldRef<"Lead", 'Boolean'>
     readonly lastScoredAt: FieldRef<"Lead", 'DateTime'>
-    readonly status: FieldRef<"Lead", 'LeadStatus'>
+    readonly status: FieldRef<"Lead", 'String'>
     readonly stage: FieldRef<"Lead", 'String'>
     readonly customFields: FieldRef<"Lead", 'Json'>
     readonly activities: FieldRef<"Lead", 'Json'>
@@ -31130,6 +31117,8 @@ export namespace Prisma {
     callStatus: string | null
     phoneNumber: string | null
     callerId: string | null
+    hardwareId: string | null
+    callSessionId: string | null
     leadId: string | null
     contactId: string | null
     accountId: string | null
@@ -31156,6 +31145,8 @@ export namespace Prisma {
     callStatus: string | null
     phoneNumber: string | null
     callerId: string | null
+    hardwareId: string | null
+    callSessionId: string | null
     leadId: string | null
     contactId: string | null
     accountId: string | null
@@ -31182,6 +31173,8 @@ export namespace Prisma {
     callStatus: number
     phoneNumber: number
     callerId: number
+    hardwareId: number
+    callSessionId: number
     leadId: number
     contactId: number
     accountId: number
@@ -31220,6 +31213,8 @@ export namespace Prisma {
     callStatus?: true
     phoneNumber?: true
     callerId?: true
+    hardwareId?: true
+    callSessionId?: true
     leadId?: true
     contactId?: true
     accountId?: true
@@ -31246,6 +31241,8 @@ export namespace Prisma {
     callStatus?: true
     phoneNumber?: true
     callerId?: true
+    hardwareId?: true
+    callSessionId?: true
     leadId?: true
     contactId?: true
     accountId?: true
@@ -31272,6 +31269,8 @@ export namespace Prisma {
     callStatus?: true
     phoneNumber?: true
     callerId?: true
+    hardwareId?: true
+    callSessionId?: true
     leadId?: true
     contactId?: true
     accountId?: true
@@ -31385,6 +31384,8 @@ export namespace Prisma {
     callStatus: string | null
     phoneNumber: string | null
     callerId: string | null
+    hardwareId: string | null
+    callSessionId: string | null
     leadId: string | null
     contactId: string | null
     accountId: string | null
@@ -31430,6 +31431,8 @@ export namespace Prisma {
     callStatus?: boolean
     phoneNumber?: boolean
     callerId?: boolean
+    hardwareId?: boolean
+    callSessionId?: boolean
     leadId?: boolean
     contactId?: boolean
     accountId?: boolean
@@ -31464,6 +31467,8 @@ export namespace Prisma {
     callStatus?: boolean
     phoneNumber?: boolean
     callerId?: boolean
+    hardwareId?: boolean
+    callSessionId?: boolean
     leadId?: boolean
     contactId?: boolean
     accountId?: boolean
@@ -31498,6 +31503,8 @@ export namespace Prisma {
     callStatus?: boolean
     phoneNumber?: boolean
     callerId?: boolean
+    hardwareId?: boolean
+    callSessionId?: boolean
     leadId?: boolean
     contactId?: boolean
     accountId?: boolean
@@ -31557,6 +31564,8 @@ export namespace Prisma {
       callStatus: string | null
       phoneNumber: string | null
       callerId: string | null
+      hardwareId: string | null
+      callSessionId: string | null
       leadId: string | null
       contactId: string | null
       accountId: string | null
@@ -31981,6 +31990,8 @@ export namespace Prisma {
     readonly callStatus: FieldRef<"Interaction", 'String'>
     readonly phoneNumber: FieldRef<"Interaction", 'String'>
     readonly callerId: FieldRef<"Interaction", 'String'>
+    readonly hardwareId: FieldRef<"Interaction", 'String'>
+    readonly callSessionId: FieldRef<"Interaction", 'String'>
     readonly leadId: FieldRef<"Interaction", 'String'>
     readonly contactId: FieldRef<"Interaction", 'String'>
     readonly accountId: FieldRef<"Interaction", 'String'>
@@ -76628,7 +76639,8 @@ export namespace Prisma {
     createdBy: 'createdBy',
     upsellConfig: 'upsellConfig',
     ssoConfig: 'ssoConfig',
-    whatsAppScrapingEnabled: 'whatsAppScrapingEnabled'
+    whatsAppScrapingEnabled: 'whatsAppScrapingEnabled',
+    leadStatuses: 'leadStatuses'
   };
 
   export type OrganisationScalarFieldEnum = (typeof OrganisationScalarFieldEnum)[keyof typeof OrganisationScalarFieldEnum]
@@ -77023,6 +77035,8 @@ export namespace Prisma {
     callStatus: 'callStatus',
     phoneNumber: 'phoneNumber',
     callerId: 'callerId',
+    hardwareId: 'hardwareId',
+    callSessionId: 'callSessionId',
     leadId: 'leadId',
     contactId: 'contactId',
     accountId: 'accountId',
@@ -77962,20 +77976,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'LeadStatus'
-   */
-  export type EnumLeadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeadStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'LeadStatus[]'
-   */
-  export type ListEnumLeadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeadStatus[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -78204,6 +78204,7 @@ export namespace Prisma {
     upsellConfig?: JsonNullableFilter<"Organisation">
     ssoConfig?: JsonNullableFilter<"Organisation">
     whatsAppScrapingEnabled?: BoolFilter<"Organisation"> | boolean
+    leadStatuses?: JsonNullableFilter<"Organisation">
     accounts?: AccountListRelationFilter
     apiKeys?: ApiKeyListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
@@ -78277,6 +78278,7 @@ export namespace Prisma {
     upsellConfig?: SortOrderInput | SortOrder
     ssoConfig?: SortOrderInput | SortOrder
     whatsAppScrapingEnabled?: SortOrder
+    leadStatuses?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     apiKeys?: ApiKeyOrderByRelationAggregateInput
     assignmentRules?: AssignmentRuleOrderByRelationAggregateInput
@@ -78353,6 +78355,7 @@ export namespace Prisma {
     upsellConfig?: JsonNullableFilter<"Organisation">
     ssoConfig?: JsonNullableFilter<"Organisation">
     whatsAppScrapingEnabled?: BoolFilter<"Organisation"> | boolean
+    leadStatuses?: JsonNullableFilter<"Organisation">
     accounts?: AccountListRelationFilter
     apiKeys?: ApiKeyListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
@@ -78426,6 +78429,7 @@ export namespace Prisma {
     upsellConfig?: SortOrderInput | SortOrder
     ssoConfig?: SortOrderInput | SortOrder
     whatsAppScrapingEnabled?: SortOrder
+    leadStatuses?: SortOrderInput | SortOrder
     _count?: OrganisationCountOrderByAggregateInput
     _avg?: OrganisationAvgOrderByAggregateInput
     _max?: OrganisationMaxOrderByAggregateInput
@@ -78463,6 +78467,7 @@ export namespace Prisma {
     upsellConfig?: JsonNullableWithAggregatesFilter<"Organisation">
     ssoConfig?: JsonNullableWithAggregatesFilter<"Organisation">
     whatsAppScrapingEnabled?: BoolWithAggregatesFilter<"Organisation"> | boolean
+    leadStatuses?: JsonNullableWithAggregatesFilter<"Organisation">
   }
 
   export type UserWhereInput = {
@@ -79051,7 +79056,7 @@ export namespace Prisma {
     qualityScore?: IntFilter<"Lead"> | number
     isHotLead?: BoolFilter<"Lead"> | boolean
     lastScoredAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
-    status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
+    status?: StringFilter<"Lead"> | string
     stage?: StringNullableFilter<"Lead"> | string | null
     customFields?: JsonNullableFilter<"Lead">
     activities?: JsonNullableFilter<"Lead">
@@ -79191,7 +79196,7 @@ export namespace Prisma {
     qualityScore?: IntFilter<"Lead"> | number
     isHotLead?: BoolFilter<"Lead"> | boolean
     lastScoredAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
-    status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
+    status?: StringFilter<"Lead"> | string
     stage?: StringNullableFilter<"Lead"> | string | null
     customFields?: JsonNullableFilter<"Lead">
     activities?: JsonNullableFilter<"Lead">
@@ -79315,7 +79320,7 @@ export namespace Prisma {
     qualityScore?: IntWithAggregatesFilter<"Lead"> | number
     isHotLead?: BoolWithAggregatesFilter<"Lead"> | boolean
     lastScoredAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
-    status?: EnumLeadStatusWithAggregatesFilter<"Lead"> | $Enums.LeadStatus
+    status?: StringWithAggregatesFilter<"Lead"> | string
     stage?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     customFields?: JsonNullableWithAggregatesFilter<"Lead">
     activities?: JsonNullableWithAggregatesFilter<"Lead">
@@ -80908,6 +80913,8 @@ export namespace Prisma {
     callStatus?: StringNullableFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableFilter<"Interaction"> | string | null
     callerId?: StringNullableFilter<"Interaction"> | string | null
+    hardwareId?: StringNullableFilter<"Interaction"> | string | null
+    callSessionId?: StringNullableFilter<"Interaction"> | string | null
     leadId?: StringNullableFilter<"Interaction"> | string | null
     contactId?: StringNullableFilter<"Interaction"> | string | null
     accountId?: StringNullableFilter<"Interaction"> | string | null
@@ -80942,6 +80949,8 @@ export namespace Prisma {
     callStatus?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     callerId?: SortOrderInput | SortOrder
+    hardwareId?: SortOrderInput | SortOrder
+    callSessionId?: SortOrderInput | SortOrder
     leadId?: SortOrderInput | SortOrder
     contactId?: SortOrderInput | SortOrder
     accountId?: SortOrderInput | SortOrder
@@ -80979,6 +80988,8 @@ export namespace Prisma {
     callStatus?: StringNullableFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableFilter<"Interaction"> | string | null
     callerId?: StringNullableFilter<"Interaction"> | string | null
+    hardwareId?: StringNullableFilter<"Interaction"> | string | null
+    callSessionId?: StringNullableFilter<"Interaction"> | string | null
     leadId?: StringNullableFilter<"Interaction"> | string | null
     contactId?: StringNullableFilter<"Interaction"> | string | null
     accountId?: StringNullableFilter<"Interaction"> | string | null
@@ -81013,6 +81024,8 @@ export namespace Prisma {
     callStatus?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     callerId?: SortOrderInput | SortOrder
+    hardwareId?: SortOrderInput | SortOrder
+    callSessionId?: SortOrderInput | SortOrder
     leadId?: SortOrderInput | SortOrder
     contactId?: SortOrderInput | SortOrder
     accountId?: SortOrderInput | SortOrder
@@ -81047,6 +81060,8 @@ export namespace Prisma {
     callStatus?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     callerId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
+    hardwareId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
+    callSessionId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     leadId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     contactId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     accountId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
@@ -85430,6 +85445,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -85503,6 +85519,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -85576,6 +85593,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -85649,6 +85667,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -85722,6 +85741,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type OrganisationUpdateManyMutationInput = {
@@ -85751,6 +85771,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type OrganisationUncheckedUpdateManyInput = {
@@ -85780,6 +85801,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserCreateInput = {
@@ -86481,7 +86503,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -86543,7 +86565,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -86605,7 +86627,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -86667,7 +86689,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -86729,7 +86751,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -86777,7 +86799,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -86819,7 +86841,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -88532,6 +88554,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -88558,6 +88582,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -88584,6 +88610,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88610,6 +88638,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88636,6 +88666,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -88662,6 +88694,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88680,6 +88714,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -94023,6 +94059,7 @@ export namespace Prisma {
     upsellConfig?: SortOrder
     ssoConfig?: SortOrder
     whatsAppScrapingEnabled?: SortOrder
+    leadStatuses?: SortOrder
   }
 
   export type OrganisationAvgOrderByAggregateInput = {
@@ -94517,13 +94554,6 @@ export namespace Prisma {
     not?: NestedEnumLeadSourceFilter<$PrismaModel> | $Enums.LeadSource
   }
 
-  export type EnumLeadStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumLeadStatusFilter<$PrismaModel> | $Enums.LeadStatus
-  }
-
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -94724,16 +94754,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumLeadSourceFilter<$PrismaModel>
     _max?: NestedEnumLeadSourceFilter<$PrismaModel>
-  }
-
-  export type EnumLeadStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel> | $Enums.LeadStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumLeadStatusFilter<$PrismaModel>
-    _max?: NestedEnumLeadStatusFilter<$PrismaModel>
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -95706,6 +95726,8 @@ export namespace Prisma {
     callStatus?: SortOrder
     phoneNumber?: SortOrder
     callerId?: SortOrder
+    hardwareId?: SortOrder
+    callSessionId?: SortOrder
     leadId?: SortOrder
     contactId?: SortOrder
     accountId?: SortOrder
@@ -95737,6 +95759,8 @@ export namespace Prisma {
     callStatus?: SortOrder
     phoneNumber?: SortOrder
     callerId?: SortOrder
+    hardwareId?: SortOrder
+    callSessionId?: SortOrder
     leadId?: SortOrder
     contactId?: SortOrder
     accountId?: SortOrder
@@ -95763,6 +95787,8 @@ export namespace Prisma {
     callStatus?: SortOrder
     phoneNumber?: SortOrder
     callerId?: SortOrder
+    hardwareId?: SortOrder
+    callSessionId?: SortOrder
     leadId?: SortOrder
     contactId?: SortOrder
     accountId?: SortOrder
@@ -103371,10 +103397,6 @@ export namespace Prisma {
     set?: $Enums.LeadSource
   }
 
-  export type EnumLeadStatusFieldUpdateOperationsInput = {
-    set?: $Enums.LeadStatus
-  }
-
   export type LeadUpdatetagsInput = {
     set?: string[]
     push?: string | string[]
@@ -109317,13 +109339,6 @@ export namespace Prisma {
     not?: NestedEnumLeadSourceFilter<$PrismaModel> | $Enums.LeadSource
   }
 
-  export type NestedEnumLeadStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumLeadStatusFilter<$PrismaModel> | $Enums.LeadStatus
-  }
-
   export type NestedEnumLeadSourceWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.LeadSource | EnumLeadSourceFieldRefInput<$PrismaModel>
     in?: $Enums.LeadSource[] | ListEnumLeadSourceFieldRefInput<$PrismaModel>
@@ -109332,16 +109347,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumLeadSourceFilter<$PrismaModel>
     _max?: NestedEnumLeadSourceFilter<$PrismaModel>
-  }
-
-  export type NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.LeadStatus | EnumLeadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.LeadStatus[] | ListEnumLeadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel> | $Enums.LeadStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumLeadStatusFilter<$PrismaModel>
-    _max?: NestedEnumLeadStatusFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -110276,6 +110281,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -110301,6 +110308,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -110344,7 +110353,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -110405,7 +110414,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -112543,6 +112552,8 @@ export namespace Prisma {
     callStatus?: StringNullableFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableFilter<"Interaction"> | string | null
     callerId?: StringNullableFilter<"Interaction"> | string | null
+    hardwareId?: StringNullableFilter<"Interaction"> | string | null
+    callSessionId?: StringNullableFilter<"Interaction"> | string | null
     leadId?: StringNullableFilter<"Interaction"> | string | null
     contactId?: StringNullableFilter<"Interaction"> | string | null
     accountId?: StringNullableFilter<"Interaction"> | string | null
@@ -112596,7 +112607,7 @@ export namespace Prisma {
     qualityScore?: IntFilter<"Lead"> | number
     isHotLead?: BoolFilter<"Lead"> | boolean
     lastScoredAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
-    status?: EnumLeadStatusFilter<"Lead"> | $Enums.LeadStatus
+    status?: StringFilter<"Lead"> | string
     stage?: StringNullableFilter<"Lead"> | string | null
     customFields?: JsonNullableFilter<"Lead">
     activities?: JsonNullableFilter<"Lead">
@@ -114660,6 +114671,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -114685,6 +114698,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -114728,7 +114743,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -114789,7 +114804,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -114860,7 +114875,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -114921,7 +114936,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -114992,7 +115007,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -115053,7 +115068,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -116596,6 +116611,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -116668,6 +116684,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -118934,6 +118951,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -119006,6 +119024,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -120367,6 +120386,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -120439,6 +120459,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -121021,6 +121042,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -121093,6 +121115,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -121685,6 +121708,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -121710,6 +121735,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     contactId?: string | null
     accountId?: string | null
     opportunityId?: string | null
@@ -121962,6 +121989,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -122034,6 +122062,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -123442,6 +123471,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -123514,6 +123544,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -124295,7 +124326,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -124356,7 +124387,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -124433,7 +124464,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -124494,7 +124525,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -124561,6 +124592,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventCreateNestedManyWithoutOrganisationInput
@@ -124633,6 +124665,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
@@ -125493,6 +125526,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -125518,6 +125553,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     opportunityId?: string | null
@@ -125869,7 +125906,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -125930,7 +125967,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -126100,6 +126137,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
@@ -126172,6 +126210,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -126922,7 +126961,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -126983,7 +127022,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -127350,6 +127389,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -127422,6 +127462,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -127891,6 +127932,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -127916,6 +127959,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     accountId?: string | null
     opportunityId?: string | null
@@ -128351,7 +128396,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -128412,7 +128457,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -128671,6 +128716,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -128743,6 +128789,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -129366,7 +129413,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -129427,7 +129474,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -129599,6 +129646,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -129624,6 +129673,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -129746,6 +129797,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -129818,6 +129870,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -130604,7 +130657,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -130665,7 +130718,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -131008,6 +131061,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -131080,6 +131134,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -131655,7 +131710,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -131716,7 +131771,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -132133,6 +132188,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -132205,6 +132261,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -132747,6 +132804,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -132819,6 +132877,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -133037,7 +133096,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -133098,7 +133157,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -133240,7 +133299,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -133301,7 +133360,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -133577,6 +133636,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -133649,6 +133709,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -133887,6 +133948,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -133959,6 +134021,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -134865,6 +134928,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -134937,6 +135001,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -135931,6 +135996,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -136003,6 +136069,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -137126,7 +137193,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -137187,7 +137254,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -137332,6 +137399,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -137404,6 +137472,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -138326,7 +138395,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -138387,7 +138456,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -138544,6 +138613,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -138616,6 +138686,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -139295,7 +139366,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -139356,7 +139427,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -139501,6 +139572,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -139573,6 +139645,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -140286,7 +140359,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -140347,7 +140420,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -140504,6 +140577,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -140576,6 +140650,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -141101,7 +141176,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -141162,7 +141237,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -141307,6 +141382,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -141379,6 +141455,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -141938,7 +142015,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -141999,7 +142076,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -142156,6 +142233,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -142228,6 +142306,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -142704,7 +142783,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -142765,7 +142844,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -142910,6 +142989,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -142982,6 +143062,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -143437,7 +143518,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -143498,7 +143579,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -143655,6 +143736,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -143727,6 +143809,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -144046,6 +144129,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -144118,6 +144202,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -144268,7 +144353,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -144329,7 +144414,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -144637,6 +144722,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -144709,6 +144795,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -145047,6 +145134,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -145119,6 +145207,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -145453,6 +145542,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -145525,6 +145615,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -145800,6 +145891,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -145872,6 +145964,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -146199,6 +146292,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -146271,6 +146365,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -146400,6 +146495,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -146472,6 +146568,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -146607,6 +146704,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -146679,6 +146777,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -146954,6 +147053,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -147026,6 +147126,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -147323,6 +147424,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -147395,6 +147497,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -148763,6 +148866,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -148835,6 +148939,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -149388,6 +149493,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -149460,6 +149566,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -149991,6 +150098,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventCreateNestedManyWithoutOrganisationInput
@@ -150063,6 +150171,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
@@ -150821,6 +150930,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
@@ -150893,6 +151003,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -151869,6 +151980,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -151941,6 +152053,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -152873,6 +152986,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -152945,6 +153059,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -153774,6 +153889,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -153846,6 +153962,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -154561,6 +154678,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -154633,6 +154751,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -155466,6 +155585,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -155538,6 +155658,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -156417,6 +156538,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -156489,6 +156611,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -156707,7 +156830,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -156768,7 +156891,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -156840,6 +156963,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -156912,6 +157036,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -157361,7 +157486,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -157422,7 +157547,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -157500,6 +157625,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -157572,6 +157698,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -158056,6 +158183,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventCreateNestedManyWithoutOrganisationInput
@@ -158128,6 +158256,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
@@ -158425,6 +158554,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
@@ -158497,6 +158627,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -159184,6 +159315,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -159256,6 +159388,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -159553,6 +159686,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -159625,6 +159759,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -159900,6 +160035,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -159972,6 +160108,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -160269,6 +160406,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -160341,6 +160479,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -160616,6 +160755,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -160688,6 +160828,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -160985,6 +161126,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -161057,6 +161199,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -161541,6 +161684,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -161613,6 +161757,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -161701,6 +161846,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -161773,6 +161919,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -162042,7 +162189,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -162103,7 +162250,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -162795,7 +162942,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -162856,7 +163003,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -163544,6 +163691,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -163616,6 +163764,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -163913,6 +164062,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -163985,6 +164135,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -164057,6 +164208,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -164129,6 +164281,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -164403,7 +164556,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -164464,7 +164617,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -164630,6 +164783,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -164702,6 +164856,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -165015,6 +165170,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -165087,6 +165243,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -165378,6 +165535,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -165450,6 +165608,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -165731,6 +165890,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -165803,6 +165963,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -166094,6 +166255,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -166166,6 +166328,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -166447,6 +166610,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -166519,6 +166683,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -166868,6 +167033,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -166940,6 +167106,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -167237,6 +167404,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -167309,6 +167477,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -167380,7 +167549,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -167441,7 +167610,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -167849,6 +168018,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -167921,6 +168091,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -167998,7 +168169,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -168059,7 +168230,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -168672,6 +168843,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -168744,6 +168916,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -169244,6 +169417,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -169316,6 +169490,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -169597,6 +169772,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -169669,6 +169845,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -169960,6 +170137,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -170032,6 +170210,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -170313,6 +170492,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -170385,6 +170565,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -170676,6 +170857,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -170748,6 +170930,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -171029,6 +171212,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -171101,6 +171285,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -171375,7 +171560,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -171436,7 +171621,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -171719,6 +171904,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -171744,6 +171931,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -171804,6 +171993,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -171876,6 +172066,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -172162,7 +172353,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -172223,7 +172414,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -172817,6 +173008,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -172889,6 +173081,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -173257,6 +173450,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -173329,6 +173523,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -173401,6 +173596,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -173473,6 +173669,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -173955,7 +174152,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -174016,7 +174213,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -174421,6 +174618,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -174446,6 +174645,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -174644,6 +174845,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -174716,6 +174918,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -175157,6 +175360,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -175229,6 +175433,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -175317,6 +175522,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -175389,6 +175595,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -175534,6 +175741,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -175606,6 +175814,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -175811,6 +176020,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -175883,6 +176093,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -176413,6 +176624,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -176485,6 +176697,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -176900,6 +177113,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -176972,6 +177186,7 @@ export namespace Prisma {
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    leadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -177255,6 +177470,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -177288,7 +177505,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -178586,6 +178803,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -178611,6 +178830,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178636,6 +178857,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178669,7 +178892,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -178730,7 +178953,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -178791,7 +179014,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -180970,6 +181193,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -181003,7 +181228,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -181050,7 +181275,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -181097,7 +181322,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183105,6 +183330,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -183130,6 +183357,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183155,6 +183384,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183188,7 +183419,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183249,7 +183480,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183310,7 +183541,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183357,7 +183588,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183418,7 +183649,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183479,7 +183710,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183526,7 +183757,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183587,7 +183818,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -183648,7 +183879,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -187057,6 +187288,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     contactId?: string | null
     accountId?: string | null
     opportunityId?: string | null
@@ -187399,6 +187632,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -187424,6 +187659,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -187449,6 +187686,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188252,6 +188491,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     opportunityId?: string | null
@@ -188788,6 +189029,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -188813,6 +189056,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188838,6 +189083,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189344,6 +189591,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     accountId?: string | null
     opportunityId?: string | null
@@ -189675,6 +189924,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -189700,6 +189951,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189725,6 +189978,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190263,6 +190518,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -190475,6 +190732,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -190500,6 +190759,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190525,6 +190786,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191492,7 +191755,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -191553,7 +191816,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -191614,7 +191877,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -191880,7 +192143,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -191952,7 +192215,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -192013,7 +192276,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -192074,7 +192337,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -192302,6 +192565,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -192327,6 +192592,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -192352,6 +192619,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192377,6 +192646,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192441,7 +192712,7 @@ export namespace Prisma {
     qualityScore?: number
     isHotLead?: boolean
     lastScoredAt?: Date | string | null
-    status?: $Enums.LeadStatus
+    status?: string
     stage?: string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -192594,6 +192865,8 @@ export namespace Prisma {
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
+    hardwareId?: string | null
+    callSessionId?: string | null
     leadId?: string | null
     contactId?: string | null
     accountId?: string | null
@@ -192910,7 +193183,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -192971,7 +193244,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -193032,7 +193305,7 @@ export namespace Prisma {
     qualityScore?: IntFieldUpdateOperationsInput | number
     isHotLead?: BoolFieldUpdateOperationsInput | boolean
     lastScoredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
+    status?: StringFieldUpdateOperationsInput | string
     stage?: NullableStringFieldUpdateOperationsInput | string | null
     customFields?: NullableJsonNullValueInput | InputJsonValue
     activities?: NullableJsonNullValueInput | InputJsonValue
@@ -193477,6 +193750,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -193502,6 +193777,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193527,6 +193804,8 @@ export namespace Prisma {
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
+    hardwareId?: NullableStringFieldUpdateOperationsInput | string | null
+    callSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     contactId?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: NullableStringFieldUpdateOperationsInput | string | null

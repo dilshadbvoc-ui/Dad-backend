@@ -1,5 +1,5 @@
+
 import prisma from '../config/prisma';
-import { LeadStatus } from '../generated/client';
 
 interface DuplicateCheckResult {
     isDuplicate: boolean;
@@ -133,7 +133,7 @@ export const DuplicateLeadService = {
             const updatedLead = await prisma.lead.update({
                 where: { id: existingLead.id },
                 data: {
-                    status: LeadStatus.re_enquiry,
+                    status: 're_enquiry',
                     isReEnquiry: true,
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
@@ -185,7 +185,7 @@ export const DuplicateLeadService = {
                     reason: `Re-Enquiry received from ${newData.source || 'Website'}`,
                     fieldName: 'status',
                     oldValue: existingLead.status,
-                    newValue: LeadStatus.re_enquiry,
+                    newValue: 're_enquiry',
                     createdAt: now
                 }
             });

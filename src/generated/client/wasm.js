@@ -148,7 +148,8 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   createdBy: 'createdBy',
   upsellConfig: 'upsellConfig',
   ssoConfig: 'ssoConfig',
-  whatsAppScrapingEnabled: 'whatsAppScrapingEnabled'
+  whatsAppScrapingEnabled: 'whatsAppScrapingEnabled',
+  leadStatuses: 'leadStatuses'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -495,6 +496,8 @@ exports.Prisma.InteractionScalarFieldEnum = {
   callStatus: 'callStatus',
   phoneNumber: 'phoneNumber',
   callerId: 'callerId',
+  hardwareId: 'hardwareId',
+  callSessionId: 'callSessionId',
   leadId: 'leadId',
   contactId: 'contactId',
   accountId: 'accountId',
@@ -1235,20 +1238,6 @@ exports.LeadSource = exports.$Enums.LeadSource = {
   meta_ads: 'meta_ads',
   google_ads: 'google_ads',
   other: 'other'
-};
-
-exports.LeadStatus = exports.$Enums.LeadStatus = {
-  new: 'new',
-  contacted: 'contacted',
-  interested: 'interested',
-  not_interested: 'not_interested',
-  call_not_connected: 'call_not_connected',
-  qualified: 'qualified',
-  nurturing: 'nurturing',
-  converted: 'converted',
-  lost: 'lost',
-  reborn: 'reborn',
-  re_enquiry: 're_enquiry'
 };
 
 exports.OpportunityType = exports.$Enums.OpportunityType = {

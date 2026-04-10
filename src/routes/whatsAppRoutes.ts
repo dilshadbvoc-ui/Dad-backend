@@ -17,7 +17,8 @@ import {
     getMedia,
     uploadMedia,
     handleWebhook,
-    verifyWebhook
+    verifyWebhook,
+    handleGallaboxWebhook
 } from '../controllers/whatsAppController';
 import { whatsappLimiter } from '../middleware/rateLimiter';
 import multer from 'multer';
@@ -50,6 +51,7 @@ router.get('/lead/:leadId', protect, whatsappLimiter, getLeadWhatsAppMessages as
 router.post('/test', protect, whatsappLimiter, testConnection as any);
 router.get('/webhook', verifyWebhook as any);
 router.post('/webhook', handleWebhook as any);
+router.post('/webhook/gallabox', handleGallaboxWebhook as any);
 router.post('/upload-media', protect, upload.single('file'), uploadMedia as any);
 
 export default router;

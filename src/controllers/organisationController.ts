@@ -172,6 +172,10 @@ export const getOrganisation = async (req: Request, res: Response) => {
                 const integrations = { ...(sanitizedOrg.integrations as any) };
                 if (integrations.meta) integrations.meta.accessToken = '[HIDDEN]';
                 if (integrations.whatsapp) integrations.whatsapp.token = '[HIDDEN]';
+                if (integrations.gallabox) {
+                    integrations.gallabox.apiKey = '[HIDDEN]';
+                    integrations.gallabox.apiSecret = '[HIDDEN]';
+                }
                 sanitizedOrg.integrations = integrations;
             }
         }
@@ -215,6 +219,19 @@ export const updateOrganisation = async (req: Request, res: Response) => {
                 if (data.integrations.meta.accessToken.split(':').length !== 3) {
                     data.integrations.meta.accessToken = encrypt(data.integrations.meta.accessToken);
                 }
+            }
+        }
+        
+        // Handle Gallabox Credential Encryption
+        if (data.integrations?.gallabox?.connected) {
+            const gallabox = data.integrations.gallabox;
+            
+            if (gallabox.apiKey && gallabox.apiKey.split(':').length !== 3) {
+                data.integrations.gallabox.apiKey = encrypt(gallabox.apiKey);
+            }
+            
+            if (gallabox.apiSecret && gallabox.apiSecret.split(':').length !== 3) {
+                data.integrations.gallabox.apiSecret = encrypt(gallabox.apiSecret);
             }
         }
 

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { WhatsAppService } from '../services/whatsAppService';
 import { WhatsAppIntegrationService } from '../services/whatsAppIntegrationService';
+import { GallaboxService } from '../services/gallaboxService';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { getIO } from '../socket';
@@ -78,20 +79,40 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
         // Sanitize message content
         const sanitizedMessage = message ? message.trim().substring(0, 4096) : undefined;
 
-        const config = await getWhatsAppConfig(req);
-
-        const whatsAppService = new WhatsAppService({
-            accessToken: config.accessToken,
-            phoneNumberId: config.phoneNumberId,
-            wabaId: config.wabaId
-        });
-
         let result;
-        if (type === 'template') {
-            const { templateName, languageCode = 'en_US', components = [] } = req.body;
-            result = await whatsAppService.sendTemplateMessage(to, templateName, languageCode, components);
-        } else {
-            result = await whatsAppService.sendTextMessage(to, sanitizedMessage!);
+        let waMessageId;
+
+        // Try Meta WhatsApp first
+        try {
+            const config = await getWhatsAppConfig(req);
+            const whatsAppService = new WhatsAppService({
+                accessToken: config.accessToken,
+                phoneNumberId: config.phoneNumberId,
+                wabaId: config.wabaId
+            });
+
+            if (type === 'template') {
+                const { templateName, languageCode = 'en_US', components = [] } = req.body;
+                result = await whatsAppService.sendTemplateMessage(to, templateName, languageCode, components);
+            } else {
+                result = await whatsAppService.sendTextMessage(to, sanitizedMessage!);
+            }
+            waMessageId = result.messages?.[0]?.id;
+        } catch (metaError) {
+            // If Meta fails/not configured, try Gallabox
+            const user = (req as any).user;
+            const gallabox = await GallaboxService.getClientForOrg(user.organisationId);
+            
+            if (gallabox) {
+                if (type === 'template') {
+                    throw new Error('Template messages are currently only supported via Meta WhatsApp integration.');
+                }
+                result = await gallabox.sendWhatsAppMessage(to, sanitizedMessage!);
+                waMessageId = result.messageId; // Gallabox specific ID field
+            } else {
+                // If both fail, throw the original error
+                throw metaError;
+            }
         }
 
         // Log the message to database
@@ -112,7 +133,7 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
                         components: type === 'template' ? req.body.components : undefined
                     },
                     status: 'sent',
-                    waMessageId: result.messages?.[0]?.id,
+                    waMessageId: waMessageId,
                     sentAt: new Date(),
                     organisationId: orgId,
                     agentId: user?.id
@@ -790,6 +811,33 @@ export const verifyWebhook = async (req: Request, res: Response) => {
         await WhatsAppIntegrationService.verifyWebhook(req, res);
     } catch (error: any) {
         console.error('Error in verifyWebhook:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const handleGallaboxWebhook = async (req: Request, res: Response) => {
+    try {
+        const signature = req.headers['x-gallabox-signature'] as string;
+        const secret = process.env.GALLABOX_WEBHOOK_SECRET;
+
+        // If secret is configured, verify signature
+        if (secret && signature) {
+            const isValid = GallaboxService.verifySignature(
+                JSON.stringify(req.body),
+                signature,
+                secret
+            );
+
+            if (!isValid) {
+                console.warn('[GallaboxWebhook] Invalid signature');
+                return res.sendStatus(401);
+            }
+        }
+
+        await WhatsAppIntegrationService.handleGallaboxWebhook(req.body);
+        res.sendStatus(200);
+    } catch (error: any) {
+        console.error('Error in handleGallaboxWebhook:', error);
         res.status(500).json({ message: error.message });
     }
 };

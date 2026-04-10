@@ -10,6 +10,7 @@ import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 import { GeoLocationService } from '../services/geoLocationService';
 import { FollowUpService } from '../services/followUpService';
 import { TaskService } from '../services/taskService';
+import { GallaboxService } from '../services/gallaboxService';
 // Dynamic import used for OpenAI to avoid startup errors if missing
 
 
@@ -248,7 +249,7 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                 // Assign to creator by default, or to specified user
                 assignedTo: { connect: { id: leadOwnerId } },
                 source: req.body.source as LeadSource || LeadSource.manual,
-                status: req.body.status as LeadStatus || LeadStatus.new,
+                status: req.body.status || 'new',
                 potentialValue: req.body.potentialValue ? parseFloat(req.body.potentialValue) : 0,
                 createdBy: { connect: { id: currentUser.id } } // Track creator for visibility
             }
@@ -348,6 +349,14 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                     actionSource: 'system_generated' // or website if we knew source url
                 }).catch(console.error);
             });
+            // Gallabox Sync
+            GallaboxService.getClientForOrg(orgId).then(gallabox => {
+                if (gallabox) {
+                    gallabox.syncLeadToContact(lead).catch(err => {
+                        console.error('Auto Gallabox Sync Error:', err.message);
+                    });
+                }
+            }).catch(console.error);
         } catch (workflowErr) {
             console.error('WorkflowEngine error:', workflowErr);
             // Don't fail the request if workflow fails
@@ -910,7 +919,7 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                     organisation: { connect: { id: orgId } },
                     source: l.source || LeadSource.import,
-                    status: l.status || LeadStatus.new,
+                    status: l.status || 'new',
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
                     stage: l.stage || undefined,
                     createdBy: { connect: { id: user.id } }
@@ -1189,7 +1198,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             const updatedLead = await tx.lead.update({
                 where: { id: leadId },
                 data: {
-                    status: LeadStatus.converted
+                    status: 'converted'
                 }
             });
 
@@ -1429,7 +1438,7 @@ export const getPendingFollowUpsCount = async (req: express.Request, res: expres
 
         const where: any = {
             nextFollowUp: { lte: endOfToday },
-            status: { not: LeadStatus.converted },
+            status: { not: 'converted' },
             isDeleted: false
         };
 
@@ -1530,5 +1539,38 @@ export const getDuplicateLeads = async (req: express.Request, res: express.Respo
     } catch (error) {
         console.error('getDuplicateLeads Error:', error);
         res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// POST /api/leads/:id/sync-gallabox
+export const syncToGallabox = async (req: express.Request, res: express.Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        const leadId = req.params.id;
+
+        if (!orgId) return res.status(403).json({ message: 'Organisation context required' });
+
+        const lead = await prisma.lead.findUnique({
+            where: { id: leadId, organisationId: orgId }
+        });
+
+        if (!lead) return res.status(404).json({ message: 'Lead not found' });
+
+        const gallabox = await GallaboxService.getClientForOrg(orgId);
+        if (!gallabox) {
+            return res.status(400).json({ message: 'Gallabox is not connected or configured for your organisation.' });
+        }
+
+        const result = await gallabox.syncLeadToContact(lead);
+
+        res.json({
+            success: true,
+            message: 'Lead successfully synced to Gallabox',
+            result
+        });
+    } catch (error: any) {
+        console.error('syncToGallabox Error:', error);
+        res.status(500).json({ message: error.message });
     }
 };
