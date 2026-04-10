@@ -5,7 +5,7 @@ import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarc
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
 import { NotificationService } from '../services/notificationService';
-import { LeadSource, LeadStatus } from '../generated/client';
+import { LeadSource } from '../generated/client';
 import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
 import { GeoLocationService } from '../services/geoLocationService';
 import { FollowUpService } from '../services/followUpService';
@@ -59,8 +59,8 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
         }
 
         // Filter: Status
-        if (req.query.status && Object.values(LeadStatus).includes(req.query.status as LeadStatus)) {
-            where.status = req.query.status as LeadStatus;
+        if (req.query.status) {
+            where.status = req.query.status as string;
         }
 
         // Filter: Source
@@ -1055,7 +1055,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             });
         }
 
-        if (lead.status === LeadStatus.converted) {
+        if (lead.status === "converted") {
             return res.status(400).json({ message: 'Lead already converted' });
         }
 

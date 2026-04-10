@@ -3,7 +3,7 @@ import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
-import { LeadSource, LeadStatus } from '../generated/client';
+import { LeadSource } from '../generated/client';
 import { logger } from '../utils/logger';
 import { ResponseHandler } from '../utils/apiResponse';
 import { leadValidation, sanitizeObject } from '../utils/validation';
@@ -55,8 +55,8 @@ export const getLeadsEnhanced = async (req: Request, res: Response) => {
         }
 
         // 3. Apply filters with validation
-        if (req.query.status && Object.values(LeadStatus).includes(req.query.status as LeadStatus)) {
-            where.status = req.query.status as LeadStatus;
+        if (req.query.status) {
+            where.status = req.query.status as string;
         }
 
         if (req.query.source && Object.values(LeadSource).includes(req.query.source as LeadSource)) {
@@ -178,7 +178,7 @@ export const createLeadEnhanced = async (req: Request, res: Response) => {
             organisationId,
             createdById: userId,
             source: sanitizedData.source || LeadSource.manual,
-            status: sanitizedData.status || LeadStatus.new,
+            status: sanitizedData.status || "new",
             leadScore: sanitizedData.leadScore || 0
         };
 

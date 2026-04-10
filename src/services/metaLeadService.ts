@@ -2,7 +2,7 @@ import axios from 'axios';
 import prisma from '../config/prisma';
 import { DistributionService } from './distributionService';
 import { NotificationService } from './notificationService';
-import { LeadSource, LeadStatus, Prisma } from '../generated/client';
+import { LeadSource, Prisma } from '../generated/client';
 import { decrypt } from '../utils/encryption';
 
 export const MetaLeadService = {
@@ -107,7 +107,7 @@ export const MetaLeadService = {
                     rawMetaFields: fieldMap,
                     metaCreatedTime: metaLeadData.created_time
                 },
-                status: LeadStatus.new,
+                status: "new",
                 organisationId: org.id,
                 branchId: metaConfig.branchId || null
             };

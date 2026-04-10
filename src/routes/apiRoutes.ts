@@ -2,7 +2,7 @@
 import express from 'express';
 import { verifyApiKey } from '../middleware/apiKeyMiddleware';
 import prisma from '../config/prisma';
-import { LeadSource, LeadStatus } from '../generated/client';
+import { LeadSource } from '../generated/client';
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
 
@@ -63,7 +63,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 phone: cleanPhone,
                 company,
                 source: source || LeadSource.api,
-                status: LeadStatus.new,
+                status: "new",
                 organisationId: orgId,
                 customFields: { message } // Store raw message
             }
