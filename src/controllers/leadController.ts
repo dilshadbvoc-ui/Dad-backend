@@ -63,6 +63,11 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             where.status = req.query.status as string;
         }
 
+        // Filter: Branch
+        if (req.query.branchId) {
+            where.branchId = req.query.branchId as string;
+        }
+
         // Filter: Source
         if (req.query.source && Object.values(LeadSource).includes(req.query.source as LeadSource)) {
             where.source = req.query.source as LeadSource;

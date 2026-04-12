@@ -596,8 +596,160 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
             };
         }));
 
+
+/**
+ * Detailed user performance for the "User Total Report"
+ * Metrics: Leads, Calls, Status Changes, Unattended, Revenue, Performance Index
+ */
+export const getUserPerformanceDetails = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        const { startDate, endDate, branchId } = req.query;
+
+        const dateFilter: any = {};
+        if (startDate) dateFilter.gte = new Date(startDate as string);
+        if (endDate) dateFilter.lte = new Date(endDate as string);
+
+        const thresholdDate = new Date();
+        thresholdDate.setHours(thresholdDate.getHours() - 48);
+
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        const where: any = {
+            id: { in: visibleUserIds },
+            organisationId: orgId,
+            isActive: true
+        };
+        if (branchId) where.branchId = branchId as string;
+
+        const users = await prisma.user.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+                profileImage: true,
+                branch: { select: { name: true } }
+            }
+        });
+
+        const report = await Promise.all(users.map(async (u) => {
+            const [
+                totalLeads,
+                callsMade,
+                statusChanges,
+                attendedLeads,
+                wonDeals,
+                meetings,
+                revenueData
+            ] = await Promise.all([
+                // 1. Total Leads Owned
+                prisma.lead.count({
+                    where: { assignedToId: u.id, organisationId: orgId as string, isDeleted: false }
+                }),
+                // 2. Total Calls Made
+                prisma.interaction.count({
+                    where: { 
+                        createdById: u.id, 
+                        type: 'call', 
+                        organisationId: orgId as string,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
+                }),
+                // 3. Status Changes (History)
+                prisma.leadHistory.count({
+                    where: { 
+                        changedById: u.id, 
+                        fieldName: 'status',
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
+                }),
+                // 4. Attended Leads (Interactions in last 48h)
+                prisma.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId as string,
+                        interactions: {
+                            some: {
+                                createdAt: { gte: thresholdDate }
+                            }
+                        }
+                    }
+                }),
+                // 5. Won Deals
+                prisma.opportunity.count({
+                    where: { 
+                        ownerId: u.id, 
+                        stage: 'closed_won', 
+                        organisationId: orgId as string,
+                        ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
+                    }
+                }),
+                // 6. Meetings
+                prisma.calendarEvent.count({
+                    where: {
+                        createdById: u.id,
+                        type: 'meeting',
+                        organisationId: orgId as string,
+                        ...(Object.keys(dateFilter).length ? { startTime: dateFilter } : {})
+                    }
+                }),
+                // 7. Revenue
+                prisma.opportunity.aggregate({
+                    where: { 
+                        ownerId: u.id, 
+                        stage: 'closed_won', 
+                        organisationId: orgId as string,
+                        ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
+                    },
+                    _sum: { amount: true }
+                })
+            ]);
+
+            const unattendedLeads = totalLeads - attendedLeads;
+            const revenue = revenueData._sum.amount || 0;
+            
+            // Performance Index Calculation (0-100)
+            // Weighting: 40% Conversion, 30% Calls, 20% Activity (Status Changes), 10% Promptness
+            const conversionRate = totalLeads > 0 ? (wonDeals / totalLeads) : 0;
+            const callScore = Math.min((callsMade / 50) * 100, 100); // 50 calls as a "perfect" score for activity period
+            const activityScore = Math.min((statusChanges / 30) * 100, 100); // 30 updates as "perfect"
+            const promptnessScore = totalLeads > 0 ? ((attendedLeads / totalLeads) * 100) : 100;
+
+            const performanceIndex = (
+                (conversionRate * 100 * 0.4) + 
+                (callScore * 0.3) + 
+                (activityScore * 0.2) + 
+                (promptnessScore * 0.1)
+            ).toFixed(1);
+
+            return {
+                userId: u.id,
+                name: `${u.firstName} ${u.lastName || ''}`.trim(),
+                role: u.role,
+                profileImage: u.profileImage,
+                branch: u.branch?.name || 'N/A',
+                metrics: {
+                    totalLeads,
+                    callsMade,
+                    statusChanges,
+                    unattendedLeads,
+                    wonDeals,
+                    meetings,
+                    revenue,
+                    performanceIndex: parseFloat(performanceIndex),
+                    conversionRate: parseFloat((conversionRate * 100).toFixed(1))
+                }
+            };
+        }));
+
+        // Sort by Performance Index
+        report.sort((a, b) => b.metrics.performanceIndex - a.metrics.performanceIndex);
+
         res.json(report);
     } catch (error) {
+        console.error('[ReportController] getUserPerformanceDetails error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };

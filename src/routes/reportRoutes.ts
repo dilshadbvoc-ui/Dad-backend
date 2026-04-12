@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { getLeadsReport, getUserPerformance, getSalesBook, exportToExcel, getTeamPerformanceReport } from '../controllers/reportController';
+import { 
+    getLeadsReport, 
+    getUserPerformance, 
+    getSalesBook, 
+    exportToExcel, 
+    getTeamPerformanceReport,
+    getUserPerformanceDetails 
+} from '../controllers/reportController';
 import { protect as authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
@@ -10,8 +17,11 @@ router.use(authMiddleware);
 // Leads report with filtering
 router.get('/leads', getLeadsReport);
 
-// User performance metrics
+// User performance metrics (Existing)
 router.get('/user-performance', getUserPerformance);
+
+// Detailed user performance for Total Report (New)
+router.get('/user-performance-details', getUserPerformanceDetails);
 
 // Sales book with time period filter
 router.get('/sales-book', getSalesBook);

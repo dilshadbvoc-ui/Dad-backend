@@ -180,7 +180,7 @@ export const getOrganisation = async (req: Request, res: Response) => {
             }
         }
 
-        res.json({ ...sanitizedOrg, userCount });
+        res.json({ organisation: sanitizedOrg, userCount });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
@@ -297,7 +297,7 @@ export const updateOrganisation = async (req: Request, res: Response) => {
             details: { updatedFields: Object.keys(data) }
         });
 
-        res.json(org);
+        res.json({ organisation: org });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
