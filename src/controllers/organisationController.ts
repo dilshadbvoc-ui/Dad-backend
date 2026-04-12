@@ -5,6 +5,15 @@ import { encrypt } from '../utils/encryption';
 import { metaService } from '../services/metaService';
 import bcrypt from 'bcryptjs';
 import { logAudit } from '../utils/auditLogger';
+ 
+const DEFAULT_LEAD_STATUSES = [
+    { id: 'new', label: 'New', color: '#6366f1', isSystem: true, order: 0, isDefault: true },
+    { id: 'contacted', label: 'Contacted', color: '#3b82f6', isSystem: false, order: 1 },
+    { id: 'interested', label: 'Interested', color: '#10b981', isSystem: false, order: 2 },
+    { id: 'qualified', label: 'Qualified', color: '#f59e0b', isSystem: false, order: 3 },
+    { id: 'won', label: 'Won', color: '#10b981', isSystem: true, order: 4 },
+    { id: 'lost', label: 'Lost', color: '#ef4444', isSystem: true, order: 5 }
+];
 
 export const createOrganisation = async (req: Request, res: Response) => {
     try {
@@ -116,6 +125,11 @@ export const getOrganisation = async (req: Request, res: Response) => {
             where: { id: orgId }
         });
         if (!org) return res.status(404).json({ message: 'Organisation not found' });
+ 
+        // Fallback for Lead Statuses if not configured
+        if (!org.leadStatuses || (Array.isArray(org.leadStatuses) && org.leadStatuses.length === 0)) {
+            org.leadStatuses = DEFAULT_LEAD_STATUSES as any;
+        }
 
         // Get active user count
         const userCount = await prisma.user.count({

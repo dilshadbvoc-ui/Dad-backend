@@ -87,11 +87,21 @@ export const MetaLeadService = {
                 return null;
             };
 
+            // Resolve Status from Org Settings
+            let leadStatus = "new";
+            if (org.leadStatuses && Array.isArray(org.leadStatuses)) {
+                const statuses = org.leadStatuses as any[];
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    leadStatus = configuredDefault.id;
+                }
+            }
+
             const crmData: any = {
                 firstName: getField(['first_name', 'firstname', 'first name', 'fname']) || 
                            fieldMap.full_name?.split(' ')[0] || 'Meta',
                 lastName: getField(['last_name', 'lastname', 'last name', 'lname']) || 
-                          fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
+                           fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
                 email: getField(['email', 'email_address', 'e-mail']),
                 phone: getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']) || '',
                 company: getField(['company_name', 'company', 'organization', 'organisation']),
@@ -107,7 +117,7 @@ export const MetaLeadService = {
                     rawMetaFields: fieldMap,
                     metaCreatedTime: metaLeadData.created_time
                 },
-                status: "new",
+                status: leadStatus,
                 organisationId: org.id,
                 branchId: metaConfig.branchId || null
             };

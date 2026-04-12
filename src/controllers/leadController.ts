@@ -230,6 +230,26 @@ export const createLead = async (req: express.Request, res: express.Response) =>
             await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
 
+        // Resolve Default Status from Organisation Settings
+        let leadStatus = req.body.status;
+        if (!leadStatus) {
+            const org = await prisma.organisation.findUnique({
+                where: { id: orgId },
+                select: { leadStatuses: true }
+            });
+            
+            if (org?.leadStatuses && Array.isArray(org.leadStatuses)) {
+                const statuses = org.leadStatuses as any[];
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    leadStatus = configuredDefault.id;
+                }
+            }
+            
+            // Final Fallback
+            if (!leadStatus) leadStatus = 'new';
+        }
+
         // Create — only pass explicitly known Lead fields (no blind spreading)
         const lead = await prisma.lead.create({
             data: {
@@ -254,7 +274,7 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                 // Assign to creator by default, or to specified user
                 assignedTo: { connect: { id: leadOwnerId } },
                 source: req.body.source as LeadSource || LeadSource.manual,
-                status: req.body.status || 'new',
+                status: leadStatus,
                 potentialValue: req.body.potentialValue ? parseFloat(req.body.potentialValue) : 0,
                 createdBy: { connect: { id: currentUser.id } } // Track creator for visibility
             }

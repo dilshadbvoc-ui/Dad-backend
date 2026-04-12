@@ -55,6 +55,21 @@ router.post('/leads', verifyApiKey, async (req, res) => {
             });
         }
 
+        // Resolve Default Status from Organisation Settings
+        let leadStatus = "new";
+        const org = await prisma.organisation.findUnique({
+            where: { id: orgId },
+            select: { leadStatuses: true }
+        });
+        
+        if (org?.leadStatuses && Array.isArray(org.leadStatuses)) {
+            const statuses = org.leadStatuses as any[];
+            const configuredDefault = statuses.find((s) => s.isDefault);
+            if (configuredDefault) {
+                leadStatus = configuredDefault.id;
+            }
+        }
+
         const lead = await prisma.lead.create({
             data: {
                 firstName: firstName || 'Unknown',
@@ -63,7 +78,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 phone: cleanPhone,
                 company,
                 source: source || LeadSource.api,
-                status: "new",
+                status: leadStatus,
                 organisationId: orgId,
                 customFields: { message } // Store raw message
             }
