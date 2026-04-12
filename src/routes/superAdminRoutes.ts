@@ -17,6 +17,12 @@ import { protect } from '../middleware/authMiddleware';
 import { getSystemSettings, updateSystemSettings } from '../controllers/systemSettingsController';
 import { getGlobalRoles, upsertGlobalRole } from '../controllers/roleController';
 import { exportPlatformData, restorePlatformData } from '../controllers/backupController';
+import {
+    getAllFAQs,
+    createFAQ,
+    updateFAQ,
+    deleteFAQ
+} from '../controllers/siteFAQController';
 
 const router = express.Router();
 
@@ -48,5 +54,11 @@ router.get('/roles', protect, getGlobalRoles);
 router.post('/roles', protect, upsertGlobalRole);
 
 router.get('/stats', protect, getOrganisationStats);
+
+// Landing Page FAQ Management
+router.get('/faqs', protect, getAllFAQs);
+router.post('/faqs', protect, createFAQ);
+router.put('/faqs/:id', protect, updateFAQ);
+router.delete('/faqs/:id', protect, deleteFAQ);
 
 export default router;

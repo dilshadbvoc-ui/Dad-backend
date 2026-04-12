@@ -641,7 +641,8 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
 
         const report = await Promise.all(users.map(async (u) => {
             const [
-                totalLeads,
+                periodLeads,
+                activeLeads,
                 callsMade,
                 statusChanges,
                 attendedLeads,
@@ -649,11 +650,25 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                 meetings,
                 revenueData
             ] = await Promise.all([
-                // 1. Total Leads Owned
+                // 1. Total Leads Assigned/Active in Period
                 prisma.lead.count({
-                    where: { assignedToId: u.id, organisationId: orgId as string, isDeleted: false }
+                    where: { 
+                        assignedToId: u.id, 
+                        organisationId: orgId as string, 
+                        isDeleted: false,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
                 }),
-                // 2. Total Calls Made
+                // 2. Total Active Leads (any time, but must be in an active status)
+                prisma.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId as string,
+                        isDeleted: false,
+                        status: { in: ['new', 'contacted', 'interested', 'qualified', 'nurturing', 'call_not_connected', 're_enquiry'] }
+                    }
+                }),
+                // 3. Total Calls Made
                 prisma.interaction.count({
                     where: { 
                         createdById: u.id, 
@@ -662,7 +677,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
                     }
                 }),
-                // 3. Status Changes (History)
+                // 4. Status Changes (History)
                 prisma.leadHistory.count({
                     where: { 
                         changedById: u.id, 
@@ -670,11 +685,13 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
                     }
                 }),
-                // 4. Attended Leads (Interactions in last 48h)
+                // 5. Attended Active Leads (Interactions in last 48h)
                 prisma.lead.count({
                     where: {
                         assignedToId: u.id,
                         organisationId: orgId as string,
+                        isDeleted: false,
+                        status: { in: ['new', 'contacted', 'interested', 'qualified', 'nurturing', 'call_not_connected', 're_enquiry'] },
                         interactions: {
                             some: {
                                 createdAt: { gte: thresholdDate }
@@ -682,7 +699,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         }
                     }
                 }),
-                // 5. Won Deals
+                // 6. Won Deals in Period
                 prisma.opportunity.count({
                     where: { 
                         ownerId: u.id, 
@@ -691,7 +708,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
                     }
                 }),
-                // 6. Meetings
+                // 7. Meetings
                 prisma.calendarEvent.count({
                     where: {
                         createdById: u.id,
@@ -700,7 +717,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { startTime: dateFilter } : {})
                     }
                 }),
-                // 7. Revenue
+                // 8. Revenue in Period
                 prisma.opportunity.aggregate({
                     where: { 
                         ownerId: u.id, 
@@ -712,15 +729,15 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                 })
             ]);
 
-            const unattendedLeads = totalLeads - attendedLeads;
+            const unattendedLeads = Math.max(0, activeLeads - attendedLeads);
             const revenue = revenueData._sum.amount || 0;
             
             // Performance Index Calculation (0-100)
             // Weighting: 40% Conversion, 30% Calls, 20% Activity (Status Changes), 10% Promptness
-            const conversionRate = totalLeads > 0 ? (wonDeals / totalLeads) : 0;
+            const conversionRate = periodLeads > 0 ? (wonDeals / periodLeads) : 0;
             const callScore = Math.min((callsMade / 50) * 100, 100); // 50 calls as a "perfect" score for activity period
             const activityScore = Math.min((statusChanges / 30) * 100, 100); // 30 updates as "perfect"
-            const promptnessScore = totalLeads > 0 ? ((attendedLeads / totalLeads) * 100) : 100;
+            const promptnessScore = activeLeads > 0 ? ((attendedLeads / activeLeads) * 100) : 100;
 
             const performanceIndex = (
                 (conversionRate * 100 * 0.4) + 
@@ -736,7 +753,8 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                 profileImage: u.profileImage,
                 branch: u.branch?.name || 'N/A',
                 metrics: {
-                    totalLeads,
+                    totalLeads: periodLeads,
+                    activeLeads,
                     callsMade,
                     statusChanges,
                     unattendedLeads,

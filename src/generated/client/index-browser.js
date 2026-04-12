@@ -1197,6 +1197,16 @@ exports.Prisma.PaymentRecordScalarFieldEnum = {
   organisationId: 'organisationId'
 };
 
+exports.Prisma.SiteFAQScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  answer: 'answer',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1373,7 +1383,8 @@ exports.Prisma.ModelName = {
   Role: 'Role',
   EMISchedule: 'EMISchedule',
   EMIInstallment: 'EMIInstallment',
-  PaymentRecord: 'PaymentRecord'
+  PaymentRecord: 'PaymentRecord',
+  SiteFAQ: 'SiteFAQ'
 };
 
 /**

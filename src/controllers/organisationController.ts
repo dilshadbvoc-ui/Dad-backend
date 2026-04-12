@@ -250,45 +250,46 @@ export const updateOrganisation = async (req: Request, res: Response) => {
         }
 
         // Handle Plan Assignment checks
-        if (data.planId) {
-            const plan = await prisma.subscriptionPlan.findUnique({ where: { id: data.planId } });
-            if (!plan) throw new Error('Invalid Plan ID');
+        if ('planId' in data) {
+            if (data.planId) {
+                const plan = await prisma.subscriptionPlan.findUnique({ where: { id: data.planId } });
+                if (!plan) throw new Error('Invalid Plan ID');
 
-            // 1. Update Org Limits based on Plan
-            data.userLimit = plan.maxUsers;
-            data.status = 'active'; // Activate org if plan assignment happens
+                // 1. Update Org Limits based on Plan
+                data.userLimit = plan.maxUsers;
+                data.status = 'active'; // Activate org if plan assignment happens
 
-            // 2. Legacy Subscription JSON sync
-            const existingSubscription = (await prisma.organisation.findUnique({ where: { id: orgId } }))?.subscription as any || {};
-            data.subscription = {
-                ...existingSubscription,
-                status: 'active',
-                plan: plan.name,
-                planId: plan.id,
-                startDate: new Date(),
-                endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000)
-            };
-
-            // 3. Deactivate old active licenses
-            await prisma.license.updateMany({
-                where: { organisationId: orgId, status: 'active' },
-                data: { status: 'cancelled', cancelledAt: new Date() }
-            });
-
-            // 4. Create New License
-            await prisma.license.create({
-                data: {
-                    organisationId: orgId,
-                    planId: plan.id,
+                // 2. Legacy Subscription JSON sync
+                const existingSubscription = (await prisma.organisation.findUnique({ where: { id: orgId } }))?.subscription as any || {};
+                data.subscription = {
+                    ...existingSubscription,
                     status: 'active',
+                    plan: plan.name,
+                    planId: plan.id,
                     startDate: new Date(),
-                    endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000),
-                    maxUsers: plan.maxUsers,
-                    autoRenew: true
-                }
-            });
+                    endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000)
+                };
 
-            // Clean up planId from data intended for Organisation model update (if it's not a column)
+                // 3. Deactivate old active licenses
+                await prisma.license.updateMany({
+                    where: { organisationId: orgId, status: 'active' },
+                    data: { status: 'cancelled', cancelledAt: new Date() }
+                });
+
+                // 4. Create New License
+                await prisma.license.create({
+                    data: {
+                        organisationId: orgId,
+                        planId: plan.id,
+                        status: 'active',
+                        startDate: new Date(),
+                        endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000),
+                        maxUsers: plan.maxUsers,
+                        autoRenew: true
+                    }
+                });
+            }
+            // Clean up planId from data intended for Organisation model update
             delete data.planId;
         }
 

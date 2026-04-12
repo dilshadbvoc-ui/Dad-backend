@@ -11,7 +11,7 @@ echo ""
 # Configuration
 EC2_HOST="13.233.83.130"
 EC2_USER="ubuntu"
-SSH_KEY="$HOME/.ssh/dad-crm-new-key"
+SSH_KEY="$(dirname "$0")/crm-key.pem"
 
 # Check if SSH key exists
 if [ ! -f "$SSH_KEY" ]; then

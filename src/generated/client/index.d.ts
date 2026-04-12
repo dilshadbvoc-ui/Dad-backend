@@ -298,6 +298,11 @@ export type EMIInstallment = $Result.DefaultSelection<Prisma.$EMIInstallmentPayl
  * 
  */
 export type PaymentRecord = $Result.DefaultSelection<Prisma.$PaymentRecordPayload>
+/**
+ * Model SiteFAQ
+ * 
+ */
+export type SiteFAQ = $Result.DefaultSelection<Prisma.$SiteFAQPayload>
 
 /**
  * Enums
@@ -1181,6 +1186,16 @@ export class PrismaClient<
     * ```
     */
   get paymentRecord(): Prisma.PaymentRecordDelegate<ExtArgs>;
+
+  /**
+   * `prisma.siteFAQ`: Exposes CRUD operations for the **SiteFAQ** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SiteFAQS
+    * const siteFAQS = await prisma.siteFAQ.findMany()
+    * ```
+    */
+  get siteFAQ(): Prisma.SiteFAQDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -1678,7 +1693,8 @@ export namespace Prisma {
     Role: 'Role',
     EMISchedule: 'EMISchedule',
     EMIInstallment: 'EMIInstallment',
-    PaymentRecord: 'PaymentRecord'
+    PaymentRecord: 'PaymentRecord',
+    SiteFAQ: 'SiteFAQ'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1694,7 +1710,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "callRecording" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "followUp" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord"
+      modelProps: "organisation" | "user" | "team" | "notification" | "lead" | "callRecording" | "account" | "contact" | "opportunity" | "product" | "leadProduct" | "accountProduct" | "quote" | "quoteLineItem" | "task" | "followUp" | "interaction" | "calendarEvent" | "emailList" | "campaign" | "workflow" | "workflowQueue" | "workflowRule" | "documentTemplate" | "sMSTemplate" | "subscriptionPlan" | "license" | "assignmentRule" | "salesTarget" | "goal" | "case" | "checkIn" | "apiKey" | "searchHistory" | "customField" | "territory" | "webhook" | "userLeadQuotaTracker" | "callSettings" | "leadHistory" | "importJob" | "pipeline" | "webForm" | "sMSCampaign" | "whatsAppCampaign" | "whatsAppMessage" | "commission" | "landingPage" | "auditLog" | "document" | "productShare" | "branch" | "systemSetting" | "role" | "eMISchedule" | "eMIInstallment" | "paymentRecord" | "siteFAQ"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -5685,6 +5701,76 @@ export namespace Prisma {
           count: {
             args: Prisma.PaymentRecordCountArgs<ExtArgs>
             result: $Utils.Optional<PaymentRecordCountAggregateOutputType> | number
+          }
+        }
+      }
+      SiteFAQ: {
+        payload: Prisma.$SiteFAQPayload<ExtArgs>
+        fields: Prisma.SiteFAQFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SiteFAQFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SiteFAQFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>
+          }
+          findFirst: {
+            args: Prisma.SiteFAQFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SiteFAQFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>
+          }
+          findMany: {
+            args: Prisma.SiteFAQFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>[]
+          }
+          create: {
+            args: Prisma.SiteFAQCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>
+          }
+          createMany: {
+            args: Prisma.SiteFAQCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SiteFAQCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>[]
+          }
+          delete: {
+            args: Prisma.SiteFAQDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>
+          }
+          update: {
+            args: Prisma.SiteFAQUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>
+          }
+          deleteMany: {
+            args: Prisma.SiteFAQDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SiteFAQUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SiteFAQUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SiteFAQPayload>
+          }
+          aggregate: {
+            args: Prisma.SiteFAQAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSiteFAQ>
+          }
+          groupBy: {
+            args: Prisma.SiteFAQGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SiteFAQGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SiteFAQCountArgs<ExtArgs>
+            result: $Utils.Optional<SiteFAQCountAggregateOutputType> | number
           }
         }
       }
@@ -76600,6 +76686,942 @@ export namespace Prisma {
 
 
   /**
+   * Model SiteFAQ
+   */
+
+  export type AggregateSiteFAQ = {
+    _count: SiteFAQCountAggregateOutputType | null
+    _avg: SiteFAQAvgAggregateOutputType | null
+    _sum: SiteFAQSumAggregateOutputType | null
+    _min: SiteFAQMinAggregateOutputType | null
+    _max: SiteFAQMaxAggregateOutputType | null
+  }
+
+  export type SiteFAQAvgAggregateOutputType = {
+    order: number | null
+  }
+
+  export type SiteFAQSumAggregateOutputType = {
+    order: number | null
+  }
+
+  export type SiteFAQMinAggregateOutputType = {
+    id: string | null
+    question: string | null
+    answer: string | null
+    order: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SiteFAQMaxAggregateOutputType = {
+    id: string | null
+    question: string | null
+    answer: string | null
+    order: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SiteFAQCountAggregateOutputType = {
+    id: number
+    question: number
+    answer: number
+    order: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SiteFAQAvgAggregateInputType = {
+    order?: true
+  }
+
+  export type SiteFAQSumAggregateInputType = {
+    order?: true
+  }
+
+  export type SiteFAQMinAggregateInputType = {
+    id?: true
+    question?: true
+    answer?: true
+    order?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SiteFAQMaxAggregateInputType = {
+    id?: true
+    question?: true
+    answer?: true
+    order?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SiteFAQCountAggregateInputType = {
+    id?: true
+    question?: true
+    answer?: true
+    order?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SiteFAQAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SiteFAQ to aggregate.
+     */
+    where?: SiteFAQWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteFAQS to fetch.
+     */
+    orderBy?: SiteFAQOrderByWithRelationInput | SiteFAQOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SiteFAQWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteFAQS from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteFAQS.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SiteFAQS
+    **/
+    _count?: true | SiteFAQCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SiteFAQAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SiteFAQSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SiteFAQMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SiteFAQMaxAggregateInputType
+  }
+
+  export type GetSiteFAQAggregateType<T extends SiteFAQAggregateArgs> = {
+        [P in keyof T & keyof AggregateSiteFAQ]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSiteFAQ[P]>
+      : GetScalarType<T[P], AggregateSiteFAQ[P]>
+  }
+
+
+
+
+  export type SiteFAQGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SiteFAQWhereInput
+    orderBy?: SiteFAQOrderByWithAggregationInput | SiteFAQOrderByWithAggregationInput[]
+    by: SiteFAQScalarFieldEnum[] | SiteFAQScalarFieldEnum
+    having?: SiteFAQScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SiteFAQCountAggregateInputType | true
+    _avg?: SiteFAQAvgAggregateInputType
+    _sum?: SiteFAQSumAggregateInputType
+    _min?: SiteFAQMinAggregateInputType
+    _max?: SiteFAQMaxAggregateInputType
+  }
+
+  export type SiteFAQGroupByOutputType = {
+    id: string
+    question: string
+    answer: string
+    order: number
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: SiteFAQCountAggregateOutputType | null
+    _avg: SiteFAQAvgAggregateOutputType | null
+    _sum: SiteFAQSumAggregateOutputType | null
+    _min: SiteFAQMinAggregateOutputType | null
+    _max: SiteFAQMaxAggregateOutputType | null
+  }
+
+  type GetSiteFAQGroupByPayload<T extends SiteFAQGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SiteFAQGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SiteFAQGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SiteFAQGroupByOutputType[P]>
+            : GetScalarType<T[P], SiteFAQGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SiteFAQSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    question?: boolean
+    answer?: boolean
+    order?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteFAQ"]>
+
+  export type SiteFAQSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    question?: boolean
+    answer?: boolean
+    order?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["siteFAQ"]>
+
+  export type SiteFAQSelectScalar = {
+    id?: boolean
+    question?: boolean
+    answer?: boolean
+    order?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+
+  export type $SiteFAQPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SiteFAQ"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      question: string
+      answer: string
+      order: number
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["siteFAQ"]>
+    composites: {}
+  }
+
+  type SiteFAQGetPayload<S extends boolean | null | undefined | SiteFAQDefaultArgs> = $Result.GetResult<Prisma.$SiteFAQPayload, S>
+
+  type SiteFAQCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<SiteFAQFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SiteFAQCountAggregateInputType | true
+    }
+
+  export interface SiteFAQDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SiteFAQ'], meta: { name: 'SiteFAQ' } }
+    /**
+     * Find zero or one SiteFAQ that matches the filter.
+     * @param {SiteFAQFindUniqueArgs} args - Arguments to find a SiteFAQ
+     * @example
+     * // Get one SiteFAQ
+     * const siteFAQ = await prisma.siteFAQ.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SiteFAQFindUniqueArgs>(args: SelectSubset<T, SiteFAQFindUniqueArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one SiteFAQ that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {SiteFAQFindUniqueOrThrowArgs} args - Arguments to find a SiteFAQ
+     * @example
+     * // Get one SiteFAQ
+     * const siteFAQ = await prisma.siteFAQ.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SiteFAQFindUniqueOrThrowArgs>(args: SelectSubset<T, SiteFAQFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first SiteFAQ that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQFindFirstArgs} args - Arguments to find a SiteFAQ
+     * @example
+     * // Get one SiteFAQ
+     * const siteFAQ = await prisma.siteFAQ.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SiteFAQFindFirstArgs>(args?: SelectSubset<T, SiteFAQFindFirstArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first SiteFAQ that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQFindFirstOrThrowArgs} args - Arguments to find a SiteFAQ
+     * @example
+     * // Get one SiteFAQ
+     * const siteFAQ = await prisma.siteFAQ.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SiteFAQFindFirstOrThrowArgs>(args?: SelectSubset<T, SiteFAQFindFirstOrThrowArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more SiteFAQS that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SiteFAQS
+     * const siteFAQS = await prisma.siteFAQ.findMany()
+     * 
+     * // Get first 10 SiteFAQS
+     * const siteFAQS = await prisma.siteFAQ.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const siteFAQWithIdOnly = await prisma.siteFAQ.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SiteFAQFindManyArgs>(args?: SelectSubset<T, SiteFAQFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a SiteFAQ.
+     * @param {SiteFAQCreateArgs} args - Arguments to create a SiteFAQ.
+     * @example
+     * // Create one SiteFAQ
+     * const SiteFAQ = await prisma.siteFAQ.create({
+     *   data: {
+     *     // ... data to create a SiteFAQ
+     *   }
+     * })
+     * 
+     */
+    create<T extends SiteFAQCreateArgs>(args: SelectSubset<T, SiteFAQCreateArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many SiteFAQS.
+     * @param {SiteFAQCreateManyArgs} args - Arguments to create many SiteFAQS.
+     * @example
+     * // Create many SiteFAQS
+     * const siteFAQ = await prisma.siteFAQ.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SiteFAQCreateManyArgs>(args?: SelectSubset<T, SiteFAQCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SiteFAQS and returns the data saved in the database.
+     * @param {SiteFAQCreateManyAndReturnArgs} args - Arguments to create many SiteFAQS.
+     * @example
+     * // Create many SiteFAQS
+     * const siteFAQ = await prisma.siteFAQ.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SiteFAQS and only return the `id`
+     * const siteFAQWithIdOnly = await prisma.siteFAQ.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SiteFAQCreateManyAndReturnArgs>(args?: SelectSubset<T, SiteFAQCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a SiteFAQ.
+     * @param {SiteFAQDeleteArgs} args - Arguments to delete one SiteFAQ.
+     * @example
+     * // Delete one SiteFAQ
+     * const SiteFAQ = await prisma.siteFAQ.delete({
+     *   where: {
+     *     // ... filter to delete one SiteFAQ
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SiteFAQDeleteArgs>(args: SelectSubset<T, SiteFAQDeleteArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one SiteFAQ.
+     * @param {SiteFAQUpdateArgs} args - Arguments to update one SiteFAQ.
+     * @example
+     * // Update one SiteFAQ
+     * const siteFAQ = await prisma.siteFAQ.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SiteFAQUpdateArgs>(args: SelectSubset<T, SiteFAQUpdateArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more SiteFAQS.
+     * @param {SiteFAQDeleteManyArgs} args - Arguments to filter SiteFAQS to delete.
+     * @example
+     * // Delete a few SiteFAQS
+     * const { count } = await prisma.siteFAQ.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SiteFAQDeleteManyArgs>(args?: SelectSubset<T, SiteFAQDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SiteFAQS.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SiteFAQS
+     * const siteFAQ = await prisma.siteFAQ.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SiteFAQUpdateManyArgs>(args: SelectSubset<T, SiteFAQUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SiteFAQ.
+     * @param {SiteFAQUpsertArgs} args - Arguments to update or create a SiteFAQ.
+     * @example
+     * // Update or create a SiteFAQ
+     * const siteFAQ = await prisma.siteFAQ.upsert({
+     *   create: {
+     *     // ... data to create a SiteFAQ
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SiteFAQ we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SiteFAQUpsertArgs>(args: SelectSubset<T, SiteFAQUpsertArgs<ExtArgs>>): Prisma__SiteFAQClient<$Result.GetResult<Prisma.$SiteFAQPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of SiteFAQS.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQCountArgs} args - Arguments to filter SiteFAQS to count.
+     * @example
+     * // Count the number of SiteFAQS
+     * const count = await prisma.siteFAQ.count({
+     *   where: {
+     *     // ... the filter for the SiteFAQS we want to count
+     *   }
+     * })
+    **/
+    count<T extends SiteFAQCountArgs>(
+      args?: Subset<T, SiteFAQCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SiteFAQCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SiteFAQ.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SiteFAQAggregateArgs>(args: Subset<T, SiteFAQAggregateArgs>): Prisma.PrismaPromise<GetSiteFAQAggregateType<T>>
+
+    /**
+     * Group by SiteFAQ.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SiteFAQGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SiteFAQGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SiteFAQGroupByArgs['orderBy'] }
+        : { orderBy?: SiteFAQGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SiteFAQGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSiteFAQGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SiteFAQ model
+   */
+  readonly fields: SiteFAQFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SiteFAQ.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SiteFAQClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SiteFAQ model
+   */ 
+  interface SiteFAQFieldRefs {
+    readonly id: FieldRef<"SiteFAQ", 'String'>
+    readonly question: FieldRef<"SiteFAQ", 'String'>
+    readonly answer: FieldRef<"SiteFAQ", 'String'>
+    readonly order: FieldRef<"SiteFAQ", 'Int'>
+    readonly isActive: FieldRef<"SiteFAQ", 'Boolean'>
+    readonly createdAt: FieldRef<"SiteFAQ", 'DateTime'>
+    readonly updatedAt: FieldRef<"SiteFAQ", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SiteFAQ findUnique
+   */
+  export type SiteFAQFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * Filter, which SiteFAQ to fetch.
+     */
+    where: SiteFAQWhereUniqueInput
+  }
+
+  /**
+   * SiteFAQ findUniqueOrThrow
+   */
+  export type SiteFAQFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * Filter, which SiteFAQ to fetch.
+     */
+    where: SiteFAQWhereUniqueInput
+  }
+
+  /**
+   * SiteFAQ findFirst
+   */
+  export type SiteFAQFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * Filter, which SiteFAQ to fetch.
+     */
+    where?: SiteFAQWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteFAQS to fetch.
+     */
+    orderBy?: SiteFAQOrderByWithRelationInput | SiteFAQOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SiteFAQS.
+     */
+    cursor?: SiteFAQWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteFAQS from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteFAQS.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteFAQS.
+     */
+    distinct?: SiteFAQScalarFieldEnum | SiteFAQScalarFieldEnum[]
+  }
+
+  /**
+   * SiteFAQ findFirstOrThrow
+   */
+  export type SiteFAQFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * Filter, which SiteFAQ to fetch.
+     */
+    where?: SiteFAQWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteFAQS to fetch.
+     */
+    orderBy?: SiteFAQOrderByWithRelationInput | SiteFAQOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SiteFAQS.
+     */
+    cursor?: SiteFAQWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteFAQS from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteFAQS.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SiteFAQS.
+     */
+    distinct?: SiteFAQScalarFieldEnum | SiteFAQScalarFieldEnum[]
+  }
+
+  /**
+   * SiteFAQ findMany
+   */
+  export type SiteFAQFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * Filter, which SiteFAQS to fetch.
+     */
+    where?: SiteFAQWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SiteFAQS to fetch.
+     */
+    orderBy?: SiteFAQOrderByWithRelationInput | SiteFAQOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SiteFAQS.
+     */
+    cursor?: SiteFAQWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SiteFAQS from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SiteFAQS.
+     */
+    skip?: number
+    distinct?: SiteFAQScalarFieldEnum | SiteFAQScalarFieldEnum[]
+  }
+
+  /**
+   * SiteFAQ create
+   */
+  export type SiteFAQCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * The data needed to create a SiteFAQ.
+     */
+    data: XOR<SiteFAQCreateInput, SiteFAQUncheckedCreateInput>
+  }
+
+  /**
+   * SiteFAQ createMany
+   */
+  export type SiteFAQCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SiteFAQS.
+     */
+    data: SiteFAQCreateManyInput | SiteFAQCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SiteFAQ createManyAndReturn
+   */
+  export type SiteFAQCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many SiteFAQS.
+     */
+    data: SiteFAQCreateManyInput | SiteFAQCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SiteFAQ update
+   */
+  export type SiteFAQUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * The data needed to update a SiteFAQ.
+     */
+    data: XOR<SiteFAQUpdateInput, SiteFAQUncheckedUpdateInput>
+    /**
+     * Choose, which SiteFAQ to update.
+     */
+    where: SiteFAQWhereUniqueInput
+  }
+
+  /**
+   * SiteFAQ updateMany
+   */
+  export type SiteFAQUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SiteFAQS.
+     */
+    data: XOR<SiteFAQUpdateManyMutationInput, SiteFAQUncheckedUpdateManyInput>
+    /**
+     * Filter which SiteFAQS to update
+     */
+    where?: SiteFAQWhereInput
+  }
+
+  /**
+   * SiteFAQ upsert
+   */
+  export type SiteFAQUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * The filter to search for the SiteFAQ to update in case it exists.
+     */
+    where: SiteFAQWhereUniqueInput
+    /**
+     * In case the SiteFAQ found by the `where` argument doesn't exist, create a new SiteFAQ with this data.
+     */
+    create: XOR<SiteFAQCreateInput, SiteFAQUncheckedCreateInput>
+    /**
+     * In case the SiteFAQ was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SiteFAQUpdateInput, SiteFAQUncheckedUpdateInput>
+  }
+
+  /**
+   * SiteFAQ delete
+   */
+  export type SiteFAQDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+    /**
+     * Filter which SiteFAQ to delete.
+     */
+    where: SiteFAQWhereUniqueInput
+  }
+
+  /**
+   * SiteFAQ deleteMany
+   */
+  export type SiteFAQDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SiteFAQS to delete
+     */
+    where?: SiteFAQWhereInput
+  }
+
+  /**
+   * SiteFAQ without action
+   */
+  export type SiteFAQDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SiteFAQ
+     */
+    select?: SiteFAQSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -77857,6 +78879,19 @@ export namespace Prisma {
   };
 
   export type PaymentRecordScalarFieldEnum = (typeof PaymentRecordScalarFieldEnum)[keyof typeof PaymentRecordScalarFieldEnum]
+
+
+  export const SiteFAQScalarFieldEnum: {
+    id: 'id',
+    question: 'question',
+    answer: 'answer',
+    order: 'order',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SiteFAQScalarFieldEnum = (typeof SiteFAQScalarFieldEnum)[keyof typeof SiteFAQScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -85416,6 +86451,70 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"PaymentRecord"> | Date | string
     createdById?: StringWithAggregatesFilter<"PaymentRecord"> | string
     organisationId?: StringWithAggregatesFilter<"PaymentRecord"> | string
+  }
+
+  export type SiteFAQWhereInput = {
+    AND?: SiteFAQWhereInput | SiteFAQWhereInput[]
+    OR?: SiteFAQWhereInput[]
+    NOT?: SiteFAQWhereInput | SiteFAQWhereInput[]
+    id?: StringFilter<"SiteFAQ"> | string
+    question?: StringFilter<"SiteFAQ"> | string
+    answer?: StringFilter<"SiteFAQ"> | string
+    order?: IntFilter<"SiteFAQ"> | number
+    isActive?: BoolFilter<"SiteFAQ"> | boolean
+    createdAt?: DateTimeFilter<"SiteFAQ"> | Date | string
+    updatedAt?: DateTimeFilter<"SiteFAQ"> | Date | string
+  }
+
+  export type SiteFAQOrderByWithRelationInput = {
+    id?: SortOrder
+    question?: SortOrder
+    answer?: SortOrder
+    order?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteFAQWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SiteFAQWhereInput | SiteFAQWhereInput[]
+    OR?: SiteFAQWhereInput[]
+    NOT?: SiteFAQWhereInput | SiteFAQWhereInput[]
+    question?: StringFilter<"SiteFAQ"> | string
+    answer?: StringFilter<"SiteFAQ"> | string
+    order?: IntFilter<"SiteFAQ"> | number
+    isActive?: BoolFilter<"SiteFAQ"> | boolean
+    createdAt?: DateTimeFilter<"SiteFAQ"> | Date | string
+    updatedAt?: DateTimeFilter<"SiteFAQ"> | Date | string
+  }, "id">
+
+  export type SiteFAQOrderByWithAggregationInput = {
+    id?: SortOrder
+    question?: SortOrder
+    answer?: SortOrder
+    order?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SiteFAQCountOrderByAggregateInput
+    _avg?: SiteFAQAvgOrderByAggregateInput
+    _max?: SiteFAQMaxOrderByAggregateInput
+    _min?: SiteFAQMinOrderByAggregateInput
+    _sum?: SiteFAQSumOrderByAggregateInput
+  }
+
+  export type SiteFAQScalarWhereWithAggregatesInput = {
+    AND?: SiteFAQScalarWhereWithAggregatesInput | SiteFAQScalarWhereWithAggregatesInput[]
+    OR?: SiteFAQScalarWhereWithAggregatesInput[]
+    NOT?: SiteFAQScalarWhereWithAggregatesInput | SiteFAQScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SiteFAQ"> | string
+    question?: StringWithAggregatesFilter<"SiteFAQ"> | string
+    answer?: StringWithAggregatesFilter<"SiteFAQ"> | string
+    order?: IntWithAggregatesFilter<"SiteFAQ"> | number
+    isActive?: BoolWithAggregatesFilter<"SiteFAQ"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"SiteFAQ"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SiteFAQ"> | Date | string
   }
 
   export type OrganisationCreateInput = {
@@ -93513,6 +94612,76 @@ export namespace Prisma {
     organisationId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type SiteFAQCreateInput = {
+    id?: string
+    question: string
+    answer: string
+    order?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SiteFAQUncheckedCreateInput = {
+    id?: string
+    question: string
+    answer: string
+    order?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SiteFAQUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    question?: StringFieldUpdateOperationsInput | string
+    answer?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteFAQUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    question?: StringFieldUpdateOperationsInput | string
+    answer?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteFAQCreateManyInput = {
+    id?: string
+    question: string
+    answer: string
+    order?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SiteFAQUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    question?: StringFieldUpdateOperationsInput | string
+    answer?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SiteFAQUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    question?: StringFieldUpdateOperationsInput | string
+    answer?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -98212,6 +99381,44 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPaymentTypeFilter<$PrismaModel>
     _max?: NestedEnumPaymentTypeFilter<$PrismaModel>
+  }
+
+  export type SiteFAQCountOrderByAggregateInput = {
+    id?: SortOrder
+    question?: SortOrder
+    answer?: SortOrder
+    order?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteFAQAvgOrderByAggregateInput = {
+    order?: SortOrder
+  }
+
+  export type SiteFAQMaxOrderByAggregateInput = {
+    id?: SortOrder
+    question?: SortOrder
+    answer?: SortOrder
+    order?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteFAQMinOrderByAggregateInput = {
+    id?: SortOrder
+    question?: SortOrder
+    answer?: SortOrder
+    order?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SiteFAQSumOrderByAggregateInput = {
+    order?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutOrganisationInput = {
@@ -194405,6 +195612,10 @@ export namespace Prisma {
      * @deprecated Use PaymentRecordDefaultArgs instead
      */
     export type PaymentRecordArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PaymentRecordDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use SiteFAQDefaultArgs instead
+     */
+    export type SiteFAQArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = SiteFAQDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

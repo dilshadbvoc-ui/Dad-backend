@@ -2,6 +2,7 @@
 import express from 'express';
 import { submitWebForm } from '../controllers/webFormController';
 import { MetaIntegrationService } from '../services/metaIntegrationService';
+import { getPublicFAQs } from '../controllers/siteFAQController';
 
 const router = express.Router();
 
@@ -31,5 +32,11 @@ router.post('/meta/webhook', (req, res) => {
     MetaIntegrationService.handleWebhook(req.body);
     res.sendStatus(200);
 });
+
+/**
+ * @route GET /api/public/faqs
+ * @desc Get active FAQs for landing page
+ */
+router.get('/faqs', getPublicFAQs);
 
 export default router;
