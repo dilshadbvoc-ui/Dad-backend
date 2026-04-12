@@ -596,6 +596,11 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
             };
         }));
 
+        res.json(report);
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
 
 /**
  * Detailed user performance for the "User Total Report"
