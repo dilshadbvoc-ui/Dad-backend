@@ -399,8 +399,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         orderBy: { date: 'desc' }
                     });
                 }
-                
-                const durationSecs = parseInt(duration, 10) || 0;
+                let durationSecs = parseInt(duration, 10) || 0;
 
                 if (existingInteraction) {
                     // HEAL EXISTING: Only update if new duration from Log is longer/better
