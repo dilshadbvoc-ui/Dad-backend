@@ -312,16 +312,17 @@ model Lead {
 }
 
 model CallRecording {
-  id             String    @id @default(uuid())
-  leadId         String?
-  duration       Int       @default(0) // Duration in seconds
-  fileUrl        String    // S3 or local path
-  callType       String    @default("UNKNOWN") // INCOMING, OUTGOING, MISSED
-  timestamp      DateTime  @default(now())
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  leadId           String?
+  duration         Int       @default(0) // Duration in seconds (recording length)
+  hardwareDuration Int?      // Official carrier talk-time in seconds
+  fileUrl          String    // S3 or local path
+  callType         String    @default("UNKNOWN") // INCOMING, OUTGOING, MISSED
+  timestamp        DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   
-  lead           Lead?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead             Lead?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
   
   @@index([leadId])
 }
@@ -683,6 +684,7 @@ model Interaction {
   duration          Float?
   recordingUrl      String?
   recordingDuration Int?
+  hardwareDuration  Int?                 // Official carrier talk-time in seconds
   callStatus        String?
   phoneNumber       String?
   callerId          String?

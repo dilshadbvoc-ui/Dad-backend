@@ -17201,16 +17201,19 @@ export namespace Prisma {
 
   export type CallRecordingAvgAggregateOutputType = {
     duration: number | null
+    hardwareDuration: number | null
   }
 
   export type CallRecordingSumAggregateOutputType = {
     duration: number | null
+    hardwareDuration: number | null
   }
 
   export type CallRecordingMinAggregateOutputType = {
     id: string | null
     leadId: string | null
     duration: number | null
+    hardwareDuration: number | null
     fileUrl: string | null
     callType: string | null
     timestamp: Date | null
@@ -17222,6 +17225,7 @@ export namespace Prisma {
     id: string | null
     leadId: string | null
     duration: number | null
+    hardwareDuration: number | null
     fileUrl: string | null
     callType: string | null
     timestamp: Date | null
@@ -17233,6 +17237,7 @@ export namespace Prisma {
     id: number
     leadId: number
     duration: number
+    hardwareDuration: number
     fileUrl: number
     callType: number
     timestamp: number
@@ -17244,16 +17249,19 @@ export namespace Prisma {
 
   export type CallRecordingAvgAggregateInputType = {
     duration?: true
+    hardwareDuration?: true
   }
 
   export type CallRecordingSumAggregateInputType = {
     duration?: true
+    hardwareDuration?: true
   }
 
   export type CallRecordingMinAggregateInputType = {
     id?: true
     leadId?: true
     duration?: true
+    hardwareDuration?: true
     fileUrl?: true
     callType?: true
     timestamp?: true
@@ -17265,6 +17273,7 @@ export namespace Prisma {
     id?: true
     leadId?: true
     duration?: true
+    hardwareDuration?: true
     fileUrl?: true
     callType?: true
     timestamp?: true
@@ -17276,6 +17285,7 @@ export namespace Prisma {
     id?: true
     leadId?: true
     duration?: true
+    hardwareDuration?: true
     fileUrl?: true
     callType?: true
     timestamp?: true
@@ -17374,6 +17384,7 @@ export namespace Prisma {
     id: string
     leadId: string | null
     duration: number
+    hardwareDuration: number | null
     fileUrl: string
     callType: string
     timestamp: Date
@@ -17404,6 +17415,7 @@ export namespace Prisma {
     id?: boolean
     leadId?: boolean
     duration?: boolean
+    hardwareDuration?: boolean
     fileUrl?: boolean
     callType?: boolean
     timestamp?: boolean
@@ -17416,6 +17428,7 @@ export namespace Prisma {
     id?: boolean
     leadId?: boolean
     duration?: boolean
+    hardwareDuration?: boolean
     fileUrl?: boolean
     callType?: boolean
     timestamp?: boolean
@@ -17428,6 +17441,7 @@ export namespace Prisma {
     id?: boolean
     leadId?: boolean
     duration?: boolean
+    hardwareDuration?: boolean
     fileUrl?: boolean
     callType?: boolean
     timestamp?: boolean
@@ -17451,6 +17465,7 @@ export namespace Prisma {
       id: string
       leadId: string | null
       duration: number
+      hardwareDuration: number | null
       fileUrl: string
       callType: string
       timestamp: Date
@@ -17853,6 +17868,7 @@ export namespace Prisma {
     readonly id: FieldRef<"CallRecording", 'String'>
     readonly leadId: FieldRef<"CallRecording", 'String'>
     readonly duration: FieldRef<"CallRecording", 'Int'>
+    readonly hardwareDuration: FieldRef<"CallRecording", 'Int'>
     readonly fileUrl: FieldRef<"CallRecording", 'String'>
     readonly callType: FieldRef<"CallRecording", 'String'>
     readonly timestamp: FieldRef<"CallRecording", 'DateTime'>
@@ -31183,11 +31199,13 @@ export namespace Prisma {
   export type InteractionAvgAggregateOutputType = {
     duration: number | null
     recordingDuration: number | null
+    hardwareDuration: number | null
   }
 
   export type InteractionSumAggregateOutputType = {
     duration: number | null
     recordingDuration: number | null
+    hardwareDuration: number | null
   }
 
   export type InteractionMinAggregateOutputType = {
@@ -31200,6 +31218,7 @@ export namespace Prisma {
     duration: number | null
     recordingUrl: string | null
     recordingDuration: number | null
+    hardwareDuration: number | null
     callStatus: string | null
     phoneNumber: string | null
     callerId: string | null
@@ -31228,6 +31247,7 @@ export namespace Prisma {
     duration: number | null
     recordingUrl: string | null
     recordingDuration: number | null
+    hardwareDuration: number | null
     callStatus: string | null
     phoneNumber: string | null
     callerId: string | null
@@ -31256,6 +31276,7 @@ export namespace Prisma {
     duration: number
     recordingUrl: number
     recordingDuration: number
+    hardwareDuration: number
     callStatus: number
     phoneNumber: number
     callerId: number
@@ -31279,11 +31300,13 @@ export namespace Prisma {
   export type InteractionAvgAggregateInputType = {
     duration?: true
     recordingDuration?: true
+    hardwareDuration?: true
   }
 
   export type InteractionSumAggregateInputType = {
     duration?: true
     recordingDuration?: true
+    hardwareDuration?: true
   }
 
   export type InteractionMinAggregateInputType = {
@@ -31296,6 +31319,7 @@ export namespace Prisma {
     duration?: true
     recordingUrl?: true
     recordingDuration?: true
+    hardwareDuration?: true
     callStatus?: true
     phoneNumber?: true
     callerId?: true
@@ -31324,6 +31348,7 @@ export namespace Prisma {
     duration?: true
     recordingUrl?: true
     recordingDuration?: true
+    hardwareDuration?: true
     callStatus?: true
     phoneNumber?: true
     callerId?: true
@@ -31352,6 +31377,7 @@ export namespace Prisma {
     duration?: true
     recordingUrl?: true
     recordingDuration?: true
+    hardwareDuration?: true
     callStatus?: true
     phoneNumber?: true
     callerId?: true
@@ -31467,6 +31493,7 @@ export namespace Prisma {
     duration: number | null
     recordingUrl: string | null
     recordingDuration: number | null
+    hardwareDuration: number | null
     callStatus: string | null
     phoneNumber: string | null
     callerId: string | null
@@ -31514,6 +31541,7 @@ export namespace Prisma {
     duration?: boolean
     recordingUrl?: boolean
     recordingDuration?: boolean
+    hardwareDuration?: boolean
     callStatus?: boolean
     phoneNumber?: boolean
     callerId?: boolean
@@ -31550,6 +31578,7 @@ export namespace Prisma {
     duration?: boolean
     recordingUrl?: boolean
     recordingDuration?: boolean
+    hardwareDuration?: boolean
     callStatus?: boolean
     phoneNumber?: boolean
     callerId?: boolean
@@ -31586,6 +31615,7 @@ export namespace Prisma {
     duration?: boolean
     recordingUrl?: boolean
     recordingDuration?: boolean
+    hardwareDuration?: boolean
     callStatus?: boolean
     phoneNumber?: boolean
     callerId?: boolean
@@ -31647,6 +31677,7 @@ export namespace Prisma {
       duration: number | null
       recordingUrl: string | null
       recordingDuration: number | null
+      hardwareDuration: number | null
       callStatus: string | null
       phoneNumber: string | null
       callerId: string | null
@@ -32073,6 +32104,7 @@ export namespace Prisma {
     readonly duration: FieldRef<"Interaction", 'Float'>
     readonly recordingUrl: FieldRef<"Interaction", 'String'>
     readonly recordingDuration: FieldRef<"Interaction", 'Int'>
+    readonly hardwareDuration: FieldRef<"Interaction", 'Int'>
     readonly callStatus: FieldRef<"Interaction", 'String'>
     readonly phoneNumber: FieldRef<"Interaction", 'String'>
     readonly callerId: FieldRef<"Interaction", 'String'>
@@ -77790,6 +77822,7 @@ export namespace Prisma {
     id: 'id',
     leadId: 'leadId',
     duration: 'duration',
+    hardwareDuration: 'hardwareDuration',
     fileUrl: 'fileUrl',
     callType: 'callType',
     timestamp: 'timestamp',
@@ -78054,6 +78087,7 @@ export namespace Prisma {
     duration: 'duration',
     recordingUrl: 'recordingUrl',
     recordingDuration: 'recordingDuration',
+    hardwareDuration: 'hardwareDuration',
     callStatus: 'callStatus',
     phoneNumber: 'phoneNumber',
     callerId: 'callerId',
@@ -80389,6 +80423,7 @@ export namespace Prisma {
     id?: StringFilter<"CallRecording"> | string
     leadId?: StringNullableFilter<"CallRecording"> | string | null
     duration?: IntFilter<"CallRecording"> | number
+    hardwareDuration?: IntNullableFilter<"CallRecording"> | number | null
     fileUrl?: StringFilter<"CallRecording"> | string
     callType?: StringFilter<"CallRecording"> | string
     timestamp?: DateTimeFilter<"CallRecording"> | Date | string
@@ -80401,6 +80436,7 @@ export namespace Prisma {
     id?: SortOrder
     leadId?: SortOrderInput | SortOrder
     duration?: SortOrder
+    hardwareDuration?: SortOrderInput | SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
     timestamp?: SortOrder
@@ -80416,6 +80452,7 @@ export namespace Prisma {
     NOT?: CallRecordingWhereInput | CallRecordingWhereInput[]
     leadId?: StringNullableFilter<"CallRecording"> | string | null
     duration?: IntFilter<"CallRecording"> | number
+    hardwareDuration?: IntNullableFilter<"CallRecording"> | number | null
     fileUrl?: StringFilter<"CallRecording"> | string
     callType?: StringFilter<"CallRecording"> | string
     timestamp?: DateTimeFilter<"CallRecording"> | Date | string
@@ -80428,6 +80465,7 @@ export namespace Prisma {
     id?: SortOrder
     leadId?: SortOrderInput | SortOrder
     duration?: SortOrder
+    hardwareDuration?: SortOrderInput | SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
     timestamp?: SortOrder
@@ -80447,6 +80485,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"CallRecording"> | string
     leadId?: StringNullableWithAggregatesFilter<"CallRecording"> | string | null
     duration?: IntWithAggregatesFilter<"CallRecording"> | number
+    hardwareDuration?: IntNullableWithAggregatesFilter<"CallRecording"> | number | null
     fileUrl?: StringWithAggregatesFilter<"CallRecording"> | string
     callType?: StringWithAggregatesFilter<"CallRecording"> | string
     timestamp?: DateTimeWithAggregatesFilter<"CallRecording"> | Date | string
@@ -81945,6 +81984,7 @@ export namespace Prisma {
     duration?: FloatNullableFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableFilter<"Interaction"> | number | null
+    hardwareDuration?: IntNullableFilter<"Interaction"> | number | null
     callStatus?: StringNullableFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableFilter<"Interaction"> | string | null
     callerId?: StringNullableFilter<"Interaction"> | string | null
@@ -81981,6 +82021,7 @@ export namespace Prisma {
     duration?: SortOrderInput | SortOrder
     recordingUrl?: SortOrderInput | SortOrder
     recordingDuration?: SortOrderInput | SortOrder
+    hardwareDuration?: SortOrderInput | SortOrder
     callStatus?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     callerId?: SortOrderInput | SortOrder
@@ -82020,6 +82061,7 @@ export namespace Prisma {
     duration?: FloatNullableFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableFilter<"Interaction"> | number | null
+    hardwareDuration?: IntNullableFilter<"Interaction"> | number | null
     callStatus?: StringNullableFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableFilter<"Interaction"> | string | null
     callerId?: StringNullableFilter<"Interaction"> | string | null
@@ -82056,6 +82098,7 @@ export namespace Prisma {
     duration?: SortOrderInput | SortOrder
     recordingUrl?: SortOrderInput | SortOrder
     recordingDuration?: SortOrderInput | SortOrder
+    hardwareDuration?: SortOrderInput | SortOrder
     callStatus?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
     callerId?: SortOrderInput | SortOrder
@@ -82092,6 +82135,7 @@ export namespace Prisma {
     duration?: FloatNullableWithAggregatesFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableWithAggregatesFilter<"Interaction"> | number | null
+    hardwareDuration?: IntNullableWithAggregatesFilter<"Interaction"> | number | null
     callStatus?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
     callerId?: StringNullableWithAggregatesFilter<"Interaction"> | string | null
@@ -87970,6 +88014,7 @@ export namespace Prisma {
   export type CallRecordingCreateInput = {
     id?: string
     duration?: number
+    hardwareDuration?: number | null
     fileUrl: string
     callType?: string
     timestamp?: Date | string
@@ -87982,6 +88027,7 @@ export namespace Prisma {
     id?: string
     leadId?: string | null
     duration?: number
+    hardwareDuration?: number | null
     fileUrl: string
     callType?: string
     timestamp?: Date | string
@@ -87992,6 +88038,7 @@ export namespace Prisma {
   export type CallRecordingUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88004,6 +88051,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88015,6 +88063,7 @@ export namespace Prisma {
     id?: string
     leadId?: string | null
     duration?: number
+    hardwareDuration?: number | null
     fileUrl: string
     callType?: string
     timestamp?: Date | string
@@ -88025,6 +88074,7 @@ export namespace Prisma {
   export type CallRecordingUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -88036,6 +88086,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -89650,6 +89701,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -89678,6 +89730,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -89706,6 +89759,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89734,6 +89788,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89762,6 +89817,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -89790,6 +89846,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89810,6 +89867,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -95950,6 +96008,7 @@ export namespace Prisma {
     id?: SortOrder
     leadId?: SortOrder
     duration?: SortOrder
+    hardwareDuration?: SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
     timestamp?: SortOrder
@@ -95959,12 +96018,14 @@ export namespace Prisma {
 
   export type CallRecordingAvgOrderByAggregateInput = {
     duration?: SortOrder
+    hardwareDuration?: SortOrder
   }
 
   export type CallRecordingMaxOrderByAggregateInput = {
     id?: SortOrder
     leadId?: SortOrder
     duration?: SortOrder
+    hardwareDuration?: SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
     timestamp?: SortOrder
@@ -95976,6 +96037,7 @@ export namespace Prisma {
     id?: SortOrder
     leadId?: SortOrder
     duration?: SortOrder
+    hardwareDuration?: SortOrder
     fileUrl?: SortOrder
     callType?: SortOrder
     timestamp?: SortOrder
@@ -95985,6 +96047,7 @@ export namespace Prisma {
 
   export type CallRecordingSumOrderByAggregateInput = {
     duration?: SortOrder
+    hardwareDuration?: SortOrder
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -96892,6 +96955,7 @@ export namespace Prisma {
     duration?: SortOrder
     recordingUrl?: SortOrder
     recordingDuration?: SortOrder
+    hardwareDuration?: SortOrder
     callStatus?: SortOrder
     phoneNumber?: SortOrder
     callerId?: SortOrder
@@ -96913,6 +96977,7 @@ export namespace Prisma {
   export type InteractionAvgOrderByAggregateInput = {
     duration?: SortOrder
     recordingDuration?: SortOrder
+    hardwareDuration?: SortOrder
   }
 
   export type InteractionMaxOrderByAggregateInput = {
@@ -96925,6 +96990,7 @@ export namespace Prisma {
     duration?: SortOrder
     recordingUrl?: SortOrder
     recordingDuration?: SortOrder
+    hardwareDuration?: SortOrder
     callStatus?: SortOrder
     phoneNumber?: SortOrder
     callerId?: SortOrder
@@ -96953,6 +97019,7 @@ export namespace Prisma {
     duration?: SortOrder
     recordingUrl?: SortOrder
     recordingDuration?: SortOrder
+    hardwareDuration?: SortOrder
     callStatus?: SortOrder
     phoneNumber?: SortOrder
     callerId?: SortOrder
@@ -96974,6 +97041,7 @@ export namespace Prisma {
   export type InteractionSumOrderByAggregateInput = {
     duration?: SortOrder
     recordingDuration?: SortOrder
+    hardwareDuration?: SortOrder
   }
 
   export type EnumInteractionTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -111485,6 +111553,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -111512,6 +111581,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -113756,6 +113826,7 @@ export namespace Prisma {
     duration?: FloatNullableFilter<"Interaction"> | number | null
     recordingUrl?: StringNullableFilter<"Interaction"> | string | null
     recordingDuration?: IntNullableFilter<"Interaction"> | number | null
+    hardwareDuration?: IntNullableFilter<"Interaction"> | number | null
     callStatus?: StringNullableFilter<"Interaction"> | string | null
     phoneNumber?: StringNullableFilter<"Interaction"> | string | null
     callerId?: StringNullableFilter<"Interaction"> | string | null
@@ -115875,6 +115946,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -115902,6 +115974,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -122912,6 +122985,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -122939,6 +123013,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -124307,6 +124382,7 @@ export namespace Prisma {
   export type CallRecordingCreateWithoutLeadInput = {
     id?: string
     duration?: number
+    hardwareDuration?: number | null
     fileUrl: string
     callType?: string
     timestamp?: Date | string
@@ -124317,6 +124393,7 @@ export namespace Prisma {
   export type CallRecordingUncheckedCreateWithoutLeadInput = {
     id?: string
     duration?: number
+    hardwareDuration?: number | null
     fileUrl: string
     callType?: string
     timestamp?: Date | string
@@ -125450,6 +125527,7 @@ export namespace Prisma {
     id?: StringFilter<"CallRecording"> | string
     leadId?: StringNullableFilter<"CallRecording"> | string | null
     duration?: IntFilter<"CallRecording"> | number
+    hardwareDuration?: IntNullableFilter<"CallRecording"> | number | null
     fileUrl?: StringFilter<"CallRecording"> | string
     callType?: StringFilter<"CallRecording"> | string
     timestamp?: DateTimeFilter<"CallRecording"> | Date | string
@@ -126730,6 +126808,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -126757,6 +126836,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -129136,6 +129216,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -129163,6 +129244,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -130850,6 +130932,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -130877,6 +130960,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -173108,6 +173192,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -173135,6 +173220,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -175822,6 +175908,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -175849,6 +175936,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -178674,6 +178762,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -180007,6 +180096,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180034,6 +180124,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180061,6 +180152,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -182397,6 +182489,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -184534,6 +184627,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184561,6 +184655,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184588,6 +184683,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188492,6 +188588,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -188690,6 +188787,7 @@ export namespace Prisma {
   export type CallRecordingCreateManyLeadInput = {
     id?: string
     duration?: number
+    hardwareDuration?: number | null
     fileUrl: string
     callType?: string
     timestamp?: Date | string
@@ -188836,6 +188934,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188863,6 +188962,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188890,6 +188990,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189547,6 +189648,7 @@ export namespace Prisma {
   export type CallRecordingUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -189557,6 +189659,7 @@ export namespace Prisma {
   export type CallRecordingUncheckedUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -189567,6 +189670,7 @@ export namespace Prisma {
   export type CallRecordingUncheckedUpdateManyWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
     duration?: IntFieldUpdateOperationsInput | number
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     fileUrl?: StringFieldUpdateOperationsInput | string
     callType?: StringFieldUpdateOperationsInput | string
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -189695,6 +189799,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -190233,6 +190338,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190260,6 +190366,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190287,6 +190394,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190795,6 +190903,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -191128,6 +191237,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191155,6 +191265,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191182,6 +191293,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191722,6 +191834,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -191936,6 +192049,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191963,6 +192077,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191990,6 +192105,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193769,6 +193885,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -193796,6 +193913,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193823,6 +193941,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193850,6 +193969,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194069,6 +194189,7 @@ export namespace Prisma {
     duration?: number | null
     recordingUrl?: string | null
     recordingDuration?: number | null
+    hardwareDuration?: number | null
     callStatus?: string | null
     phoneNumber?: string | null
     callerId?: string | null
@@ -194954,6 +195075,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194981,6 +195103,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -195008,6 +195131,7 @@ export namespace Prisma {
     duration?: NullableFloatFieldUpdateOperationsInput | number | null
     recordingUrl?: NullableStringFieldUpdateOperationsInput | string | null
     recordingDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    hardwareDuration?: NullableIntFieldUpdateOperationsInput | number | null
     callStatus?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     callerId?: NullableStringFieldUpdateOperationsInput | string | null

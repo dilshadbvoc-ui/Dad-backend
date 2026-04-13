@@ -49,7 +49,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
-        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId, callSessionId } = req.body;
+        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId, callSessionId, hardwareDuration } = req.body;
         const file = req.file;
 
         console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}, hasFile=${!!file}`);
@@ -132,6 +132,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             data: {
                 lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                 duration: parseInt(duration, 10) || 0,
+                hardwareDuration: hardwareDuration ? parseInt(hardwareDuration, 10) : null,
                 fileUrl: file ? `/uploads/recordings/${file.filename}` : '',
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
@@ -139,8 +140,14 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         });
 
         const durationSecs = parseInt(duration, 10) || 0;
-        const durationMinutes = durationSecs / 60;
-        const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
+        const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
+        
+        // Accurate Truth logic: If carrier told us exactly how long they talked, use that.
+        // Otherwise fallback to the recording/track duration.
+        const finalizedDurationSecs = carrierDurationSecs ?? durationSecs; 
+        const durationMinutes = finalizedDurationSecs / 60;
+        
+        const formattedDescription = `Duration: ${Math.floor(finalizedDurationSecs / 60)}m ${finalizedDurationSecs % 60}s${file ? ' (Recording attached)' : ''}${carrierDurationSecs !== null ? ' [Carrier Verified]' : ''}`;
 
         // 2. Link to existing interaction
         // PRIORITY 1: Match by callSessionId (UUID - 100% Accuracy)
@@ -202,6 +209,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 data: {
                     duration: shouldUpdate ? (Math.round(durationMinutes * 100) / 100) : undefined,
                     recordingDuration: shouldUpdate ? durationSecs : undefined,
+                    hardwareDuration: shouldUpdate ? carrierDurationSecs : undefined,
                     recordingUrl: recording.fileUrl || undefined,
                     callStatus: 'completed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
@@ -247,6 +255,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     date: callDate,
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
+                    hardwareDuration: carrierDurationSecs,
                     recordingUrl: recording.fileUrl || null,
                     callStatus: status,
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
@@ -324,7 +333,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
         for (const call of calls) {
             try {
-                const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId } = call;
+                const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId, hardwareDuration } = call;
                 if (!phoneNumber) {
                     results.skipped++;
                     continue;
@@ -393,16 +402,17 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 if (existingInteraction) {
                     // HEAL EXISTING: Only update if new duration from Log is longer/better
-                    const durationSecs = parseInt(duration, 10) || 0;
-                    const currentDuration = (existingInteraction.duration || 0) * 60;
-                    
                     if (durationSecs > currentDuration || !existingInteraction.duration || existingInteraction.callStatus === 'initiated') {
-                        console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${durationSecs}s (from ${existingInteraction.callStatus})`);
+                        const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
+                        const finalizedSyncDurationSecs = carrierDurationSecs ?? durationSecs;
+
+                        console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${finalizedSyncDurationSecs}s (from ${existingInteraction.callStatus})`);
                         await prisma.interaction.update({
                             where: { id: existingInteraction.id },
                             data: {
-                                duration: Math.round((durationSecs / 60) * 100) / 100,
+                                duration: Math.round((finalizedSyncDurationSecs / 60) * 100) / 100,
                                 recordingDuration: durationSecs,
+                                hardwareDuration: carrierDurationSecs,
                                 callStatus: 'completed',
                                 hardwareId: hardwareId || undefined,
                                 callSessionId: callSessionId || undefined
@@ -438,14 +448,17 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 }
 
                 const durationSecs = parseInt(duration, 10) || 0;
-                const durationMinutes = durationSecs / 60;
-                const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s`;
+                const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
+                const finalizedNewDurationSecs = carrierDurationSecs ?? durationSecs;
+                const durationMinutes = finalizedNewDurationSecs / 60;
+                const formattedDescription = `Duration: ${Math.floor(finalizedNewDurationSecs / 60)}m ${finalizedNewDurationSecs % 60}s${carrierDurationSecs !== null ? ' [Carrier Verified]' : ''}`;
 
                 // 5. Create the CallRecording record (no audio file for bulk sync)
                 await prisma.callRecording.create({
                     data: {
                         lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
                         duration: durationSecs,
+                        hardwareDuration: carrierDurationSecs,
                         fileUrl: '',
                         callType: callType || 'UNKNOWN',
                         timestamp: callDate
@@ -462,6 +475,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         date: callDate,
                         duration: Math.round(durationMinutes * 100) / 100,
                         recordingDuration: durationSecs,
+                        hardwareDuration: carrierDurationSecs,
                         recordingUrl: null,
                         callStatus: status,
                         lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
