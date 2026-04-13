@@ -41,12 +41,11 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const socket_1 = require("../socket");
 exports.WhatsAppIntegrationService = {
     /**
-     * Handle incoming webhook from WhatsApp
+     * Handle incoming webhook from Meta / WhatsApp Business API
      */
     async handleWebhook(payload) {
         try {
-            console.log('[WhatsAppWebhook] Received payload:', JSON.stringify(payload, null, 2));
-            // WhatsApp webhook structure
+            console.log('[WhatsAppWebhook] Received Meta payload:', JSON.stringify(payload, null, 2));
             if (payload.entry) {
                 for (const entry of payload.entry) {
                     if (entry.changes) {
@@ -55,7 +54,9 @@ exports.WhatsAppIntegrationService = {
                                 const value = change.value;
                                 // Handle incoming messages
                                 if (value.messages) {
-                                    await this.processMessage(value);
+                                    for (const message of value.messages) {
+                                        await this.processMetaMessage(value, message);
+                                    }
                                 }
                                 // Handle message status updates
                                 if (value.statuses) {
@@ -68,43 +69,96 @@ exports.WhatsAppIntegrationService = {
             }
         }
         catch (error) {
-            console.error('[WhatsAppWebhook] Error processing webhook:', error);
+            console.error('[WhatsAppWebhook] Error processing Meta webhook:', error);
         }
     },
-    async processMessage(value) {
-        const { messages, contacts, metadata } = value;
-        if (!messages || messages.length === 0)
-            return;
-        console.log(`[WhatsAppWebhook] Processing messages for phone: ${metadata.phone_number_id}`);
-        // Find organisation with this phone number in their integrations
-        // Note: Using string contains search since JSON path queries are complex in Prisma
-        const orgs = await prisma_1.default.organisation.findMany({
-            select: {
-                id: true,
-                name: true,
-                integrations: true
+    /**
+     * Handle incoming webhook from Gallabox
+     */
+    async handleGallaboxWebhook(payload) {
+        try {
+            console.log('[GallaboxWebhook] Received payload:', JSON.stringify(payload, null, 2));
+            // Gallabox event structure check
+            const event = payload.event;
+            if (event !== 'Message.received') {
+                console.log(`[GallaboxWebhook] Ignoring event type: ${event}`);
+                return;
             }
+            const data = payload.data;
+            if (!data || !data.phoneNumber) {
+                console.warn('[GallaboxWebhook] Missing data or phone number in payload');
+                return;
+            }
+            // Find organisation by Gallabox Channel ID
+            const channelId = data.channelId;
+            const orgs = await prisma_1.default.organisation.findMany({
+                select: { id: true, integrations: true }
+            }).then(orgs => {
+                return orgs.filter(org => {
+                    const integrations = org.integrations;
+                    return integrations?.gallabox?.channelId === channelId;
+                });
+            });
+            if (orgs.length === 0) {
+                console.log('[GallaboxWebhook] No organisation found for channelId:', channelId);
+                return;
+            }
+            const organisationId = orgs[0].id;
+            // Normalize payload for generic processing
+            const normalizedMessage = {
+                from: data.phoneNumber,
+                id: data.id || `gallabox_${Date.now()}`,
+                timestamp: Math.floor(Date.now() / 1000), // Default to current time if missing
+                type: data.type === 'text' ? 'text' : 'unknown',
+                body: data.messageText || '',
+                senderName: data.senderName || data.phoneNumber
+            };
+            await this.saveIncomingMessage(organisationId, normalizedMessage, 'gallabox');
+        }
+        catch (error) {
+            console.error('[GallaboxWebhook] Error processing Gallabox webhook:', error);
+        }
+    },
+    /**
+     * Parse Meta specific structure and funnel to generic saver
+     */
+    async processMetaMessage(value, message) {
+        const { metadata, contacts } = value;
+        // Find organisation
+        const orgs = await prisma_1.default.organisation.findMany({
+            select: { id: true, integrations: true }
         }).then(orgs => {
             return orgs.filter(org => {
                 const integrations = org.integrations;
                 return (integrations?.whatsapp?.phoneNumberId === metadata.phone_number_id) ||
                     (integrations?.meta?.phoneNumberId === metadata.phone_number_id);
             });
-        }).catch(() => []);
-        if (orgs.length === 0) {
-            console.log('[WhatsAppWebhook] No connected account found for phone number', metadata.phone_number_id);
+        });
+        if (orgs.length === 0)
             return;
-        }
         const org = orgs[0];
-        for (const message of messages) {
-            await this.saveIncomingMessage(org.id, message, contacts);
-        }
+        const contact = contacts?.find((c) => c.wa_id === message.from);
+        const normalizedMessage = {
+            from: message.from,
+            id: message.id,
+            timestamp: parseInt(message.timestamp),
+            type: message.text ? 'text' : (message.image ? 'image' : (message.document ? 'document' : 'unknown')),
+            body: message.text?.body || '',
+            senderName: contact?.profile?.name || message.from,
+            // Meta specific content expansion
+            metaImage: message.image,
+            metaDoc: message.document,
+            metaAudio: message.audio,
+            metaVideo: message.video,
+            metaLocation: message.location
+        };
+        await this.saveIncomingMessage(org.id, normalizedMessage, 'meta');
     },
-    async saveIncomingMessage(organisationId, message, contacts) {
+    /**
+     * Unified logic for saving messages and creating leads
+     */
+    async saveIncomingMessage(organisationId, message, provider) {
         try {
-            const contact = contacts?.find(c => c.wa_id === message.from);
-            const contactName = contact?.profile?.name || message.from;
-            // Normalize phone number (remove +, spaces, dashes, etc. for searching)
             const normalizedPhone = message.from.replace(/\D/g, '');
             // Check if message already exists
             const existingMessage = await prisma_1.default.whatsAppMessage.findFirst({
@@ -113,44 +167,27 @@ exports.WhatsAppIntegrationService = {
                     organisationId
                 }
             });
-            if (existingMessage) {
-                console.log('[WhatsAppWebhook] Message already exists:', message.id);
+            if (existingMessage)
                 return;
-            }
-            // Determine message type and content
-            let messageType = 'text';
-            const content = {};
-            if (message.text) {
-                messageType = 'text';
-                content.text = message.text.body;
-            }
-            else if (message.image) {
-                messageType = 'image';
-                content.mediaUrl = message.image.id;
-                content.caption = message.image.caption;
-            }
-            else if (message.document) {
-                messageType = 'document';
-                content.mediaUrl = message.document.id;
-                content.fileName = message.document.filename;
-                content.caption = message.document.caption;
-            }
-            else if (message.audio) {
-                messageType = 'audio';
-                content.mediaUrl = message.audio.id;
-            }
-            else if (message.video) {
-                messageType = 'video';
-                content.mediaUrl = message.video.id;
-                content.caption = message.video.caption;
-            }
-            else if (message.location) {
-                messageType = 'location';
-                content.latitude = message.location.latitude;
-                content.longitude = message.location.longitude;
+            // Determine content structure
+            let messageType = message.type;
+            const content = { text: message.body };
+            // Handle Meta specific attachments if present
+            if (provider === 'meta') {
+                if (message.metaImage) {
+                    messageType = 'image';
+                    content.mediaUrl = message.metaImage.id;
+                    content.caption = message.metaImage.caption;
+                }
+                else if (message.metaDoc) {
+                    messageType = 'document';
+                    content.mediaUrl = message.metaDoc.id;
+                    content.fileName = message.metaDoc.filename;
+                    content.caption = message.metaDoc.caption;
+                }
+                // ... add other Meta types if needed
             }
             // Try to find existing lead or contact
-            // Search with normalized phone
             const lead = await prisma_1.default.lead.findFirst({
                 where: {
                     OR: [
@@ -178,7 +215,7 @@ exports.WhatsAppIntegrationService = {
                     content,
                     status: 'delivered',
                     waMessageId: message.id,
-                    deliveredAt: new Date(parseInt(message.timestamp) * 1000),
+                    deliveredAt: new Date(message.timestamp * 1000),
                     organisationId,
                     leadId: lead?.id,
                     contactId: contactId,
@@ -187,28 +224,24 @@ exports.WhatsAppIntegrationService = {
             });
             // Create lead if none exists and link to message
             if (!lead && !contactId) {
-                // Sanitize phone
-                let cleanPhone = message.from.replace(/\D/g, '');
-                if (cleanPhone.length > 10) {
+                let cleanPhone = normalizedPhone;
+                if (cleanPhone.length > 10)
                     cleanPhone = cleanPhone.slice(-10);
-                }
-                // Check for duplicates
                 const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
                 const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, null, organisationId);
                 let leadToLink;
+                const contactName = message.senderName || message.from;
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                    // Use existing lead and mark as re-enquiry
                     await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
                         firstName: contactName.split(' ')[0] || contactName,
                         lastName: contactName.split(' ').slice(1).join(' ') || '',
                         phone: cleanPhone,
                         source: 'whatsapp',
-                        sourceDetails: { whatsappMessageId: message.id }
+                        sourceDetails: { provider, messageId: message.id }
                     }, organisationId);
                     leadToLink = duplicateCheck.existingLead;
                 }
                 else {
-                    // Create new lead
                     const newLead = await prisma_1.default.lead.create({
                         data: {
                             firstName: contactName.split(' ')[0] || contactName,
@@ -221,14 +254,12 @@ exports.WhatsAppIntegrationService = {
                     });
                     leadToLink = newLead;
                 }
-                // Update message to link to lead
                 await prisma_1.default.whatsAppMessage.update({
                     where: { id: messageRecord.id },
                     data: { leadId: leadToLink.id }
                 });
             }
-            console.log(`[WhatsAppWebhook] Saved incoming message from ${message.from}`);
-            // Real-time socket notification
+            // Real-time notification
             const io = (0, socket_1.getIO)();
             if (io) {
                 io.to(`org:${organisationId}`).emit('whatsapp_message_received', {
@@ -238,11 +269,11 @@ exports.WhatsAppIntegrationService = {
             }
         }
         catch (error) {
-            console.error('[WhatsAppWebhook] Error saving message:', error);
+            console.error('[WhatsAppWebhook] Error in saveIncomingMessage:', error);
         }
     },
     /**
-     * Handle message status updates (delivered, read, failed)
+     * Handle message status updates (Meta specific but expandable)
      */
     async processStatusUpdate(value) {
         const { statuses } = value;
@@ -250,91 +281,59 @@ exports.WhatsAppIntegrationService = {
             return;
         for (const status of statuses) {
             try {
-                const updateData = {
-                    status: status.status
-                };
-                if (status.status === 'delivered') {
+                const updateData = { status: status.status };
+                if (status.status === 'delivered')
                     updateData.deliveredAt = new Date(parseInt(status.timestamp) * 1000);
-                }
-                else if (status.status === 'read') {
+                else if (status.status === 'read')
                     updateData.readAt = new Date(parseInt(status.timestamp) * 1000);
-                }
                 else if (status.status === 'failed') {
                     updateData.errorCode = status.errors?.[0]?.code;
                     updateData.errorMessage = status.errors?.[0]?.title;
                 }
-                // Update message in database
                 const updatedMessage = await prisma_1.default.whatsAppMessage.updateMany({
-                    where: {
-                        waMessageId: status.id
-                    },
+                    where: { waMessageId: status.id },
                     data: updateData
                 });
-                // Update campaign statistics if message was updated
                 if (updatedMessage.count > 0) {
-                    // Import CampaignProcessor here to avoid circular dependency
                     const { CampaignProcessor } = await Promise.resolve().then(() => __importStar(require('./campaignProcessor')));
-                    // Find the message to get its ID for campaign stats update
                     const message = await prisma_1.default.whatsAppMessage.findFirst({
                         where: { waMessageId: status.id },
-                        select: { id: true }
+                        select: { id: true, organisationId: true, phoneNumber: true }
                     });
                     if (message) {
                         await CampaignProcessor.updateCampaignStats(message.id, status.status);
-                        // Emit socket event for status update
                         const io = (0, socket_1.getIO)();
                         if (io) {
-                            // Find the full message to get organisationId
-                            const fullMessage = await prisma_1.default.whatsAppMessage.findUnique({
-                                where: { id: message.id },
-                                select: { organisationId: true, phoneNumber: true }
+                            io.to(`org:${message.organisationId}`).emit('whatsapp_status_update', {
+                                messageId: status.id,
+                                dbMessageId: message.id,
+                                status: status.status,
+                                phoneNumber: message.phoneNumber
                             });
-                            if (fullMessage) {
-                                io.to(`org:${fullMessage.organisationId}`).emit('whatsapp_status_update', {
-                                    messageId: status.id, // WhatsApp ID
-                                    dbMessageId: message.id, // Database ID
-                                    status: status.status,
-                                    phoneNumber: fullMessage.phoneNumber
-                                });
-                            }
                         }
                     }
                 }
-                console.log(`[WhatsAppWebhook] Updated message ${status.id} status to ${status.status}`);
-                // Real-time socket notification for status update
-                // Note: To emit to the correct org, we need to find the message first 
-                // (which we already do below for campaign stats)
             }
             catch (error) {
-                console.error('[WhatsAppWebhook] Error updating message status:', error);
+                console.error('[WhatsAppWebhook] Error updating status:', error);
             }
         }
     },
     /**
-     * Verify Webhook (GET request)
+     * Verify Webhook (Meta GET request)
      */
     async verifyWebhook(req, res) {
         const mode = req.query['hub.mode'];
         const token = req.query['hub.verify_token'];
         const challenge = req.query['hub.challenge'];
         const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN;
-        if (!VERIFY_TOKEN) {
-            console.error('[WhatsAppWebhook] WHATSAPP_VERIFY_TOKEN not configured');
+        if (!VERIFY_TOKEN)
             return res.sendStatus(500);
-        }
-        if (mode && token) {
-            if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-                console.log('[WhatsAppWebhook] Verified webhook');
-                res.status(200).send(challenge);
-            }
-            else {
-                console.log('[WhatsAppWebhook] Webhook verification failed - invalid token');
-                res.sendStatus(403);
-            }
+        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+            res.status(200).send(challenge);
         }
         else {
-            console.log('[WhatsAppWebhook] Webhook verification failed - missing parameters');
-            res.sendStatus(400);
+            res.sendStatus(403);
         }
     }
 };

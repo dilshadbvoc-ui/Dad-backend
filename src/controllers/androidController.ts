@@ -187,7 +187,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 where: {
                     organisationId: user.organisationId,
                     type: 'call',
-                    callStatus: 'initiated',
+                    callStatus: { in: ['initiated', 'completed'] },
                     phoneNumber: { contains: phoneSuffix },
                     date: {
                         gte: searchWindowStart,
@@ -383,13 +383,13 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     });
                 }
 
-                // Priority 3: Fuzzy Match (Phone + User + Time window for 'initiated' calls)
+                // Priority 3: Fuzzy Match (Phone + User + Time window for existing entries)
                 if (!existingInteraction && phoneSuffix.length >= 10) {
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
                             type: 'call',
-                            callStatus: 'initiated',
+                            callStatus: { in: ['initiated', 'completed'] },
                             phoneNumber: { contains: phoneSuffix },
                             date: {
                                 gte: searchWindowStart,
@@ -404,7 +404,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 if (existingInteraction) {
                     // HEAL EXISTING: Only update if new duration from Log is longer/better
                     const currentDuration = (existingInteraction.duration || 0) * 60;
-                    if (durationSecs > currentDuration || !existingInteraction.duration || existingInteraction.callStatus === 'initiated') {
+                    const hasCarrierTruth = hardwareDuration !== null && hardwareDuration !== undefined;
+                    if (hasCarrierTruth || durationSecs > currentDuration || !existingInteraction.duration || existingInteraction.callStatus === 'initiated') {
                         const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
                         const finalizedSyncDurationSecs = carrierDurationSecs ?? durationSecs;
 

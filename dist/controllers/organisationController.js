@@ -43,6 +43,14 @@ const encryption_1 = require("../utils/encryption");
 const metaService_1 = require("../services/metaService");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const auditLogger_1 = require("../utils/auditLogger");
+const DEFAULT_LEAD_STATUSES = [
+    { id: 'new', label: 'New', color: '#6366f1', isSystem: true, order: 0, isDefault: true },
+    { id: 'contacted', label: 'Contacted', color: '#3b82f6', isSystem: false, order: 1 },
+    { id: 'interested', label: 'Interested', color: '#10b981', isSystem: false, order: 2 },
+    { id: 'qualified', label: 'Qualified', color: '#f59e0b', isSystem: false, order: 3 },
+    { id: 'won', label: 'Won', color: '#10b981', isSystem: true, order: 4 },
+    { id: 'lost', label: 'Lost', color: '#ef4444', isSystem: true, order: 5 }
+];
 const createOrganisation = async (req, res) => {
     try {
         if (req.user.role !== 'super_admin') {
@@ -141,6 +149,10 @@ const getOrganisation = async (req, res) => {
         });
         if (!org)
             return res.status(404).json({ message: 'Organisation not found' });
+        // Fallback for Lead Statuses if not configured
+        if (!org.leadStatuses || (Array.isArray(org.leadStatuses) && org.leadStatuses.length === 0)) {
+            org.leadStatuses = DEFAULT_LEAD_STATUSES;
+        }
         // Get active user count
         const userCount = await prisma_1.default.user.count({
             where: {
@@ -194,10 +206,14 @@ const getOrganisation = async (req, res) => {
                     integrations.meta.accessToken = '[HIDDEN]';
                 if (integrations.whatsapp)
                     integrations.whatsapp.token = '[HIDDEN]';
+                if (integrations.gallabox) {
+                    integrations.gallabox.apiKey = '[HIDDEN]';
+                    integrations.gallabox.apiSecret = '[HIDDEN]';
+                }
                 sanitizedOrg.integrations = integrations;
             }
         }
-        res.json({ ...sanitizedOrg, userCount });
+        res.json({ organisation: sanitizedOrg, userCount });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -233,42 +249,54 @@ const updateOrganisation = async (req, res) => {
                 }
             }
         }
+        // Handle Gallabox Credential Encryption
+        if (data.integrations?.gallabox?.connected) {
+            const gallabox = data.integrations.gallabox;
+            if (gallabox.apiKey && gallabox.apiKey.split(':').length !== 3) {
+                data.integrations.gallabox.apiKey = (0, encryption_1.encrypt)(gallabox.apiKey);
+            }
+            if (gallabox.apiSecret && gallabox.apiSecret.split(':').length !== 3) {
+                data.integrations.gallabox.apiSecret = (0, encryption_1.encrypt)(gallabox.apiSecret);
+            }
+        }
         // Handle Plan Assignment checks
-        if (data.planId) {
-            const plan = await prisma_1.default.subscriptionPlan.findUnique({ where: { id: data.planId } });
-            if (!plan)
-                throw new Error('Invalid Plan ID');
-            // 1. Update Org Limits based on Plan
-            data.userLimit = plan.maxUsers;
-            data.status = 'active'; // Activate org if plan assignment happens
-            // 2. Legacy Subscription JSON sync
-            const existingSubscription = (await prisma_1.default.organisation.findUnique({ where: { id: orgId } }))?.subscription || {};
-            data.subscription = {
-                ...existingSubscription,
-                status: 'active',
-                plan: plan.name,
-                planId: plan.id,
-                startDate: new Date(),
-                endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000)
-            };
-            // 3. Deactivate old active licenses
-            await prisma_1.default.license.updateMany({
-                where: { organisationId: orgId, status: 'active' },
-                data: { status: 'cancelled', cancelledAt: new Date() }
-            });
-            // 4. Create New License
-            await prisma_1.default.license.create({
-                data: {
-                    organisationId: orgId,
-                    planId: plan.id,
+        if ('planId' in data) {
+            if (data.planId) {
+                const plan = await prisma_1.default.subscriptionPlan.findUnique({ where: { id: data.planId } });
+                if (!plan)
+                    throw new Error('Invalid Plan ID');
+                // 1. Update Org Limits based on Plan
+                data.userLimit = plan.maxUsers;
+                data.status = 'active'; // Activate org if plan assignment happens
+                // 2. Legacy Subscription JSON sync
+                const existingSubscription = (await prisma_1.default.organisation.findUnique({ where: { id: orgId } }))?.subscription || {};
+                data.subscription = {
+                    ...existingSubscription,
                     status: 'active',
+                    plan: plan.name,
+                    planId: plan.id,
                     startDate: new Date(),
-                    endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000),
-                    maxUsers: plan.maxUsers,
-                    autoRenew: true
-                }
-            });
-            // Clean up planId from data intended for Organisation model update (if it's not a column)
+                    endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000)
+                };
+                // 3. Deactivate old active licenses
+                await prisma_1.default.license.updateMany({
+                    where: { organisationId: orgId, status: 'active' },
+                    data: { status: 'cancelled', cancelledAt: new Date() }
+                });
+                // 4. Create New License
+                await prisma_1.default.license.create({
+                    data: {
+                        organisationId: orgId,
+                        planId: plan.id,
+                        status: 'active',
+                        startDate: new Date(),
+                        endDate: new Date(Date.now() + plan.durationDays * 24 * 60 * 60 * 1000),
+                        maxUsers: plan.maxUsers,
+                        autoRenew: true
+                    }
+                });
+            }
+            // Clean up planId from data intended for Organisation model update
             delete data.planId;
         }
         const org = await prisma_1.default.organisation.update({
@@ -288,7 +316,7 @@ const updateOrganisation = async (req, res) => {
             organisationId: org.id,
             details: { updatedFields: Object.keys(data) }
         });
-        res.json(org);
+        res.json({ organisation: org });
     }
     catch (error) {
         res.status(500).json({ message: error.message });

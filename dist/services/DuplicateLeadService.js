@@ -38,7 +38,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DuplicateLeadService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
-const client_1 = require("../generated/client");
 exports.DuplicateLeadService = {
     /**
      * Check for duplicate leads by phone, email, or WhatsApp
@@ -135,7 +134,7 @@ exports.DuplicateLeadService = {
             const updatedLead = await prisma_1.default.lead.update({
                 where: { id: existingLead.id },
                 data: {
-                    status: client_1.LeadStatus.re_enquiry,
+                    status: 're_enquiry',
                     isReEnquiry: true,
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
@@ -185,7 +184,7 @@ exports.DuplicateLeadService = {
                     reason: `Re-Enquiry received from ${newData.source || 'Website'}`,
                     fieldName: 'status',
                     oldValue: existingLead.status,
-                    newValue: client_1.LeadStatus.re_enquiry,
+                    newValue: 're_enquiry',
                     createdAt: now
                 }
             });

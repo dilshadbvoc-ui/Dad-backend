@@ -71,42 +71,23 @@ const handleVoiceWebhook = async (req, res) => {
                     interactionData.subject = `Call from ${foundLead.firstName} ${foundLead.lastName || ''}`;
                     console.log(`[Telephony] Inbound call matched to Lead: ${foundLead.id} (${foundLead.firstName})`);
                 }
+                else {
+                    // Check if we should sync unknown numbers
+                    // If settings are missing, default to true (to match previous behavior)
+                    const canSync = org.callSettings ? org.callSettings.syncNonCrmContacts : true;
+                    if (!canSync) {
+                        console.log(`[Telephony] Inbound call from unknown number ${From} ignored (Sync Settings)`);
+                        // Still need to handle the voice response (Dial/Forward) but skip Interaction creation
+                        return handleVoiceResponse(twiml, twilioConfig, shouldRecord, res, orgId);
+                    }
+                }
             }
         }
         // Create Interaction Record
         await prisma_1.default.interaction.create({
             data: interactionData
         });
-        if (shouldRecord) {
-            // TwiML to Record
-            // If we have a forward number, we Dial it.
-            const forwardTo = twilioConfig?.forwardTo; // Custom field in integration config
-            if (forwardTo) {
-                const dial = twiml.dial({
-                    record: 'record-from-ringing',
-                    action: `/api/telephony/webhook/status?orgId=${orgId}`, // Status callback
-                    // method: 'POST'
-                });
-                dial.number(forwardTo);
-            }
-            else {
-                twiml.say('No forwarding number configured.');
-                twiml.record({
-                    action: `/api/telephony/webhook/status?orgId=${orgId}`,
-                    maxLength: 120
-                });
-            }
-        }
-        else {
-            const forwardTo = twilioConfig?.forwardTo;
-            if (forwardTo) {
-                twiml.dial(forwardTo);
-            }
-            else {
-                twiml.say('Thank you for calling.');
-            }
-        }
-        res.type('text/xml').send(twiml.toString());
+        return handleVoiceResponse(twiml, twilioConfig, shouldRecord, res, orgId);
     }
     catch (error) {
         console.error('Twilio Webhook Error:', error);
@@ -115,6 +96,38 @@ const handleVoiceWebhook = async (req, res) => {
     }
 };
 exports.handleVoiceWebhook = handleVoiceWebhook;
+/**
+ * Helper to handle the TwiML response (Dial/Record) logic centrally
+ */
+const handleVoiceResponse = (twiml, twilioConfig, shouldRecord, res, orgId) => {
+    if (shouldRecord) {
+        const forwardTo = twilioConfig?.forwardTo;
+        if (forwardTo) {
+            const dial = twiml.dial({
+                record: 'record-from-ringing',
+                action: `/api/telephony/webhook/status?orgId=${orgId}`,
+            });
+            dial.number(forwardTo);
+        }
+        else {
+            twiml.say('No forwarding number configured.');
+            twiml.record({
+                action: `/api/telephony/webhook/status?orgId=${orgId}`,
+                maxLength: 120
+            });
+        }
+    }
+    else {
+        const forwardTo = twilioConfig?.forwardTo;
+        if (forwardTo) {
+            twiml.dial(forwardTo);
+        }
+        else {
+            twiml.say('Thank you for calling.');
+        }
+    }
+    res.type('text/xml').send(twiml.toString());
+};
 const handleStatusWebhook = async (req, res) => {
     const { orgId } = req.query;
     const { CallSid, RecordingUrl, RecordingDuration, CallStatus } = req.body;

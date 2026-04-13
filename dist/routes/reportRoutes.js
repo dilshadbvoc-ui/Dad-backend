@@ -8,8 +8,10 @@ const router = (0, express_1.Router)();
 router.use(authMiddleware_1.protect);
 // Leads report with filtering
 router.get('/leads', reportController_1.getLeadsReport);
-// User performance metrics
+// User performance metrics (Existing)
 router.get('/user-performance', reportController_1.getUserPerformance);
+// Detailed user performance for Total Report (New)
+router.get('/user-performance-details', reportController_1.getUserPerformanceDetails);
 // Sales book with time period filter
 router.get('/sales-book', reportController_1.getSalesBook);
 // Team performance for managers

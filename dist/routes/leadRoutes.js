@@ -22,5 +22,6 @@ router.get('/:id/history', authMiddleware_1.protect, leadController_1.getLeadHis
 router.put('/:id', authMiddleware_1.protect, leadController_1.updateLead);
 router.post('/:id/generate-response', authMiddleware_1.protect, leadController_1.generateAIResponse); // New
 router.post('/:id/convert', authMiddleware_1.protect, leadController_1.convertLead);
+router.post('/:id/sync-gallabox', authMiddleware_1.protect, leadController_1.syncToGallabox);
 router.delete('/:id', authMiddleware_1.protect, leadController_1.deleteLead);
 exports.default = router;

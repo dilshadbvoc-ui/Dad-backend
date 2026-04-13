@@ -54,7 +54,7 @@ const getLeadsEnhanced = async (req, res) => {
             }
         }
         // 3. Apply filters with validation
-        if (req.query.status && Object.values(client_1.LeadStatus).includes(req.query.status)) {
+        if (req.query.status) {
             where.status = req.query.status;
         }
         if (req.query.source && Object.values(client_1.LeadSource).includes(req.query.source)) {
@@ -157,7 +157,7 @@ const createLeadEnhanced = async (req, res) => {
             organisationId,
             createdById: userId,
             source: sanitizedData.source || client_1.LeadSource.manual,
-            status: sanitizedData.status || client_1.LeadStatus.new,
+            status: sanitizedData.status || "new",
             leadScore: sanitizedData.leadScore || 0
         };
         const newLead = await prisma_1.default.lead.create({

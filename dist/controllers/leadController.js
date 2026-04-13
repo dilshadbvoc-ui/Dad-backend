@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDuplicateLeads = exports.getReEnquiryLeads = exports.generateAIResponse = exports.getPendingFollowUpsCount = exports.submitExplanation = exports.getLeadHistory = exports.getViolations = exports.convertLead = exports.bulkAssignLeads = exports.createBulkLeads = exports.deleteLead = exports.updateLead = exports.getLeadById = exports.createLead = exports.getLeads = void 0;
+exports.syncToGallabox = exports.getDuplicateLeads = exports.getReEnquiryLeads = exports.generateAIResponse = exports.getPendingFollowUpsCount = exports.submitExplanation = exports.getLeadHistory = exports.getViolations = exports.convertLead = exports.bulkAssignLeads = exports.createBulkLeads = exports.deleteLead = exports.updateLead = exports.getLeadById = exports.createLead = exports.getLeads = void 0;
 const socket_1 = require("../socket");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
@@ -47,6 +47,7 @@ const client_1 = require("../generated/client");
 const roleUtils_1 = require("../utils/roleUtils");
 const geoLocationService_1 = require("../services/geoLocationService");
 const followUpService_1 = require("../services/followUpService");
+const gallaboxService_1 = require("../services/gallaboxService");
 // Dynamic import used for OpenAI to avoid startup errors if missing
 // GET /api/leads
 const getLeads = async (req, res) => {
@@ -89,8 +90,12 @@ const getLeads = async (req, res) => {
             });
         }
         // Filter: Status
-        if (req.query.status && Object.values(client_1.LeadStatus).includes(req.query.status)) {
+        if (req.query.status) {
             where.status = req.query.status;
+        }
+        // Filter: Branch
+        if (req.query.branchId) {
+            where.branchId = req.query.branchId;
         }
         // Filter: Source
         if (req.query.source && Object.values(client_1.LeadSource).includes(req.query.source)) {
@@ -232,6 +237,24 @@ const createLead = async (req, res) => {
             const { CustomFieldValidationService } = await Promise.resolve().then(() => __importStar(require('../services/customFieldValidationService')));
             await CustomFieldValidationService.validateFields('Lead', orgId, req.body.customFields);
         }
+        // Resolve Default Status from Organisation Settings
+        let leadStatus = req.body.status;
+        if (!leadStatus) {
+            const org = await prisma_1.default.organisation.findUnique({
+                where: { id: orgId },
+                select: { leadStatuses: true }
+            });
+            if (org?.leadStatuses && Array.isArray(org.leadStatuses)) {
+                const statuses = org.leadStatuses;
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    leadStatus = configuredDefault.id;
+                }
+            }
+            // Final Fallback
+            if (!leadStatus)
+                leadStatus = 'new';
+        }
         // Create — only pass explicitly known Lead fields (no blind spreading)
         const lead = await prisma_1.default.lead.create({
             data: {
@@ -256,7 +279,7 @@ const createLead = async (req, res) => {
                 // Assign to creator by default, or to specified user
                 assignedTo: { connect: { id: leadOwnerId } },
                 source: req.body.source || client_1.LeadSource.manual,
-                status: req.body.status || client_1.LeadStatus.new,
+                status: leadStatus,
                 potentialValue: req.body.potentialValue ? parseFloat(req.body.potentialValue) : 0,
                 createdBy: { connect: { id: currentUser.id } } // Track creator for visibility
             }
@@ -348,6 +371,14 @@ const createLead = async (req, res) => {
                     actionSource: 'system_generated' // or website if we knew source url
                 }).catch(console.error);
             });
+            // Gallabox Sync
+            gallaboxService_1.GallaboxService.getClientForOrg(orgId).then(gallabox => {
+                if (gallabox) {
+                    gallabox.syncLeadToContact(lead).catch(err => {
+                        console.error('Auto Gallabox Sync Error:', err.message);
+                    });
+                }
+            }).catch(console.error);
         }
         catch (workflowErr) {
             console.error('WorkflowEngine error:', workflowErr);
@@ -474,6 +505,15 @@ const updateLead = async (req, res) => {
         }
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
+            // CRITICAL: Block transition to 'qualified' or 'converted' if no products
+            if (['qualified', 'converted'].includes(updates.status)) {
+                const productCount = await prisma_1.default.leadProduct.count({ where: { leadId } });
+                if (productCount === 0) {
+                    return res.status(400).json({
+                        message: 'Please add at least one product before qualifying or converting this lead.'
+                    });
+                }
+            }
             const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
             logAudit({
                 action: 'LEAD_STATUS_CHANGE',
@@ -825,7 +865,7 @@ const createBulkLeads = async (req, res) => {
                     phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                     organisation: { connect: { id: orgId } },
                     source: l.source || client_1.LeadSource.import,
-                    status: l.status || client_1.LeadStatus.new,
+                    status: l.status || 'new',
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
                     stage: l.stage || undefined,
                     createdBy: { connect: { id: user.id } }
@@ -935,7 +975,13 @@ const convertLead = async (req, res) => {
         });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
-        if (lead.status === client_1.LeadStatus.converted) {
+        // CRITICAL: Block conversion if no products
+        if (!lead.products || lead.products.length === 0) {
+            return res.status(400).json({
+                message: 'Please add at least one product before converting this lead to an opportunity.'
+            });
+        }
+        if (lead.status === "converted") {
             return res.status(400).json({ message: 'Lead already converted' });
         }
         // Calculate opportunity amount from lead products if not provided
@@ -1068,7 +1114,7 @@ const convertLead = async (req, res) => {
             const updatedLead = await tx.lead.update({
                 where: { id: leadId },
                 data: {
-                    status: client_1.LeadStatus.converted
+                    status: 'converted'
                 }
             });
             // 6. Migrate Interactions
@@ -1284,7 +1330,7 @@ const getPendingFollowUpsCount = async (req, res) => {
         const endOfToday = new Date(now.setHours(23, 59, 59, 999));
         const where = {
             nextFollowUp: { lte: endOfToday },
-            status: { not: client_1.LeadStatus.converted },
+            status: { not: 'converted' },
             isDeleted: false
         };
         if (user.role !== 'super_admin') {
@@ -1380,3 +1426,33 @@ const getDuplicateLeads = async (req, res) => {
     }
 };
 exports.getDuplicateLeads = getDuplicateLeads;
+// POST /api/leads/:id/sync-gallabox
+const syncToGallabox = async (req, res) => {
+    try {
+        const user = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        const leadId = req.params.id;
+        if (!orgId)
+            return res.status(403).json({ message: 'Organisation context required' });
+        const lead = await prisma_1.default.lead.findUnique({
+            where: { id: leadId, organisationId: orgId }
+        });
+        if (!lead)
+            return res.status(404).json({ message: 'Lead not found' });
+        const gallabox = await gallaboxService_1.GallaboxService.getClientForOrg(orgId);
+        if (!gallabox) {
+            return res.status(400).json({ message: 'Gallabox is not connected or configured for your organisation.' });
+        }
+        const result = await gallabox.syncLeadToContact(lead);
+        res.json({
+            success: true,
+            message: 'Lead successfully synced to Gallabox',
+            result
+        });
+    }
+    catch (error) {
+        console.error('syncToGallabox Error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.syncToGallabox = syncToGallabox;

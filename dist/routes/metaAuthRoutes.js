@@ -380,57 +380,78 @@ router.get('/status', authMiddleware_1.protect, async (req, res) => {
     }
 });
 /**
- * GET /api/meta/webhook
- * Webhook verification for Meta
+ * GET /api/meta/webhook-info
+ * Returns public info for webhook configuration
+ */
+router.get('/webhook-info', authMiddleware_1.protect, async (req, res) => {
+    const serverUrl = process.env.SERVER_URL || `${req.protocol}://${req.get('host')}`;
+    res.json({
+        webhookUrl: `${serverUrl}/api/meta/webhook`,
+        verifyToken: process.env.META_VERIFY_TOKEN || 'my_secure_token'
+    });
+});
+/**
+ * GET /api/meta/webhook (Webhook Verification)
+ * Standard endpoint for Meta App "Webhook Callback URL" (Verify)
  */
 router.get('/webhook', (req, res) => {
-    const mode = req.query['hub.mode'];
-    const token = req.query['hub.verify_token'];
-    const challenge = req.query['hub.challenge'];
+    const hubMode = req.query['hub.mode'];
+    const hubToken = req.query['hub.verify_token'];
+    const hubChallenge = req.query['hub.challenge'];
     const verifyToken = process.env.META_VERIFY_TOKEN || 'my_secure_token';
-    if (mode && token) {
-        if (mode === 'subscribe' && token === verifyToken) {
-            console.log('[Meta Webhook] Verified!');
-            res.status(200).send(challenge);
-        }
-        else {
-            console.warn('[Meta Webhook] Verification failed. Tokens do not match.');
-            res.sendStatus(403);
-        }
+    console.log(`[MetaWebhook] Verification Request: Mode=${hubMode}, Token=${hubToken}`);
+    if (hubMode === 'subscribe' && hubToken === verifyToken) {
+        console.log('[MetaWebhook] Verification SUCCESS');
+        return res.status(200).send(hubChallenge);
     }
     else {
-        res.sendStatus(400);
+        console.warn(`[MetaWebhook] Verification FAILED. Received token: '${hubToken}', Expected: '${verifyToken}'`);
+        return res.sendStatus(403);
     }
 });
 /**
- * POST /api/meta/webhook
- * Handles incoming events from Meta (Leads, etc.)
+ * POST /api/meta/webhook (Lead Generation Processing)
+ * Main endpoint for Meta Webhook events
  */
 router.post('/webhook', async (req, res) => {
-    const body = req.body;
-    // Check if this is an event from a page subscription
-    if (body.object === 'page') {
-        // Iterate over each entry
-        // Meta may batch multiple events into a single heartbeat
-        for (const entry of body.entry) {
-            const changes = entry.changes;
-            const pageId = entry.id;
-            for (const change of changes) {
-                if (change.field === 'leadgen') {
-                    const { leadgen_id, ad_id, form_id } = change.value;
-                    console.log(`[Meta Webhook] Received new lead: ${leadgen_id} from Page: ${pageId}`);
-                    // Process lead asynchronously
-                    metaLeadService_1.MetaLeadService.processIncomingLead(leadgen_id, pageId, ad_id, form_id).catch((err) => {
-                        console.error('[Meta Webhook] Error processing lead:', err);
-                    });
+    // 1. Signature Verification
+    const signature = req.headers['x-hub-signature-256'];
+    const secret = process.env.META_WEBHOOK_SECRET;
+    if (secret && signature) {
+        const rawBody = req.rawBody || JSON.stringify(req.body);
+        const hmac = crypto_1.default.createHmac('sha256', secret);
+        const digest = hmac.update(rawBody).digest('hex');
+        const expectedSignature = `sha256=${digest}`;
+        if (signature !== expectedSignature) {
+            console.warn('❌ [MetaWebhook] Invalid signature');
+            return res.sendStatus(401);
+        }
+    }
+    // 2. Immediate Receipt Acknowledgment (avoid timeouts)
+    res.status(200).send('EVENT_RECEIVED');
+    // 3. Process Events
+    try {
+        const body = req.body;
+        if (body.object === 'page') {
+            for (const entry of body.entry) {
+                const pageId = entry.id;
+                for (const change of entry.changes) {
+                    if (change.field === 'leadgen') {
+                        const { leadgen_id, ad_id, form_id } = change.value;
+                        console.log(`[MetaWebhook] New lead: ${leadgen_id} from Page: ${pageId}`);
+                        // Delegate lead processing
+                        metaLeadService_1.MetaLeadService.processIncomingLead(leadgen_id, pageId, ad_id, form_id).catch((err) => {
+                            console.error('[MetaWebhook] Process error:', err);
+                        });
+                    }
                 }
             }
         }
-        res.status(200).send('EVENT_RECEIVED');
     }
-    else {
-        // Not a page event
-        res.sendStatus(404);
+    catch (error) {
+        console.error('[MetaWebhook] Unexpected error:', error);
     }
 });
+// Cleanup deprecated or redundant routes
+router.post('/callback', (req, res) => res.sendStatus(404));
 exports.default = router;

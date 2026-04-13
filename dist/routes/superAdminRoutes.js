@@ -11,6 +11,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const systemSettingsController_1 = require("../controllers/systemSettingsController");
 const roleController_1 = require("../controllers/roleController");
 const backupController_1 = require("../controllers/backupController");
+const siteFAQController_1 = require("../controllers/siteFAQController");
 const router = express_1.default.Router();
 // Full Platform Data Export/Restore
 router.get('/platform/export', authMiddleware_1.protect, backupController_1.exportPlatformData);
@@ -35,4 +36,9 @@ router.delete('/plans/:id', authMiddleware_1.protect, subscriptionPlanController
 router.get('/roles', authMiddleware_1.protect, roleController_1.getGlobalRoles);
 router.post('/roles', authMiddleware_1.protect, roleController_1.upsertGlobalRole);
 router.get('/stats', authMiddleware_1.protect, superAdminController_1.getOrganisationStats);
+// Landing Page FAQ Management
+router.get('/faqs', authMiddleware_1.protect, siteFAQController_1.getAllFAQs);
+router.post('/faqs', authMiddleware_1.protect, siteFAQController_1.createFAQ);
+router.put('/faqs/:id', authMiddleware_1.protect, siteFAQController_1.updateFAQ);
+router.delete('/faqs/:id', authMiddleware_1.protect, siteFAQController_1.deleteFAQ);
 exports.default = router;

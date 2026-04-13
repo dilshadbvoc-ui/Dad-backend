@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logExternalMessage = exports.verifyWebhook = exports.handleWebhook = exports.uploadMedia = exports.getMedia = exports.getMessageStatistics = exports.getConversationAnalytics = exports.markConversationAsRead = exports.markMessageAsRead = exports.getMessageStatus = exports.sendMediaMessage = exports.createTemplate = exports.getTemplates = exports.testConnection = exports.getConversations = exports.getLeadWhatsAppMessages = exports.getMessages = exports.sendMessage = exports.getWhatsAppConfig = void 0;
+exports.logExternalMessage = exports.handleGallaboxWebhook = exports.verifyWebhook = exports.handleWebhook = exports.uploadMedia = exports.getMedia = exports.getMessageStatistics = exports.getConversationAnalytics = exports.markConversationAsRead = exports.markMessageAsRead = exports.getMessageStatus = exports.sendMediaMessage = exports.createTemplate = exports.getTemplates = exports.testConnection = exports.getConversations = exports.getLeadWhatsAppMessages = exports.getMessages = exports.sendMessage = exports.getWhatsAppConfig = void 0;
 const whatsAppService_1 = require("../services/whatsAppService");
 const whatsAppIntegrationService_1 = require("../services/whatsAppIntegrationService");
+const gallaboxService_1 = require("../services/gallaboxService");
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const socket_1 = require("../socket");
@@ -61,19 +62,40 @@ const sendMessage = async (req, res) => {
         }
         // Sanitize message content
         const sanitizedMessage = message ? message.trim().substring(0, 4096) : undefined;
-        const config = await (0, exports.getWhatsAppConfig)(req);
-        const whatsAppService = new whatsAppService_1.WhatsAppService({
-            accessToken: config.accessToken,
-            phoneNumberId: config.phoneNumberId,
-            wabaId: config.wabaId
-        });
         let result;
-        if (type === 'template') {
-            const { templateName, languageCode = 'en_US', components = [] } = req.body;
-            result = await whatsAppService.sendTemplateMessage(to, templateName, languageCode, components);
+        let waMessageId;
+        // Try Meta WhatsApp first
+        try {
+            const config = await (0, exports.getWhatsAppConfig)(req);
+            const whatsAppService = new whatsAppService_1.WhatsAppService({
+                accessToken: config.accessToken,
+                phoneNumberId: config.phoneNumberId,
+                wabaId: config.wabaId
+            });
+            if (type === 'template') {
+                const { templateName, languageCode = 'en_US', components = [] } = req.body;
+                result = await whatsAppService.sendTemplateMessage(to, templateName, languageCode, components);
+            }
+            else {
+                result = await whatsAppService.sendTextMessage(to, sanitizedMessage);
+            }
+            waMessageId = result.messages?.[0]?.id;
         }
-        else {
-            result = await whatsAppService.sendTextMessage(to, sanitizedMessage);
+        catch (metaError) {
+            // If Meta fails/not configured, try Gallabox
+            const user = req.user;
+            const gallabox = await gallaboxService_1.GallaboxService.getClientForOrg(user.organisationId);
+            if (gallabox) {
+                if (type === 'template') {
+                    throw new Error('Template messages are currently only supported via Meta WhatsApp integration.');
+                }
+                result = await gallabox.sendWhatsAppMessage(to, sanitizedMessage);
+                waMessageId = result.messageId; // Gallabox specific ID field
+            }
+            else {
+                // If both fail, throw the original error
+                throw metaError;
+            }
         }
         // Log the message to database
         const user = req.user;
@@ -92,7 +114,7 @@ const sendMessage = async (req, res) => {
                         components: type === 'template' ? req.body.components : undefined
                     },
                     status: 'sent',
-                    waMessageId: result.messages?.[0]?.id,
+                    waMessageId: waMessageId,
                     sentAt: new Date(),
                     organisationId: orgId,
                     agentId: user?.id
@@ -714,6 +736,27 @@ const verifyWebhook = async (req, res) => {
     }
 };
 exports.verifyWebhook = verifyWebhook;
+const handleGallaboxWebhook = async (req, res) => {
+    try {
+        const signature = req.headers['x-gallabox-signature'];
+        const secret = process.env.GALLABOX_WEBHOOK_SECRET;
+        // If secret is configured, verify signature
+        if (secret && signature) {
+            const isValid = gallaboxService_1.GallaboxService.verifySignature(JSON.stringify(req.body), signature, secret);
+            if (!isValid) {
+                console.warn('[GallaboxWebhook] Invalid signature');
+                return res.sendStatus(401);
+            }
+        }
+        await whatsAppIntegrationService_1.WhatsAppIntegrationService.handleGallaboxWebhook(req.body);
+        res.sendStatus(200);
+    }
+    catch (error) {
+        console.error('Error in handleGallaboxWebhook:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.handleGallaboxWebhook = handleGallaboxWebhook;
 const logExternalMessage = async (req, res) => {
     try {
         const user = req.user;
@@ -776,21 +819,48 @@ const logExternalMessage = async (req, res) => {
                 console.log(`[WhatsAppSync] Found matching lead: ${leadByName.firstName} (${leadByName.id}) by name fallback: ${phoneNumber}`);
             }
         }
-        // 2. Create Interaction
-        // Note: We use 'whatsapp' as the type (added to schema.prisma)
-        const interaction = await prisma_1.default.interaction.create({
-            data: {
-                type: 'whatsapp',
-                direction: direction === 'inbound' ? 'inbound' : 'outbound',
-                subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
-                description: messageText,
-                date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
-                phoneNumber: phoneNumber,
-                leadId: targetLeadId || undefined,
+        // 2. Deduplicate: Check if a WhatsApp interaction already exists within a 5-min window
+        const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
+        const windowStart = new Date(callDate.getTime() - 5 * 60 * 1000);
+        const windowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);
+        const existingInteraction = await prisma_1.default.interaction.findFirst({
+            where: {
                 organisationId: user.organisationId,
-                createdById: user.id
-            }
+                type: 'whatsapp',
+                leadId: targetLeadId || undefined,
+                phoneNumber: targetLeadId ? undefined : phoneNumber,
+                date: { gte: windowStart, lte: windowEnd },
+                direction: direction === 'inbound' ? 'inbound' : 'outbound'
+            },
+            orderBy: { date: 'desc' }
         });
+        let interaction;
+        if (existingInteraction) {
+            console.log(`[WhatsAppSync] Healing existing interaction ${existingInteraction.id}`);
+            interaction = await prisma_1.default.interaction.update({
+                where: { id: existingInteraction.id },
+                data: {
+                    description: messageText,
+                    date: callDate // Keep it fresh
+                }
+            });
+        }
+        else {
+            console.log(`[WhatsAppSync] Creating NEW interaction for ${phoneNumber}`);
+            interaction = await prisma_1.default.interaction.create({
+                data: {
+                    type: 'whatsapp',
+                    direction: direction === 'inbound' ? 'inbound' : 'outbound',
+                    subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
+                    description: messageText,
+                    date: callDate,
+                    phoneNumber: phoneNumber,
+                    leadId: targetLeadId || undefined,
+                    organisationId: user.organisationId,
+                    createdById: user.id
+                }
+            });
+        }
         console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
         // Emit socket event for real-time UI updates
         const io = req.app.get('io');

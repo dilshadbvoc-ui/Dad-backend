@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,7 +40,6 @@ exports.MetaIntegrationService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const metaService_1 = require("./metaService");
 const logger_1 = require("../utils/logger");
-const distributionService_1 = require("./distributionService");
 const encryption_1 = require("../utils/encryption");
 exports.MetaIntegrationService = {
     /**
@@ -40,119 +72,11 @@ exports.MetaIntegrationService = {
     async processLeadGen(value) {
         try {
             // value contains leadgen_id, form_id, page_id, created_time
-            const { leadgen_id, page_id, form_id } = value;
-            logger_1.logger.webhook('Meta', 'process_leadgen', undefined, { leadgen_id, page_id, form_id });
-            // Find organisation with this page in their integrations
-            const orgs = await prisma_1.default.organisation.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    integrations: true
-                }
-            }).then(orgs => {
-                return orgs.filter(org => {
-                    const integrations = org.integrations;
-                    return integrations?.meta?.pageId === page_id;
-                });
-            }).catch(() => []);
-            if (orgs.length === 0) {
-                logger_1.logger.warn(`No connected account found for page ${page_id}`, 'MetaWebhook');
-                return;
-            }
-            const org = orgs[0];
-            const integrations = org.integrations;
-            const metaConfig = integrations.meta;
-            if (!metaConfig?.accessToken) {
-                logger_1.logger.warn(`No access token found for organization ${org.id}`, 'MetaWebhook', undefined, org.id);
-                return;
-            }
-            // Decrypt token
-            const accessToken = (0, encryption_1.decrypt)(metaConfig.accessToken);
-            // Fetch lead details from Meta API
-            try {
-                const leadData = await metaService_1.metaService.makeRequest(leadgen_id, accessToken, {
-                    fields: 'id,created_time,field_data'
-                });
-                // Parse field data
-                const fieldData = leadData.field_data || [];
-                const leadInfo = {
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    phone: '',
-                    company: ''
-                };
-                fieldData.forEach((field) => {
-                    const name = field.name?.toLowerCase();
-                    const value = field.values?.[0];
-                    if (name?.includes('first_name') || name?.includes('firstname')) {
-                        leadInfo.firstName = value;
-                    }
-                    else if (name?.includes('last_name') || name?.includes('lastname')) {
-                        leadInfo.lastName = value;
-                    }
-                    else if (name?.includes('email')) {
-                        leadInfo.email = value;
-                    }
-                    else if (name?.includes('phone')) {
-                        leadInfo.phone = value;
-                    }
-                    else if (name?.includes('company')) {
-                        leadInfo.company = value;
-                    }
-                });
-                // Create lead in CRM
-                const lead = await prisma_1.default.lead.create({
-                    data: {
-                        firstName: leadInfo.firstName || 'Unknown',
-                        lastName: leadInfo.lastName || '',
-                        email: leadInfo.email || null,
-                        phone: leadInfo.phone || null,
-                        company: leadInfo.company || null,
-                        source: 'meta_leadgen',
-                        status: 'new',
-                        organisationId: org.id,
-                        customFields: {
-                            metaLeadgenId: leadgen_id,
-                            metaFormId: form_id,
-                            metaPageId: page_id,
-                            metaCreatedTime: leadData.created_time
-                        }
-                    }
-                });
-                logger_1.logger.info(`Created lead ${lead.id} from Meta LeadGen ID: ${leadgen_id}`, 'MetaWebhook', undefined, org.id);
-                // Auto-distribute the lead using assignment rules
-                // Check if there's a specific rule mapped to this form or a default rule for Meta
-                const formRules = metaConfig?.formRules || {};
-                const ruleId = formRules[form_id] || metaConfig?.defaultRuleId;
-                await distributionService_1.DistributionService.assignLead(lead, org.id, ruleId && ruleId !== 'none' ? ruleId : undefined);
-                // Find an admin user to notify
-                const adminUser = await prisma_1.default.user.findFirst({
-                    where: {
-                        organisationId: org.id,
-                        role: { in: ['admin', 'super_admin', 'manager'] }
-                    }
-                });
-                // Create notification for new lead
-                if (adminUser) {
-                    await prisma_1.default.notification.create({
-                        data: {
-                            title: 'New Lead from Meta',
-                            message: `New lead "${leadInfo.firstName} ${leadInfo.lastName}" from Meta Lead Generation`,
-                            type: 'info',
-                            relatedResource: 'Lead',
-                            relatedId: lead.id,
-                            recipientId: adminUser.id,
-                            organisationId: org.id
-                        }
-                    }).catch(error => {
-                        logger_1.logger.error('Error creating notification', error, 'MetaWebhook', undefined, org.id);
-                    });
-                }
-            }
-            catch (apiError) {
-                logger_1.logger.error('Error fetching lead data from Meta API', apiError, 'MetaWebhook', undefined, org.id);
-            }
+            const { leadgen_id, page_id, ad_id, form_id } = value;
+            logger_1.logger.webhook('Meta', 'process_leadgen', undefined, { leadgen_id, page_id, ad_id, form_id });
+            // Delegate to the specialized MetaLeadService for unified processing
+            const { MetaLeadService } = await Promise.resolve().then(() => __importStar(require('./metaLeadService')));
+            await MetaLeadService.processIncomingLead(leadgen_id, page_id, ad_id, form_id);
         }
         catch (error) {
             logger_1.logger.webhookError('Meta', 'process_leadgen_failed', error);

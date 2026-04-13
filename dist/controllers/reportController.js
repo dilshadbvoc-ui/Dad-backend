@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTeamPerformanceReport = exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
+exports.getUserPerformanceDetails = exports.getTeamPerformanceReport = exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const exceljs_1 = __importDefault(require("exceljs"));
@@ -570,3 +570,160 @@ const getTeamPerformanceReport = async (req, res) => {
     }
 };
 exports.getTeamPerformanceReport = getTeamPerformanceReport;
+/**
+ * Detailed user performance for the "User Total Report"
+ * Metrics: Leads, Calls, Status Changes, Unattended, Revenue, Performance Index
+ */
+const getUserPerformanceDetails = async (req, res) => {
+    try {
+        const user = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        const { startDate, endDate, branchId } = req.query;
+        const dateFilter = {};
+        if (startDate)
+            dateFilter.gte = new Date(startDate);
+        if (endDate)
+            dateFilter.lte = new Date(endDate);
+        const thresholdDate = new Date();
+        thresholdDate.setHours(thresholdDate.getHours() - 48);
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        const where = {
+            id: { in: visibleUserIds },
+            organisationId: orgId,
+            isActive: true
+        };
+        if (branchId)
+            where.branchId = branchId;
+        const users = await prisma_1.default.user.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+                profileImage: true,
+                branch: { select: { name: true } }
+            }
+        });
+        const report = await Promise.all(users.map(async (u) => {
+            const [periodLeads, activeLeads, callsMade, statusChanges, attendedLeads, wonDeals, meetings, revenueData] = await Promise.all([
+                // 1. Total Leads Assigned/Active in Period
+                prisma_1.default.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId,
+                        isDeleted: false,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
+                }),
+                // 2. Total Active Leads (any time, but must be in an active status)
+                prisma_1.default.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId,
+                        isDeleted: false,
+                        status: { in: ['new', 'contacted', 'interested', 'qualified', 'nurturing', 'call_not_connected', 're_enquiry'] }
+                    }
+                }),
+                // 3. Total Calls Made
+                prisma_1.default.interaction.count({
+                    where: {
+                        createdById: u.id,
+                        type: 'call',
+                        organisationId: orgId,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
+                }),
+                // 4. Status Changes (History)
+                prisma_1.default.leadHistory.count({
+                    where: {
+                        changedById: u.id,
+                        fieldName: 'status',
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    }
+                }),
+                // 5. Attended Active Leads (Interactions in last 48h)
+                prisma_1.default.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId,
+                        isDeleted: false,
+                        status: { in: ['new', 'contacted', 'interested', 'qualified', 'nurturing', 'call_not_connected', 're_enquiry'] },
+                        interactions: {
+                            some: {
+                                createdAt: { gte: thresholdDate }
+                            }
+                        }
+                    }
+                }),
+                // 6. Won Deals in Period
+                prisma_1.default.opportunity.count({
+                    where: {
+                        ownerId: u.id,
+                        stage: 'closed_won',
+                        organisationId: orgId,
+                        ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
+                    }
+                }),
+                // 7. Meetings
+                prisma_1.default.calendarEvent.count({
+                    where: {
+                        createdById: u.id,
+                        type: 'meeting',
+                        organisationId: orgId,
+                        ...(Object.keys(dateFilter).length ? { startTime: dateFilter } : {})
+                    }
+                }),
+                // 8. Revenue in Period
+                prisma_1.default.opportunity.aggregate({
+                    where: {
+                        ownerId: u.id,
+                        stage: 'closed_won',
+                        organisationId: orgId,
+                        ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
+                    },
+                    _sum: { amount: true }
+                })
+            ]);
+            const unattendedLeads = Math.max(0, activeLeads - attendedLeads);
+            const revenue = revenueData._sum.amount || 0;
+            // Performance Index Calculation (0-100)
+            // Weighting: 40% Conversion, 30% Calls, 20% Activity (Status Changes), 10% Promptness
+            const conversionRate = periodLeads > 0 ? (wonDeals / periodLeads) : 0;
+            const callScore = Math.min((callsMade / 50) * 100, 100); // 50 calls as a "perfect" score for activity period
+            const activityScore = Math.min((statusChanges / 30) * 100, 100); // 30 updates as "perfect"
+            const promptnessScore = activeLeads > 0 ? ((attendedLeads / activeLeads) * 100) : 100;
+            const performanceIndex = ((conversionRate * 100 * 0.4) +
+                (callScore * 0.3) +
+                (activityScore * 0.2) +
+                (promptnessScore * 0.1)).toFixed(1);
+            return {
+                userId: u.id,
+                name: `${u.firstName} ${u.lastName || ''}`.trim(),
+                role: u.role,
+                profileImage: u.profileImage,
+                branch: u.branch?.name || 'N/A',
+                metrics: {
+                    totalLeads: periodLeads,
+                    activeLeads,
+                    callsMade,
+                    statusChanges,
+                    unattendedLeads,
+                    wonDeals,
+                    meetings,
+                    revenue,
+                    performanceIndex: parseFloat(performanceIndex),
+                    conversionRate: parseFloat((conversionRate * 100).toFixed(1))
+                }
+            };
+        }));
+        // Sort by Performance Index
+        report.sort((a, b) => b.metrics.performanceIndex - a.metrics.performanceIndex);
+        res.json(report);
+    }
+    catch (error) {
+        console.error('[ReportController] getUserPerformanceDetails error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.getUserPerformanceDetails = getUserPerformanceDetails;

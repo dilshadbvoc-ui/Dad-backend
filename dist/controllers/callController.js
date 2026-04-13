@@ -16,11 +16,34 @@ if (!fs_1.default.existsSync(uploadDir)) {
 }
 const initiateCall = async (req, res) => {
     try {
-        const { leadId, phoneNumber, direction = 'outbound' } = req.body;
+        const { leadId, phoneNumber, direction = 'outbound', callSessionId } = req.body;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
+        // DEDUPLICATION: Check if an 'initiated' interaction already exists for this lead/user/phone in last 60s
+        const recentWindow = new Date(Date.now() - 60 * 1000);
+        const existingInteraction = await prisma_1.default.interaction.findFirst({
+            where: {
+                leadId,
+                createdById: user.id,
+                phoneNumber,
+                type: 'call',
+                callStatus: 'initiated',
+                createdAt: { gte: recentWindow }
+            }
+        });
+        if (existingInteraction) {
+            console.log(`[CallController] Reusing existing initiated interaction ${existingInteraction.id}`);
+            // Update session ID if it was missing but now provided
+            if (callSessionId && !existingInteraction.callSessionId) {
+                await prisma_1.default.interaction.update({
+                    where: { id: existingInteraction.id },
+                    data: { callSessionId }
+                });
+            }
+            return res.status(200).json(existingInteraction);
+        }
         const interaction = await prisma_1.default.interaction.create({
             data: {
                 type: 'call',
@@ -30,6 +53,7 @@ const initiateCall = async (req, res) => {
                 callStatus: 'initiated',
                 phoneNumber,
                 description: 'Call initiated',
+                callSessionId: callSessionId || undefined,
                 // Defaults to Lead logic as per old controller
                 lead: { connect: { id: leadId } },
                 organisation: { connect: { id: orgId } },
@@ -39,6 +63,7 @@ const initiateCall = async (req, res) => {
         res.status(201).json(interaction);
     }
     catch (error) {
+        console.error('initiateCall error:', error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -90,18 +115,14 @@ const completeCall = async (req, res) => {
         if (shouldCreateTask) {
             const dueDate = new Date();
             dueDate.setMinutes(dueDate.getMinutes() + delay);
-            await prisma_1.default.followUp.create({
-                data: {
-                    subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
-                    description: `Follow-up scheduled from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
-                    dueDate: dueDate,
-                    status: 'not_started',
-                    priority: 'medium',
-                    organisation: interaction.organisationId ? { connect: { id: interaction.organisationId } } : undefined,
-                    assignedTo: interaction.createdById ? { connect: { id: interaction.createdById } } : undefined,
-                    lead: interaction.leadId ? { connect: { id: interaction.leadId } } : undefined,
-                    contact: interaction.contactId ? { connect: { id: interaction.contactId } } : undefined,
-                }
+            await followUpService_1.FollowUpService.rescheduleOrCreateFollowUp({
+                subject: `Follow-up: Call with ${interaction.phoneNumber || 'Lead'}`,
+                description: `Follow-up scheduled from call on ${new Date().toLocaleDateString()}.\n\nCall Notes: ${notes || 'None'}`,
+                dueDate: dueDate,
+                organisationId: interaction.organisationId,
+                createdById: interaction.createdById || undefined,
+                leadId: interaction.leadId,
+                assignedToId: interaction.createdById || undefined,
             });
             // Sync Lead follow-up date using the dedicated service
             if (interaction.leadId) {
@@ -194,7 +215,7 @@ const getAllCalls = async (req, res) => {
                 }
             }
             else {
-                where.createdById = { in: visibleUserIds };
+                where.createdById = { in: [...visibleUserIds, null] };
             }
         }
         else if (userId && userId !== 'all') {
@@ -300,7 +321,7 @@ const getCallStats = async (req, res) => {
         // Hierarchy filtering
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            baseWhere.createdById = { in: visibleUserIds };
+            baseWhere.createdById = { in: [...visibleUserIds, null] };
         }
         // Total calls
         const totalCalls = await prisma_1.default.interaction.count({ where: baseWhere });

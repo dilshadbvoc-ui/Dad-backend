@@ -28,5 +28,6 @@ router.get('/lead/:leadId', authMiddleware_1.protect, rateLimiter_1.whatsappLimi
 router.post('/test', authMiddleware_1.protect, rateLimiter_1.whatsappLimiter, whatsAppController_1.testConnection);
 router.get('/webhook', whatsAppController_1.verifyWebhook);
 router.post('/webhook', whatsAppController_1.handleWebhook);
+router.post('/webhook/gallabox', whatsAppController_1.handleGallaboxWebhook);
 router.post('/upload-media', authMiddleware_1.protect, upload.single('file'), whatsAppController_1.uploadMedia);
 exports.default = router;

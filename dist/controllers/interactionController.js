@@ -56,6 +56,60 @@ const createInteractionGeneric = async (req, res) => {
             else if (onModel === 'Opportunity')
                 data.opportunity = { connect: { id: relatedTo } };
         }
+        // Automatic Lookup by Phone Number (if no lead/contact ID provided)
+        // This helps associate calls from the mobile app with CRM records even if the app didn't do the lookup
+        if (!data.lead && !data.contact && phoneNumber && orgId) {
+            const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+            const last10 = cleanPhone.slice(-10);
+            if (last10.length >= 10) {
+                const matchedLead = await prisma_1.default.lead.findFirst({
+                    where: {
+                        organisationId: orgId,
+                        isDeleted: false,
+                        OR: [
+                            { phone: { contains: last10 } },
+                            { secondaryPhone: { contains: last10 } }
+                        ]
+                    },
+                    select: { id: true }
+                });
+                if (matchedLead) {
+                    data.lead = { connect: { id: matchedLead.id } };
+                }
+                else {
+                    // Try Contact if no lead
+                    const matchedContact = await prisma_1.default.contact.findFirst({
+                        where: {
+                            organisationId: orgId,
+                            isDeleted: false,
+                            OR: [
+                                { phones: { path: ['$[*]'], string_contains: last10 } }, // Simplification for json phones
+                                { phones: { string_contains: last10 } }
+                            ]
+                        },
+                        select: { id: true }
+                    });
+                    if (matchedContact) {
+                        data.contact = { connect: { id: matchedContact.id } };
+                    }
+                }
+            }
+        }
+        // Logic for Non-CRM Contact Synchronization
+        // If it's a call and not connected to any known entity, check settings
+        const isConnected = data.lead || data.contact || data.account || data.opportunity;
+        if (type === 'call' && !isConnected && orgId) {
+            const settings = await prisma_1.default.callSettings.findUnique({
+                where: { organisationId: orgId }
+            });
+            // If settings missing or null, default to true (to match previous behavior)
+            const canSync = settings?.syncNonCrmContacts ?? true;
+            if (!canSync) {
+                return res.status(400).json({
+                    message: 'Contact synchronization is disabled. Interactions can only be logged for existing Leads or Contacts.'
+                });
+            }
+        }
         const interaction = await prisma_1.default.interaction.create({
             data
         });
@@ -141,7 +195,7 @@ const getLeadInteractions = async (req, res) => {
         // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            where.createdById = { in: visibleUserIds };
+            where.createdById = { in: [...visibleUserIds, null] };
         }
         const interactions = await prisma_1.default.interaction.findMany({
             where,
@@ -179,7 +233,7 @@ const getAllInteractions = async (req, res) => {
         // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            where.createdById = { in: visibleUserIds };
+            where.createdById = { in: [...visibleUserIds, null] };
         }
         // Filter: Type
         if (type)
@@ -255,7 +309,7 @@ exports.updateInteractionRecording = updateInteractionRecording;
 const logQuickInteraction = async (req, res) => {
     try {
         const { leadId } = req.params;
-        const { type, phoneNumber } = req.body; // type: 'call' | 'whatsapp'
+        const { type, phoneNumber, callSessionId } = req.body; // type: 'call' | 'whatsapp'
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
@@ -266,6 +320,29 @@ const logQuickInteraction = async (req, res) => {
         });
         if (!lead)
             return res.status(404).json({ message: 'Lead not found' });
+        // DEDUPLICATION: Check if an 'initiated' interaction already exists for this lead/user/phone in last 60s
+        const recentWindow = new Date(Date.now() - 60 * 1000);
+        const existingInteraction = await prisma_1.default.interaction.findFirst({
+            where: {
+                leadId,
+                createdById: user.id,
+                phoneNumber: phoneNumber || lead.phone,
+                type: type === 'call' ? 'call' : 'other',
+                callStatus: 'initiated',
+                createdAt: { gte: recentWindow }
+            }
+        });
+        if (existingInteraction) {
+            console.log(`[Interaction] Reusing existing initiated interaction ${existingInteraction.id} for lead ${leadId}`);
+            // Update session ID if it was missing but now provided
+            if (callSessionId && !existingInteraction.callSessionId) {
+                await prisma_1.default.interaction.update({
+                    where: { id: existingInteraction.id },
+                    data: { callSessionId }
+                });
+            }
+            return res.status(200).json(existingInteraction);
+        }
         // Map 'whatsapp' to 'other' since it's not in InteractionType enum
         const interactionType = type === 'whatsapp' ? 'other' : type;
         const interaction = await prisma_1.default.interaction.create({
@@ -276,6 +353,7 @@ const logQuickInteraction = async (req, res) => {
                 description: `Initiated ${type} to ${phoneNumber || lead.phone}`,
                 phoneNumber: phoneNumber || lead.phone,
                 callStatus: 'initiated',
+                callSessionId: callSessionId || undefined,
                 lead: { connect: { id: leadId } },
                 createdBy: { connect: { id: user.id } },
                 organisation: { connect: { id: orgId } },

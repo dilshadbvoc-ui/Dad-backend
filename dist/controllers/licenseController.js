@@ -79,7 +79,7 @@ const getCurrentLicense = async (req, res) => {
             orderBy: { endDate: 'desc' }
         });
         if (!license) {
-            return res.status(404).json({ message: 'No active license found' });
+            return res.json({ license: null, message: 'No active license found' });
         }
         // Get current user count
         const userCount = await prisma_1.default.user.count({

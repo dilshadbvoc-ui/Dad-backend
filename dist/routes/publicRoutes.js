@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const webFormController_1 = require("../controllers/webFormController");
 const metaIntegrationService_1 = require("../services/metaIntegrationService");
+const siteFAQController_1 = require("../controllers/siteFAQController");
 const router = express_1.default.Router();
 /**
  * @route GET /api/public/health
@@ -30,4 +31,9 @@ router.post('/meta/webhook', (req, res) => {
     metaIntegrationService_1.MetaIntegrationService.handleWebhook(req.body);
     res.sendStatus(200);
 });
+/**
+ * @route GET /api/public/faqs
+ * @desc Get active FAQs for landing page
+ */
+router.get('/faqs', siteFAQController_1.getPublicFAQs);
 exports.default = router;

@@ -42,7 +42,7 @@ const updateCallSettings = async (req, res) => {
         if (!orgId) {
             return res.status(400).json({ message: 'Organisation not found' });
         }
-        const { autoRecordOutbound, autoRecordInbound, recordingQuality, storageType, retentionDays, autoDeleteEnabled, popupOnIncoming, autoFollowupReminder, followupDelayMinutes } = req.body;
+        const { autoRecordOutbound, autoRecordInbound, recordingQuality, storageType, retentionDays, autoDeleteEnabled, popupOnIncoming, autoFollowupReminder, followupDelayMinutes, syncNonCrmContacts } = req.body;
         // Upsert settings
         const settings = await prisma_1.default.callSettings.upsert({
             where: { organisationId: orgId },
@@ -55,7 +55,8 @@ const updateCallSettings = async (req, res) => {
                 autoDeleteEnabled: autoDeleteEnabled ?? undefined,
                 popupOnIncoming: popupOnIncoming ?? undefined,
                 autoFollowupReminder: autoFollowupReminder ?? undefined,
-                followupDelayMinutes: followupDelayMinutes ?? undefined
+                followupDelayMinutes: followupDelayMinutes ?? undefined,
+                syncNonCrmContacts: syncNonCrmContacts ?? undefined
             },
             create: {
                 organisationId: orgId,
@@ -67,7 +68,8 @@ const updateCallSettings = async (req, res) => {
                 autoDeleteEnabled: autoDeleteEnabled ?? false,
                 popupOnIncoming: popupOnIncoming ?? true,
                 autoFollowupReminder: autoFollowupReminder ?? true,
-                followupDelayMinutes: followupDelayMinutes ?? 30
+                followupDelayMinutes: followupDelayMinutes ?? 30,
+                syncNonCrmContacts: syncNonCrmContacts ?? true // Default to true if not specified on first create
             }
         });
         res.json(settings);
