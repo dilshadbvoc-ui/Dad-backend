@@ -351,7 +351,7 @@ export const updateInteractionRecording = async (req: Request, res: Response) =>
 export const logQuickInteraction = async (req: Request, res: Response) => {
     try {
         const { leadId } = req.params;
-        const { type, phoneNumber } = req.body; // type: 'call' | 'whatsapp'
+        const { type, phoneNumber, callSessionId } = req.body; // type: 'call' | 'whatsapp'
         const user = (req as any).user;
         const orgId = getOrgId(user);
 
@@ -364,6 +364,31 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
 
         if (!lead) return res.status(404).json({ message: 'Lead not found' });
 
+        // DEDUPLICATION: Check if an 'initiated' interaction already exists for this lead/user/phone in last 60s
+        const recentWindow = new Date(Date.now() - 60 * 1000);
+        const existingInteraction = await prisma.interaction.findFirst({
+            where: {
+                leadId,
+                createdById: user.id,
+                phoneNumber: phoneNumber || lead.phone,
+                type: type === 'call' ? 'call' : 'other',
+                callStatus: 'initiated',
+                createdAt: { gte: recentWindow }
+            }
+        });
+
+        if (existingInteraction) {
+            console.log(`[Interaction] Reusing existing initiated interaction ${existingInteraction.id} for lead ${leadId}`);
+            // Update session ID if it was missing but now provided
+            if (callSessionId && !existingInteraction.callSessionId) {
+                await prisma.interaction.update({
+                    where: { id: existingInteraction.id },
+                    data: { callSessionId }
+                });
+            }
+            return res.status(200).json(existingInteraction);
+        }
+
         // Map 'whatsapp' to 'other' since it's not in InteractionType enum
         const interactionType = type === 'whatsapp' ? 'other' : type;
 
@@ -375,6 +400,7 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
                 description: `Initiated ${type} to ${phoneNumber || lead.phone}`,
                 phoneNumber: phoneNumber || lead.phone,
                 callStatus: 'initiated',
+                callSessionId: callSessionId || undefined,
                 lead: { connect: { id: leadId } },
                 createdBy: { connect: { id: user.id } },
                 organisation: { connect: { id: orgId } },

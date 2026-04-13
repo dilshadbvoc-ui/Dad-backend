@@ -143,11 +143,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const formattedDescription = `Duration: ${Math.floor(durationSecs / 60)}m ${durationSecs % 60}s${file ? ' (Recording attached)' : ''}`;
 
         // 2. Link to existing interaction
-        // PRIORITY 1: Match by hardwareId (The official Android Record ID - 100% Accuracy)
-        // PRIORITY 2: Match by phone + timestamp window (2 mins)
+        // PRIORITY 1: Match by callSessionId (UUID - 100% Accuracy)
+        // PRIORITY 2: Match by hardwareId (Android Record ID - 100% Accuracy)
+        // PRIORITY 3: Fuzzy Match (Phone + User + Time window for 'initiated' calls)
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-        const twoMinsBefore = new Date(callDate.getTime() - 2 * 60 * 1000);
-        const twoMinsAfter = new Date(callDate.getTime() + 2 * 60 * 1000);
+        const searchWindowStart = new Date(callDate.getTime() - 5 * 60 * 1000); // 5 mins before
+        const searchWindowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);   // 5 mins after
         
         console.log(`[AndroidUpload] Searching for interaction to merge (Phone: ${phoneNumber}, HardwareId: ${hardwareId || 'none'}, Date: ${callDate.toISOString().split('.')[0]})...`);
         
@@ -155,34 +156,45 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
         const phoneSuffix = phoneDigits.slice(-10);
 
-        const whereClause: any = {
-            organisationId: user.organisationId,
-            type: 'call'
-        };
+        let existingInteraction = null;
 
-        // PRECISION MATCHING STRATEGY:
-        // 1. First priority: Unique Call Session UUID (covers the full lifecycle of a single call)
-        // 2. Second priority: Hardware Record ID (covers reconciliation with phone logs)
-        // 3. Fallback: Create new row (never merge by time guessing)
+        // Try exact matching first
         if (callSessionId && callSessionId.length > 0) {
-            whereClause.callSessionId = callSessionId;
-        } else if (hardwareId && hardwareId.length > 0 && hardwareId !== "none") {
-            whereClause.hardwareId = hardwareId;
-        } else {
-            // Absolute separation for calls without stable IDs (Zero-Merge Policy)
-            whereClause.id = "FORCE_NEW_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5);
+            existingInteraction = await prisma.interaction.findFirst({
+                where: { organisationId: user.organisationId, callSessionId },
+                orderBy: { date: 'desc' }
+            });
         }
 
-        const existingInteraction = await prisma.interaction.findFirst({
-            where: whereClause,
-            orderBy: { date: 'desc' }
-        });
+        if (!existingInteraction && hardwareId && hardwareId.length > 0 && hardwareId !== "none") {
+            existingInteraction = await prisma.interaction.findFirst({
+                where: { organisationId: user.organisationId, hardwareId },
+                orderBy: { date: 'desc' }
+            });
+        }
+
+        // FUZZY RECONCILIATION: Look for 'initiated' calls if no exact match
+        if (!existingInteraction && phoneSuffix.length >= 10) {
+            console.log(`[AndroidUpload] Exact match failed. Attempting fuzzy reconciliation for phone suffix ${phoneSuffix}...`);
+            existingInteraction = await prisma.interaction.findFirst({
+                where: {
+                    organisationId: user.organisationId,
+                    type: 'call',
+                    callStatus: 'initiated',
+                    phoneNumber: { contains: phoneSuffix },
+                    date: {
+                        gte: searchWindowStart,
+                        lte: searchWindowEnd
+                    }
+                },
+                orderBy: { date: 'desc' }
+            });
+        }
 
         if (existingInteraction) {
-            console.log(`[AndroidUpload] Healing interaction ${existingInteraction.id} with official duration: ${durationSecs}s`);
+            console.log(`[AndroidUpload] Healing interaction ${existingInteraction.id} (Status: ${existingInteraction.callStatus}) with official duration: ${durationSecs}s`);
             
             // SYSTEM LOG RULE: If the new duration is > 0, we ALWAYS trust it over a 2s estimate
-            // And if this is an "Official" sync (identified by duration being different from recording length), we trust it.
             const shouldUpdate = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
 
             await prisma.interaction.update({
@@ -203,8 +215,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             // No existing interaction: Create a new record for lead or standalone
             const rawType = String(callType || 'UNKNOWN').toUpperCase();
             
-            // Map Android CallLog types (String or Numeric)
-            // 1 = INCOMING, 2 = OUTGOING, 3 = MISSED, 5 = REJECTED, 6 = BLOCKED
+            // Map Android CallLog types
             let direction: 'inbound' | 'outbound' = 'inbound';
             let subject = 'Mobile Call';
             let status = 'completed';
@@ -225,7 +236,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 subject = 'Mobile Inbound Call';
             }
 
-            console.log(`[AndroidUpload] No initiated interaction found. Creating new '${direction}' record (Type: ${rawType}, Lead: ${targetLeadId || 'null'})`);
+            console.log(`[AndroidUpload] No target interaction found after fuzzy search. Creating new '${direction}' record (Lead: ${targetLeadId || 'null'})`);
             
             await prisma.interaction.create({
                 data: {
@@ -233,7 +244,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     direction: direction,
                     subject: subject,
                     description: formattedDescription,
-                    date: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
+                    date: callDate,
                     duration: Math.round(durationMinutes * 100) / 100,
                     recordingDuration: durationSecs,
                     recordingUrl: recording.fileUrl || null,
@@ -337,43 +348,64 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     continue;
                 }
 
-                // 3. Deduplicate: check if an Interaction already exists for this phone + timestamp window
+                // 3. Link to existing interaction (Deduplication / Reconciliation)
                 const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-                const windowStart = new Date(callDate.getTime() - 60_000); // 1 min before
-                const windowEnd = new Date(callDate.getTime() + 60_000);   // 1 min after
+                const searchWindowStart = new Date(callDate.getTime() - 5 * 60 * 1000); // 5 mins before
+                const searchWindowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);   // 5 mins after
+                
+                const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
+                const phoneSuffix = phoneDigits.slice(-10);
 
-                const whereClauseSync: any = {
-                    organisationId: user.organisationId,
-                    type: 'call'
-                };
+                let existingInteraction = null;
 
-                // ABSOLUTE POLICY: Only merge if a valid hardwareId is provided.
-                if (hardwareId && hardwareId.length > 0 && hardwareId !== "none") {
-                    whereClauseSync.hardwareId = hardwareId;
-                } else {
-                    // Force create new
-                    whereClauseSync.id = "FORCE_CREATE_NEW_" + Date.now();
+                // Priority 1: Perfect match by callSessionId
+                if (callSessionId && callSessionId.length > 0) {
+                    existingInteraction = await prisma.interaction.findFirst({
+                        where: { organisationId: user.organisationId, callSessionId },
+                        orderBy: { date: 'desc' }
+                    });
                 }
 
-                const existingInteraction = await prisma.interaction.findFirst({
-                    where: whereClauseSync,
-                    orderBy: { date: 'desc' }
-                });
+                // Priority 2: Perfect match by hardwareId
+                if (!existingInteraction && hardwareId && hardwareId.length > 0 && hardwareId !== "none") {
+                    existingInteraction = await prisma.interaction.findFirst({
+                        where: { organisationId: user.organisationId, hardwareId },
+                        orderBy: { date: 'desc' }
+                    });
+                }
+
+                // Priority 3: Fuzzy Match (Phone + User + Time window for 'initiated' calls)
+                if (!existingInteraction && phoneSuffix.length >= 10) {
+                    existingInteraction = await prisma.interaction.findFirst({
+                        where: {
+                            organisationId: user.organisationId,
+                            type: 'call',
+                            callStatus: 'initiated',
+                            phoneNumber: { contains: phoneSuffix },
+                            date: {
+                                gte: searchWindowStart,
+                                lte: searchWindowEnd
+                            }
+                        },
+                        orderBy: { date: 'desc' }
+                    });
+                }
 
                 if (existingInteraction) {
                     // HEAL EXISTING: Only update if new duration from Log is longer/better
                     const durationSecs = parseInt(duration, 10) || 0;
                     const currentDuration = (existingInteraction.duration || 0) * 60;
                     
-                    if (durationSecs > currentDuration || !existingInteraction.duration) {
-                        console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${durationSecs}s`);
+                    if (durationSecs > currentDuration || !existingInteraction.duration || existingInteraction.callStatus === 'initiated') {
+                        console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${durationSecs}s (from ${existingInteraction.callStatus})`);
                         await prisma.interaction.update({
                             where: { id: existingInteraction.id },
                             data: {
                                 duration: Math.round((durationSecs / 60) * 100) / 100,
                                 recordingDuration: durationSecs,
                                 callStatus: 'completed',
-                                hardwareId: hardwareId || undefined
+                                hardwareId: hardwareId || undefined,
+                                callSessionId: callSessionId || undefined
                             }
                         });
                         results.synced.push(phoneNumber);

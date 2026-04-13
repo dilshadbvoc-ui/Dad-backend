@@ -13,11 +13,36 @@ if (!fs.existsSync(uploadDir)) {
 
 export const initiateCall = async (req: Request, res: Response) => {
     try {
-        const { leadId, phoneNumber, direction = 'outbound' } = req.body;
+        const { leadId, phoneNumber, direction = 'outbound', callSessionId } = req.body;
         const user = (req as any).user;
         const orgId = getOrgId(user);
 
         if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        // DEDUPLICATION: Check if an 'initiated' interaction already exists for this lead/user/phone in last 60s
+        const recentWindow = new Date(Date.now() - 60 * 1000);
+        const existingInteraction = await prisma.interaction.findFirst({
+            where: {
+                leadId,
+                createdById: user.id,
+                phoneNumber,
+                type: 'call',
+                callStatus: 'initiated',
+                createdAt: { gte: recentWindow }
+            }
+        });
+
+        if (existingInteraction) {
+            console.log(`[CallController] Reusing existing initiated interaction ${existingInteraction.id}`);
+            // Update session ID if it was missing but now provided
+            if (callSessionId && !existingInteraction.callSessionId) {
+                await prisma.interaction.update({
+                    where: { id: existingInteraction.id },
+                    data: { callSessionId }
+                });
+            }
+            return res.status(200).json(existingInteraction);
+        }
 
         const interaction = await prisma.interaction.create({
             data: {
@@ -28,6 +53,7 @@ export const initiateCall = async (req: Request, res: Response) => {
                 callStatus: 'initiated',
                 phoneNumber,
                 description: 'Call initiated',
+                callSessionId: callSessionId || undefined,
 
                 // Defaults to Lead logic as per old controller
                 lead: { connect: { id: leadId } },
@@ -39,6 +65,7 @@ export const initiateCall = async (req: Request, res: Response) => {
 
         res.status(201).json(interaction);
     } catch (error) {
+        console.error('initiateCall error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };
