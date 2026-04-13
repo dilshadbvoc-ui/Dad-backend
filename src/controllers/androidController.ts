@@ -399,9 +399,12 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         orderBy: { date: 'desc' }
                     });
                 }
+                
+                const durationSecs = parseInt(duration, 10) || 0;
 
                 if (existingInteraction) {
                     // HEAL EXISTING: Only update if new duration from Log is longer/better
+                    const currentDuration = (existingInteraction.duration || 0) * 60;
                     if (durationSecs > currentDuration || !existingInteraction.duration || existingInteraction.callStatus === 'initiated') {
                         const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
                         const finalizedSyncDurationSecs = carrierDurationSecs ?? durationSecs;
