@@ -448,8 +448,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     direction = 'inbound';
                     subject = 'Mobile Inbound Call';
                 }
-
-                const durationSecs = parseInt(duration, 10) || 0;
+                durationSecs = parseInt(duration, 10) || 0;
                 const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
                 const finalizedNewDurationSecs = carrierDurationSecs ?? durationSecs;
                 const durationMinutes = finalizedNewDurationSecs / 60;
