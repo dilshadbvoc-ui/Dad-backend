@@ -194,6 +194,7 @@ export const getOrganisation = async (req: Request, res: Response) => {
             }
         }
 
+        console.log(`[getOrganisation] Responding for ${org.name}: userCount=${userCount}, userLimit=${sanitizedOrg.userLimit}`);
         res.json({ organisation: sanitizedOrg, userCount });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
