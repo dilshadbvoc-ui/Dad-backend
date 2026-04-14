@@ -851,6 +851,22 @@ export const permanentlyDeleteUser = async (req: Request, res: Response) => {
             }
         }
 
+        // 4.5 DELETE RESTRICTIVE BUT LESS IMPORTANT DATA
+        // These models have mandatory recipientId/userId and are safe to purge
+        const entitiesToPurge = [
+            { model: 'notification', field: 'recipientId' },
+            { model: 'searchHistory', field: 'userId' },
+            { model: 'userLog', field: 'userId' }
+        ];
+
+        for (const item of entitiesToPurge) {
+            if ((prisma as any)[item.model]) {
+                await (prisma as any)[item.model].deleteMany({
+                    where: { [item.field]: userId }
+                });
+            }
+        }
+
         // Nullify creator/history fields that might block deletion (restrictive FKs)
         const entitiesToNullify = [
             { model: 'lead', field: 'createdById' },
@@ -867,17 +883,25 @@ export const permanentlyDeleteUser = async (req: Request, res: Response) => {
             { model: 'interaction', field: 'createdById' },
             { model: 'leadHistory', field: 'changerId' },
             { model: 'leadHistory', field: 'newOwnerId' },
-            { model: 'leadHistory', field: 'oldOwnerId' }
+            { model: 'leadHistory', field: 'oldOwnerId' },
+            { model: 'quote', field: 'createdById' },
+            { model: 'quote', field: 'previousOwnerId' },
+            { model: 'case', field: 'createdById' },
+            { model: 'case', field: 'previousOwnerId' },
+            { model: 'salesTarget', field: 'previousOwnerId' },
+            { model: 'salesTarget', field: 'assignedById' },
+            { model: 'goal', field: 'previousOwnerId' }
         ];
 
         for (const item of entitiesToNullify) {
             if ((prisma as any)[item.model]) {
                 try {
+                    // check if the field is actually nullable in our logic or prisma
                     await (prisma as any)[item.model].updateMany({
                         where: { [item.field]: userId },
                         data: { [item.field]: null }
                     });
-                } catch (e) { /* ignore if field/model doesn't exist */ }
+                } catch (e) { /* ignore if field/model doesn't exist or is not nullable */ }
             }
         }
 
