@@ -709,6 +709,9 @@ model Interaction {
   organisation      Organisation?        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   branchId          String?
   branch            Branch?              @relation(fields: [branchId], references: [id])
+  
+  @@unique([organisationId, callSessionId])
+  @@unique([organisationId, hardwareId])
   @@index([branchId])
 }
 

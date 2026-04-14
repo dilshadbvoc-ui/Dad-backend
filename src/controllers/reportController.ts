@@ -648,7 +648,8 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                 attendedLeads,
                 wonDeals,
                 meetings,
-                revenueData
+                revenueData,
+                talkTimeData
             ] = await Promise.all([
                 // 1. Total Leads Assigned/Active in Period
                 prisma.lead.count({
@@ -726,24 +727,53 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
                     },
                     _sum: { amount: true }
+                }),
+                // 9. Total Talk Time (Prioritize hardwareDuration) in Period
+                prisma.interaction.findMany({
+                    where: {
+                        createdById: u.id,
+                        type: 'call',
+                        callStatus: 'completed',
+                        organisationId: orgId as string,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    },
+                    select: { duration: true, recordingDuration: true, hardwareDuration: true }
                 })
             ]);
+
+            let totalTalkTimeSecs = 0;
+            talkTimeData.forEach(i => {
+                if (i.hardwareDuration && i.hardwareDuration > 0) {
+                    totalTalkTimeSecs += i.hardwareDuration;
+                } else if (i.recordingDuration && i.recordingDuration > 0) {
+                    totalTalkTimeSecs += i.recordingDuration;
+                } else if (i.duration && i.duration > 0) {
+                    totalTalkTimeSecs += Math.round(i.duration * 60);
+                }
+            });
 
             const unattendedLeads = Math.max(0, activeLeads - attendedLeads);
             const revenue = revenueData._sum.amount || 0;
             
             // Performance Index Calculation (0-100)
-            // Weighting: 40% Conversion, 30% Calls, 20% Activity (Status Changes), 10% Promptness
+            // Weighting: 40% Conversion, 25% Talk Time, 15% Call Count, 15% Activity, 5% Promptness
             const conversionRate = periodLeads > 0 ? (wonDeals / periodLeads) : 0;
-            const callScore = Math.min((callsMade / 50) * 100, 100); // 50 calls as a "perfect" score for activity period
-            const activityScore = Math.min((statusChanges / 30) * 100, 100); // 30 updates as "perfect"
+            
+            // Talk Time Score: 60 mins (3600s) = perfect
+            const talkTimeScore = Math.min((totalTalkTimeSecs / 3600) * 100, 100);
+            
+            // Call Count Score: 50 calls = perfect
+            const callScore = Math.min((callsMade / 50) * 100, 100); 
+            
+            const activityScore = Math.min((statusChanges / 30) * 100, 100); 
             const promptnessScore = activeLeads > 0 ? ((attendedLeads / activeLeads) * 100) : 100;
 
             const performanceIndex = (
                 (conversionRate * 100 * 0.4) + 
-                (callScore * 0.3) + 
-                (activityScore * 0.2) + 
-                (promptnessScore * 0.1)
+                (talkTimeScore * 0.25) + 
+                (callScore * 0.15) + 
+                (activityScore * 0.15) + 
+                (promptnessScore * 0.05)
             ).toFixed(1);
 
             return {
@@ -756,6 +786,8 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                     totalLeads: periodLeads,
                     activeLeads,
                     callsMade,
+                    totalTalkTime: Math.round(totalTalkTimeSecs / 60), // In minutes
+                    totalTalkTimeSeconds: totalTalkTimeSecs,
                     statusChanges,
                     unattendedLeads,
                     wonDeals,

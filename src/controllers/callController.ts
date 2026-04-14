@@ -391,17 +391,21 @@ export const getCallStats = async (req: Request, res: Response) => {
                     { recordingDuration: { gt: 0 } }
                 ]
             },
-            select: { duration: true, recordingDuration: true }
+            select: { duration: true, recordingDuration: true, hardwareDuration: true }
         });
 
         let totalSeconds = 0;
         let validCalls = 0;
         callsWithDuration.forEach(c => {
-            if (c.recordingDuration && c.recordingDuration > 0) {
+            // PRIORITY: hardwareDuration (Carrier Truth) > recordingDuration > duration (Estimated Mins)
+            if (c.hardwareDuration && c.hardwareDuration > 0) {
+                totalSeconds += c.hardwareDuration;
+                validCalls++;
+            } else if (c.recordingDuration && c.recordingDuration > 0) {
                 totalSeconds += c.recordingDuration;
                 validCalls++;
             } else if (c.duration && c.duration > 0) {
-                totalSeconds += c.duration * 60;
+                totalSeconds += Math.round(c.duration * 60);
                 validCalls++;
             }
         });
@@ -543,6 +547,7 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
                 callStatus: true,
                 duration: true,
                 recordingDuration: true,
+                hardwareDuration: true,
                 direction: true
             }
         });
@@ -579,11 +584,13 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
                 if (i.callStatus === 'completed') {
                     stats.connectedCalls++;
                     
-                    // Duration: duration is in mins, recordingDuration is in seconds
-                    if (i.recordingDuration && i.recordingDuration > 0) {
+                    // Priority: hardwareDuration (Seconds) > recordingDuration (Seconds) > duration (Minutes)
+                    if (i.hardwareDuration && i.hardwareDuration > 0) {
+                        stats.totalDurationSeconds += i.hardwareDuration;
+                    } else if (i.recordingDuration && i.recordingDuration > 0) {
                         stats.totalDurationSeconds += i.recordingDuration;
                     } else if (i.duration && i.duration > 0) {
-                        stats.totalDurationSeconds += i.duration * 60;
+                        stats.totalDurationSeconds += Math.round(i.duration * 60);
                     }
                 }
             }

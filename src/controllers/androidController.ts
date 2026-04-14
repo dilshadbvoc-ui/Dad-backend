@@ -246,26 +246,35 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
 
             console.log(`[AndroidUpload] No target interaction found after fuzzy search. Creating new '${direction}' record (Lead: ${targetLeadId || 'null'})`);
             
-            await prisma.interaction.create({
-                data: {
-                    type: 'call',
-                    direction: direction,
-                    subject: subject,
-                    description: formattedDescription,
-                    date: callDate,
-                    duration: Math.round(durationMinutes * 100) / 100,
-                    recordingDuration: durationSecs,
-                    hardwareDuration: carrierDurationSecs,
-                    recordingUrl: recording.fileUrl || null,
-                    callStatus: status,
-                    lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
-                    organisation: { connect: { id: user.organisationId } },
-                    createdBy: { connect: { id: user.id } },
-                    phoneNumber: finalPhone,
-                    hardwareId: hardwareId || undefined,
-                    callSessionId: callSessionId || undefined
+            try {
+                await prisma.interaction.create({
+                    data: {
+                        type: 'call',
+                        direction: direction,
+                        subject: subject,
+                        description: formattedDescription,
+                        date: callDate,
+                        duration: Math.round(durationMinutes * 100) / 100,
+                        recordingDuration: durationSecs,
+                        hardwareDuration: carrierDurationSecs,
+                        recordingUrl: recording.fileUrl || undefined,
+                        callStatus: status,
+                        phoneNumber: phoneNumber || undefined,
+                        hardwareId: hardwareId || undefined,
+                        callSessionId: callSessionId || undefined,
+                        lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
+                        organisation: { connect: { id: user.organisationId } },
+                        createdBy: { connect: { id: user.id } },
+                        branchId: user.branchId || undefined
+                    }
+                });
+            } catch (err: any) {
+                if (err.code === 'P2002') {
+                    console.log(`[AndroidUpload] Duplicate report suppressed via database unique constraint (HwId: ${hardwareId}, SessId: ${callSessionId})`);
+                } else {
+                    throw err;
                 }
-            });
+            }
         }
 
         res.status(201).json({ message: 'Recording and Interaction uploaded successfully', recording });
