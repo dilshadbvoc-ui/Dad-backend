@@ -414,7 +414,10 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
             action: 'LOG_QUICK_INTERACTION',
             entity: 'Interaction',
             entityId: interaction.id,
-            details: { type }
+            details: { 
+                type, 
+                name: `${lead.firstName} ${lead.lastName || ''}`.trim() 
+            }
         });
 
         res.status(201).json(interaction);

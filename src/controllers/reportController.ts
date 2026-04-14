@@ -649,7 +649,8 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                 wonDeals,
                 meetings,
                 revenueData,
-                talkTimeData
+                talkTimeData,
+                strictlyNewLeads
             ] = await Promise.all([
                 // 1. Total Leads Assigned/Active in Period
                 prisma.lead.count({
@@ -686,16 +687,15 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
                     }
                 }),
-                // 5. Attended Active Leads (Interactions in last 48h)
+                // 5. Attended Leads (Interacted with in period)
                 prisma.lead.count({
                     where: {
                         assignedToId: u.id,
                         organisationId: orgId as string,
                         isDeleted: false,
-                        status: { in: ['new', 'contacted', 'interested', 'qualified', 'nurturing', 'call_not_connected', 're_enquiry'] },
                         interactions: {
                             some: {
-                                createdAt: { gte: thresholdDate }
+                                createdAt: dateFilter
                             }
                         }
                     }
@@ -738,6 +738,15 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
                     },
                     select: { duration: true, recordingDuration: true, hardwareDuration: true }
+                }),
+                // 10. Strictly New Leads (Unattended Backdrop)
+                prisma.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId as string,
+                        isDeleted: false,
+                        status: 'new'
+                    }
                 })
             ]);
 
@@ -752,7 +761,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                 }
             });
 
-            const unattendedLeads = Math.max(0, activeLeads - attendedLeads);
+            const unattendedLeads = strictlyNewLeads;
             const revenue = revenueData._sum.amount || 0;
             
             // Performance Index Calculation (0-100)

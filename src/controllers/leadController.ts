@@ -541,7 +541,11 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 entityId: leadId,
                 actorId: requester.id,
                 organisationId: currentLead.organisationId,
-                details: { oldStatus: currentLead.status, newStatus: updates.status }
+                details: { 
+                    name: `${currentLead.firstName} ${currentLead.lastName || ''}`.trim(),
+                    oldStatus: currentLead.status, 
+                    newStatus: updates.status 
+                }
             });
         }
 

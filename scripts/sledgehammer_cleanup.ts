@@ -97,6 +97,43 @@ async function main() {
     }
     console.log(`Handled ${ghostsRemoved} time-proximity ghost entries.`);
 
+    // 4. IRON VEIL (v1.9): Cross-Number Ghosting (0-sec Outbound near ANY Inbound)
+    console.log('Scanning for cross-number "Iron Veil" ghost entries (last 48 hours)...');
+    let ironVeilsRemoved = 0;
+    const allRecent = await prisma.interaction.findMany({
+        where: {
+            createdAt: { gte: new Date(Date.now() - 48 * 60 * 60 * 1000) }
+        },
+        orderBy: { createdAt: 'asc' }
+    });
+
+    for (let i = 0; i < allRecent.length; i++) {
+        const first = allRecent[i];
+        for (let j = i + 1; j < allRecent.length; j++) {
+            const second = allRecent[j];
+
+            const timeDiff = Math.abs(second.createdAt.getTime() - first.createdAt.getTime());
+            if (timeDiff < 15000) { // 15 seconds window
+                // Check if one is Inbound and one is 0-sec Outbound (from different or same number)
+                let ghostId = null;
+                if (first.direction === 'inbound' && second.direction === 'outbound' && (second.duration || 0) === 0) {
+                    ghostId = second.id;
+                } else if (second.direction === 'inbound' && first.direction === 'outbound' && (first.duration || 0) === 0) {
+                    ghostId = first.id;
+                }
+
+                if (ghostId) {
+                    console.log(`  IRON VEIL: Suppressing UI-Ghost ${ghostId} near Inbound session. TimeDiff: ${timeDiff}ms.`);
+                    try {
+                        await prisma.interaction.delete({ where: { id: ghostId } });
+                        ironVeilsRemoved++;
+                    } catch (e) {}
+                }
+            }
+        }
+    }
+    console.log(`Suppressed ${ironVeilsRemoved} Iron Veil ghosts.`);
+
     console.log('--- SLEDGEHAMMER PROTOCOL COMPLETE ---');
 }
 

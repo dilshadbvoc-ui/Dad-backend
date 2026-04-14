@@ -154,8 +154,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         // PRIORITY 2: Match by hardwareId (Android Record ID - 100% Accuracy)
         // PRIORITY 3: Fuzzy Match (Phone + User + Time window for 'initiated' calls)
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-        const searchWindowStart = new Date(callDate.getTime() - 5 * 60 * 1000); // 5 mins before
-        const searchWindowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);   // 5 mins after
+        const searchWindowStart = new Date(callDate.getTime() - 120 * 1000); // 2 mins before
+        const searchWindowEnd = new Date(callDate.getTime() + 120 * 1000);   // 2 mins after
         
         console.log(`[AndroidUpload] Searching for interaction to merge (Phone: ${phoneNumber}, HardwareId: ${hardwareId || 'none'}, Date: ${callDate.toISOString().split('.')[0]})...`);
         
@@ -223,30 +223,71 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             // No existing interaction: Create a new record for lead or standalone
             const rawType = String(callType || 'UNKNOWN').toUpperCase();
             
-            // Map Android CallLog types
+            // 3. Map Android CallLog types (Refined Mapping v2.0)
             let direction: 'inbound' | 'outbound' = 'inbound';
             let subject = 'Mobile Call';
             let status = 'completed';
 
-            if (rawType === 'OUTGOING' || rawType === '2' || rawType === 'OUT') {
+            const incomingIdentifiers = ['1', 'INCOMING', 'IN', 'INB'];
+            const outgoingIdentifiers = ['2', 'OUTGOING', 'OUT', 'OUTB'];
+            const missedIdentifiers = ['3', 'MISSED', 'MISS'];
+            const rejectedIdentifiers = ['5', 'REJECTED', 'REJ'];
+
+            if (outgoingIdentifiers.includes(rawType)) {
                 direction = 'outbound';
                 subject = 'Mobile Outbound Call';
-            } else if (rawType === 'MISSED' || rawType === '3') {
+                
+                // IRON VEIL (v3.0): Unconditionally suppress ANY 0-sec outbound without a recording.
+                // These are almost always ghost entries from the Android dialer opening.
+                if (finalizedDurationSecs === 0 && !file) {
+                    console.log(`[AndroidUpload] Iron Veil v3.0: Discarding 0-sec ghost outbound (${phoneNumber})`);
+                    return res.status(200).json({ message: 'Iron Veil: Discarded 0-sec ghost outbound call.' });
+                }
+            } else if (missedIdentifiers.includes(rawType)) {
                 direction = 'inbound';
                 subject = 'Missed Call from Lead';
                 status = 'missed';
-            } else if (rawType === 'REJECTED' || rawType === '5') {
+            } else if (rejectedIdentifiers.includes(rawType)) {
                 direction = 'inbound';
                 subject = 'Rejected Call from Lead';
                 status = 'rejected';
-            } else if (rawType === 'INCOMING' || rawType === '1' || rawType === 'IN') {
+            } else {
                 direction = 'inbound';
-                subject = 'Mobile Inbound Call';
+                if (incomingIdentifiers.includes(rawType)) {
+                    subject = 'Mobile Inbound Call';
+                }
             }
 
             console.log(`[AndroidUpload] No target interaction found after fuzzy search. Creating new '${direction}' record (Lead: ${targetLeadId || 'null'})`);
             
             try {
+                // LAST-SECOND ATOMIC DEDUPLICATION: Check one more time just before create
+                // to prevent race conditions from simultaneous requests.
+                const raceCheck = await prisma.interaction.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        createdById: user.id,
+                        phoneNumber: { contains: phoneSuffix },
+                        date: {
+                            gte: new Date(callDate.getTime() - 10000), // 10s tight window
+                            lte: new Date(callDate.getTime() + 10000)
+                        }
+                    }
+                });
+
+                if (raceCheck) {
+                    console.log(`[AndroidUpload] Atomic race check: Merging into just-created interaction ${raceCheck.id}`);
+                    await prisma.interaction.update({
+                        where: { id: raceCheck.id },
+                        data: {
+                            duration: finalizedDurationSecs > 0 ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                            hardwareId: hardwareId || undefined,
+                            callSessionId: callSessionId || undefined
+                        }
+                    });
+                    return res.status(201).json({ message: 'Merged into existing interaction', interactionId: raceCheck.id });
+                }
+
                 await prisma.interaction.create({
                     data: {
                         type: 'call',
@@ -368,8 +409,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 // 3. Link to existing interaction (Deduplication / Reconciliation)
                 const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-                const searchWindowStart = new Date(callDate.getTime() - 5 * 60 * 1000); // 5 mins before
-                const searchWindowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);   // 5 mins after
+                const searchWindowStart = new Date(callDate.getTime() - 120 * 1000); // 2 mins before
+                const searchWindowEnd = new Date(callDate.getTime() + 120 * 1000);   // 2 mins after
                 
                 const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
                 const phoneSuffix = phoneDigits.slice(-10);
@@ -437,30 +478,44 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     continue;
                 }
 
-                // 4. Map call type to direction and status
                 const rawType = String(callType || 'UNKNOWN').toUpperCase();
                 let direction: 'inbound' | 'outbound' = 'inbound';
                 let subject = 'Mobile Call';
                 let status = 'completed';
 
-                if (rawType === 'OUTGOING' || rawType === '2' || rawType === 'OUT') {
-                    direction = 'outbound';
-                    subject = 'Mobile Outbound Call';
-                } else if (rawType === 'MISSED' || rawType === '3') {
-                    direction = 'inbound';
-                    subject = 'Missed Call from Lead';
-                    status = 'missed';
-                } else if (rawType === 'REJECTED' || rawType === '5') {
-                    direction = 'inbound';
-                    subject = 'Rejected Call from Lead';
-                    status = 'rejected';
-                } else if (rawType === 'INCOMING' || rawType === '1' || rawType === 'IN') {
-                    direction = 'inbound';
-                    subject = 'Mobile Inbound Call';
-                }
+                const incomingIdentifiers = ['1', 'INCOMING', 'IN', 'INB'];
+                const outgoingIdentifiers = ['2', 'OUTGOING', 'OUT', 'OUTB'];
+                const missedIdentifiers = ['3', 'MISSED', 'MISS'];
+                const rejectedIdentifiers = ['5', 'REJECTED', 'REJ'];
+
                 durationSecs = parseInt(duration, 10) || 0;
                 const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
                 const finalizedNewDurationSecs = carrierDurationSecs ?? durationSecs;
+
+                if (outgoingIdentifiers.includes(rawType)) {
+                    direction = 'outbound';
+                    subject = 'Mobile Outbound Call';
+
+                    // IRON VEIL (v3.0): Same rule: Unconditionally discard 0-sec ghosts during bulk sync
+                    if (finalizedNewDurationSecs === 0) {
+                        console.log(`[BulkSync] Iron Veil v3.0: Skipping 0-sec ghost outbound (${phoneNumber})`);
+                        results.skipped++;
+                        continue;
+                    }
+                } else if (missedIdentifiers.includes(rawType)) {
+                    direction = 'inbound';
+                    subject = 'Missed Call from Lead';
+                    status = 'missed';
+                } else if (rejectedIdentifiers.includes(rawType)) {
+                    direction = 'inbound';
+                    subject = 'Rejected Call from Lead';
+                    status = 'rejected';
+                } else {
+                    direction = 'inbound';
+                    if (incomingIdentifiers.includes(rawType)) {
+                        subject = 'Mobile Inbound Call';
+                    }
+                }
                 const durationMinutes = finalizedNewDurationSecs / 60;
                 const formattedDescription = `Duration: ${Math.floor(finalizedNewDurationSecs / 60)}m ${finalizedNewDurationSecs % 60}s${carrierDurationSecs !== null ? ' [Carrier Verified]' : ''}`;
 
@@ -477,6 +532,33 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 });
 
                 // 6. Create the Interaction record (makes it visible in Call Logs + Timeline)
+                // LAST-SECOND ATOMIC DEDUPLICATION:
+                const raceCheck = await prisma.interaction.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        createdById: user.id,
+                        phoneNumber: { contains: phoneSuffix },
+                        date: {
+                            gte: new Date(callDate.getTime() - 10000),
+                            lte: new Date(callDate.getTime() + 10000)
+                        }
+                    }
+                });
+
+                if (raceCheck) {
+                    console.log(`[BulkSync] Atomic race check: merging ${phoneNumber}`);
+                    await prisma.interaction.update({
+                        where: { id: raceCheck.id },
+                        data: {
+                            duration: finalizedNewDurationSecs > 0 ? Math.round(durationMinutes * 100) / 100 : undefined,
+                            hardwareId: hardwareId || undefined,
+                            callSessionId: callSessionId || undefined
+                        }
+                    });
+                    results.synced.push(phoneNumber);
+                    continue;
+                }
+
                 await prisma.interaction.create({
                     data: {
                         type: 'call',
