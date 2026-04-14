@@ -770,3 +770,143 @@ export const activateUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+export const permanentlyDeleteUser = async (req: Request, res: Response) => {
+    try {
+        const currentUser = (req as any).user;
+        const orgId = getOrgId(currentUser);
+        const userId = req.params.id;
+
+        // Security check
+        if (currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
+            return res.status(403).json({ message: 'Only administrators can permanently delete users' });
+        }
+
+        const where: any = { id: userId };
+        if (currentUser.role !== 'super_admin') {
+            if (!orgId) return res.status(403).json({ message: 'No org' });
+            where.organisationId = orgId;
+        }
+
+        const existing = await prisma.user.findFirst({
+            where,
+            include: { subordinates: true }
+        });
+
+        if (!existing) {
+            return res.status(404).json({ message: 'User not found or access denied' });
+        }
+
+        // 1. MUST be suspended first
+        if (existing.isActive) {
+            return res.status(400).json({ message: 'User must be suspended before they can be permanently deleted' });
+        }
+
+        // 2. Prevent deleting self
+        if (existing.id === currentUser.id) {
+            return res.status(400).json({ message: 'You cannot delete your own account' });
+        }
+
+        console.log(`[PERMANENT_DELETE] User ${existing.email} deletion started by ${currentUser.email}`);
+
+        // 3. Determine transfer target (for ownership)
+        let transferTargetId = existing.reportsToId;
+        if (!transferTargetId) {
+            const adminUser = await prisma.user.findFirst({
+                where: {
+                    organisationId: existing.organisationId,
+                    role: 'admin',
+                    isActive: true,
+                    id: { not: userId }
+                }
+            });
+            transferTargetId = adminUser ? adminUser.id : currentUser.id;
+        }
+
+        /**
+         * 4. CLEANUP / TRANSFER PHASE
+         * We need to clear all mandatory/restrictive associations.
+         */
+
+        // Transfer transactional ownership (similar to deactivation, but more thorough)
+        const entitiesToTransfer = [
+            { model: 'lead', ownerField: 'assignedToId' },
+            { model: 'account', ownerField: 'ownerId' },
+            { model: 'contact', ownerField: 'ownerId' },
+            { model: 'opportunity', ownerField: 'ownerId' },
+            { model: 'task', ownerField: 'assignedToId' },
+            { model: 'case', ownerField: 'assignedToId' },
+            { model: 'quote', ownerField: 'assignedToId' },
+            { model: 'goal', ownerField: 'assignedToId' },
+            { model: 'salesTarget', ownerField: 'assignedToId' },
+            { model: 'followUp', ownerField: 'assignedToId' }
+        ];
+
+        for (const entity of entitiesToTransfer) {
+            if ((prisma as any)[entity.model]) {
+                await (prisma as any)[entity.model].updateMany({
+                    where: { [entity.ownerField]: userId },
+                    data: { [entity.ownerField]: transferTargetId }
+                });
+            }
+        }
+
+        // Nullify creator/history fields that might block deletion (restrictive FKs)
+        const entitiesToNullify = [
+            { model: 'lead', field: 'createdById' },
+            { model: 'lead', field: 'previousOwnerId' },
+            { model: 'account', field: 'createdById' },
+            { model: 'account', field: 'previousOwnerId' },
+            { model: 'contact', field: 'createdById' },
+            { model: 'contact', field: 'previousOwnerId' },
+            { model: 'opportunity', field: 'createdById' },
+            { model: 'opportunity', field: 'previousOwnerId' },
+            { model: 'task', field: 'createdById' },
+            { model: 'task', field: 'previousOwnerId' },
+            { model: 'followUp', field: 'createdById' },
+            { model: 'interaction', field: 'createdById' },
+            { model: 'leadHistory', field: 'changerId' },
+            { model: 'leadHistory', field: 'newOwnerId' },
+            { model: 'leadHistory', field: 'oldOwnerId' }
+        ];
+
+        for (const item of entitiesToNullify) {
+            if ((prisma as any)[item.model]) {
+                try {
+                    await (prisma as any)[item.model].updateMany({
+                        where: { [item.field]: userId },
+                        data: { [item.field]: null }
+                    });
+                } catch (e) { /* ignore if field/model doesn't exist */ }
+            }
+        }
+
+        // Disconnect subordinates
+        if (existing.subordinates.length > 0) {
+            await prisma.user.updateMany({
+                where: { reportsToId: userId },
+                data: { reportsToId: transferTargetId }
+            });
+        }
+
+        // Finally, delete the User record
+        await prisma.user.delete({
+            where: { id: userId }
+        });
+
+        // Audit Log
+        logAudit({
+            action: 'PERMANENTLY_DELETE_USER',
+            entity: 'User',
+            entityId: userId,
+            actorId: currentUser.id,
+            organisationId: existing.organisationId || currentUser.organisationId,
+            details: { email: existing.email, deletedBy: currentUser.email, transferredTo: transferTargetId }
+        });
+
+        res.json({ message: 'User permanently deleted and associations transferred' });
+    } catch (error) {
+        logger.error('permanentlyDeleteUser Error', error, 'UserController');
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
