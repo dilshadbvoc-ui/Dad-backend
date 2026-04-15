@@ -839,7 +839,11 @@ export const permanentlyDeleteUser = async (req: Request, res: Response) => {
             { model: 'quote', ownerField: 'assignedToId' },
             { model: 'goal', ownerField: 'assignedToId' },
             { model: 'salesTarget', ownerField: 'assignedToId' },
-            { model: 'followUp', ownerField: 'assignedToId' }
+            { model: 'followUp', ownerField: 'assignedToId' },
+            { model: 'calendarEvent', ownerField: 'createdById' },
+            { model: 'quote', ownerField: 'createdById' },
+            { model: 'goal', ownerField: 'createdById' },
+            { model: 'team', ownerField: 'createdById' }
         ];
 
         for (const entity of entitiesToTransfer) {
@@ -856,7 +860,9 @@ export const permanentlyDeleteUser = async (req: Request, res: Response) => {
         const entitiesToPurge = [
             { model: 'notification', field: 'recipientId' },
             { model: 'searchHistory', field: 'userId' },
-            { model: 'userLog', field: 'userId' }
+            { model: 'userLog', field: 'userId' },
+            { model: 'apiKey', field: 'createdById' },
+            { model: 'importJob', field: 'createdById' }
         ];
 
         for (const item of entitiesToPurge) {
