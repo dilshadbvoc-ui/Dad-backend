@@ -843,7 +843,9 @@ export const permanentlyDeleteUser = async (req: Request, res: Response) => {
             { model: 'calendarEvent', ownerField: 'createdById' },
             { model: 'quote', ownerField: 'createdById' },
             { model: 'goal', ownerField: 'createdById' },
-            { model: 'team', ownerField: 'createdById' }
+            { model: 'team', ownerField: 'createdById' },
+            { model: 'checkIn', ownerField: 'userId' },
+            { model: 'attendance', ownerField: 'userId' }
         ];
 
         for (const entity of entitiesToTransfer) {
