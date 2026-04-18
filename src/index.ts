@@ -416,6 +416,31 @@ app.use('/api/v1', apiRoutes);
 import stripeRoutes from './routes/stripeRoutes';
 app.use('/api/stripe', stripeRoutes);
 
+// --- FRONTEND SERVING & SEO ---
+const clientDistPath = path.join(__dirname, '../../../client/dist');
+app.use(express.static(clientDistPath));
+
+// Dynamic sitemap (root level)
+app.use('/sitemap.xml', sitemapRoutes);
+
+// Catch-all for React SPA - allows seoMiddleware to handle marketing routes
+app.get('*', seoMiddleware, (req, res) => {
+    // Only serve index.html for non-API routes
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ message: 'API route not found' });
+    }
+    
+    const indexPath = path.join(clientDistPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        // If seoMiddleware didn't already send the response (e.g. for non-marketing routes)
+        if (!res.headersSent) {
+            res.sendFile(indexPath);
+        }
+    } else {
+        res.status(404).send('Frontend not built. Please run npm build in the client directory.');
+    }
+});
+
 // Debug Routes
 import debugRoutes from './routes/debugRoutes';
 app.use('/api/debug', debugRoutes);
