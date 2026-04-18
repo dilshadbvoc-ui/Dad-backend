@@ -420,14 +420,19 @@ app.use('/api/stripe', stripeRoutes);
 const clientDistPath = path.join(__dirname, '../../../client/dist');
 app.use(express.static(clientDistPath));
 
-// Dynamic sitemap (root level)
-app.use('/sitemap.xml', sitemapRoutes);
+// Dynamic sitemap & robots (root level)
+app.use('/', sitemapRoutes);
 
 // Catch-all for React SPA - allows seoMiddleware to handle marketing routes
 app.get('*', seoMiddleware, (req, res) => {
     // Only serve index.html for non-API routes
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ message: 'API route not found' });
+    }
+    
+    // Explicitly handle robots and sitemap if they fell through
+    if (req.path === '/robots.txt' || req.path === '/sitemap.xml') {
+        return next(); 
     }
     
     const indexPath = path.join(clientDistPath, 'index.html');

@@ -15,6 +15,25 @@ const staticRoutes = [
   { loc: '/terms', changefreq: 'yearly', priority: '0.3' },
 ];
 
+router.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *
+Allow: /
+Allow: /features
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /pages/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /leads/
+Disallow: /settings/
+Disallow: /login
+Disallow: /register
+
+Sitemap: ${SITE_URL}/sitemap.xml`);
+});
+
 router.get('/sitemap.xml', async (req, res) => {
   try {
     const landingPages = await prisma.landingPage.findMany({
