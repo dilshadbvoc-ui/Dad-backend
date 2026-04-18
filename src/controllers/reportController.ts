@@ -613,8 +613,16 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
         const { startDate, endDate, branchId } = req.query;
 
         const dateFilter: any = {};
-        if (startDate) dateFilter.gte = new Date(startDate as string);
-        if (endDate) dateFilter.lte = new Date(endDate as string);
+        if (startDate) {
+            const start = new Date(startDate as string);
+            start.setHours(0, 0, 0, 0);
+            dateFilter.gte = start;
+        }
+        if (endDate) {
+            const end = new Date(endDate as string);
+            end.setHours(23, 59, 59, 999);
+            dateFilter.lte = end;
+        }
 
         const thresholdDate = new Date();
         thresholdDate.setHours(thresholdDate.getHours() - 48);
