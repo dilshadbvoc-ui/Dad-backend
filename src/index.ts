@@ -303,8 +303,13 @@ app.get('/api/csrf-token', setCSRFToken, (req: any, res) => {
 
 
 
-// Public Routes (No Auth)
-app.use('/api/public', publicRoutes);
+import sitemapRoutes from './routes/sitemapRoutes';
+import { seoMiddleware } from './middleware/seoMiddleware';
+
+// SEO & Crawlability (SSR for public routes)
+app.use(seoMiddleware);
+app.use('/', sitemapRoutes);
+app.use('/api', sitemapRoutes);
 
 // Auth & Core (with enhanced security)
 app.use('/api/auth', authRoutes);
