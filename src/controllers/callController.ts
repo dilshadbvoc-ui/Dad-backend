@@ -327,7 +327,7 @@ export const getCallStats = async (req: Request, res: Response) => {
 
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { period = 'week' } = req.query;
+        const { period = 'week', userId } = req.query;
 
         // Calculate date range
         const now = new Date();
@@ -357,7 +357,18 @@ export const getCallStats = async (req: Request, res: Response) => {
         // Hierarchy filtering
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            baseWhere.createdById = { in: [...visibleUserIds, null] };
+            
+            if (userId && userId !== 'all') {
+                if (visibleUserIds.includes(userId as string)) {
+                    baseWhere.createdById = userId;
+                } else {
+                    baseWhere.createdById = 'none';
+                }
+            } else {
+                baseWhere.createdById = { in: [...visibleUserIds, null] };
+            }
+        } else if (userId && userId !== 'all') {
+            baseWhere.createdById = userId;
         }
 
         // Total calls

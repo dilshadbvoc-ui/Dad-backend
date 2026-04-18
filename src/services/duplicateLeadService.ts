@@ -51,11 +51,15 @@ export const DuplicateLeadService = {
                 organisationId
             };
 
-            // STRICT BRANCH ISOLATION:
-            // If includeAllBranches is false (default), we only look for duplicates within the same branch.
-            // If branchId is null/undefined, we look for unassigned leads.
-            if (!includeAllBranches) {
-                where.branchId = branchId || null;
+            // BRANCH ISOLATION LOGIC:
+            // 1. If includeAllBranches is true, we look everywhere in the org.
+            // 2. If branchId is null/undefined, we ALSO look everywhere in the org 
+            //    to prevent creating a "global" duplicate of a branch-specific lead.
+            // 3. If branchId is provided, we strictly isolate to that branch (the default CRM behavior).
+            if (includeAllBranches || !branchId) {
+                // No branch filter added to 'where', so it searches organisation-wide
+            } else {
+                where.branchId = branchId;
             }
 
             console.log('[DuplicateLeadService] Checking duplicate with:', {

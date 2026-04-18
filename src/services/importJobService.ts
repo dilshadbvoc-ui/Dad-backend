@@ -157,10 +157,14 @@ export class ImportJobService {
                                 organisationId: job.organisationId,
                                 isActive: true
                             },
-                            select: { id: true }
+                            select: { id: true, branchId: true }
                         });
                         if (owner) {
                             leadData.assignedToId = owner.id;
+                            // Also sync lead's branch with owner if lead has no branch
+                            if (!leadData.branchId && owner.branchId) {
+                                leadData.branchId = owner.branchId;
+                            }
                         }
                         delete leadData.ownerEmail;
                     }
