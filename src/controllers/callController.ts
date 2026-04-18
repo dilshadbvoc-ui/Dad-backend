@@ -161,10 +161,25 @@ export const getLeadCalls = async (req: Request, res: Response) => {
             isDeleted: false
         };
 
-        // Hierarchy filtering
+        // Hierarchy filtering: Ensure user is authorized to see this lead
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            where.createdById = { in: visibleUserIds };
+            
+            // Check if user owns the lead OR created it OR owns it via subordinates
+            const lead = await prisma.lead.findFirst({
+                where: {
+                    id: leadId,
+                    organisationId: getOrgId(user) || undefined,
+                    OR: [
+                        { assignedToId: { in: visibleUserIds } },
+                        { createdById: user.id }
+                    ]
+                }
+            });
+
+            if (!lead) {
+                return res.status(403).json({ message: 'Not authorized to view calls for this lead' });
+            }
         }
 
         const calls = await prisma.interaction.findMany({
@@ -234,16 +249,28 @@ export const getAllCalls = async (req: Request, res: Response) => {
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
 
+            const visibilityConditions: any[] = [
+                { createdById: { in: [...visibleUserIds, null] } } // Calls you or subordinates created
+            ];
+
+            // Add Lead ownership visibility
+            visibilityConditions.push({
+                lead: { assignedToId: { in: visibleUserIds } } // Calls for leads you or subordinates own
+            });
+
             if (userId && userId !== 'all') {
                 // If filtering by specific user, ensure that user is in allowed hierarchy
                 if (visibleUserIds.includes(userId as string)) {
-                    where.createdById = userId;
+                    where.AND = [
+                        { OR: visibilityConditions },
+                        { createdById: userId }
+                    ];
                 } else {
                     // Not authorized to view this user's calls
                     where.createdById = 'none';
                 }
             } else {
-                where.createdById = { in: [...visibleUserIds, null] };
+                where.OR = visibilityConditions;
             }
         } else if (userId && userId !== 'all') {
             // Admin/Super Admin can filter by any user
@@ -358,14 +385,22 @@ export const getCallStats = async (req: Request, res: Response) => {
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
             
+            const visibilityConditions: any[] = [
+                { createdById: { in: [...visibleUserIds, null] } },
+                { lead: { assignedToId: { in: visibleUserIds } } }
+            ];
+
             if (userId && userId !== 'all') {
                 if (visibleUserIds.includes(userId as string)) {
-                    baseWhere.createdById = userId;
+                    baseWhere.AND = [
+                        { OR: visibilityConditions },
+                        { createdById: userId }
+                    ];
                 } else {
                     baseWhere.createdById = 'none';
                 }
             } else {
-                baseWhere.createdById = { in: [...visibleUserIds, null] };
+                baseWhere.OR = visibilityConditions;
             }
         } else if (userId && userId !== 'all') {
             baseWhere.createdById = userId;

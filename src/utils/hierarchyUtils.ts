@@ -45,19 +45,37 @@ export const getSubordinateIds = async (userId: string): Promise<string[]> => {
  *  2. All users in branches the user manages (BranchManager relation)
  */
 export const getVisibleUserIds = async (userId: string): Promise<string[]> => {
+    // 1. Fetch user to check role and branch
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true, branchId: true }
+    });
+
+    if (!user) return [userId];
+
     // 1. Subordinates via reporting chain
     const subordinateIds = await getSubordinateIds(userId);
 
-    // 2. Users in managed branches
+    // 2. Users in managed branches (Explicitly assigned manager)
     const managedBranches = await prisma.branch.findMany({
         where: { managerId: userId, isDeleted: false },
         select: { id: true }
     });
 
-    if (managedBranches.length > 0) {
-        const branchIds = managedBranches.map(b => b.id);
+    const managementBranchIds = managedBranches.map(b => b.id);
+
+    // 3. Management Role Visibility (Implicit branch management)
+    // If user has a 'manager' role and a branchId, they should see everyone in that branch
+    const normalizedRole = user.role.toLowerCase();
+    const isManagerRole = normalizedRole.includes('manager') || normalizedRole.includes('asm') || normalizedRole.includes('director');
+    
+    if (isManagerRole && user.branchId && !managementBranchIds.includes(user.branchId)) {
+        managementBranchIds.push(user.branchId);
+    }
+
+    if (managementBranchIds.length > 0) {
         const branchUsers = await prisma.user.findMany({
-            where: { branchId: { in: branchIds } },
+            where: { branchId: { in: managementBranchIds } },
             select: { id: true }
         });
         for (const u of branchUsers) {
