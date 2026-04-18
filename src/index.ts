@@ -424,7 +424,7 @@ app.use(express.static(clientDistPath));
 app.use('/', sitemapRoutes);
 
 // Catch-all for React SPA - allows seoMiddleware to handle marketing routes
-app.get('*', seoMiddleware, (req, res) => {
+app.get('*', seoMiddleware, (req, res, next) => {
     // Only serve index.html for non-API routes
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ message: 'API route not found' });
