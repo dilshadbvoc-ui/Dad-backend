@@ -229,7 +229,10 @@ export const getLeadInteractions = async (req: Request, res: Response) => {
         // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            where.createdById = { in: [...visibleUserIds, null] };
+            where.OR = [
+                { createdById: { in: visibleUserIds } },
+                { createdById: null }
+            ];
         }
 
         const interactions = await prisma.interaction.findMany({
@@ -272,7 +275,15 @@ export const getAllInteractions = async (req: Request, res: Response) => {
         // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            where.createdById = { in: [...visibleUserIds, null] };
+            where.AND = [
+                {
+                    OR: [
+                        { createdById: { in: visibleUserIds } },
+                        { createdById: null }
+                    ]
+                },
+                { lead: { assignedToId: { in: visibleUserIds } } }
+            ];
         }
 
         // Filter: Type
