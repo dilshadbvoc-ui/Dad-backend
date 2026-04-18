@@ -87,17 +87,24 @@ export const seoMiddleware = async (req: Request, res: Response, next: NextFunct
     return next();
   }
 
-  // Path logic to handle both local dev and various EC2 deployment structures
-  const distPath = path.join(__dirname, '../../../client/dist/index.html');
-  const altPath = path.join(__dirname, '../../../../client/dist/index.html');
-  const tempPath = path.join(__dirname, '../../../../frontend-temp/dist/index.html');
+  // Path logic to handle local dev and various EC2 deployment structures
+  const paths = [
+    path.join(__dirname, '../../../client/dist/index.html'),      // Local/GitHub structure
+    '/var/www/crm-client/index.html',                            // Primary Production path
+    path.join(__dirname, '../../../../client/dist/index.html'),  // Alternative EC2 structure
+    path.join(__dirname, '../../../../frontend-temp/dist/index.html') // Temp build path
+  ];
   
-  let indexPath = distPath;
-  if (!fs.existsSync(indexPath)) indexPath = altPath;
-  if (!fs.existsSync(indexPath)) indexPath = tempPath;
+  let indexPath = '';
+  for (const p of paths) {
+    if (fs.existsSync(p)) {
+      indexPath = p;
+      break;
+    }
+  }
 
-  if (!fs.existsSync(indexPath)) {
-    console.error('SEO Middleware: index.html not found at expected paths:', { distPath, altPath, tempPath });
+  if (!indexPath) {
+    console.error('SEO Middleware: index.html not found at expected paths:', paths);
     return next();
   }
 
