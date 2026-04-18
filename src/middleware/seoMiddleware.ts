@@ -63,7 +63,6 @@ export const seoMiddleware = async (req: Request, res: Response, next: NextFunct
   if (matchedStatic) {
     seo = seoData[matchedStatic];
   } else if (route.startsWith('/pages/')) {
-    // Dynamic landing page lookup
     const slug = route.split('/pages/')[1];
     if (slug) {
       try {
@@ -88,12 +87,21 @@ export const seoMiddleware = async (req: Request, res: Response, next: NextFunct
     return next();
   }
 
+  // Path logic to handle both local dev and various EC2 deployment structures
   const distPath = path.join(__dirname, '../../../client/dist/index.html');
-  if (!fs.existsSync(distPath)) {
+  const altPath = path.join(__dirname, '../../../../client/dist/index.html');
+  const tempPath = path.join(__dirname, '../../../../frontend-temp/dist/index.html');
+  
+  let indexPath = distPath;
+  if (!fs.existsSync(indexPath)) indexPath = altPath;
+  if (!fs.existsSync(indexPath)) indexPath = tempPath;
+
+  if (!fs.existsSync(indexPath)) {
+    console.error('SEO Middleware: index.html not found at expected paths:', { distPath, altPath, tempPath });
     return next();
   }
 
-  fs.readFile(distPath, 'utf8', (err, html) => {
+  fs.readFile(indexPath, 'utf8', (err, html) => {
     if (err) {
       console.error('Error reading index.html:', err);
       return next();
