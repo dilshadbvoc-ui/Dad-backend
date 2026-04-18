@@ -250,7 +250,12 @@ export const getAllCalls = async (req: Request, res: Response) => {
             const visibleUserIds = await getVisibleUserIds(user.id);
 
             const visibilityConditions: any[] = [
-                { createdById: { in: [...visibleUserIds, null] } } // Calls you or subordinates created
+                {
+                    OR: [
+                        { createdById: { in: visibleUserIds } },
+                        { createdById: null }
+                    ]
+                }
             ];
 
             // Add Lead ownership visibility
@@ -386,7 +391,12 @@ export const getCallStats = async (req: Request, res: Response) => {
             const visibleUserIds = await getVisibleUserIds(user.id);
             
             const visibilityConditions: any[] = [
-                { createdById: { in: [...visibleUserIds, null] } },
+                {
+                    OR: [
+                        { createdById: { in: visibleUserIds } },
+                        { createdById: null }
+                    ]
+                },
                 { lead: { assignedToId: { in: visibleUserIds } } }
             ];
 
