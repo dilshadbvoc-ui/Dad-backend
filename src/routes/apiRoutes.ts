@@ -14,24 +14,29 @@ const router = express.Router();
  * @desc Create a lead via public API
  */
 router.post('/leads', verifyApiKey, async (req, res) => {
+    const REQUEST_ID = Math.random().toString(36).substring(7);
+    console.log(`[LeadAPI][${REQUEST_ID}] Step 1: Request Received at ${new Date().toISOString()}`);
+    
     try {
         const { firstName, lastName, name, email, phone, company, message, source, branchId, assignedToId } = req.body;
         const user = (req as any).user;
-        const orgId = user.organisationId;
+        const orgId = user?.organisationId;
+
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 2: Context - Org: ${orgId}, User: ${user?.id}`);
 
         // --- ENHANCEMENT: Name Splitting ---
-        // If firstName is missing but name is provided, split it
         let resolvedFirstName = firstName;
         let resolvedLastName = lastName;
 
         if (!resolvedFirstName && name) {
+            console.log(`[LeadAPI][${REQUEST_ID}] Step 3: Splitting Name field: "${name}"`);
             const parts = name.trim().split(/\s+/);
             resolvedFirstName = parts[0];
             resolvedLastName = parts.length > 1 ? parts.slice(1).join(' ') : (lastName || '');
+            console.log(`[LeadAPI][${REQUEST_ID}] Resolved: First="${resolvedFirstName}", Last="${resolvedLastName}"`);
         }
 
         // --- ENHANCEMENT: Source Sanitization ---
-        // Check if provided source is a valid enum value, otherwise fallback to 'api'
         let resolvedSource: LeadSource = LeadSource.api;
         let originalSourceLabel = source;
 
@@ -39,27 +44,31 @@ router.post('/leads', verifyApiKey, async (req, res) => {
             const validSources = Object.values(LeadSource) as string[];
             if (validSources.includes(source)) {
                 resolvedSource = source as LeadSource;
+                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Valid source found: ${resolvedSource}`);
             } else {
-                // Keep the 'api' enum value but store the raw label in sourceDetails
-                console.log(`[Public API] Unsupported source label received: "${source}". Falling back to 'api'.`);
+                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Invalid source label: "${source}". Mapping to 'api' enum.`);
             }
         }
 
         // Basic Validation
         if (!resolvedFirstName && !email && !phone) {
+            console.log(`[LeadAPI][${REQUEST_ID}] ABORT: Missing required fields (name/email/phone)`);
             return res.status(400).json({ message: 'At least Name, Email, or Phone is required' });
         }
 
         // Sanitize
         let cleanPhone = phone?.toString().replace(/\D/g, '');
         if (cleanPhone && cleanPhone.length > 10) cleanPhone = cleanPhone.slice(-10);
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 5: Sanitized Phone for duplicate check: "${cleanPhone}"`);
 
-        // Check for duplicates using DuplicateLeadService
+        // Check for duplicates
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 6: Starting DuplicateLeadService.checkDuplicate...`);
         const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId);
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 7: Duplicate Check Result: ${duplicateCheck.isDuplicate}`);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-            // Handle as re-enquiry
+            console.log(`[LeadAPI][${REQUEST_ID}] Step 8a: Handling as Re-Enquiry for Lead: ${duplicateCheck.existingLead.id}`);
             const updatedLead = await DuplicateLeadService.handleReEnquiry(
                 duplicateCheck.existingLead,
                 {
@@ -72,24 +81,23 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                     sourceDetails: { 
                         message,
                         originalSource: originalSourceLabel,
-                        rawPayload: req.body // Keep the full payload for debugging re-enquiries
+                        rawPayload: req.body 
                     }
                 },
                 orgId
             );
 
-            // Emit update for re-enquiry
+            console.log(`[LeadAPI][${REQUEST_ID}] Step 9a: Re-Enquiry updated successfully. Emitting update.`);
             emitToOrg(orgId, 'lead_updated', updatedLead);
-
             return res.status(200).json({
                 message: 'Lead already exists. Marked as re-enquiry.',
                 id: duplicateCheck.existingLead.id,
-                isReEnquiry: true,
-                matchedBy: duplicateCheck.matchedBy
+                isReEnquiry: true
             });
         }
 
-        // Resolve Default Status from Organisation Settings
+        // Resolve Default Status
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 8b: Fetching Organization config for default lead status...`);
         let leadStatus = "new";
         const org = await prisma.organisation.findUnique({
             where: { id: orgId },
@@ -103,13 +111,14 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 leadStatus = configuredDefault.id;
             }
         }
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 9b: Attempting prisma.lead.create with status="${leadStatus}"`);
 
         const lead = await prisma.lead.create({
             data: {
                 firstName: resolvedFirstName || 'Unknown',
                 lastName: resolvedLastName || '',
                 email,
-                phone: cleanPhone || 'Unknown', // Phone is required in schema, but we want to be forgiving
+                phone: cleanPhone || 'Unknown',
                 company,
                 source: resolvedSource,
                 status: leadStatus,
@@ -124,38 +133,36 @@ router.post('/leads', verifyApiKey, async (req, res) => {
             }
         });
 
-        // Async Distribution & Workflow (respect assignedToId if provided)
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 10: Lead successfully created in DB. ID: ${lead.id}`);
+
+        // Async Distribution 
         if (!assignedToId) {
-            DistributionService.assignLead(lead, orgId).catch(err => {
-                console.error('[Public API] Lead distribution error:', err);
+            console.log(`[LeadAPI][${REQUEST_ID}] Step 11: Triggering Distribution Service...`);
+            DistributionService.assignLead(lead, orgId).then(() => {
+                console.log(`[LeadAPI][${REQUEST_ID}] Step 11 success: Distribution complete.`);
+            }).catch(err => {
+                console.error(`[LeadAPI][${REQUEST_ID}] Distribution Error (ignored):`, err);
             });
         }
-
-        if (req.body.score !== false) {
-            import('../services/leadScoringService').then(({ LeadScoringService }) => {
-                LeadScoringService.scoreLead(lead.id).catch(err => {
-                    console.error('[Public API] Lead scoring error:', err);
-                });
-            });
-        }
-
-        // Trigger Created Workflow
-        WorkflowEngine.evaluate('Lead', 'created', lead, orgId).catch(err => {
-            console.error('[Public API] Workflow evaluation error:', err);
-        });
 
         // Real-time Sync
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 12: Emitting Socket lead_created event.`);
         emitToOrg(orgId, 'lead_created', lead);
 
+        console.log(`[LeadAPI][${REQUEST_ID}] COMPLETED SUCCESSFULLY`);
         res.status(201).json({ id: lead.id, message: 'Lead created successfully' });
 
     } catch (error) {
-        console.error('Public API Create Lead Critical Error:', error);
-        // Include more helpful error info in logs
+        console.error(`[LeadAPI][${REQUEST_ID}] CATCH BLOCK TRIGGERED:`, error);
         if (error instanceof Error) {
-            console.error('Error Details:', error.stack);
+            console.error(`[LeadAPI][${REQUEST_ID}] Error Message:`, error.message);
+            console.error(`[LeadAPI][${REQUEST_ID}] Error Stack:`, error.stack);
         }
-        res.status(500).json({ message: 'Server Error', detail: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined });
+        res.status(500).json({ 
+            message: 'Server Error', 
+            requestId: REQUEST_ID,
+            detail: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Please check server logs for RequestID ' + REQUEST_ID
+        });
     }
 });
 
