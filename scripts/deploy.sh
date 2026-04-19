@@ -127,11 +127,8 @@ else
 fi
 node copy-prisma.js
 
-# 2. Update Frontend (Absolute path strategy for EC2 stabilization)
-CLIENT_DIR="/home/ubuntu/frontend-temp"
-if [ ! -d "$CLIENT_DIR" ]; then
-    CLIENT_DIR="/home/ubuntu/frontend"
-fi
+# 2. Update Frontend (Nuclear Alignment on absolute production path)
+CLIENT_DIR="/home/ubuntu/frontend"
 
 if [ -d "$CLIENT_DIR" ]; then
     echo "📥 Updating Frontend in $CLIENT_DIR..."
@@ -157,14 +154,22 @@ if [ -d "$CLIENT_DIR" ]; then
     # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
     NODE_OPTIONS=--max-old-space-size=800 npm run build
     
-    # Deploy to Nginx
-    echo "📂 Deploying Static Files to Nginx root..."
+    # Nuclear Deployment: Force sync frontend to multiple standardized locations
+    echo "📂 Synchronizing Frontend assets to Backend and Nginx..."
+    
+    # Target 1: Backend internal serving folder (Primary for Dashboard)
+    sudo mkdir -p "$BACKEND_DIR/client/dist"
+    sudo rm -rf "$BACKEND_DIR/client/dist/*"
+    sudo cp -r dist/* "$BACKEND_DIR/client/dist/"
+    
+    # Target 2: Nginx root (Static files/Marketing fallback)
     sudo mkdir -p /var/www/crm-client
     sudo rm -rf /var/www/crm-client/*
     sudo cp -r dist/* /var/www/crm-client/
-    echo "✨ Frontend deployed successfully."
+    
+    echo "✨ Frontend standardly aligned in all target directories."
 else
-    echo "⚠️ Frontend directory not found as sibling at $BACKEND_DIR/../frontend! Skipping frontend build."
+    echo "⚠️ Frontend source not found! Nuclear check of directories failed."
 fi
 
 echo "▶️ Starting Backend API..."

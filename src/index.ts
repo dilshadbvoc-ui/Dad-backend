@@ -423,7 +423,7 @@ import stripeRoutes from './routes/stripeRoutes';
 app.use('/api/stripe', stripeRoutes);
 
 // --- FRONTEND SERVING & SEO ---
-const clientDistPath = path.join(__dirname, '../../../client/dist');
+const clientDistPath = path.join(__dirname, '../client/dist');
 app.use(express.static(clientDistPath));
 
 // Dynamic sitemap & robots (root level)

@@ -18,14 +18,16 @@ router.post('/leads', verifyApiKey, async (req, res) => {
     console.log(`[LeadAPI][${REQUEST_ID}] Step 1: Request Received at ${new Date().toISOString()}`);
     
     try {
-        const { firstName, lastName, name, email, phone, company, message, enquiryDetails, comments, notes, source, branchId, assignedToId } = req.body;
+        const { firstName, lastName, name, email, phone, company, message, enquiryDetails, msg, comments, notes, payload_message, source, branchId, assignedToId } = req.body;
         const user = (req as any).user;
         const orgId = user?.organisationId;
 
-        // Resolve the best message field
-        const resolvedMessage = message || enquiryDetails || comments || notes || "";
+        // NUCLEAR FALLBACK: Exhaustive list of possible message fields
+        const resolvedMessage = message || enquiryDetails || msg || comments || notes || payload_message || "";
 
-        console.log(`[LeadAPI][${REQUEST_ID}] Step 2: Context - Org: ${orgId}, User: ${user?.id}, Message: "${resolvedMessage.substring(0, 20)}..."`);
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 2: Context - Org: ${orgId}, User: ${user?.id}`);
+        console.log(`[LeadAPI][${REQUEST_ID}] FULL DATA TRACE: ${JSON.stringify(req.body)}`);
+        console.log(`[LeadAPI][${REQUEST_ID}] Resolved Message: "${resolvedMessage.substring(0, 50)}..."`);
 
         // --- ENHANCEMENT: Name Splitting ---
         let resolvedFirstName = firstName;
