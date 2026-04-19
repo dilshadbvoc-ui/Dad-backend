@@ -5,19 +5,28 @@ import crypto from 'crypto';
 
 export const verifyApiKey = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const apiKey = req.header('X-API-KEY');
+        // --- RESILIENCE ENHANCEMENT ---
+        // Check for API Key in Header, Body, or Query (for maximum compatibility)
+        const apiKey = req.header('X-API-KEY') || 
+                       req.body.apiKey || 
+                       req.body.api_key || 
+                       req.query.apiKey || 
+                       req.query.api_key;
 
         if (!apiKey) {
-            console.log(`[verifyApiKey] Missing X-API-KEY header for ${req.method} ${req.url}`);
-            return res.status(401).json({ message: 'Missing X-API-KEY header' });
+            console.log(`[verifyApiKey] AUTH REJECTED: Missing API Key for ${req.method} ${req.originalUrl || req.url}`);
+            console.log(`[verifyApiKey] Hint: Header 'X-API-KEY' or Body 'apiKey' not found.`);
+            return res.status(401).json({ 
+                message: 'Missing API Key. Please provide it in the X-API-KEY header or as a body field named "apiKey".' 
+            });
         }
 
         const keyHash = crypto.createHash('sha256').update(apiKey).digest('hex');
-        console.log(`[verifyApiKey] Received API Key. Hash: ${keyHash.substring(0, 10)}...`);
+        console.log(`[verifyApiKey] Received Key. Hash prefix: ${keyHash.substring(0, 10)}...`);
 
         const keyRecord = await prisma.apiKey.findFirst({
             where: {
-                keyHash: keyHash, // Use hashed key
+                keyHash: keyHash,
                 status: 'active',
                 isDeleted: false
             },
@@ -25,11 +34,11 @@ export const verifyApiKey = async (req: Request, res: Response, next: NextFuncti
         });
 
         if (!keyRecord) {
-            console.log(`[verifyApiKey] INVALID KEY (or inactive). No record found for hash: ${keyHash.substring(0, 10)}...`);
+            console.log(`[verifyApiKey] AUTH REJECTED: Invalid or inactive Key. Hash prefix: ${keyHash.substring(0, 10)}...`);
             return res.status(401).json({ message: 'Invalid API Key' });
         }
 
-        console.log(`[verifyApiKey] Auth Success: Org=${keyRecord.organisation.name} (${keyRecord.organisationId})`);
+        console.log(`[verifyApiKey] AUTH SUCCESS: Org="${keyRecord.organisation.name}" (${keyRecord.organisationId})`);
 
         // Update Usage stats
         const currentUsage = (keyRecord.usage as any) || {};
