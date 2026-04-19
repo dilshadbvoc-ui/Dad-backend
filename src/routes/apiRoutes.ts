@@ -42,16 +42,22 @@ router.post('/leads', verifyApiKey, async (req, res) => {
         }
 
         // --- ENHANCEMENT: Source Sanitization ---
-        let resolvedSource: LeadSource = LeadSource.api;
+        let resolvedSource: LeadSource = LeadSource.website; // Default to website for this endpoint
         let originalSourceLabel = source;
 
         if (source) {
+            const lowerSource = source.toLowerCase();
             const validSources = Object.values(LeadSource) as string[];
-            if (validSources.includes(source)) {
-                resolvedSource = source as LeadSource;
-                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Valid source found: ${resolvedSource}`);
+            
+            if (validSources.includes(lowerSource)) {
+                resolvedSource = lowerSource as LeadSource;
+                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Matched source: ${resolvedSource}`);
+            } else if (lowerSource.includes('web') || lowerSource.includes('form')) {
+                resolvedSource = LeadSource.website;
+                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Mapped "${source}" to website`);
             } else {
-                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Invalid source label: "${source}". Mapping to 'api' enum.`);
+                resolvedSource = LeadSource.api;
+                console.log(`[LeadAPI][${REQUEST_ID}] Step 4: Label "${source}" mapped to api enum.`);
             }
         }
 
@@ -126,7 +132,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 phone: cleanPhone || 'Unknown',
                 company,
                 source: resolvedSource,
-                enquiryAbout: message, // Map incoming message to primary field
+                enquiryAbout: resolvedMessage, // Corrected: use resolvedMessage
                 status: leadStatus,
                 organisationId: orgId,
                 branchId: branchId || undefined,
