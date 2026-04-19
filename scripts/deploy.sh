@@ -127,50 +127,36 @@ else
 fi
 node copy-prisma.js
 
-# 2. Update Frontend (Nuclear Alignment on absolute production path)
-CLIENT_DIR="/home/ubuntu/frontend"
+# 2. Update Frontend (Truly Nuclear: Fresh transient build to avoid ghosting)
+TRANS_DIR="/home/ubuntu/frontend_transient"
+echo "📥 Updating Frontend in $TRANS_DIR..."
+sudo rm -rf "$TRANS_DIR"
+git clone https://github.com/dilshadbvoc-ui/Dad-frontend.git "$TRANS_DIR"
 
-if [ -d "$CLIENT_DIR" ]; then
-    echo "📥 Updating Frontend in $CLIENT_DIR..."
-    
-    # Ensure ubuntu user owns the directory to prevent build failures
-    sudo chown -R ubuntu:ubuntu "$CLIENT_DIR"
-    
-    cd "$CLIENT_DIR"
-    
-    # Clean up stale locks
-    if [ -f .git/index.lock ]; then
-        echo "🧹 Removing stale git lock for frontend..."
-        rm -f .git/index.lock
-    fi
+cd "$TRANS_DIR"
+echo "📦 Installing Frontend dependencies..."
+npm install --legacy-peer-deps
+# Force fix for cookie resolution before build
+npm install cookie@1.1.0 --save-exact 
 
-    git fetch origin main
-    git reset --hard origin/main
-    
-    echo "📦 Installing Frontend dependencies..."
-    npm install --legacy-peer-deps
-    
-    echo "🏗️ Building Frontend..."
-    # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
-    NODE_OPTIONS=--max-old-space-size=800 npm run build
-    
-    # Nuclear Deployment: Force sync frontend to multiple standardized locations
-    echo "📂 Synchronizing Frontend assets to Backend and Nginx..."
-    
-    # Target 1: Backend internal serving folder (Primary for Dashboard)
-    sudo mkdir -p "$BACKEND_DIR/client/dist"
-    sudo rm -rf "$BACKEND_DIR/client/dist/*"
-    sudo cp -r dist/* "$BACKEND_DIR/client/dist/"
-    
-    # Target 2: Nginx root (Static files/Marketing fallback)
-    sudo mkdir -p /var/www/crm-client
-    sudo rm -rf /var/www/crm-client/*
-    sudo cp -r dist/* /var/www/crm-client/
-    
-    echo "✨ Frontend standardly aligned in all target directories."
-else
-    echo "⚠️ Frontend source not found! Nuclear check of directories failed."
-fi
+echo "🏗️ Building Frontend..."
+# 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
+NODE_OPTIONS=--max-old-space-size=800 npm run build
+
+# Nuclear Deployment: Force sync frontend to multiple standardized locations
+echo "📂 Synchronizing Frontend assets to Backend and Nginx..."
+
+# Target 1: Backend internal serving folder (Primary for Dashboard)
+sudo mkdir -p "$BACKEND_DIR/client/dist"
+sudo rm -rf "$BACKEND_DIR/client/dist/*"
+sudo cp -r dist/* "$BACKEND_DIR/client/dist/"
+
+# Target 2: Nginx root (Static files/Marketing fallback)
+sudo mkdir -p /var/www/crm-client
+sudo rm -rf /var/www/crm-client/*
+sudo cp -r dist/* /var/www/crm-client/
+
+echo "✨ Frontend standardly aligned in all target directories."
 
 echo "▶️ Starting Backend API..."
 cd "$BACKEND_DIR"
