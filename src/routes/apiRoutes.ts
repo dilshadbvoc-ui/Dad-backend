@@ -170,11 +170,11 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 );
             }
 
-            // 2. Notify all Admins in the org (so they can see new arrival)
+            // 2. Notify all Admins/Managers in the org (so they can see new arrival)
             const admins = await prisma.user.findMany({
                 where: {
                     organisationId: orgId,
-                    role: { in: ['org_admin', 'super_admin'] },
+                    role: { in: ['org_admin', 'super_admin', 'admin', 'manager', 'sales_manager'] },
                     isActive: true,
                     id: { not: lead.assignedToId || '' }
                 },
