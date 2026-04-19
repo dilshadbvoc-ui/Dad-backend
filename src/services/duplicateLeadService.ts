@@ -142,6 +142,7 @@ export const DuplicateLeadService = {
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
+                    enquiryAbout: newData.sourceDetails?.message || existingLead.enquiryAbout,
                     // Update source details to track re-enquiry
                     sourceDetails: {
                         ...(existingLead.sourceDetails as any || {}),

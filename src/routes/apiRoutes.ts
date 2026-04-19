@@ -121,6 +121,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 phone: cleanPhone || 'Unknown',
                 company,
                 source: resolvedSource,
+                enquiryAbout: message, // Map incoming message to primary field
                 status: leadStatus,
                 organisationId: orgId,
                 branchId: branchId || undefined,
@@ -134,6 +135,43 @@ router.post('/leads', verifyApiKey, async (req, res) => {
         });
 
         console.log(`[LeadAPI][${REQUEST_ID}] Step 10: Lead successfully created in DB. ID: ${lead.id}`);
+
+        // Notification logic
+        try {
+            const { NotificationService } = await import('../services/notificationService');
+            
+            // 1. Notify the assigned owner
+            if (lead.assignedToId) {
+                await NotificationService.send(
+                    lead.assignedToId,
+                    'New Lead Assigned',
+                    `🚀 New lead from ${originalSourceLabel || 'Website'}: ${lead.firstName} ${lead.lastName || ''}`,
+                    'success'
+                );
+            }
+
+            // 2. Notify all Admins in the org (so they can see new arrival)
+            const admins = await prisma.user.findMany({
+                where: {
+                    organisationId: orgId,
+                    role: { in: ['org_admin', 'super_admin'] },
+                    isActive: true,
+                    id: { not: lead.assignedToId || '' } // Don't notify twice if admin is the owner
+                },
+                select: { id: true }
+            });
+
+            for (const admin of admins) {
+                await NotificationService.send(
+                    admin.id,
+                    'New API Lead Received',
+                    `📢 ${lead.firstName} ${lead.lastName || ''} enquired via ${originalSourceLabel || 'Website'}.`,
+                    'info'
+                );
+            }
+        } catch (notifierErr) {
+            console.error(`[LeadAPI][${REQUEST_ID}] Notification error:`, notifierErr);
+        }
 
         // Async Distribution 
         if (!assignedToId) {
