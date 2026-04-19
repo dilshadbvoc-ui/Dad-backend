@@ -128,9 +128,9 @@ fi
 node copy-prisma.js
 
 # 2. Update Frontend (Absolute path strategy for EC2 stabilization)
-CLIENT_DIR="/home/ubuntu/frontend"
+CLIENT_DIR="/home/ubuntu/frontend-temp"
 if [ ! -d "$CLIENT_DIR" ]; then
-    CLIENT_DIR="/home/ubuntu/frontend-temp"
+    CLIENT_DIR="/home/ubuntu/frontend"
 fi
 
 if [ -d "$CLIENT_DIR" ]; then
