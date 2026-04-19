@@ -5,6 +5,7 @@ import prisma from '../config/prisma';
 import { LeadSource } from '../generated/client';
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
+import { emitToOrg } from '../socket';
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const router = express.Router();
  */
 router.post('/leads', verifyApiKey, async (req, res) => {
     try {
-        const { firstName, lastName, email, phone, company, message, source } = req.body;
+        const { firstName, lastName, email, phone, company, message, source, branchId, assignedToId } = req.body;
         const user = (req as any).user;
         const orgId = user.organisationId;
 
@@ -29,11 +30,11 @@ router.post('/leads', verifyApiKey, async (req, res) => {
 
         // Check for duplicates using DuplicateLeadService
         const { DuplicateLeadService } = await import('../services/duplicateLeadService');
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId);
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
-            await DuplicateLeadService.handleReEnquiry(
+            const updatedLead = await DuplicateLeadService.handleReEnquiry(
                 duplicateCheck.existingLead,
                 {
                     firstName: firstName || 'Unknown',
@@ -46,6 +47,9 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 },
                 orgId
             );
+
+            // Emit update for re-enquiry
+            emitToOrg(orgId, 'lead_updated', updatedLead);
 
             return res.status(200).json({
                 message: 'Lead already exists. Marked as re-enquiry.',
@@ -80,12 +84,17 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 source: source || LeadSource.api,
                 status: leadStatus,
                 organisationId: orgId,
+                branchId: branchId || undefined,
+                assignedToId: assignedToId || undefined,
                 customFields: { message } // Store raw message
             }
         });
 
-        // Async Distribution & Workflow
-        DistributionService.assignLead(lead, orgId).catch(console.error);
+        // Async Distribution & Workflow (respect assignedToId if provided)
+        if (!assignedToId) {
+            DistributionService.assignLead(lead, orgId).catch(console.error);
+        }
+
         if (req.body.score !== false) {
             import('../services/leadScoringService').then(({ LeadScoringService }) => {
                 LeadScoringService.scoreLead(lead.id).catch(console.error);
@@ -94,6 +103,9 @@ router.post('/leads', verifyApiKey, async (req, res) => {
 
         // Trigger Created Workflow
         WorkflowEngine.evaluate('Lead', 'created', lead, orgId).catch(console.error);
+
+        // Real-time Sync
+        emitToOrg(orgId, 'lead_created', lead);
 
         res.status(201).json({ id: lead.id, message: 'Lead created successfully' });
 

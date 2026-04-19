@@ -43,13 +43,68 @@ export const DistributionService = {
             if (!rules || rules.length === 0) {
                 console.log('[DistributionService] No active assignment rules found.');
                 // Fallback to provided user OR organisation creator
-                if (fallbackUserId) return fallbackUserId;
+                let finalFallbackId = fallbackUserId;
+                if (!finalFallbackId) {
+                    // Find an active administrator in this specific organisation
+                    const orgAdmin = await prisma.user.findFirst({
+                        where: {
+                            organisationId: organisationId,
+                            role: 'admin',
+                            isActive: true
+                        },
+                        select: { id: true, branchId: true }
+                    });
 
-                const org = await prisma.organisation.findUnique({
-                    where: { id: organisationId },
-                    select: { createdBy: true }
-                });
-                return org?.createdBy || null;
+                    if (orgAdmin) {
+                        finalFallbackId = orgAdmin.id;
+                    } else {
+                        // Extreme fallback to organisation creator (if they belong to the org)
+                        const org = await prisma.organisation.findUnique({
+                            where: { id: organisationId },
+                            select: { createdBy: true }
+                        });
+                        
+                        // Verify the creator is actually part of this organisation (not a superadmin)
+                        if (org?.createdBy) {
+                            const creator = await prisma.user.findUnique({
+                                where: { id: org.createdBy },
+                                select: { organisationId: true }
+                            });
+                            if (creator?.organisationId === organisationId) {
+                                finalFallbackId = org.createdBy;
+                            }
+                        }
+                    }
+                }
+
+                if (finalFallbackId && lead.id) {
+                    const fallbackUser = await prisma.user.findUnique({
+                        where: { id: finalFallbackId },
+                        select: { branchId: true }
+                    });
+
+                    await prisma.lead.update({
+                        where: { id: lead.id },
+                        data: {
+                            assignedToId: finalFallbackId,
+                            branchId: fallbackUser?.branchId || lead.branchId
+                        }
+                    });
+
+                    // Log history for fallback assignment
+                    await prisma.leadHistory.create({
+                        data: {
+                            leadId: lead.id,
+                            newOwnerId: finalFallbackId,
+                            changedById: finalFallbackId,
+                            reason: 'Auto-assigned to organisation creator (no active rules match)'
+                        }
+                    });
+
+                    console.log(`[DistributionService] Lead ${lead.id} assigned to fallback owner ${finalFallbackId}`);
+                }
+
+                return finalFallbackId || null;
             }
 
             // 2. Iterate through rules to find a match
