@@ -18,11 +18,14 @@ router.post('/leads', verifyApiKey, async (req, res) => {
     console.log(`[LeadAPI][${REQUEST_ID}] Step 1: Request Received at ${new Date().toISOString()}`);
     
     try {
-        const { firstName, lastName, name, email, phone, company, message, source, branchId, assignedToId } = req.body;
+        const { firstName, lastName, name, email, phone, company, message, enquiryDetails, comments, notes, source, branchId, assignedToId } = req.body;
         const user = (req as any).user;
         const orgId = user?.organisationId;
 
-        console.log(`[LeadAPI][${REQUEST_ID}] Step 2: Context - Org: ${orgId}, User: ${user?.id}`);
+        // Resolve the best message field
+        const resolvedMessage = message || enquiryDetails || comments || notes || "";
+
+        console.log(`[LeadAPI][${REQUEST_ID}] Step 2: Context - Org: ${orgId}, User: ${user?.id}, Message: "${resolvedMessage.substring(0, 20)}..."`);
 
         // --- ENHANCEMENT: Name Splitting ---
         let resolvedFirstName = firstName;
@@ -79,7 +82,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                     company,
                     source: resolvedSource,
                     sourceDetails: { 
-                        message,
+                        message: resolvedMessage,
                         originalSource: originalSourceLabel,
                         rawPayload: req.body 
                     }
@@ -127,12 +130,20 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 branchId: branchId || undefined,
                 assignedToId: assignedToId || undefined,
                 sourceDetails: { 
-                    message,
+                    message: resolvedMessage,
                     originalSource: originalSourceLabel,
                     rawPayload: req.body 
                 }
             }
         });
+
+        // Map resolved message to primary field post-creation if not done in Prisma (standardizing)
+        if (resolvedMessage && !lead.enquiryAbout) {
+            await prisma.lead.update({
+                where: { id: lead.id },
+                data: { enquiryAbout: resolvedMessage }
+            });
+        }
 
         console.log(`[LeadAPI][${REQUEST_ID}] Step 10: Lead successfully created in DB. ID: ${lead.id}`);
 
@@ -142,6 +153,7 @@ router.post('/leads', verifyApiKey, async (req, res) => {
             
             // 1. Notify the assigned owner
             if (lead.assignedToId) {
+                console.log(`[LeadAPI][${REQUEST_ID}] Notifying assigned owner: ${lead.assignedToId}`);
                 await NotificationService.send(
                     lead.assignedToId,
                     'New Lead Assigned',
@@ -156,11 +168,12 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                     organisationId: orgId,
                     role: { in: ['org_admin', 'super_admin'] },
                     isActive: true,
-                    id: { not: lead.assignedToId || '' } // Don't notify twice if admin is the owner
+                    id: { not: lead.assignedToId || '' }
                 },
-                select: { id: true }
+                select: { id: true, firstName: true }
             });
 
+            console.log(`[LeadAPI][${REQUEST_ID}] Notifying ${admins.length} admins: ${admins.map(a => a.firstName).join(', ')}`);
             for (const admin of admins) {
                 await NotificationService.send(
                     admin.id,

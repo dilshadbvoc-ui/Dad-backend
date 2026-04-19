@@ -127,18 +127,18 @@ else
 fi
 node copy-prisma.js
 
-# 2. Update Frontend (Sibling Directory)
-# Assumes frontend is cloned as a sibling folder named 'frontend', 'client' or 'frontend-temp'
-CLIENT_DIR="$BACKEND_DIR/../frontend-temp" 
+# 2. Update Frontend (Absolute path strategy for EC2 stabilization)
+CLIENT_DIR="/home/ubuntu/frontend"
 if [ ! -d "$CLIENT_DIR" ]; then
-    CLIENT_DIR="$BACKEND_DIR/../frontend"
-fi
-if [ ! -d "$CLIENT_DIR" ]; then
-    CLIENT_DIR="$BACKEND_DIR/../client"
+    CLIENT_DIR="/home/ubuntu/frontend-temp"
 fi
 
 if [ -d "$CLIENT_DIR" ]; then
     echo "📥 Updating Frontend in $CLIENT_DIR..."
+    
+    # Ensure ubuntu user owns the directory to prevent build failures
+    sudo chown -R ubuntu:ubuntu "$CLIENT_DIR"
+    
     cd "$CLIENT_DIR"
     
     # Clean up stale locks
