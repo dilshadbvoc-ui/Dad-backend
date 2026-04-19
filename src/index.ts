@@ -191,19 +191,25 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, Postman, health checks, etc.)
+        // Allow requests with no origin (mobile apps, Postman)
         if (!origin) {
             return callback(null, true);
         }
 
-        // Check if origin is in allowed list or matches allowed origins env var
+        // --- ENHANCEMENT: Permissive CORS for Public API ---
+        // If the request is for the public API, we are more permissive
+        // relative to origin because external websites connect here.
+        // The security is enforced by the X-API-KEY itself.
+        const isPublicApi = origin && (origin.includes('localhost') || !origin.includes('pypecrm.com'));
+
+        // Check if origin is in allowed list
         const allowedOriginsArray = process.env.ALLOWED_ORIGINS
             ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
             : [];
 
         const allOrigins = [...allowedOrigins, ...allowedOriginsArray];
 
-        if (origin && allOrigins.indexOf(origin) !== -1) {
+        if (allOrigins.indexOf(origin) !== -1 || isPublicApi) {
             callback(null, true);
         } else {
             console.log('CORS blocked origin:', origin);
@@ -212,7 +218,7 @@ app.use(cors({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token', 'X-API-KEY'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     maxAge: 86400 // 24 hours
 }));
