@@ -226,8 +226,8 @@ export const getLeadInteractions = async (req: Request, res: Response) => {
         const where: any = { leadId, isDeleted: false };
         if (orgId) where.organisationId = orgId;
 
-        // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
-        if (user.role !== 'admin' && user.role !== 'super_admin') {
+        // Hierarchy filtering: if not super_admin, restrict to self, subordinates, and managed branches
+        if (user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
             where.OR = [
                 { createdById: { in: visibleUserIds } },
@@ -272,8 +272,8 @@ export const getAllInteractions = async (req: Request, res: Response) => {
             where.branchId = user.branchId;
         }
 
-        // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
-        if (user.role !== 'admin' && user.role !== 'super_admin') {
+        // Hierarchy filtering: if not super_admin, restrict to self, subordinates, and managed branches
+        if (user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
             where.AND = [
                 {

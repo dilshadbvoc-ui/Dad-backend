@@ -64,15 +64,6 @@ export const getVisibleUserIds = async (userId: string): Promise<string[]> => {
 
     const managementBranchIds = managedBranches.map(b => b.id);
 
-    // 3. Management Role Visibility (Implicit branch management)
-    // If user has a 'manager' role and a branchId, they should see everyone in that branch
-    const normalizedRole = user.role.toLowerCase();
-    const isManagerRole = normalizedRole.includes('manager') || normalizedRole.includes('asm') || normalizedRole.includes('director');
-    
-    if (isManagerRole && user.branchId && !managementBranchIds.includes(user.branchId)) {
-        managementBranchIds.push(user.branchId);
-    }
-
     if (managementBranchIds.length > 0) {
         const branchUsers = await prisma.user.findMany({
             where: { branchId: { in: managementBranchIds } },
