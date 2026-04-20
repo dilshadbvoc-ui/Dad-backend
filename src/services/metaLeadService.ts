@@ -21,6 +21,7 @@ export const MetaLeadService = {
                     isDeleted: false,
                     OR: [
                         { integrations: { path: ['meta', 'pageId'], equals: pageId } },
+                        { integrations: { path: ['facebook_payload', 'pageId'], equals: pageId } },
                     ]
                 }
             });
@@ -44,7 +45,8 @@ export const MetaLeadService = {
             // Extract the correct account config
             const integrations = (org.integrations as any) || {};
             const accounts = [...(integrations.metaAccounts || [])];
-            if (integrations.meta) accounts.push(integrations.meta);
+            if (integrations.meta) accounts.push({ ...integrations.meta, _source: LeadSource.meta_leadgen });
+            if (integrations.facebook_payload) accounts.push({ ...integrations.facebook_payload, _source: (LeadSource as any).facebook_payload });
 
             const matchedAccount = accounts.find((acc: any) => acc.pageId === pageId);
 
@@ -109,7 +111,7 @@ export const MetaLeadService = {
                 country: geoData?.country || getField(['country', 'location']),
                 countryCode: geoData?.countryCode || null,
                 phoneCountryCode: geoData?.phoneCountryCode || null,
-                source: LeadSource.meta_leadgen,
+                source: metaConfig._source || LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
                     metaFormId: formId,

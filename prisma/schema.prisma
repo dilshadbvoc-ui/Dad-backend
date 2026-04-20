@@ -1272,6 +1272,7 @@ enum LeadSource {
   email_campaign
   meta_ads
   google_ads
+  facebook_payload
   other
 }
 
