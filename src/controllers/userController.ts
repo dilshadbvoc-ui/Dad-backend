@@ -99,10 +99,12 @@ export const getUsers = async (req: Request, res: Response) => {
                 return res.status(403).json({ message: 'User has no organisation' });
             }
             where.organisationId = orgId;
+            const subordinatesOnly = req.query.subordinatesOnly === 'true';
 
             // Hierarchy filtering: non-admin users only see subordinates + branch members
-            if (currentUser.role !== 'admin') {
-                const visibleIds = await getVisibleUserIds(currentUser.id);
+            // OR if subordinatesOnly is explicitly requested (even for admins)
+            if (currentUser.role !== 'admin' || subordinatesOnly) {
+                const visibleIds = await getVisibleUserIds(currentUser.id, subordinatesOnly);
                 where.id = { in: visibleIds };
             }
         }
