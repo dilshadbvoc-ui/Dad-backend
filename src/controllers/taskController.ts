@@ -15,11 +15,20 @@ const transformTask = (task: any) => {
     else if (task.account) { relatedTo = task.account; onModel = 'Account'; }
     else if (task.opportunity) { relatedTo = task.opportunity; onModel = 'Opportunity'; }
 
-    return {
+    const transformed = {
         ...task,
         relatedTo,
         onModel
     };
+
+    if (task.assignedTo) {
+        transformed.assignedTo = {
+            ...task.assignedTo,
+            _id: task.assignedTo.id || task.assignedTo._id
+        };
+    }
+
+    return transformed;
 };
 
 export const getTasks = async (req: Request, res: Response) => {
@@ -94,7 +103,7 @@ export const getTasks = async (req: Request, res: Response) => {
         const tasks = await prisma.task.findMany({
             where,
             include: {
-                assignedTo: { select: { firstName: true, lastName: true, email: true } },
+                assignedTo: { select: { id: true, firstName: true, lastName: true, email: true } },
                 // Include all potential relations to reconstruct 'relatedTo'
                 // Filter out deleted leads
                 lead: {
@@ -180,7 +189,7 @@ export const createTask = async (req: Request, res: Response) => {
         const task = await prisma.task.create({
             data,
             include: {
-                assignedTo: { select: { firstName: true, lastName: true } },
+                assignedTo: { select: { id: true, firstName: true, lastName: true } },
                 lead: { select: { firstName: true, lastName: true } },
                 contact: { select: { firstName: true, lastName: true } },
                 account: { select: { name: true } },
@@ -220,7 +229,7 @@ export const getTaskById = async (req: Request, res: Response) => {
         const task = await prisma.task.findFirst({
             where,
             include: {
-                assignedTo: { select: { firstName: true, lastName: true } },
+                assignedTo: { select: { id: true, firstName: true, lastName: true } },
                 lead: {
                     where: { isDeleted: false },
                     select: { id: true, firstName: true, lastName: true, company: true }
@@ -286,7 +295,7 @@ export const updateTask = async (req: Request, res: Response) => {
             where: whereObj,
             data: updates,
             include: {
-                assignedTo: { select: { firstName: true, lastName: true } },
+                assignedTo: { select: { id: true, firstName: true, lastName: true } },
                 lead: { select: { id: true, firstName: true, lastName: true } },
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
