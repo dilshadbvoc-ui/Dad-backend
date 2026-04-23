@@ -149,10 +149,6 @@ export const createLead = async (req: express.Request, res: express.Response) =>
             if (cleanPhone.startsWith(prefixNoPlus)) {
                 cleanPhone = cleanPhone.slice(prefixNoPlus.length);
             }
-        } else if (cleanPhone.length > 10) {
-            // Backward compatibility: strip last 10 if no country code provided
-            // This handles cases like 919876543210 -> 9876543210
-            cleanPhone = cleanPhone.slice(-10);
         }
 
         const orgId = getOrgId((req as any).user);
@@ -598,9 +594,6 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
         // Sanitize phone if it's being updated
         if (updates.phone) {
             let cleanPhone = updates.phone.toString().replace(/\D/g, '');
-            if (cleanPhone.length > 10) {
-                cleanPhone = cleanPhone.slice(-10); // Take last 10 digits
-            }
             updates.phone = cleanPhone;
         }
 

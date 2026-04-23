@@ -67,7 +67,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
             const last10 = cleanPhone.slice(-10);
             
-            if (last10.length >= 10) {
+            if (last10.length > 0) { // Relaxed from >= 10
                 leadByPhone = await prisma.lead.findFirst({
                     where: {
                         organisationId: user.organisationId,
@@ -181,11 +181,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         }
 
         // FUZZY RECONCILIATION: Look for 'initiated' calls if no exact match
-        if (!existingInteraction && phoneSuffix.length >= 10) {
-            console.log(`[AndroidUpload] Exact match failed. Attempting fuzzy reconciliation for phone suffix ${phoneSuffix}...`);
+        if (!existingInteraction && phoneSuffix.length > 0) {
+            console.log(`[AndroidUpload] Exact match failed. Attempting fuzzy reconciliation for phone suffix ${phoneSuffix} (User: ${user.id})...`);
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: user.organisationId,
+                    createdById: user.id, // Only match interactions created by the SAME user
                     type: 'call',
                     callStatus: { in: ['initiated', 'completed'] },
                     phoneNumber: { contains: phoneSuffix },
@@ -237,11 +238,15 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 direction = 'outbound';
                 subject = 'Mobile Outbound Call';
                 
-                // IRON VEIL (v3.0): Unconditionally suppress ANY 0-sec outbound without a recording.
-                // These are almost always ghost entries from the Android dialer opening.
-                if (finalizedDurationSecs === 0 && !file) {
-                    console.log(`[AndroidUpload] Iron Veil v3.0: Discarding 0-sec ghost outbound (${phoneNumber})`);
+                // IRON VEIL (v3.1): Suppress 0-sec outbound ONLY if it's a "ghost" (no file AND no matching initiated record)
+                if (finalizedDurationSecs === 0 && !file && !existingInteraction) {
+                    console.log(`[AndroidUpload] Iron Veil v3.1: Discarding 0-sec ghost outbound (${phoneNumber})`);
                     return res.status(200).json({ message: 'Iron Veil: Discarded 0-sec ghost outbound call.' });
+                }
+                
+                if (finalizedDurationSecs === 0 && existingInteraction) {
+                    status = 'failed'; // Or 'busy'
+                    subject = 'Outbound Call Attempt (No Answer)';
                 }
             } else if (missedIdentifiers.includes(rawType)) {
                 direction = 'inbound';
@@ -364,11 +369,11 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         for (const lead of crmLeads) {
             if (lead.phone) {
                 const clean = lead.phone.replace(/[^0-9]/g, '').slice(-10);
-                if (clean.length >= 10) phoneToLead.set(clean, lead);
+                if (clean.length > 0) phoneToLead.set(clean, lead);
             }
             if (lead.secondaryPhone) {
                 const clean = lead.secondaryPhone.replace(/[^0-9]/g, '').slice(-10);
-                if (clean.length >= 10 && !phoneToLead.has(clean)) phoneToLead.set(clean, lead);
+                if (clean.length > 0 && !phoneToLead.has(clean)) phoneToLead.set(clean, lead);
             }
         }
 
@@ -393,7 +398,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
                 const last10 = cleanPhone.slice(-10);
 
-                if (last10.length < 10) {
+                if (last10.length === 0) {
                     results.skipped++;
                     continue;
                 }
@@ -434,10 +439,11 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 }
 
                 // Priority 3: Fuzzy Match (Phone + User + Time window for existing entries)
-                if (!existingInteraction && phoneSuffix.length >= 10) {
+                if (!existingInteraction && phoneSuffix.length > 0) {
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
+                            createdById: user.id, // Match owner
                             type: 'call',
                             callStatus: { in: ['initiated', 'completed'] },
                             phoneNumber: { contains: phoneSuffix },
@@ -496,11 +502,15 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     direction = 'outbound';
                     subject = 'Mobile Outbound Call';
 
-                    // IRON VEIL (v3.0): Same rule: Unconditionally discard 0-sec ghosts during bulk sync
-                    if (finalizedNewDurationSecs === 0) {
-                        console.log(`[BulkSync] Iron Veil v3.0: Skipping 0-sec ghost outbound (${phoneNumber})`);
+                    // IRON VEIL (v3.1): Suppress 0-sec ghosts during bulk sync
+                    if (finalizedNewDurationSecs === 0 && !existingInteraction) {
+                        console.log(`[BulkSync] Iron Veil v3.1: Skipping 0-sec ghost outbound (${phoneNumber})`);
                         results.skipped++;
                         continue;
+                    }
+                    if (finalizedNewDurationSecs === 0 && existingInteraction) {
+                        status = 'failed';
+                        subject = 'Outbound Call Attempt (No Answer)';
                     }
                 } else if (missedIdentifiers.includes(rawType)) {
                     direction = 'inbound';

@@ -144,9 +144,6 @@ export class ImportJobService {
                     // Sanitize phone
                     if (leadData.phone) {
                         leadData.phone = leadData.phone.toString().replace(/\D/g, '');
-                        if (leadData.phone.length > 10) {
-                            leadData.phone = leadData.phone.slice(-10);
-                        }
                     }
 
                     // Handle Owner Lookup by Email

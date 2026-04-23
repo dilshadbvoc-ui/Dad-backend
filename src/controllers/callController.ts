@@ -224,7 +224,8 @@ export const getAllCalls = async (req: Request, res: Response) => {
             userId,
             startDate,
             endDate,
-            search
+            search,
+            hasRecording
         } = req.query;
 
         const pageNum = parseInt(page as string, 10);
@@ -244,6 +245,10 @@ export const getAllCalls = async (req: Request, res: Response) => {
 
         if (status && status !== 'all') {
             where.callStatus = status;
+        }
+
+        if (hasRecording === 'true') {
+            where.recordingUrl = { not: null };
         }
 
         if (user.role !== 'admin' && user.role !== 'super_admin') {

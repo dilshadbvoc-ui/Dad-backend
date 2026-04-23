@@ -226,12 +226,16 @@ export const getLeadInteractions = async (req: Request, res: Response) => {
         const where: any = { leadId, isDeleted: false };
         if (orgId) where.organisationId = orgId;
 
-        // Hierarchy filtering: if not super_admin, restrict to self, subordinates, and managed branches
-        if (user.role !== 'super_admin') {
+        // Hierarchy filtering:
+        // You can see interactions if:
+        // 1. You or your subordinates created it
+        // 2. You or your subordinates are the owner of the lead
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
             where.OR = [
                 { createdById: { in: visibleUserIds } },
-                { createdById: null }
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { createdById: null } // System generated or imported
             ];
         }
 
@@ -272,17 +276,16 @@ export const getAllInteractions = async (req: Request, res: Response) => {
             where.branchId = user.branchId;
         }
 
-        // Hierarchy filtering: if not super_admin, restrict to self, subordinates, and managed branches
-        if (user.role !== 'super_admin') {
+        // Hierarchy filtering:
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            where.AND = [
-                {
-                    OR: [
-                        { createdById: { in: visibleUserIds } },
-                        { createdById: null }
-                    ]
-                },
-                { lead: { assignedToId: { in: visibleUserIds } } }
+            where.OR = [
+                { createdById: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { contact: { ownerId: { in: visibleUserIds } } },
+                { account: { ownerId: { in: visibleUserIds } } },
+                { opportunity: { ownerId: { in: visibleUserIds } } },
+                { createdById: null }
             ];
         }
 

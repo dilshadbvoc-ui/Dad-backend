@@ -37,9 +37,20 @@ export const DuplicateLeadService = {
 
             // Build OR conditions for duplicate check
             const conditions: any[] = [
-                { phone: cleanPhone, organisationId },
-                { secondaryPhone: cleanPhone, organisationId }
+                { phone: cleanPhone },
+                { secondaryPhone: cleanPhone }
             ];
+
+            // Handle India specific variations (91 prefix)
+            if (cleanPhone.length === 10) {
+                const with91 = '91' + cleanPhone;
+                conditions.push({ phone: with91 });
+                conditions.push({ secondaryPhone: with91 });
+            } else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+                const without91 = cleanPhone.slice(2);
+                conditions.push({ phone: without91 });
+                conditions.push({ secondaryPhone: without91 });
+            }
 
             if (email) {
                 conditions.push({ email, organisationId });
