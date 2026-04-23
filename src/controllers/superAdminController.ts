@@ -354,3 +354,45 @@ export const getOrganisationStats = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+// Reset user password (Super Admin Only)
+export const resetUserPassword = async (req: Request, res: Response) => {
+    try {
+        if (!(req as any).user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const { userId, newPassword } = req.body;
+        
+        if (!userId || !newPassword || newPassword.length < 8) {
+            return res.status(400).json({ message: 'Valid user ID and password (min 8 chars) required' });
+        }
+
+        const bcrypt = await import('bcryptjs');
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword }
+        });
+
+        // Audit Log
+        try {
+            const { logAudit } = await import('../utils/auditLogger');
+            await logAudit({
+                organisationId: updatedUser.organisationId || 'SYSTEM',
+                actorId: (req as any).user.id,
+                action: 'SUPERADMIN_RESET_PASSWORD',
+                entity: 'User',
+                entityId: userId,
+                details: { resetBy: (req as any).user.email, targetUser: updatedUser.email }
+            });
+        } catch (e) {
+            console.error('Audit Log Error:', e);
+        }
+
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};

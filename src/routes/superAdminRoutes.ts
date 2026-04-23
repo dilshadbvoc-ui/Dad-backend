@@ -4,7 +4,8 @@ import {
     createOrganisation,
     updateOrganisationAdmin,
     suspendOrganisation,
-    getOrganisationStats
+    getOrganisationStats,
+    resetUserPassword
 } from '../controllers/superAdminController';
 import { deleteOrganisation, restoreOrganisation, permanentlyDeleteOrganisation } from '../controllers/organisationController';
 import {
@@ -60,5 +61,8 @@ router.get('/faqs', protect, getAllFAQs);
 router.post('/faqs', protect, createFAQ);
 router.put('/faqs/:id', protect, updateFAQ);
 router.delete('/faqs/:id', protect, deleteFAQ);
+
+// User Management (Cross-Organisation)
+router.post('/users/reset-password', protect, resetUserPassword);
 
 export default router;
