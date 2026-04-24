@@ -253,7 +253,17 @@ export class ImportJobService {
                     // The DistributionService will assign it after creation
 
                     leadData.assignedToId = initialAssignedToId;
-                    console.log(`[ImportJob ${jobId}] Creating lead with assignedToId: ${leadData.assignedToId}`);
+                    
+                    // BRUTE FORCE OVERRIDE: Ensure status matches stage if stage exists
+                    if (leadData.stage && (!leadData.status || leadData.status === 'new')) {
+                        leadData.status = leadData.stage;
+                    }
+                    
+                    console.log(`[ImportJob ${jobId}] Final LeadData for ${leadData.email || leadData.phone}:`, JSON.stringify({
+                        status: leadData.status,
+                        stage: leadData.stage,
+                        assignedToId: leadData.assignedToId
+                    }));
 
                     const createdLead = await prisma.lead.create({ data: leadData });
                     console.log(`[ImportJob ${jobId}] Lead created with ID: ${createdLead.id}, assignedToId: ${createdLead.assignedToId}`);
