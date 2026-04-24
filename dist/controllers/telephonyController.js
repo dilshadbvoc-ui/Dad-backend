@@ -11,8 +11,8 @@ const telephonyService_1 = require("../services/telephonyService");
 const VoiceResponse = twilio_1.default.twiml.VoiceResponse;
 // Voice Webhook (Inbound or Outbound Answered)
 const handleVoiceWebhook = async (req, res) => {
-    const { orgId, leadId } = req.query; // Added leadId from query
-    const { CallSid, From } = req.body; // Removed unused To, Direction
+    const { orgId, leadId, userId } = req.query; // Added leadId and userId from query
+    const { CallSid, From } = req.body;
     const twiml = new VoiceResponse();
     try {
         if (!orgId || typeof orgId !== 'string') {
@@ -34,10 +34,21 @@ const handleVoiceWebhook = async (req, res) => {
         const twilioConfig = integrations?.twilio;
         // Check recording settings
         const shouldRecord = org.callSettings?.autoRecordInbound ?? true;
+        // CHECK FOR EXISTING INTERACTION (Created by makeOutboundCall)
+        const existingInteraction = await prisma_1.default.interaction.findFirst({
+            where: {
+                organisationId: orgId,
+                description: { contains: CallSid }
+            }
+        });
+        if (existingInteraction) {
+            console.log(`[Telephony] Found existing interaction ${existingInteraction.id} for CallSid ${CallSid}. Skipping duplicate creation.`);
+            return handleVoiceResponse(twiml, twilioConfig, shouldRecord, res, orgId);
+        }
         // Create Interaction Data
         const interactionData = {
             type: 'call',
-            direction: 'inbound', // Default to inbound, but could be outbound if triggered via API 
+            direction: 'inbound',
             subject: `Call with ${From}`,
             phoneNumber: From,
             callStatus: 'initiated',
@@ -45,10 +56,14 @@ const handleVoiceWebhook = async (req, res) => {
             recordingUrl: null,
             organisation: { connect: { id: orgId } },
         };
+        // Set owner if provided (outbound calls)
+        if (userId && typeof userId === 'string') {
+            interactionData.createdBy = { connect: { id: userId } };
+        }
         // If leadId is passed (e.g. from Click-to-Call), connect it
         if (leadId && typeof leadId === 'string') {
             interactionData.lead = { connect: { id: leadId } };
-            interactionData.direction = 'outbound'; // If we have a leadId, it's likely our initiated outbound call
+            interactionData.direction = 'outbound';
             interactionData.subject = `Outbound Call to ${From}`;
         }
         else if (From) {
@@ -72,12 +87,9 @@ const handleVoiceWebhook = async (req, res) => {
                     console.log(`[Telephony] Inbound call matched to Lead: ${foundLead.id} (${foundLead.firstName})`);
                 }
                 else {
-                    // Check if we should sync unknown numbers
-                    // If settings are missing, default to true (to match previous behavior)
                     const canSync = org.callSettings ? org.callSettings.syncNonCrmContacts : true;
                     if (!canSync) {
                         console.log(`[Telephony] Inbound call from unknown number ${From} ignored (Sync Settings)`);
-                        // Still need to handle the voice response (Dial/Forward) but skip Interaction creation
                         return handleVoiceResponse(twiml, twilioConfig, shouldRecord, res, orgId);
                     }
                 }
@@ -185,18 +197,29 @@ const makeOutboundCall = async (req, res) => {
         if (!telephonyService) {
             return res.status(400).json({ message: 'Telephony not configured' });
         }
-        // URL that Twilio will request when the call connects (usually to give instructions or record)
-        // For a simple browser-to-phone or click-to-call, this TwiML usually dials the agent first or bridges.
-        // For this simple implementation, we'll assume we are triggering a call TO the customer 
-        // that plays a message or connects to a verified number.
-        // A real "Click-to-Call" often involves dialing the Agent first, then the Customer.
-        // For MVP, let's just trigger the API.
-        // Pass leadId to webhook so we can link the call
+        // Pass leadId and userId to webhook so we can link the call and attribute it to the agent
         let callbackUrl = `${process.env.API_URL}/api/telephony/webhook/voice?orgId=${orgId}`;
         if (leadId) {
             callbackUrl += `&leadId=${leadId}`;
         }
+        callbackUrl += `&userId=${user.id}`;
         const call = await telephonyService.makeCall(to, callbackUrl);
+        // CREATE INTERACTION IMMEDIATELY
+        // This ensures the call is logged even if the webhook fails or the user hangs up early
+        await prisma_1.default.interaction.create({
+            data: {
+                type: 'call',
+                direction: 'outbound',
+                subject: `Outbound Call to ${to}`,
+                phoneNumber: to,
+                callStatus: 'initiated',
+                description: `Twilio CallSid: ${call.sid}`,
+                organisation: { connect: { id: orgId } },
+                createdBy: { connect: { id: user.id } },
+                lead: leadId ? { connect: { id: leadId } } : undefined,
+                date: new Date()
+            }
+        });
         res.json({ message: 'Call initiated', callSid: call.sid });
     }
     catch (error) {

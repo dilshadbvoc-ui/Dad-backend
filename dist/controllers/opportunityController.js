@@ -66,8 +66,29 @@ const getOpportunities = async (req, res) => {
         // 2. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            // In Prisma: ownerId IN [...]
-            where.ownerId = { in: visibleUserIds };
+            // If explicit ownerId is requested, ensure it's within visible range
+            if (req.query.ownerId && visibleUserIds.includes(String(req.query.ownerId))) {
+                where.ownerId = String(req.query.ownerId);
+            }
+            else {
+                where.ownerId = { in: visibleUserIds };
+            }
+        }
+        else if (req.query.ownerId) {
+            where.ownerId = String(req.query.ownerId);
+        }
+        // 3. Dynamic Filters
+        if (req.query.stage && req.query.stage !== 'all') {
+            where.stage = String(req.query.stage);
+        }
+        if (req.query.type && req.query.type !== 'all') {
+            where.type = String(req.query.type);
+        }
+        if (req.query.search) {
+            where.OR = [
+                { name: { contains: String(req.query.search), mode: 'insensitive' } },
+                { description: { contains: String(req.query.search), mode: 'insensitive' } }
+            ];
         }
         // Add filters if needed (e.g. stage, etc.) based on query params if standard match Mongoose behavior which passed `query` directly sometimes?
         // Mongoose code had `const query: any = {}` and populated it manually.

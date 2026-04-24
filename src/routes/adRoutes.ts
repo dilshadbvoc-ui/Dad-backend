@@ -10,7 +10,8 @@ import {
     getCampaignInsights,
     getAccountInsights,
     createFullAd,
-    uploadAdImage
+    uploadAdImage,
+    sendConversionEvent
 } from '../controllers/adController';
 import { metaLimiter } from '../middleware/rateLimiter';
 
@@ -31,5 +32,6 @@ router.get('/meta/account/insights', protect, metaLimiter, getAccountInsights as
 // New Ad Creation Endpoints
 router.post('/meta/campaigns', protect, metaLimiter, createFullAd as any);
 router.post('/meta/images', protect, metaLimiter, uploadAdImage as any);
+router.post('/meta/conversions', protect, metaLimiter, sendConversionEvent as any);
 
 export default router;

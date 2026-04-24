@@ -21,4 +21,5 @@ router.get('/meta/account/insights', authMiddleware_1.protect, rateLimiter_1.met
 // New Ad Creation Endpoints
 router.post('/meta/campaigns', authMiddleware_1.protect, rateLimiter_1.metaLimiter, adController_1.createFullAd);
 router.post('/meta/images', authMiddleware_1.protect, rateLimiter_1.metaLimiter, adController_1.uploadAdImage);
+router.post('/meta/conversions', authMiddleware_1.protect, rateLimiter_1.metaLimiter, adController_1.sendConversionEvent);
 exports.default = router;

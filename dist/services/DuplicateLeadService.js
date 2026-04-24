@@ -51,9 +51,20 @@ exports.DuplicateLeadService = {
             const cleanPhone = phone.toString().replace(/\D/g, '');
             // Build OR conditions for duplicate check
             const conditions = [
-                { phone: cleanPhone, organisationId },
-                { secondaryPhone: cleanPhone, organisationId }
+                { phone: cleanPhone },
+                { secondaryPhone: cleanPhone }
             ];
+            // Handle India specific variations (91 prefix)
+            if (cleanPhone.length === 10) {
+                const with91 = '91' + cleanPhone;
+                conditions.push({ phone: with91 });
+                conditions.push({ secondaryPhone: with91 });
+            }
+            else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+                const without91 = cleanPhone.slice(2);
+                conditions.push({ phone: without91 });
+                conditions.push({ secondaryPhone: without91 });
+            }
             if (email) {
                 conditions.push({ email, organisationId });
             }
@@ -62,11 +73,16 @@ exports.DuplicateLeadService = {
                 isDeleted: false,
                 organisationId
             };
-            // STRICT BRANCH ISOLATION:
-            // If includeAllBranches is false (default), we only look for duplicates within the same branch.
-            // If branchId is null/undefined, we look for unassigned leads.
-            if (!includeAllBranches) {
-                where.branchId = branchId || null;
+            // BRANCH ISOLATION LOGIC:
+            // 1. If includeAllBranches is true, we look everywhere in the org.
+            // 2. If branchId is null/undefined, we ALSO look everywhere in the org 
+            //    to prevent creating a "global" duplicate of a branch-specific lead.
+            // 3. If branchId is provided, we strictly isolate to that branch (the default CRM behavior).
+            if (includeAllBranches || !branchId) {
+                // No branch filter added to 'where', so it searches organisation-wide
+            }
+            else {
+                where.branchId = branchId;
             }
             console.log('[DuplicateLeadService] Checking duplicate with:', {
                 phone: cleanPhone,
@@ -139,6 +155,7 @@ exports.DuplicateLeadService = {
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
+                    enquiryAbout: newData.sourceDetails?.message || existingLead.enquiryAbout,
                     // Update source details to track re-enquiry
                     sourceDetails: {
                         ...(existingLead.sourceDetails || {}),

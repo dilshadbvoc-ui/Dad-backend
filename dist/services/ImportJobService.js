@@ -171,9 +171,6 @@ class ImportJobService {
                     // Sanitize phone
                     if (leadData.phone) {
                         leadData.phone = leadData.phone.toString().replace(/\D/g, '');
-                        if (leadData.phone.length > 10) {
-                            leadData.phone = leadData.phone.slice(-10);
-                        }
                     }
                     // Handle Owner Lookup by Email
                     if (leadData.ownerEmail) {
@@ -183,10 +180,14 @@ class ImportJobService {
                                 organisationId: job.organisationId,
                                 isActive: true
                             },
-                            select: { id: true }
+                            select: { id: true, branchId: true }
                         });
                         if (owner) {
                             leadData.assignedToId = owner.id;
+                            // Also sync lead's branch with owner if lead has no branch
+                            if (!leadData.branchId && owner.branchId) {
+                                leadData.branchId = owner.branchId;
+                            }
                         }
                         delete leadData.ownerEmail;
                     }

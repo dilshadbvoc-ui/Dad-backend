@@ -17,4 +17,5 @@ router.put('/:id', authMiddleware_1.protect, superAdminProtection_1.verifySuperA
 router.post('/invite', authMiddleware_1.protect, (0, subscriptionMiddleware_1.checkPlanLimits)('users'), userController_1.inviteUser);
 router.post('/:id/deactivate', authMiddleware_1.protect, superAdminProtection_1.verifySuperAdminSecret, superAdminProtection_1.protectSuperAdmin, userController_1.deactivateUser);
 router.post('/:id/activate', authMiddleware_1.protect, superAdminProtection_1.verifySuperAdminSecret, superAdminProtection_1.protectSuperAdmin, userController_1.activateUser);
+router.delete('/:id', authMiddleware_1.protect, superAdminProtection_1.verifySuperAdminSecret, superAdminProtection_1.protectSuperAdmin, userController_1.permanentlyDeleteUser);
 exports.default = router;

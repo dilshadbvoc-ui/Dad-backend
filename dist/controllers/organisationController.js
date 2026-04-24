@@ -213,6 +213,7 @@ const getOrganisation = async (req, res) => {
                 sanitizedOrg.integrations = integrations;
             }
         }
+        console.log(`[getOrganisation] Responding for ${org.name}: userCount=${userCount}, userLimit=${sanitizedOrg.userLimit}`);
         res.json({ organisation: sanitizedOrg, userCount });
     }
     catch (error) {

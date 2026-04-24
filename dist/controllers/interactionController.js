@@ -192,10 +192,17 @@ const getLeadInteractions = async (req, res) => {
         const where = { leadId, isDeleted: false };
         if (orgId)
             where.organisationId = orgId;
-        // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
-        if (user.role !== 'admin' && user.role !== 'super_admin') {
+        // Hierarchy filtering:
+        // You can see interactions if:
+        // 1. You or your subordinates created it
+        // 2. You or your subordinates are the owner of the lead
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            where.createdById = { in: [...visibleUserIds, null] };
+            where.OR = [
+                { createdById: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { createdById: null } // System generated or imported
+            ];
         }
         const interactions = await prisma_1.default.interaction.findMany({
             where,
@@ -230,10 +237,17 @@ const getAllInteractions = async (req, res) => {
         if (user.branchId) {
             where.branchId = user.branchId;
         }
-        // Hierarchy filtering: if not admin, restrict to self, subordinates, and managed branches
-        if (user.role !== 'admin' && user.role !== 'super_admin') {
+        // Hierarchy filtering:
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            where.createdById = { in: [...visibleUserIds, null] };
+            where.OR = [
+                { createdById: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { contact: { ownerId: { in: visibleUserIds } } },
+                { account: { ownerId: { in: visibleUserIds } } },
+                { opportunity: { ownerId: { in: visibleUserIds } } },
+                { createdById: null }
+            ];
         }
         // Filter: Type
         if (type)
@@ -366,7 +380,10 @@ const logQuickInteraction = async (req, res) => {
             action: 'LOG_QUICK_INTERACTION',
             entity: 'Interaction',
             entityId: interaction.id,
-            details: { type }
+            details: {
+                type,
+                name: `${lead.firstName} ${lead.lastName || ''}`.trim()
+            }
         });
         res.status(201).json(interaction);
     }

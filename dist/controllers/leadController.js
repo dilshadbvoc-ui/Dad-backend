@@ -71,8 +71,9 @@ const getLeads = async (req, res) => {
             where.organisationId = orgId;
         }
         // 2. Hierarchy Visibility
-        // Only apply hierarchy restrictions for non-admin users
-        if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user) && !(0, roleUtils_1.isAdmin)(user)) {
+        // Only apply organization-wide override for super_admin. 
+        // Standard admins now fall into the hierarchy checking logic below.
+        if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user)) {
             // New Logic: Anyone can see their own leads + leads of their subordinates (recursively) + managed branches.
             // Role names no longer strictly limit visibility if they have reporting subordinates.
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
@@ -169,11 +170,6 @@ const createLead = async (req, res) => {
             if (cleanPhone.startsWith(prefixNoPlus)) {
                 cleanPhone = cleanPhone.slice(prefixNoPlus.length);
             }
-        }
-        else if (cleanPhone.length > 10) {
-            // Backward compatibility: strip last 10 if no country code provided
-            // This handles cases like 919876543210 -> 9876543210
-            cleanPhone = cleanPhone.slice(-10);
         }
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
@@ -425,7 +421,7 @@ const getLeadById = async (req, res) => {
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
             // 2. Hierarchy Visibility
-            if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user) && !(0, roleUtils_1.isAdmin)(user)) {
+            if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user)) {
                 const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
                 where.OR = [
                     { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
@@ -521,7 +517,11 @@ const updateLead = async (req, res) => {
                 entityId: leadId,
                 actorId: requester.id,
                 organisationId: currentLead.organisationId,
-                details: { oldStatus: currentLead.status, newStatus: updates.status }
+                details: {
+                    name: `${currentLead.firstName} ${currentLead.lastName || ''}`.trim(),
+                    oldStatus: currentLead.status,
+                    newStatus: updates.status
+                }
             });
         }
         // Track Follow-up Change and Create Task
@@ -568,9 +568,6 @@ const updateLead = async (req, res) => {
         // Sanitize phone if it's being updated
         if (updates.phone) {
             let cleanPhone = updates.phone.toString().replace(/\D/g, '');
-            if (cleanPhone.length > 10) {
-                cleanPhone = cleanPhone.slice(-10); // Take last 10 digits
-            }
             updates.phone = cleanPhone;
         }
         // List of allowed fields to prevent relation/schema mismatches crashing Prisma

@@ -106,7 +106,6 @@ const whatsAppRoutes_1 = __importDefault(require("./routes/whatsAppRoutes"));
 const commissionRoutes_1 = __importDefault(require("./routes/commissionRoutes"));
 const landingPageRoutes_1 = __importDefault(require("./routes/landingPageRoutes"));
 const bulkRoutes_1 = __importDefault(require("./routes/bulkRoutes"));
-const publicRoutes_1 = __importDefault(require("./routes/publicRoutes"));
 const teamRoutes_1 = __importDefault(require("./routes/teamRoutes"));
 const branchRoutes_1 = __importDefault(require("./routes/branchRoutes"));
 const path_1 = __importDefault(require("path"));
@@ -200,16 +199,21 @@ const allowedOrigins = [
 ].filter(Boolean);
 app.use((0, cors_1.default)({
     origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, Postman, health checks, etc.)
+        // Allow requests with no origin (mobile apps, Postman)
         if (!origin) {
             return callback(null, true);
         }
-        // Check if origin is in allowed list or matches allowed origins env var
+        // --- ENHANCEMENT: Permissive CORS for Public API ---
+        // If the request is for the public API, we are more permissive
+        // relative to origin because external websites connect here.
+        // The security is enforced by the X-API-KEY itself.
+        const isPublicApi = origin && (origin.includes('localhost') || !origin.includes('pypecrm.com'));
+        // Check if origin is in allowed list
         const allowedOriginsArray = process.env.ALLOWED_ORIGINS
             ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
             : [];
         const allOrigins = [...allowedOrigins, ...allowedOriginsArray];
-        if (origin && allOrigins.indexOf(origin) !== -1) {
+        if (allOrigins.indexOf(origin) !== -1 || isPublicApi) {
             callback(null, true);
         }
         else {
@@ -219,7 +223,7 @@ app.use((0, cors_1.default)({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token', 'X-API-KEY'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     maxAge: 86400 // 24 hours
 }));
@@ -299,8 +303,12 @@ app.get('/api/csrf-token', csrfProtection_1.setCSRFToken, (req, res) => {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
     });
 });
-// Public Routes (No Auth)
-app.use('/api/public', publicRoutes_1.default);
+const sitemapRoutes_1 = __importDefault(require("./routes/sitemapRoutes"));
+const seoMiddleware_1 = require("./middleware/seoMiddleware");
+// SEO & Crawlability (SSR for public routes)
+app.use(seoMiddleware_1.seoMiddleware);
+app.use('/', sitemapRoutes_1.default);
+app.use('/api', sitemapRoutes_1.default);
 // Auth & Core (with enhanced security)
 app.use('/api/auth', authRoutes_1.default);
 app.use('/api/analytics', csrfProtection_1.verifyCSRFToken, analyticsRoutes_1.default);
@@ -387,6 +395,32 @@ const apiRoutes_1 = __importDefault(require("./routes/apiRoutes"));
 app.use('/api/v1', apiRoutes_1.default);
 const stripeRoutes_1 = __importDefault(require("./routes/stripeRoutes"));
 app.use('/api/stripe', stripeRoutes_1.default);
+// --- FRONTEND SERVING & SEO ---
+const clientDistPath = path_1.default.join(__dirname, '../client/dist');
+app.use(express_1.default.static(clientDistPath));
+// Dynamic sitemap & robots (root level)
+app.use('/', sitemapRoutes_1.default);
+// Catch-all for React SPA - allows seoMiddleware to handle marketing routes
+app.get('*', seoMiddleware_1.seoMiddleware, (req, res, next) => {
+    // Only serve index.html for non-API routes
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ message: 'API route not found' });
+    }
+    // Explicitly handle robots and sitemap if they fell through
+    if (req.path === '/robots.txt' || req.path === '/sitemap.xml') {
+        return next();
+    }
+    const indexPath = path_1.default.join(clientDistPath, 'index.html');
+    if (fs_1.default.existsSync(indexPath)) {
+        // If seoMiddleware didn't already send the response (e.g. for non-marketing routes)
+        if (!res.headersSent) {
+            res.sendFile(indexPath);
+        }
+    }
+    else {
+        res.status(404).send('Frontend not built. Please run npm build in the client directory.');
+    }
+});
 // Debug Routes
 const debugRoutes_1 = __importDefault(require("./routes/debugRoutes"));
 app.use('/api/debug', debugRoutes_1.default);

@@ -41,4 +41,6 @@ router.get('/faqs', authMiddleware_1.protect, siteFAQController_1.getAllFAQs);
 router.post('/faqs', authMiddleware_1.protect, siteFAQController_1.createFAQ);
 router.put('/faqs/:id', authMiddleware_1.protect, siteFAQController_1.updateFAQ);
 router.delete('/faqs/:id', authMiddleware_1.protect, siteFAQController_1.deleteFAQ);
+// User Management (Cross-Organisation)
+router.post('/users/reset-password', authMiddleware_1.protect, superAdminController_1.resetUserPassword);
 exports.default = router;

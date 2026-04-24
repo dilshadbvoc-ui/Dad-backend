@@ -23,45 +23,43 @@ exports.MetaConversionService = {
             const pixelId = metaConfig?.pixelId;
             const accessToken = metaConfig?.accessToken;
             if (!pixelId || !accessToken) {
-                // Not configured, skip silently
+                console.warn(`[MetaConversions] Org ${organisationId} missing Pixel ID or Access Token`);
                 return;
             }
-            console.log(`[MetaConversions] Sending ${event.eventName} event for Org ${organisationId}`);
-            // 2. Hash User Data (Meta requires SHA256)
-            // Note: For simplicity in this step, we'll send raw if using current API version that accepts hashing on client side
-            // or standard helper. Meta actually asks for pre-hashed data usually.
-            // But let's assume we send raw and let axios handle it? No, we MUST hash.
-            // For MVP speed, let's implement basic hashing helper next or assume trusted environment.
-            // Actually, we should hash.
-            const userData = {
-                em: event.userData.email ? hash(event.userData.email) : undefined,
-                ph: event.userData.phone ? hash(event.userData.phone) : undefined,
-                fn: event.userData.firstName ? hash(event.userData.firstName) : undefined,
-                ln: event.userData.lastName ? hash(event.userData.lastName) : undefined,
-                external_id: event.userData.externalId ? hash(event.userData.externalId) : undefined,
-                client_user_agent: event.userData.clientUserAgent,
-                client_ip_address: event.userData.clientIp,
-            };
+            const events = Array.isArray(event) ? event : [event];
+            // 2. Map and Hash Events
+            const data = events.map(evt => {
+                const userData = {
+                    em: evt.userData.email ? [hash(evt.userData.email)] : undefined,
+                    ph: evt.userData.phone ? [hash(evt.userData.phone)] : undefined,
+                    fn: evt.userData.firstName ? [hash(evt.userData.firstName)] : undefined,
+                    ln: evt.userData.lastName ? [hash(evt.userData.lastName)] : undefined,
+                    external_id: evt.userData.externalId ? [hash(evt.userData.externalId)] : undefined,
+                    lead_id: evt.userData.leadId || undefined,
+                    client_user_agent: evt.userData.clientUserAgent,
+                    client_ip_address: evt.userData.clientIp,
+                };
+                return {
+                    event_name: evt.eventName || 'Lead',
+                    event_time: evt.eventTime || Math.floor(Date.now() / 1000),
+                    action_source: evt.actionSource || 'system_generated',
+                    user_data: userData,
+                    custom_data: {
+                        event_source: 'crm',
+                        lead_event_source: 'PypeCRM',
+                        ...evt.customData
+                    },
+                    event_source_url: evt.eventSourceUrl
+                };
+            });
             // 3. Construct Payload
-            const payload = {
-                data: [
-                    {
-                        event_name: event.eventName,
-                        event_time: Math.floor(Date.now() / 1000),
-                        action_source: event.actionSource || 'system_generated',
-                        user_data: userData,
-                        custom_data: event.customData,
-                        event_source_url: event.eventSourceUrl
-                    }
-                ],
-                access_token: accessToken // Often passed in query param, but can be in body depending on library
-            };
+            const payload = { data };
             // 4. Send Request
             // Graph API: POST /<PIXEL_ID>/events
             await axios_1.default.post(`https://graph.facebook.com/v18.0/${pixelId}/events`, payload, {
                 params: { access_token: accessToken } // Pass here to be safe
             });
-            console.log(`[MetaConversions] Event ${event.eventName} sent successfully`);
+            console.log(`[MetaConversions] ${events.length} event(s) sent successfully`);
         }
         catch (error) {
             console.error('[MetaConversions] Failed to send event:', error.response?.data || error.message);
@@ -72,5 +70,12 @@ exports.MetaConversionService = {
 // Simple SHA256 Hash Helper (using crypto)
 const crypto_1 = __importDefault(require("crypto"));
 function hash(value) {
-    return crypto_1.default.createHash('sha256').update(value.trim().toLowerCase()).digest('hex');
+    if (!value)
+        return '';
+    const trimmed = value.trim().toLowerCase();
+    // If it's already a 64-char hex string (SHA256 format), return it as is
+    if (/^[a-f0-9]{64}$/.test(trimmed)) {
+        return trimmed;
+    }
+    return crypto_1.default.createHash('sha256').update(trimmed).digest('hex');
 }

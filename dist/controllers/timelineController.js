@@ -139,15 +139,22 @@ const getTimeline = async (req, res) => {
                 switch (a.action) {
                     case 'CREATE_LEAD':
                     case 'CREATE':
-                        description = details?.name ? `Created: ${details.name}` : 'Created new record';
+                        const entityName = details?.name || details?.title || 'item';
+                        description = `Created ${a.entity.toLowerCase()}: "${entityName}"`;
                         if (details?.company)
                             description += ` at ${details.company}`;
                         break;
                     case 'UPDATE':
-                        description = 'Updated record';
+                        const updatedName = details?.name || details?.title || 'item';
+                        if (details?.updatedFields && Array.isArray(details.updatedFields)) {
+                            description = `Updated ${a.entity.toLowerCase()} "${updatedName}": changed ${details.updatedFields.join(', ')}`;
+                        }
+                        else {
+                            description = `Updated ${a.entity.toLowerCase()} "${updatedName}"`;
+                        }
                         break;
                     case 'DELETE':
-                        description = 'Deleted record';
+                        description = `Deleted ${a.entity.toLowerCase()}`;
                         break;
                     case 'LOGIN':
                         description = 'Logged into the system';
@@ -157,18 +164,24 @@ const getTimeline = async (req, res) => {
                         break;
                     case 'LEAD_STATUS_CHANGE':
                         description = details?.oldStatus && details?.newStatus
-                            ? `Status changed from ${details.oldStatus} to ${details.newStatus}`
-                            : 'Status changed';
+                            ? `Changed status from ${details.oldStatus} to ${details.newStatus}`
+                            : details?.status ? `Changed status to ${details.status}` : 'Status changed';
                         break;
                     case 'BULK_IMPORT_COMPLETED':
                         description = details?.successCount
                             ? `Imported ${details.successCount} records`
                             : 'Bulk import completed';
                         break;
+                    case 'INVITE_USER':
+                        description = `Invited new user: ${details?.email || 'unknown'}`;
+                        break;
+                    case 'DEACTIVATE_USER':
+                        description = `Deactivated user account: ${details?.email || 'unknown'}`;
+                        break;
                     default:
                         // For unknown actions, try to extract meaningful info
-                        if (details?.name) {
-                            description = details.name;
+                        if (details?.name || details?.title) {
+                            description = details.name || details.title;
                         }
                         else if (typeof details === 'object' && details !== null) {
                             // Extract first meaningful value

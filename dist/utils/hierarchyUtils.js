@@ -44,23 +44,68 @@ exports.getSubordinateIds = getSubordinateIds;
  *  1. The user themselves + all subordinates (reportsTo chain via BFS)
  *  2. All users in branches the user manages (BranchManager relation)
  */
-const getVisibleUserIds = async (userId) => {
-    // 1. Subordinates via reporting chain
+/**
+ * Returns all user IDs that _userId_ is allowed to see.
+ * Combines:
+ *  1. The user themselves + all subordinates (reportsTo chain via BFS)
+ *  2. All users in teams the user manages (TeamManager relation)
+ *  3. All users in branches the user manages (BranchManager relation) - Restricted to high-level roles
+ */
+const getVisibleUserIds = async (userId, subordinatesOnly = false) => {
+    // 1. Fetch user to check role and branch
+    const user = await prisma_1.default.user.findUnique({
+        where: { id: userId },
+        select: { role: true, branchId: true }
+    });
+    if (!user)
+        return [userId];
+    // Initialize with self + subordinates via reporting chain
+    // getSubordinateIds is recursive and includes userId itself.
     const subordinateIds = await (0, exports.getSubordinateIds)(userId);
-    // 2. Users in managed branches
-    const managedBranches = await prisma_1.default.branch.findMany({
+    if (subordinatesOnly) {
+        return subordinateIds;
+    }
+    // 2. Users in managed teams (Explicitly assigned manager)
+    // This handles team isolation if reporting lines don't perfectly match team membership
+    const managedTeams = await prisma_1.default.team.findMany({
         where: { managerId: userId, isDeleted: false },
         select: { id: true }
     });
-    if (managedBranches.length > 0) {
-        const branchIds = managedBranches.map(b => b.id);
-        const branchUsers = await prisma_1.default.user.findMany({
-            where: { branchId: { in: branchIds } },
+    if (managedTeams.length > 0) {
+        const teamUsers = await prisma_1.default.user.findMany({
+            where: { teamId: { in: managedTeams.map(t => t.id) } },
             select: { id: true }
         });
-        for (const u of branchUsers) {
+        for (const u of teamUsers) {
             if (!subordinateIds.includes(u.id)) {
                 subordinateIds.push(u.id);
+            }
+        }
+    }
+    // 3. Users in managed branches (Explicitly assigned branch manager)
+    // IMPORTANT: Branch Managers see everything in the branch. 
+    // To prevent "leads from other teams" leakage for lower-level managers, 
+    // we only apply this if the user has an administrative role or is specifically a Branch Manager.
+    // We'll check if the role includes 'admin' or 'branch'.
+    const isHighLevelManager = user.role.toLowerCase().includes('admin') ||
+        user.role.toLowerCase().includes('branch') ||
+        user.role.toLowerCase().includes('country') ||
+        user.role.toLowerCase().includes('regional');
+    if (isHighLevelManager) {
+        const managedBranches = await prisma_1.default.branch.findMany({
+            where: { managerId: userId, isDeleted: false },
+            select: { id: true }
+        });
+        const managementBranchIds = managedBranches.map(b => b.id);
+        if (managementBranchIds.length > 0) {
+            const branchUsers = await prisma_1.default.user.findMany({
+                where: { branchId: { in: managementBranchIds } },
+                select: { id: true }
+            });
+            for (const u of branchUsers) {
+                if (!subordinateIds.includes(u.id)) {
+                    subordinateIds.push(u.id);
+                }
             }
         }
     }

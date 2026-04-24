@@ -580,10 +580,16 @@ const getUserPerformanceDetails = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { startDate, endDate, branchId } = req.query;
         const dateFilter = {};
-        if (startDate)
-            dateFilter.gte = new Date(startDate);
-        if (endDate)
-            dateFilter.lte = new Date(endDate);
+        if (startDate) {
+            const start = new Date(startDate);
+            start.setHours(0, 0, 0, 0);
+            dateFilter.gte = start;
+        }
+        if (endDate) {
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999);
+            dateFilter.lte = end;
+        }
         const thresholdDate = new Date();
         thresholdDate.setHours(thresholdDate.getHours() - 48);
         const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
@@ -606,7 +612,7 @@ const getUserPerformanceDetails = async (req, res) => {
             }
         });
         const report = await Promise.all(users.map(async (u) => {
-            const [periodLeads, activeLeads, callsMade, statusChanges, attendedLeads, wonDeals, meetings, revenueData] = await Promise.all([
+            const [periodLeads, activeLeads, callsMade, statusChanges, attendedLeads, wonDeals, meetings, revenueData, talkTimeData, strictlyNewLeads] = await Promise.all([
                 // 1. Total Leads Assigned/Active in Period
                 prisma_1.default.lead.count({
                     where: {
@@ -642,16 +648,15 @@ const getUserPerformanceDetails = async (req, res) => {
                         ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
                     }
                 }),
-                // 5. Attended Active Leads (Interactions in last 48h)
+                // 5. Attended Leads (Interacted with in period)
                 prisma_1.default.lead.count({
                     where: {
                         assignedToId: u.id,
                         organisationId: orgId,
                         isDeleted: false,
-                        status: { in: ['new', 'contacted', 'interested', 'qualified', 'nurturing', 'call_not_connected', 're_enquiry'] },
                         interactions: {
                             some: {
-                                createdAt: { gte: thresholdDate }
+                                createdAt: dateFilter
                             }
                         }
                     }
@@ -683,20 +688,56 @@ const getUserPerformanceDetails = async (req, res) => {
                         ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
                     },
                     _sum: { amount: true }
+                }),
+                // 9. Total Talk Time (Prioritize hardwareDuration) in Period
+                prisma_1.default.interaction.findMany({
+                    where: {
+                        createdById: u.id,
+                        type: 'call',
+                        callStatus: 'completed',
+                        organisationId: orgId,
+                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                    },
+                    select: { duration: true, recordingDuration: true, hardwareDuration: true }
+                }),
+                // 10. Strictly New Leads (Unattended Backdrop)
+                prisma_1.default.lead.count({
+                    where: {
+                        assignedToId: u.id,
+                        organisationId: orgId,
+                        isDeleted: false,
+                        status: 'new'
+                    }
                 })
             ]);
-            const unattendedLeads = Math.max(0, activeLeads - attendedLeads);
+            let totalTalkTimeSecs = 0;
+            talkTimeData.forEach(i => {
+                if (i.hardwareDuration && i.hardwareDuration > 0) {
+                    totalTalkTimeSecs += i.hardwareDuration;
+                }
+                else if (i.recordingDuration && i.recordingDuration > 0) {
+                    totalTalkTimeSecs += i.recordingDuration;
+                }
+                else if (i.duration && i.duration > 0) {
+                    totalTalkTimeSecs += Math.round(i.duration * 60);
+                }
+            });
+            const unattendedLeads = strictlyNewLeads;
             const revenue = revenueData._sum.amount || 0;
             // Performance Index Calculation (0-100)
-            // Weighting: 40% Conversion, 30% Calls, 20% Activity (Status Changes), 10% Promptness
+            // Weighting: 40% Conversion, 25% Talk Time, 15% Call Count, 15% Activity, 5% Promptness
             const conversionRate = periodLeads > 0 ? (wonDeals / periodLeads) : 0;
-            const callScore = Math.min((callsMade / 50) * 100, 100); // 50 calls as a "perfect" score for activity period
-            const activityScore = Math.min((statusChanges / 30) * 100, 100); // 30 updates as "perfect"
+            // Talk Time Score: 60 mins (3600s) = perfect
+            const talkTimeScore = Math.min((totalTalkTimeSecs / 3600) * 100, 100);
+            // Call Count Score: 50 calls = perfect
+            const callScore = Math.min((callsMade / 50) * 100, 100);
+            const activityScore = Math.min((statusChanges / 30) * 100, 100);
             const promptnessScore = activeLeads > 0 ? ((attendedLeads / activeLeads) * 100) : 100;
             const performanceIndex = ((conversionRate * 100 * 0.4) +
-                (callScore * 0.3) +
-                (activityScore * 0.2) +
-                (promptnessScore * 0.1)).toFixed(1);
+                (talkTimeScore * 0.25) +
+                (callScore * 0.15) +
+                (activityScore * 0.15) +
+                (promptnessScore * 0.05)).toFixed(1);
             return {
                 userId: u.id,
                 name: `${u.firstName} ${u.lastName || ''}`.trim(),
@@ -707,6 +748,8 @@ const getUserPerformanceDetails = async (req, res) => {
                     totalLeads: periodLeads,
                     activeLeads,
                     callsMade,
+                    totalTalkTime: Math.round(totalTalkTimeSecs / 60), // In minutes
+                    totalTalkTimeSeconds: totalTalkTimeSecs,
                     statusChanges,
                     unattendedLeads,
                     wonDeals,

@@ -57,6 +57,7 @@ exports.MetaLeadService = {
                     isDeleted: false,
                     OR: [
                         { integrations: { path: ['meta', 'pageId'], equals: pageId } },
+                        { integrations: { path: ['facebook_payload', 'pageId'], equals: pageId } },
                     ]
                 }
             });
@@ -78,7 +79,9 @@ exports.MetaLeadService = {
             const integrations = org.integrations || {};
             const accounts = [...(integrations.metaAccounts || [])];
             if (integrations.meta)
-                accounts.push(integrations.meta);
+                accounts.push({ ...integrations.meta, _source: client_1.LeadSource.meta_leadgen });
+            if (integrations.facebook_payload)
+                accounts.push({ ...integrations.facebook_payload, _source: client_1.LeadSource.facebook_payload });
             const matchedAccount = accounts.find((acc) => acc.pageId === pageId);
             if (!matchedAccount || !matchedAccount.accessToken) {
                 console.error(`[MetaLeadService] Organisation ${org.id} has no Access Token for Page ${pageId}`);
@@ -134,7 +137,7 @@ exports.MetaLeadService = {
                 country: geoData?.country || getField(['country', 'location']),
                 countryCode: geoData?.countryCode || null,
                 phoneCountryCode: geoData?.phoneCountryCode || null,
-                source: client_1.LeadSource.meta_leadgen,
+                source: metaConfig._source || client_1.LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
                     metaFormId: formId,

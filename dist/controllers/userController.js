@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activateUser = exports.deactivateUser = exports.inviteUser = exports.createUser = exports.updateUser = exports.getUserById = exports.getMyTeam = exports.getUsers = exports.getUserStats = void 0;
+exports.permanentlyDeleteUser = exports.activateUser = exports.deactivateUser = exports.inviteUser = exports.createUser = exports.updateUser = exports.getUserById = exports.getMyTeam = exports.getUsers = exports.getUserStats = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const logger_1 = require("../utils/logger");
 const prisma_1 = __importDefault(require("../config/prisma"));
@@ -128,9 +128,11 @@ const getUsers = async (req, res) => {
                 return res.status(403).json({ message: 'User has no organisation' });
             }
             where.organisationId = orgId;
+            const subordinatesOnly = req.query.subordinatesOnly === 'true';
             // Hierarchy filtering: non-admin users only see subordinates + branch members
-            if (currentUser.role !== 'admin') {
-                const visibleIds = await (0, hierarchyUtils_1.getVisibleUserIds)(currentUser.id);
+            // OR if subordinatesOnly is explicitly requested (even for admins)
+            if (currentUser.role !== 'admin' || subordinatesOnly) {
+                const visibleIds = await (0, hierarchyUtils_1.getVisibleUserIds)(currentUser.id, subordinatesOnly);
                 where.id = { in: visibleIds };
             }
         }
@@ -737,3 +739,159 @@ const activateUser = async (req, res) => {
     }
 };
 exports.activateUser = activateUser;
+const permanentlyDeleteUser = async (req, res) => {
+    try {
+        const currentUser = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(currentUser);
+        const userId = req.params.id;
+        // Security check
+        if (currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
+            return res.status(403).json({ message: 'Only administrators can permanently delete users' });
+        }
+        const where = { id: userId };
+        if (currentUser.role !== 'super_admin') {
+            if (!orgId)
+                return res.status(403).json({ message: 'No org' });
+            where.organisationId = orgId;
+        }
+        const existing = await prisma_1.default.user.findFirst({
+            where,
+            include: { subordinates: true }
+        });
+        if (!existing) {
+            return res.status(404).json({ message: 'User not found or access denied' });
+        }
+        // 1. MUST be suspended first
+        if (existing.isActive) {
+            return res.status(400).json({ message: 'User must be suspended before they can be permanently deleted' });
+        }
+        // 2. Prevent deleting self
+        if (existing.id === currentUser.id) {
+            return res.status(400).json({ message: 'You cannot delete your own account' });
+        }
+        console.log(`[PERMANENT_DELETE] User ${existing.email} deletion started by ${currentUser.email}`);
+        // 3. Determine transfer target (for ownership)
+        let transferTargetId = existing.reportsToId;
+        if (!transferTargetId) {
+            const adminUser = await prisma_1.default.user.findFirst({
+                where: {
+                    organisationId: existing.organisationId,
+                    role: 'admin',
+                    isActive: true,
+                    id: { not: userId }
+                }
+            });
+            transferTargetId = adminUser ? adminUser.id : currentUser.id;
+        }
+        /**
+         * 4. CLEANUP / TRANSFER PHASE
+         * We need to clear all mandatory/restrictive associations.
+         */
+        // Transfer transactional ownership (similar to deactivation, but more thorough)
+        const entitiesToTransfer = [
+            { model: 'lead', ownerField: 'assignedToId' },
+            { model: 'account', ownerField: 'ownerId' },
+            { model: 'contact', ownerField: 'ownerId' },
+            { model: 'opportunity', ownerField: 'ownerId' },
+            { model: 'task', ownerField: 'assignedToId' },
+            { model: 'case', ownerField: 'assignedToId' },
+            { model: 'quote', ownerField: 'assignedToId' },
+            { model: 'goal', ownerField: 'assignedToId' },
+            { model: 'salesTarget', ownerField: 'assignedToId' },
+            { model: 'followUp', ownerField: 'assignedToId' },
+            { model: 'calendarEvent', ownerField: 'createdById' },
+            { model: 'quote', ownerField: 'createdById' },
+            { model: 'goal', ownerField: 'createdById' },
+            { model: 'team', ownerField: 'createdById' },
+            { model: 'checkIn', ownerField: 'userId' },
+            { model: 'attendance', ownerField: 'userId' }
+        ];
+        for (const entity of entitiesToTransfer) {
+            if (prisma_1.default[entity.model]) {
+                await prisma_1.default[entity.model].updateMany({
+                    where: { [entity.ownerField]: userId },
+                    data: { [entity.ownerField]: transferTargetId }
+                });
+            }
+        }
+        // 4.5 DELETE RESTRICTIVE BUT LESS IMPORTANT DATA
+        // These models have mandatory recipientId/userId and are safe to purge
+        const entitiesToPurge = [
+            { model: 'notification', field: 'recipientId' },
+            { model: 'searchHistory', field: 'userId' },
+            { model: 'userLog', field: 'userId' },
+            { model: 'apiKey', field: 'createdById' },
+            { model: 'importJob', field: 'createdById' }
+        ];
+        for (const item of entitiesToPurge) {
+            if (prisma_1.default[item.model]) {
+                await prisma_1.default[item.model].deleteMany({
+                    where: { [item.field]: userId }
+                });
+            }
+        }
+        // Nullify creator/history fields that might block deletion (restrictive FKs)
+        const entitiesToNullify = [
+            { model: 'lead', field: 'createdById' },
+            { model: 'lead', field: 'previousOwnerId' },
+            { model: 'account', field: 'createdById' },
+            { model: 'account', field: 'previousOwnerId' },
+            { model: 'contact', field: 'createdById' },
+            { model: 'contact', field: 'previousOwnerId' },
+            { model: 'opportunity', field: 'createdById' },
+            { model: 'opportunity', field: 'previousOwnerId' },
+            { model: 'task', field: 'createdById' },
+            { model: 'task', field: 'previousOwnerId' },
+            { model: 'followUp', field: 'createdById' },
+            { model: 'interaction', field: 'createdById' },
+            { model: 'leadHistory', field: 'changerId' },
+            { model: 'leadHistory', field: 'newOwnerId' },
+            { model: 'leadHistory', field: 'oldOwnerId' },
+            { model: 'quote', field: 'createdById' },
+            { model: 'quote', field: 'previousOwnerId' },
+            { model: 'case', field: 'createdById' },
+            { model: 'case', field: 'previousOwnerId' },
+            { model: 'salesTarget', field: 'previousOwnerId' },
+            { model: 'salesTarget', field: 'assignedById' },
+            { model: 'goal', field: 'previousOwnerId' }
+        ];
+        for (const item of entitiesToNullify) {
+            if (prisma_1.default[item.model]) {
+                try {
+                    // check if the field is actually nullable in our logic or prisma
+                    await prisma_1.default[item.model].updateMany({
+                        where: { [item.field]: userId },
+                        data: { [item.field]: null }
+                    });
+                }
+                catch (e) { /* ignore if field/model doesn't exist or is not nullable */ }
+            }
+        }
+        // Disconnect subordinates
+        if (existing.subordinates.length > 0) {
+            await prisma_1.default.user.updateMany({
+                where: { reportsToId: userId },
+                data: { reportsToId: transferTargetId }
+            });
+        }
+        // Finally, delete the User record
+        await prisma_1.default.user.delete({
+            where: { id: userId }
+        });
+        // Audit Log
+        (0, auditLogger_1.logAudit)({
+            action: 'PERMANENTLY_DELETE_USER',
+            entity: 'User',
+            entityId: userId,
+            actorId: currentUser.id,
+            organisationId: existing.organisationId || currentUser.organisationId,
+            details: { email: existing.email, deletedBy: currentUser.email, transferredTo: transferTargetId }
+        });
+        res.json({ message: 'User permanently deleted and associations transferred' });
+    }
+    catch (error) {
+        logger_1.logger.error('permanentlyDeleteUser Error', error, 'UserController');
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.permanentlyDeleteUser = permanentlyDeleteUser;

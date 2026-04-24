@@ -247,3 +247,44 @@ export const uploadAdImage = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const sendConversionEvent = async (req: AuthRequest, res: Response) => {
+    try {
+        const { data } = req.body;
+        const organisationId = req.user?.organisationId;
+
+        if (!organisationId) {
+            return res.status(401).json({ message: 'Organisation not identified' });
+        }
+
+        if (!data || !Array.isArray(data)) {
+            return res.status(400).json({ message: 'Payload must contain a "data" array of events' });
+        }
+
+        const { MetaConversionService } = await import('../services/metaConversionService');
+        
+        // Map the Meta-style payload to our service structure
+        const events = data.map((evt: any) => ({
+            eventName: evt.event_name,
+            eventTime: evt.event_time,
+            actionSource: evt.action_source,
+            userData: {
+                email: evt.user_data?.em?.[0], // Handle both array and single string
+                phone: evt.user_data?.ph?.[0],
+                leadId: evt.user_data?.lead_id,
+                externalId: evt.user_data?.external_id?.[0],
+                clientUserAgent: evt.user_data?.client_user_agent,
+                clientIp: evt.user_data?.client_ip_address,
+            },
+            customData: evt.custom_data,
+            eventSourceUrl: evt.event_source_url
+        }));
+
+        await MetaConversionService.sendEvent(organisationId, events);
+
+        res.json({ success: true, message: `${events.length} conversion event(s) sent to Meta` });
+    } catch (error: any) {
+        console.error('Error in sendConversionEvent:', error);
+        res.status(500).json({ message: error.message });
+    }
+};

@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOrganisationStats = exports.suspendOrganisation = exports.updateOrganisationAdmin = exports.createOrganisation = exports.getAllOrganisations = void 0;
+exports.resetUserPassword = exports.getOrganisationStats = exports.suspendOrganisation = exports.updateOrganisationAdmin = exports.createOrganisation = exports.getAllOrganisations = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 // Get all organisations (Super Admin only)
 const getAllOrganisations = async (req, res) => {
@@ -360,3 +360,41 @@ const getOrganisationStats = async (req, res) => {
     }
 };
 exports.getOrganisationStats = getOrganisationStats;
+// Reset user password (Super Admin Only)
+const resetUserPassword = async (req, res) => {
+    try {
+        if (!req.user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+        const { userId, newPassword } = req.body;
+        if (!userId || !newPassword || newPassword.length < 8) {
+            return res.status(400).json({ message: 'Valid user ID and password (min 8 chars) required' });
+        }
+        const bcrypt = await Promise.resolve().then(() => __importStar(require('bcryptjs')));
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const updatedUser = await prisma_1.default.user.update({
+            where: { id: userId },
+            data: { password: hashedPassword }
+        });
+        // Audit Log
+        try {
+            const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logAudit({
+                organisationId: updatedUser.organisationId || 'SYSTEM',
+                actorId: req.user.id,
+                action: 'SUPERADMIN_RESET_PASSWORD',
+                entity: 'User',
+                entityId: userId,
+                details: { resetBy: req.user.email, targetUser: updatedUser.email }
+            });
+        }
+        catch (e) {
+            console.error('Audit Log Error:', e);
+        }
+        res.json({ message: 'Password reset successfully' });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.resetUserPassword = resetUserPassword;

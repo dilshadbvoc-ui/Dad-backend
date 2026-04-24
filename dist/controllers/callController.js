@@ -147,10 +147,23 @@ const getLeadCalls = async (req, res) => {
             type: 'call',
             isDeleted: false
         };
-        // Hierarchy filtering
+        // Hierarchy filtering: Ensure user is authorized to see this lead
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            where.createdById = { in: visibleUserIds };
+            // Check if user owns the lead OR created it OR owns it via subordinates
+            const lead = await prisma_1.default.lead.findFirst({
+                where: {
+                    id: leadId,
+                    organisationId: (0, hierarchyUtils_1.getOrgId)(user) || undefined,
+                    OR: [
+                        { assignedToId: { in: visibleUserIds } },
+                        { createdById: user.id }
+                    ]
+                }
+            });
+            if (!lead) {
+                return res.status(403).json({ message: 'Not authorized to view calls for this lead' });
+            }
         }
         const calls = await prisma_1.default.interaction.findMany({
             where,
@@ -186,7 +199,7 @@ const getAllCalls = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { page = '1', limit = '20', direction, status, userId, startDate, endDate, search } = req.query;
+        const { page = '1', limit = '20', direction, status, userId, startDate, endDate, search, hasRecording } = req.query;
         const pageNum = parseInt(page, 10);
         const limitNum = parseInt(limit, 10);
         const skip = (pageNum - 1) * limitNum;
@@ -202,12 +215,30 @@ const getAllCalls = async (req, res) => {
         if (status && status !== 'all') {
             where.callStatus = status;
         }
+        if (hasRecording === 'true') {
+            where.recordingUrl = { not: null };
+        }
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            const visibilityConditions = [
+                {
+                    OR: [
+                        { createdById: { in: visibleUserIds } },
+                        { createdById: null }
+                    ]
+                }
+            ];
+            // Add Lead ownership visibility
+            visibilityConditions.push({
+                lead: { assignedToId: { in: visibleUserIds } } // Calls for leads you or subordinates own
+            });
             if (userId && userId !== 'all') {
                 // If filtering by specific user, ensure that user is in allowed hierarchy
                 if (visibleUserIds.includes(userId)) {
-                    where.createdById = userId;
+                    where.AND = [
+                        { OR: visibilityConditions },
+                        { createdById: userId }
+                    ];
                 }
                 else {
                     // Not authorized to view this user's calls
@@ -215,7 +246,7 @@ const getAllCalls = async (req, res) => {
                 }
             }
             else {
-                where.createdById = { in: [...visibleUserIds, null] };
+                where.OR = visibilityConditions;
             }
         }
         else if (userId && userId !== 'all') {
@@ -295,7 +326,7 @@ const getCallStats = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { period = 'week' } = req.query;
+        const { period = 'week', userId } = req.query;
         // Calculate date range
         const now = new Date();
         let startDate;
@@ -321,7 +352,32 @@ const getCallStats = async (req, res) => {
         // Hierarchy filtering
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-            baseWhere.createdById = { in: [...visibleUserIds, null] };
+            const visibilityConditions = [
+                {
+                    OR: [
+                        { createdById: { in: visibleUserIds } },
+                        { createdById: null }
+                    ]
+                },
+                { lead: { assignedToId: { in: visibleUserIds } } }
+            ];
+            if (userId && userId !== 'all') {
+                if (visibleUserIds.includes(userId)) {
+                    baseWhere.AND = [
+                        { OR: visibilityConditions },
+                        { createdById: userId }
+                    ];
+                }
+                else {
+                    baseWhere.createdById = 'none';
+                }
+            }
+            else {
+                baseWhere.OR = visibilityConditions;
+            }
+        }
+        else if (userId && userId !== 'all') {
+            baseWhere.createdById = userId;
         }
         // Total calls
         const totalCalls = await prisma_1.default.interaction.count({ where: baseWhere });
@@ -350,17 +406,22 @@ const getCallStats = async (req, res) => {
                     { recordingDuration: { gt: 0 } }
                 ]
             },
-            select: { duration: true, recordingDuration: true }
+            select: { duration: true, recordingDuration: true, hardwareDuration: true }
         });
         let totalSeconds = 0;
         let validCalls = 0;
         callsWithDuration.forEach(c => {
-            if (c.recordingDuration && c.recordingDuration > 0) {
+            // PRIORITY: hardwareDuration (Carrier Truth) > recordingDuration > duration (Estimated Mins)
+            if (c.hardwareDuration && c.hardwareDuration > 0) {
+                totalSeconds += c.hardwareDuration;
+                validCalls++;
+            }
+            else if (c.recordingDuration && c.recordingDuration > 0) {
                 totalSeconds += c.recordingDuration;
                 validCalls++;
             }
             else if (c.duration && c.duration > 0) {
-                totalSeconds += c.duration * 60;
+                totalSeconds += Math.round(c.duration * 60);
                 validCalls++;
             }
         });
@@ -487,6 +548,7 @@ const getUserCallAnalytics = async (req, res) => {
                 callStatus: true,
                 duration: true,
                 recordingDuration: true,
+                hardwareDuration: true,
                 direction: true
             }
         });
@@ -517,12 +579,15 @@ const getUserCallAnalytics = async (req, res) => {
                 stats.totalCalls++;
                 if (i.callStatus === 'completed') {
                     stats.connectedCalls++;
-                    // Duration: duration is in mins, recordingDuration is in seconds
-                    if (i.recordingDuration && i.recordingDuration > 0) {
+                    // Priority: hardwareDuration (Seconds) > recordingDuration (Seconds) > duration (Minutes)
+                    if (i.hardwareDuration && i.hardwareDuration > 0) {
+                        stats.totalDurationSeconds += i.hardwareDuration;
+                    }
+                    else if (i.recordingDuration && i.recordingDuration > 0) {
                         stats.totalDurationSeconds += i.recordingDuration;
                     }
                     else if (i.duration && i.duration > 0) {
-                        stats.totalDurationSeconds += i.duration * 60;
+                        stats.totalDurationSeconds += Math.round(i.duration * 60);
                     }
                 }
             }

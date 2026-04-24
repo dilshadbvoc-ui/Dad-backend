@@ -1,9 +1,42 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadAdImage = exports.createFullAd = exports.getAccountInsights = exports.getCampaignInsights = exports.syncCampaigns = exports.testConnection = exports.getInsights = exports.getAds = exports.getAdSets = exports.getCampaigns = exports.getMetaConfig = void 0;
+exports.sendConversionEvent = exports.uploadAdImage = exports.createFullAd = exports.getAccountInsights = exports.getCampaignInsights = exports.syncCampaigns = exports.testConnection = exports.getInsights = exports.getAds = exports.getAdSets = exports.getCampaigns = exports.getMetaConfig = void 0;
 const metaService_1 = require("../services/metaService");
 const metaIntegrationService_1 = require("../services/metaIntegrationService");
 const prisma_1 = __importDefault(require("../config/prisma"));
@@ -240,3 +273,39 @@ const uploadAdImage = async (req, res) => {
     }
 };
 exports.uploadAdImage = uploadAdImage;
+const sendConversionEvent = async (req, res) => {
+    try {
+        const { data } = req.body;
+        const organisationId = req.user?.organisationId;
+        if (!organisationId) {
+            return res.status(401).json({ message: 'Organisation not identified' });
+        }
+        if (!data || !Array.isArray(data)) {
+            return res.status(400).json({ message: 'Payload must contain a "data" array of events' });
+        }
+        const { MetaConversionService } = await Promise.resolve().then(() => __importStar(require('../services/metaConversionService')));
+        // Map the Meta-style payload to our service structure
+        const events = data.map((evt) => ({
+            eventName: evt.event_name,
+            eventTime: evt.event_time,
+            actionSource: evt.action_source,
+            userData: {
+                email: evt.user_data?.em?.[0], // Handle both array and single string
+                phone: evt.user_data?.ph?.[0],
+                leadId: evt.user_data?.lead_id,
+                externalId: evt.user_data?.external_id?.[0],
+                clientUserAgent: evt.user_data?.client_user_agent,
+                clientIp: evt.user_data?.client_ip_address,
+            },
+            customData: evt.custom_data,
+            eventSourceUrl: evt.event_source_url
+        }));
+        await MetaConversionService.sendEvent(organisationId, events);
+        res.json({ success: true, message: `${events.length} conversion event(s) sent to Meta` });
+    }
+    catch (error) {
+        console.error('Error in sendConversionEvent:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.sendConversionEvent = sendConversionEvent;
