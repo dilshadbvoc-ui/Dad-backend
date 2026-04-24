@@ -146,7 +146,9 @@ export class ImportJobService {
                         } else if (String(crmField).startsWith('address.')) {
                             const addressField = String(crmField).split('.')[1];
                             leadData.address[addressField] = value;
-                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'status', 'stage', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField as string)) {
+                        if (crmField as string === 'status' || crmField as string === 'stage') {
+                            (leadData as any)[crmField as string] = String(value).trim().toLowerCase();
+                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField as string)) {
                             // Ensure numeric fields are cast correctly
                             if (['leadScore', 'potentialValue'].includes(crmField as string)) {
                                 (leadData as any)[crmField as string] = Number(value) || 0;
@@ -158,6 +160,13 @@ export class ImportJobService {
                             if (!leadData.customFields) leadData.customFields = {};
                             leadData.customFields[crmField as string] = value;
                         }
+                    }
+
+                    // Auto-sync status and stage if one is missing
+                    if (leadData.stage && (!leadData.status || leadData.status === 'new')) {
+                        leadData.status = leadData.stage;
+                    } else if (leadData.status && !leadData.stage) {
+                        leadData.stage = leadData.status;
                     }
 
                     // Basic Validation
@@ -174,7 +183,10 @@ export class ImportJobService {
                     if (leadData.ownerEmail) {
                         const owner = await prisma.user.findFirst({
                             where: {
-                                email: leadData.ownerEmail,
+                                email: {
+                                    equals: String(leadData.ownerEmail).trim(),
+                                    mode: 'insensitive'
+                                },
                                 organisationId: job.organisationId,
                                 isActive: true
                             },
