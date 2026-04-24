@@ -110,64 +110,64 @@ export class ImportJobService {
 
                     const mapping = job.mapping as any || {};
 
-                    // Map fields
+                    // Map fields from CSV
+                    const csvValues: Record<string, any> = {};
                     for (const [mappingHeader, crmField] of Object.entries(mapping)) {
                         if (!crmField) continue;
                         
-                        // Helper to normalize strings for comparison (lowercase + alphanumeric only)
                         const normalize = (s: string) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
                         const normalizedMappingHeader = normalize(mappingHeader);
 
-                        // Find matching value in sanitizedRow
                         let value = sanitizedRow[mappingHeader];
-                        
                         if (value === undefined || value === null) {
-                            // Try normalized/fuzzy lookup
                             const actualKey = Object.keys(sanitizedRow).find(k => normalize(k) === normalizedMappingHeader);
-                            if (actualKey) {
-                                value = sanitizedRow[actualKey];
-                            }
+                            if (actualKey) value = sanitizedRow[actualKey];
                         }
 
                         if (value === undefined || value === null || value === '') continue;
+                        csvValues[crmField as string] = value;
+                    }
 
-                        if (String(crmField) === 'fullName') {
-                            // Split full name into first and last
+                    // Process mapped values into leadData
+                    for (const [crmField, value] of Object.entries(csvValues)) {
+                        if (crmField === 'fullName') {
                             const nameParts = String(value).trim().split(/\s+/);
                             leadData.firstName = nameParts[0] || '';
                             leadData.lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-                        } else if (String(crmField) === 'tags') {
-                            // Handle comma-separated tags
+                        } else if (crmField === 'tags') {
                             leadData.tags = String(value).split(',').map(t => t.trim()).filter(Boolean);
-                        } else if (String(crmField) === 'notes') {
-                            // Store notes in customFields
+                        } else if (crmField === 'notes') {
                             if (!leadData.customFields) leadData.customFields = {};
                             leadData.customFields.importNotes = value;
-                        } else if (String(crmField).startsWith('address.')) {
-                            const addressField = String(crmField).split('.')[1];
+                        } else if (crmField.startsWith('address.')) {
+                            const addressField = crmField.split('.')[1];
                             leadData.address[addressField] = value;
-                        } else if (crmField as string === 'status' || crmField as string === 'stage') {
-                            (leadData as any)[crmField as string] = String(value).trim().toLowerCase();
-                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField as string)) {
-                            // Ensure numeric fields are cast correctly
-                            if (['leadScore', 'potentialValue'].includes(crmField as string)) {
-                                (leadData as any)[crmField as string] = Number(value) || 0;
+                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField)) {
+                            if (['leadScore', 'potentialValue'].includes(crmField)) {
+                                (leadData as any)[crmField] = Number(value) || 0;
                             } else {
-                                (leadData as any)[crmField as string] = value;
+                                (leadData as any)[crmField] = value;
                             }
-                        } else {
-                            // Custom Fields
+                        } else if (crmField !== 'status' && crmField !== 'stage') {
                             if (!leadData.customFields) leadData.customFields = {};
-                            leadData.customFields[crmField as string] = value;
+                            leadData.customFields[crmField] = value;
                         }
                     }
 
-                    // Auto-sync status and stage if one is missing or default
-                    const normalizedStatus = String(leadData.status || '').toLowerCase();
-                    if (leadData.stage && (!normalizedStatus || normalizedStatus === 'new')) {
-                        leadData.status = leadData.stage;
-                    } else if (normalizedStatus && normalizedStatus !== 'new' && !leadData.stage) {
-                        leadData.stage = normalizedStatus;
+                    // Robust Status and Stage Resolution
+                    const rawStage = (csvValues.stage || csvValues.Status || csvValues.status || '').toString().trim().toLowerCase();
+                    const rawStatus = (csvValues.status || csvValues.Status || '').toString().trim().toLowerCase();
+                    
+                    // If stage provided but no status, sync them
+                    if (rawStage && (!rawStatus || rawStatus === 'new')) {
+                        leadData.status = rawStage;
+                        leadData.stage = rawStage;
+                    } else if (rawStatus && rawStatus !== 'new') {
+                        leadData.status = rawStatus;
+                        leadData.stage = rawStage || rawStatus;
+                    } else {
+                        leadData.status = rawStatus || defaultStatus || 'new';
+                        leadData.stage = rawStage || null;
                     }
 
                     // Basic Validation
