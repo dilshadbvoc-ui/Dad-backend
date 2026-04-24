@@ -932,6 +932,24 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     ) || undefined;
                 }
 
+                // Robust Status and Stage Resolution for Bulk Creation
+                const csvStatus = (l.status || l.Status || '').toString().trim().toLowerCase();
+                const csvStage = (l.stage || l.Stage || '').toString().trim().toLowerCase();
+                
+                let finalStatus = 'new';
+                let finalStage = null;
+
+                if (csvStage) {
+                    finalStatus = csvStage;
+                    finalStage = csvStage;
+                } else if (csvStatus) {
+                    finalStatus = csvStatus;
+                    finalStage = csvStatus;
+                } else {
+                    finalStatus = csvStatus || 'new';
+                    finalStage = null;
+                }
+
                 const data: any = {
                     firstName: l.firstName,
                     lastName: l.lastName || '',
@@ -943,9 +961,9 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                     organisation: { connect: { id: orgId } },
                     source: l.source || LeadSource.import,
-                    status: l.status || 'new',
+                    status: finalStatus,
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
-                    stage: l.stage || undefined,
+                    stage: finalStage || undefined,
                     createdBy: { connect: { id: user.id } }
                 };
 
