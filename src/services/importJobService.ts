@@ -162,11 +162,12 @@ export class ImportJobService {
                         }
                     }
 
-                    // Auto-sync status and stage if one is missing
-                    if (leadData.stage && (!leadData.status || leadData.status === 'new')) {
+                    // Auto-sync status and stage if one is missing or default
+                    const normalizedStatus = String(leadData.status || '').toLowerCase();
+                    if (leadData.stage && (!normalizedStatus || normalizedStatus === 'new')) {
                         leadData.status = leadData.stage;
-                    } else if (leadData.status && !leadData.stage) {
-                        leadData.stage = leadData.status;
+                    } else if (normalizedStatus && normalizedStatus !== 'new' && !leadData.stage) {
+                        leadData.stage = normalizedStatus;
                     }
 
                     // Basic Validation
@@ -221,6 +222,7 @@ export class ImportJobService {
                                 email: leadData.email,
                                 phone: leadData.phone,
                                 company: leadData.company,
+                                stage: leadData.stage,
                                 source: 'import',
                                 sourceDetails: { importJobId: jobId }
                             },

@@ -14,6 +14,7 @@ interface ReEnquiryData {
     phone: string;
     company?: string;
     enquiryAbout?: string;
+    stage?: string;
     source?: string;
     sourceDetails?: any;
 }
@@ -148,7 +149,10 @@ export const DuplicateLeadService = {
             const updatedLead = await prisma.lead.update({
                 where: { id: existingLead.id },
                 data: {
-                    status: 're_enquiry',
+                    status: (newData.stage && (!existingLead.status || ['new', 're_enquiry'].includes(existingLead.status.toLowerCase()))) 
+                        ? newData.stage.toLowerCase() 
+                        : 're_enquiry',
+                    stage: newData.stage || existingLead.stage,
                     isReEnquiry: true,
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
