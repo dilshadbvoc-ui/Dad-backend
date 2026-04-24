@@ -146,7 +146,7 @@ export class ImportJobService {
                         } else if (String(crmField).startsWith('address.')) {
                             const addressField = String(crmField).split('.')[1];
                             leadData.address[addressField] = value;
-                        if (crmField as string === 'status' || crmField as string === 'stage') {
+                        } else if (crmField as string === 'status' || crmField as string === 'stage') {
                             (leadData as any)[crmField as string] = String(value).trim().toLowerCase();
                         } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField as string)) {
                             // Ensure numeric fields are cast correctly
