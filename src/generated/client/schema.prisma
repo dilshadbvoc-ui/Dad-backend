@@ -489,6 +489,8 @@ model Product {
   maxQuantity     Int?
   imageUrl        String?
   isActive        Boolean          @default(true)
+  isCustom        Boolean          @default(false)
+  isOrgProduct    Boolean          @default(false)
   brochureUrl     String?
   validFrom       DateTime?
   validUntil      DateTime?
@@ -710,6 +712,8 @@ model Interaction {
   branchId          String?
   branch            Branch?              @relation(fields: [branchId], references: [id])
 
+  @@unique([organisationId, callSessionId])
+  @@unique([organisationId, hardwareId])
   @@index([branchId])
 }
 
@@ -1268,6 +1272,8 @@ enum LeadSource {
   email_campaign
   meta_ads
   google_ads
+  facebook_payload
+  lead_squared
   other
 }
 

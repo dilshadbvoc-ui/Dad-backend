@@ -89,9 +89,11 @@ export const MetaLeadService = {
                 return null;
             };
 
-            // Resolve Status from Org Settings
-            let leadStatus = "new";
-            if (org.leadStatuses && Array.isArray(org.leadStatuses)) {
+            // Resolve Status: Priority 1: Payload mapping, Priority 2: Org default, Priority 3: 'new'
+            let leadStatus = getField(['status', 'lead_status', 'lead status', 'ststus']) || "new";
+            
+            // If it's still 'new' (either explicit or default), try to see if org has a custom default
+            if (leadStatus === 'new' && org.leadStatuses && Array.isArray(org.leadStatuses)) {
                 const statuses = org.leadStatuses as any[];
                 const configuredDefault = statuses.find((s) => s.isDefault);
                 if (configuredDefault) {
@@ -111,7 +113,7 @@ export const MetaLeadService = {
                 country: geoData?.country || getField(['country', 'location']),
                 countryCode: geoData?.countryCode || null,
                 phoneCountryCode: geoData?.phoneCountryCode || null,
-                source: metaConfig._source || LeadSource.meta_leadgen,
+                source: getField(['source', 'lead_source', 'lead source']) || metaConfig._source || LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
                     metaFormId: formId,

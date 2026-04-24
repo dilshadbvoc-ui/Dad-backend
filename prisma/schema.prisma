@@ -489,6 +489,8 @@ model Product {
   maxQuantity    Int?
   imageUrl       String?
   isActive       Boolean         @default(true)
+  isCustom       Boolean         @default(false)
+  isOrgProduct   Boolean         @default(false)
   brochureUrl    String?
   validFrom      DateTime?
   validUntil     DateTime?
@@ -1273,6 +1275,7 @@ enum LeadSource {
   meta_ads
   google_ads
   facebook_payload
+  lead_squared
   other
 }
 

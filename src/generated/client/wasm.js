@@ -361,6 +361,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   maxQuantity: 'maxQuantity',
   imageUrl: 'imageUrl',
   isActive: 'isActive',
+  isCustom: 'isCustom',
+  isOrgProduct: 'isOrgProduct',
   brochureUrl: 'brochureUrl',
   validFrom: 'validFrom',
   validUntil: 'validUntil',
@@ -1249,6 +1251,8 @@ exports.LeadSource = exports.$Enums.LeadSource = {
   email_campaign: 'email_campaign',
   meta_ads: 'meta_ads',
   google_ads: 'google_ads',
+  facebook_payload: 'facebook_payload',
+  lead_squared: 'lead_squared',
   other: 'other'
 };
 

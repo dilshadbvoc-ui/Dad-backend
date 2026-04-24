@@ -647,7 +647,8 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
 
                     const product = await prisma.product.findUnique({ where: { id: item.productId } });
                     if (product) {
-                        const price = product.basePrice || 0;
+                        // Priority 1: Price from payload (custom pricing), Priority 2: Product base price
+                        const price = item.price !== undefined ? Number(item.price) : (product.basePrice || 0);
                         const quantity = item.quantity || 1;
                         totalValue += price * quantity;
 
@@ -1209,6 +1210,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                             productId: leadProduct.productId,
                             organisationId: orgId,
                             quantity: leadProduct.quantity,
+                            price: leadProduct.price || 0, // Migrate custom price
                             purchaseDate: new Date(),
                             status: 'active',
                             notes: `Converted from lead: ${lead.firstName} ${lead.lastName || ''}`.trim()

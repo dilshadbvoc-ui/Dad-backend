@@ -34,6 +34,19 @@ export const createOrganisation = async (req: Request, res: Response) => {
             }
         });
 
+        // 1b. Create default Custom Product for this Organisation
+        await prisma.product.create({
+            data: {
+                name: name, // Product name is the organisation name
+                description: `Custom product for ${name}`,
+                basePrice: 0,
+                isCustom: true,
+                isOrgProduct: true,
+                organisationId: org.id,
+                sku: `CUSTOM-${org.id.slice(0, 8).toUpperCase()}`
+            }
+        });
+
         // 2. Create Admin User for this Organisation
         const tempPassword = password || Math.random().toString(36).slice(-8);
         const hashedPassword = await bcrypt.hash(tempPassword, 10);

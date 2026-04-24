@@ -2,6 +2,7 @@ import prisma from '../config/prisma';
 import fs from 'fs';
 import csv from 'csv-parser';
 import { DistributionService } from './distributionService';
+import { NotificationService } from './notificationService';
 
 export class ImportJobService {
     static async createJob(userId: string, orgId: string, filePath: string, mapping: any, options?: {
@@ -32,8 +33,10 @@ export class ImportJobService {
     }
 
     static async processJob(jobId: string) {
+        let job: any = null;
         try {
-            const job = await prisma.importJob.findUnique({ where: { id: jobId } });
+            job = await prisma.importJob.findUnique({ where: { id: jobId } });
+
             if (!job || !job.fileUrl) return;
 
             // Update status to processing
@@ -74,13 +77,14 @@ export class ImportJobService {
 
             for await (const row of processStream) {
                 try {
-                    // Sanitize row data to remove null bytes
+                    // Sanitize row data: trim keys, trim values, remove null bytes/BOM
                     const sanitizedRow: any = {};
                     for (const [key, value] of Object.entries(row)) {
+                        const cleanKey = String(key).trim().replace(/^\uFEFF/, ''); // Remove BOM and trim
                         if (typeof value === 'string') {
-                            sanitizedRow[key] = value.replace(/\u0000/g, '');
+                            sanitizedRow[cleanKey] = value.replace(/\u0000/g, '').trim();
                         } else {
-                            sanitizedRow[key] = value;
+                            sanitizedRow[cleanKey] = value;
                         }
                     }
 
@@ -107,9 +111,24 @@ export class ImportJobService {
                     const mapping = job.mapping as any || {};
 
                     // Map fields
-                    for (const [csvHeader, crmField] of Object.entries(mapping)) {
+                    for (const [mappingHeader, crmField] of Object.entries(mapping)) {
                         if (!crmField) continue;
-                        const value = sanitizedRow[csvHeader];
+                        
+                        // Helper to normalize strings for comparison (lowercase + alphanumeric only)
+                        const normalize = (s: string) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const normalizedMappingHeader = normalize(mappingHeader);
+
+                        // Find matching value in sanitizedRow
+                        let value = sanitizedRow[mappingHeader];
+                        
+                        if (value === undefined || value === null) {
+                            // Try normalized/fuzzy lookup
+                            const actualKey = Object.keys(sanitizedRow).find(k => normalize(k) === normalizedMappingHeader);
+                            if (actualKey) {
+                                value = sanitizedRow[actualKey];
+                            }
+                        }
+
                         if (value === undefined || value === null || value === '') continue;
 
                         if (String(crmField) === 'fullName') {
@@ -127,8 +146,13 @@ export class ImportJobService {
                         } else if (String(crmField).startsWith('address.')) {
                             const addressField = String(crmField).split('.')[1];
                             leadData.address[addressField] = value;
-                        } else if (['firstName', 'lastName', 'email', 'phone', 'company', 'jobTitle', 'source', 'status', 'stage', 'assignedToId', 'ownerEmail'].includes(crmField as string)) {
-                            (leadData as any)[crmField as string] = value;
+                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'status', 'stage', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField as string)) {
+                            // Ensure numeric fields are cast correctly
+                            if (['leadScore', 'potentialValue'].includes(crmField as string)) {
+                                (leadData as any)[crmField as string] = Number(value) || 0;
+                            } else {
+                                (leadData as any)[crmField as string] = value;
+                            }
                         } else {
                             // Custom Fields
                             if (!leadData.customFields) leadData.customFields = {};
@@ -294,6 +318,27 @@ export class ImportJobService {
             if (fs.existsSync(job.fileUrl)) {
                 fs.unlinkSync(job.fileUrl);
             }
+            
+            // Send Notification to User
+            const notificationTitle = failureCount > 0 ? 'Lead Import Completed with Errors' : 'Lead Import Successful';
+            let notificationMessage = `Import finished: ${successCount} leads created.`;
+            
+            if (failureCount > 0) {
+                notificationMessage += ` ${failureCount} rows failed.`;
+                
+                // Add unique error reasons (top 3)
+                const uniqueErrors = Array.from(new Set(sanitizedErrors.map(e => e.error))).slice(0, 3);
+                if (uniqueErrors.length > 0) {
+                    notificationMessage += ` Reasons: ${uniqueErrors.join(', ')}`;
+                }
+            }
+            
+            await NotificationService.send(
+                job.createdById,
+                notificationTitle,
+                notificationMessage,
+                failureCount > 0 ? 'warning' : 'success'
+            );
 
         } catch (error: any) {
             console.error(`Job ${jobId} failed:`, error);
@@ -307,6 +352,16 @@ export class ImportJobService {
                     errors: [{ error: sanitizedErrorMessage }]
                 }
             });
+
+            // Send Failure Notification
+            if (job) {
+                await NotificationService.send(
+                    job.createdById,
+                    'Lead Import Failed',
+                    `The import job encountered a critical error: ${sanitizedErrorMessage}`,
+                    'error'
+                );
+            }
         }
     }
 }

@@ -323,6 +323,8 @@ export namespace $Enums {
   email_campaign: 'email_campaign',
   meta_ads: 'meta_ads',
   google_ads: 'google_ads',
+  facebook_payload: 'facebook_payload',
+  lead_squared: 'lead_squared',
   other: 'other'
 };
 
@@ -22806,6 +22808,8 @@ export namespace Prisma {
     maxQuantity: number | null
     imageUrl: string | null
     isActive: boolean | null
+    isCustom: boolean | null
+    isOrgProduct: boolean | null
     brochureUrl: string | null
     validFrom: Date | null
     validUntil: Date | null
@@ -22831,6 +22835,8 @@ export namespace Prisma {
     maxQuantity: number | null
     imageUrl: string | null
     isActive: boolean | null
+    isCustom: boolean | null
+    isOrgProduct: boolean | null
     brochureUrl: string | null
     validFrom: Date | null
     validUntil: Date | null
@@ -22857,6 +22863,8 @@ export namespace Prisma {
     maxQuantity: number
     imageUrl: number
     isActive: number
+    isCustom: number
+    isOrgProduct: number
     brochureUrl: number
     validFrom: number
     validUntil: number
@@ -22898,6 +22906,8 @@ export namespace Prisma {
     maxQuantity?: true
     imageUrl?: true
     isActive?: true
+    isCustom?: true
+    isOrgProduct?: true
     brochureUrl?: true
     validFrom?: true
     validUntil?: true
@@ -22923,6 +22933,8 @@ export namespace Prisma {
     maxQuantity?: true
     imageUrl?: true
     isActive?: true
+    isCustom?: true
+    isOrgProduct?: true
     brochureUrl?: true
     validFrom?: true
     validUntil?: true
@@ -22949,6 +22961,8 @@ export namespace Prisma {
     maxQuantity?: true
     imageUrl?: true
     isActive?: true
+    isCustom?: true
+    isOrgProduct?: true
     brochureUrl?: true
     validFrom?: true
     validUntil?: true
@@ -23062,6 +23076,8 @@ export namespace Prisma {
     maxQuantity: number | null
     imageUrl: string | null
     isActive: boolean
+    isCustom: boolean
+    isOrgProduct: boolean
     brochureUrl: string | null
     validFrom: Date | null
     validUntil: Date | null
@@ -23107,6 +23123,8 @@ export namespace Prisma {
     maxQuantity?: boolean
     imageUrl?: boolean
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: boolean
     validFrom?: boolean
     validUntil?: boolean
@@ -23142,6 +23160,8 @@ export namespace Prisma {
     maxQuantity?: boolean
     imageUrl?: boolean
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: boolean
     validFrom?: boolean
     validUntil?: boolean
@@ -23171,6 +23191,8 @@ export namespace Prisma {
     maxQuantity?: boolean
     imageUrl?: boolean
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: boolean
     validFrom?: boolean
     validUntil?: boolean
@@ -23226,6 +23248,8 @@ export namespace Prisma {
       maxQuantity: number | null
       imageUrl: string | null
       isActive: boolean
+      isCustom: boolean
+      isOrgProduct: boolean
       brochureUrl: string | null
       validFrom: Date | null
       validUntil: Date | null
@@ -23650,6 +23674,8 @@ export namespace Prisma {
     readonly maxQuantity: FieldRef<"Product", 'Int'>
     readonly imageUrl: FieldRef<"Product", 'String'>
     readonly isActive: FieldRef<"Product", 'Boolean'>
+    readonly isCustom: FieldRef<"Product", 'Boolean'>
+    readonly isOrgProduct: FieldRef<"Product", 'Boolean'>
     readonly brochureUrl: FieldRef<"Product", 'String'>
     readonly validFrom: FieldRef<"Product", 'DateTime'>
     readonly validUntil: FieldRef<"Product", 'DateTime'>
@@ -77933,6 +77959,8 @@ export namespace Prisma {
     maxQuantity: 'maxQuantity',
     imageUrl: 'imageUrl',
     isActive: 'isActive',
+    isCustom: 'isCustom',
+    isOrgProduct: 'isOrgProduct',
     brochureUrl: 'brochureUrl',
     validFrom: 'validFrom',
     validUntil: 'validUntil',
@@ -81084,6 +81112,8 @@ export namespace Prisma {
     maxQuantity?: IntNullableFilter<"Product"> | number | null
     imageUrl?: StringNullableFilter<"Product"> | string | null
     isActive?: BoolFilter<"Product"> | boolean
+    isCustom?: BoolFilter<"Product"> | boolean
+    isOrgProduct?: BoolFilter<"Product"> | boolean
     brochureUrl?: StringNullableFilter<"Product"> | string | null
     validFrom?: DateTimeNullableFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableFilter<"Product"> | Date | string | null
@@ -81118,6 +81148,8 @@ export namespace Prisma {
     maxQuantity?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    isCustom?: SortOrder
+    isOrgProduct?: SortOrder
     brochureUrl?: SortOrderInput | SortOrder
     validFrom?: SortOrderInput | SortOrder
     validUntil?: SortOrderInput | SortOrder
@@ -81155,6 +81187,8 @@ export namespace Prisma {
     maxQuantity?: IntNullableFilter<"Product"> | number | null
     imageUrl?: StringNullableFilter<"Product"> | string | null
     isActive?: BoolFilter<"Product"> | boolean
+    isCustom?: BoolFilter<"Product"> | boolean
+    isOrgProduct?: BoolFilter<"Product"> | boolean
     brochureUrl?: StringNullableFilter<"Product"> | string | null
     validFrom?: DateTimeNullableFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableFilter<"Product"> | Date | string | null
@@ -81189,6 +81223,8 @@ export namespace Prisma {
     maxQuantity?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    isCustom?: SortOrder
+    isOrgProduct?: SortOrder
     brochureUrl?: SortOrderInput | SortOrder
     validFrom?: SortOrderInput | SortOrder
     validUntil?: SortOrderInput | SortOrder
@@ -81223,6 +81259,8 @@ export namespace Prisma {
     maxQuantity?: IntNullableWithAggregatesFilter<"Product"> | number | null
     imageUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
     isActive?: BoolWithAggregatesFilter<"Product"> | boolean
+    isCustom?: BoolWithAggregatesFilter<"Product"> | boolean
+    isOrgProduct?: BoolWithAggregatesFilter<"Product"> | boolean
     brochureUrl?: StringNullableWithAggregatesFilter<"Product"> | string | null
     validFrom?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
@@ -82050,6 +82088,8 @@ export namespace Prisma {
 
   export type InteractionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    organisationId_callSessionId?: InteractionOrganisationIdCallSessionIdCompoundUniqueInput
+    organisationId_hardwareId?: InteractionOrganisationIdHardwareIdCompoundUniqueInput
     AND?: InteractionWhereInput | InteractionWhereInput[]
     OR?: InteractionWhereInput[]
     NOT?: InteractionWhereInput | InteractionWhereInput[]
@@ -82086,7 +82126,7 @@ export namespace Prisma {
     opportunity?: XOR<OpportunityNullableRelationFilter, OpportunityWhereInput> | null
     organisation?: XOR<OrganisationNullableRelationFilter, OrganisationWhereInput> | null
     branch?: XOR<BranchNullableRelationFilter, BranchWhereInput> | null
-  }, "id">
+  }, "id" | "organisationId_callSessionId" | "organisationId_hardwareId">
 
   export type InteractionOrderByWithAggregationInput = {
     id?: SortOrder
@@ -88750,6 +88790,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -88781,6 +88823,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -88812,6 +88856,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -88843,6 +88889,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -88874,6 +88922,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -88900,6 +88950,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -88923,6 +88975,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -96360,6 +96414,8 @@ export namespace Prisma {
     maxQuantity?: SortOrder
     imageUrl?: SortOrder
     isActive?: SortOrder
+    isCustom?: SortOrder
+    isOrgProduct?: SortOrder
     brochureUrl?: SortOrder
     validFrom?: SortOrder
     validUntil?: SortOrder
@@ -96392,6 +96448,8 @@ export namespace Prisma {
     maxQuantity?: SortOrder
     imageUrl?: SortOrder
     isActive?: SortOrder
+    isCustom?: SortOrder
+    isOrgProduct?: SortOrder
     brochureUrl?: SortOrder
     validFrom?: SortOrder
     validUntil?: SortOrder
@@ -96417,6 +96475,8 @@ export namespace Prisma {
     maxQuantity?: SortOrder
     imageUrl?: SortOrder
     isActive?: SortOrder
+    isCustom?: SortOrder
+    isOrgProduct?: SortOrder
     brochureUrl?: SortOrder
     validFrom?: SortOrder
     validUntil?: SortOrder
@@ -96943,6 +97003,16 @@ export namespace Prisma {
   export type DocumentNullableRelationFilter = {
     is?: DocumentWhereInput | null
     isNot?: DocumentWhereInput | null
+  }
+
+  export type InteractionOrganisationIdCallSessionIdCompoundUniqueInput = {
+    organisationId: string
+    callSessionId: string
+  }
+
+  export type InteractionOrganisationIdHardwareIdCompoundUniqueInput = {
+    organisationId: string
+    hardwareId: string
   }
 
   export type InteractionCountOrderByAggregateInput = {
@@ -111884,6 +111954,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -111914,6 +111986,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -114031,6 +114105,8 @@ export namespace Prisma {
     maxQuantity?: IntNullableFilter<"Product"> | number | null
     imageUrl?: StringNullableFilter<"Product"> | string | null
     isActive?: BoolFilter<"Product"> | boolean
+    isCustom?: BoolFilter<"Product"> | boolean
+    isOrgProduct?: BoolFilter<"Product"> | boolean
     brochureUrl?: StringNullableFilter<"Product"> | string | null
     validFrom?: DateTimeNullableFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableFilter<"Product"> | Date | string | null
@@ -116729,6 +116805,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -116759,6 +116837,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -134508,6 +134588,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -134538,6 +134620,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -134717,6 +134801,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -134747,6 +134833,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -134850,6 +134938,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -134880,6 +134970,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -135156,6 +135248,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -135186,6 +135280,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -137437,6 +137533,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -137467,6 +137565,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -137582,6 +137682,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -137612,6 +137714,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -153525,6 +153629,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -153555,6 +153661,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -154499,6 +154607,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -154529,6 +154639,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -174021,6 +174133,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -174051,6 +174165,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -174451,6 +174567,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -174481,6 +174599,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -176047,6 +176167,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -176077,6 +176199,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -178887,6 +179011,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -180507,6 +180633,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -180537,6 +180665,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -180567,6 +180697,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -182777,6 +182909,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -185583,6 +185717,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -185613,6 +185749,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -185643,6 +185781,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194251,6 +194391,8 @@ export namespace Prisma {
     maxQuantity?: number | null
     imageUrl?: string | null
     isActive?: boolean
+    isCustom?: boolean
+    isOrgProduct?: boolean
     brochureUrl?: string | null
     validFrom?: Date | string | null
     validUntil?: Date | string | null
@@ -195251,6 +195393,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -195281,6 +195425,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -195311,6 +195457,8 @@ export namespace Prisma {
     maxQuantity?: NullableIntFieldUpdateOperationsInput | number | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+    isOrgProduct?: BoolFieldUpdateOperationsInput | boolean
     brochureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
