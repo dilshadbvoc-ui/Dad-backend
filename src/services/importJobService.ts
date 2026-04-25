@@ -226,16 +226,40 @@ export class ImportJobService {
                         // Keep + if present, but remove all other non-digits
                         leadData.phone = (rawPhone.startsWith('+') ? '+' : '') + rawPhone.replace(/\D/g, '');
 
-                        // Smart Country Detection (if not explicitly mapped)
+                        // 5. Global Country Identification (Smart Auto-Identify)
+                        if (!leadData.countryCode || !leadData.phoneCountryCode) {
+                            try {
+                                const { parsePhoneNumberFromString } = await import('libphonenumber-js');
+                                // Try with + prefix if not present
+                                const phoneToParse = leadData.phone.startsWith('+') ? leadData.phone : '+' + leadData.phone;
+                                const phoneNumber = parsePhoneNumberFromString(phoneToParse);
+
+                                if (phoneNumber && phoneNumber.isValid()) {
+                                    if (!leadData.countryCode) leadData.countryCode = phoneNumber.country;
+                                    if (!leadData.phoneCountryCode) leadData.phoneCountryCode = '+' + phoneNumber.countryCallingCode;
+                                    
+                                    // Identify full country name using Intl.DisplayNames
+                                    if (!leadData.country && leadData.countryCode) {
+                                        try {
+                                            const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+                                            leadData.country = regionNames.of(leadData.countryCode);
+                                        } catch (e) {
+                                            // Fallback if Intl.DisplayNames is not supported
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                console.error("Error auto-identifying country:", e);
+                            }
+                        }
+
+                        // Fallback for India if libphonenumber failed but prefix is 91
                         if (!leadData.country && !leadData.countryCode) {
                             const digitsOnly = leadData.phone.replace(/\D/g, '');
                             if (digitsOnly.startsWith('91') && digitsOnly.length >= 10) {
                                 leadData.country = 'India';
                                 leadData.countryCode = 'IN';
                                 if (!leadData.phoneCountryCode) leadData.phoneCountryCode = '+91';
-                                
-                                // Standardize: if it starts with 91 and is 12 digits, keep it as is.
-                                // If it's 10 digits, we could prepend 91, but let's stick to what's provided.
                             } else if (digitsOnly.startsWith('1') && digitsOnly.length === 11) {
                                 leadData.country = 'United States';
                                 leadData.countryCode = 'US';
