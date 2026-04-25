@@ -206,7 +206,19 @@ export class ImportJobService {
 
                     // 4. Sanitize and Smart-Format Phone/Country
                     if (leadData.phone) {
-                        const rawPhone = leadData.phone.toString().trim();
+                        // Fix for scientific notation (e.g. 9.19E+11 -> 919...)
+                        let rawPhone = "";
+                        if (typeof leadData.phone === 'number') {
+                            rawPhone = leadData.phone.toFixed(0);
+                        } else {
+                            rawPhone = String(leadData.phone).trim();
+                            // If the string itself is in scientific notation (rare but possible in CSV)
+                            if (rawPhone.includes('E+') || rawPhone.includes('e+')) {
+                                const num = Number(rawPhone);
+                                if (!isNaN(num)) rawPhone = num.toFixed(0);
+                            }
+                        }
+
                         // Keep + if present, but remove all other non-digits
                         leadData.phone = (rawPhone.startsWith('+') ? '+' : '') + rawPhone.replace(/\D/g, '');
 
