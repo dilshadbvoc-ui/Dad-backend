@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import fs from 'fs';
 import path from 'path';
-import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription } from '../utils/callUtils';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration } from '../utils/callUtils';
 
 // GET /api/android/leads
 // Returns minimal lead data (phone, id, name) for the Android app to cache locally.

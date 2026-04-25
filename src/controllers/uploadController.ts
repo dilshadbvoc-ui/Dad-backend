@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
-import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription } from '../utils/callUtils';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration } from '../utils/callUtils';
 
 export const uploadCallRecording = async (req: Request, res: Response) => {
     try {

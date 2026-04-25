@@ -271,6 +271,7 @@ model Lead {
   isReEnquiry        Boolean         @default(false)
   reEnquiryCount     Int             @default(0)
   lastEnquiryDate    DateTime?
+  lastContactDate    DateTime?
   originalLeadId     String?         // Reference to the original lead if this is a duplicate
   
   events             CalendarEvent[]
