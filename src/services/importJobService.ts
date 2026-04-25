@@ -82,9 +82,13 @@ export class ImportJobService {
                     worksheet.eachRow((row, rowNumber) => {
                         if (rowNumber === 1) return; // Skip headers
                         const rowData: any = {};
-                        row.eachCell((cell, colNumber) => {
+                        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                             const header = headers[colNumber];
-                            if (header) rowData[header] = cell.value;
+                            if (header) {
+                                // Use .text to get the formatted string (preserves phone numbers)
+                                // Fallback to .value if .text is empty
+                                rowData[header] = cell.text || cell.value;
+                            }
                         });
                         rows.push(rowData);
                     });
