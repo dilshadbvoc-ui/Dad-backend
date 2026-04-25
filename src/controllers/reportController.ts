@@ -825,3 +825,105 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+/**
+ * Daily Report - Exact metrics for the current day
+ * Columns: User Name, Total Calls, Total Connected, Total Unconnected, Total Converted, Total Lost
+ */
+export const getDailyReport = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        const { branchId } = req.query;
+
+        // Current day boundaries in UTC (server-side)
+        // Note: For exact accuracy, we should use the user's local day boundaries if possible, 
+        // but for now, we'll use the server's today.
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        const where: any = {
+            id: { in: visibleUserIds },
+            organisationId: orgId,
+            isActive: true
+        };
+        if (branchId) where.branchId = branchId as string;
+
+        const users = await prisma.user.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+            }
+        });
+
+        const report = await Promise.all(users.map(async (u) => {
+            const [
+                totalCalls,
+                connectedCalls,
+                convertedLeads,
+                lostLeads
+            ] = await Promise.all([
+                // Total Calls
+                prisma.interaction.count({
+                    where: {
+                        createdById: u.id,
+                        type: 'call',
+                        date: { gte: startOfDay, lte: endOfDay },
+                        isDeleted: false
+                    }
+                }),
+                // Total Connected
+                prisma.interaction.count({
+                    where: {
+                        createdById: u.id,
+                        type: 'call',
+                        callStatus: 'completed',
+                        date: { gte: startOfDay, lte: endOfDay },
+                        isDeleted: false
+                    }
+                }),
+                // Total Converted (Status became 'converted' today)
+                prisma.leadHistory.count({
+                    where: {
+                        changedById: u.id,
+                        fieldName: 'status',
+                        newValue: 'converted',
+                        createdAt: { gte: startOfDay, lte: endOfDay }
+                    }
+                }),
+                // Total Lost (Status became 'lost' or 'dead' today)
+                prisma.leadHistory.count({
+                    where: {
+                        changedById: u.id,
+                        fieldName: 'status',
+                        newValue: { in: ['lost', 'dead'] },
+                        createdAt: { gte: startOfDay, lte: endOfDay }
+                    }
+                })
+            ]);
+
+            return {
+                id: u.id,
+                userName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                totalCalls,
+                totalConnected: connectedCalls,
+                totalUnconnected: totalCalls - connectedCalls,
+                totalConverted: convertedLeads,
+                totalLost: lostLeads
+            };
+        }));
+
+        // Sort by total calls descending as a default
+        report.sort((a, b) => b.totalCalls - a.totalCalls);
+
+        res.json(report);
+    } catch (error) {
+        console.error('[ReportController] getDailyReport error:', error);
+        res.status(500).json({ message: 'Failed to fetch daily report' });
+    }
+};

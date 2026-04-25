@@ -3,6 +3,7 @@ import twilio from 'twilio';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { TelephonyService } from '../services/telephonyService';
+import { synchronizeDurations } from '../utils/callUtils';
 
 const VoiceResponse = twilio.twiml.VoiceResponse;
 
@@ -176,8 +177,8 @@ export const handleStatusWebhook = async (req: Request, res: Response) => {
                 data.recordingUrl = RecordingUrl;
             }
             if (RecordingDuration) {
-                data.duration = parseInt(RecordingDuration); // seconds
                 data.recordingDuration = parseInt(RecordingDuration);
+                synchronizeDurations(data);
             }
 
             await prisma.interaction.update({

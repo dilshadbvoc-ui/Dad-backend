@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription } from '../utils/callUtils';
 
 export const uploadCallRecording = async (req: Request, res: Response) => {
     try {
@@ -82,24 +83,96 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             }
         });
 
-        // Create Interaction linked to Document
-        const interaction = await prisma.interaction.create({
-            data: {
+        // Accurate finalized description
+        const durationSecs = normalizeDuration(duration);
+        const formattedDescription = formatCallDurationDescription(durationSecs, { hasRecording: true });
+
+        // DEDUPLICATION: Look for an 'initiated' interaction to merge with
+        const callDate = new Date(parseInt(timestamp) || Date.now());
+        const searchWindowStart = new Date(callDate.getTime() - 120 * 1000); // 2 mins before
+        const searchWindowEnd = new Date(callDate.getTime() + 120 * 1000);   // 2 mins after
+        const last10 = cleanPhone.slice(-10);
+
+        let existingInteraction = null;
+        if (last10.length >= 10) {
+            existingInteraction = await prisma.interaction.findFirst({
+                where: {
+                    organisationId: orgId || user.organisationId,
+                    createdById: user.id,
+                    type: 'call',
+                    callStatus: 'initiated',
+                    phoneNumber: { contains: last10 },
+                    date: { gte: searchWindowStart, lte: searchWindowEnd }
+                },
+                orderBy: { date: 'desc' }
+            });
+        }
+
+        let interaction;
+        if (existingInteraction) {
+            console.log(`[UploadCall] Merging recording into initiated interaction ${existingInteraction.id}`);
+            const updateData: any = {
+                recordingUrl: `/api/documents/${document.id}/download`,
+                documentId: document.id,
+                recordingDuration: durationSecs,
+                callStatus: 'completed',
+                description: formattedDescription,
+                leadId: entityType === 'lead' ? entityId : undefined
+            };
+            synchronizeDurations(updateData);
+            interaction = await prisma.interaction.update({
+                where: { id: existingInteraction.id },
+                data: updateData
+            });
+        } else {
+            // Create New Interaction linked to Document
+            const interactionData: any = {
                 organisationId: orgId || user.organisationId,
                 type: 'call',
                 subject: `Recorded Call with ${phoneNumber}`,
-                description: `Automatic recording upload. Duration: ${duration || '?'}s`,
-                date: new Date(parseInt(timestamp) || Date.now()),
+                description: formattedDescription,
+                date: callDate,
                 leadId: entityType === 'lead' ? entityId : undefined,
                 createdById: user.id,
-                recordingUrl: `/api/documents/${document.id}/download`, // Virtual URL for frontend
-                documentId: document.id, // Soft link to actual binary data
-                recordingDuration: parseInt(duration) || 0,
+                recordingUrl: `/api/documents/${document.id}/download`,
+                documentId: document.id,
+                recordingDuration: durationSecs,
                 direction: 'outbound',
                 phoneNumber: phoneNumber,
                 callStatus: 'completed'
+            };
+            synchronizeDurations(interactionData);
+            interaction = await prisma.interaction.create({
+                data: interactionData
+            });
+        }
+
+        // 3. Update Lead stats
+        if (entityType === 'lead' && entityId) {
+            const currentLead = await prisma.lead.findUnique({ where: { id: entityId }, select: { status: true } });
+            const newStatus = (currentLead?.status === 'new' && durationSecs > 0) ? 'contacted' : null;
+
+            await prisma.lead.update({
+                where: { id: entityId },
+                data: {
+                    lastContactDate: callDate,
+                    ...(newStatus ? { status: newStatus } : {})
+                }
+            });
+
+            if (newStatus) {
+                await prisma.leadHistory.create({
+                    data: {
+                        leadId: entityId,
+                        fieldName: 'status',
+                        oldValue: currentLead?.status || 'new',
+                        newValue: newStatus,
+                        changedById: user.id,
+                        reason: 'Auto-updated via Call Recording Upload'
+                    }
+                });
             }
-        });
+        }
 
         res.json({
             message: 'Recording uploaded successfully (DB Storage)',
@@ -138,22 +211,64 @@ export const logCallWithoutRecording = async (req: Request, res: Response) => {
             }
         });
 
-        // Create Interaction (without recording)
-        const interaction = await prisma.interaction.create({
-            data: {
+        // Accurate finalized description
+        const durationSecs = parseInt(duration) || 0;
+        const formattedDescription = description || formatCallDurationDescription(durationSecs, { hasRecording: false });
+
+        // DEDUPLICATION: Look for an 'initiated' interaction to merge with
+        const callDate = new Date(parseInt(timestamp) || Date.now());
+        const searchWindowStart = new Date(callDate.getTime() - 120 * 1000); 
+        const searchWindowEnd = new Date(callDate.getTime() + 120 * 1000);
+        
+        let existingInteraction = null;
+        if (cleanPhone.length >= 10) {
+            existingInteraction = await prisma.interaction.findFirst({
+                where: {
+                    organisationId: orgId || user.organisationId,
+                    createdById: user.id,
+                    type: 'call',
+                    callStatus: 'initiated',
+                    phoneNumber: { contains: cleanPhone },
+                    date: { gte: searchWindowStart, lte: searchWindowEnd }
+                },
+                orderBy: { date: 'desc' }
+            });
+        }
+
+        let interaction;
+        if (existingInteraction) {
+            console.log(`[LogCall] Merging call log into initiated interaction ${existingInteraction.id}`);
+            const updateData: any = {
+                recordingDuration: durationSecs,
+                callStatus: 'completed',
+                description: formattedDescription,
+                leadId: lead?.id
+            };
+            synchronizeDurations(updateData);
+            interaction = await prisma.interaction.update({
+                where: { id: existingInteraction.id },
+                data: updateData
+            });
+        } else {
+            // Create Interaction (without recording)
+            const interactionData: any = {
                 organisationId: orgId || user.organisationId,
                 type: 'call',
                 subject: subject || `Phone Call with ${phoneNumber}`,
-                description: description || `Auto-logged call. Duration: ${duration || 0}s. Recording unavailable due to Android restrictions.`,
-                date: new Date(parseInt(timestamp) || Date.now()),
+                description: formattedDescription,
+                date: callDate,
                 leadId: lead?.id,
                 createdById: user.id,
-                recordingDuration: parseInt(duration) || 0,
+                recordingDuration: durationSecs,
                 direction: 'outbound',
                 phoneNumber: phoneNumber,
                 callStatus: 'completed'
-            }
-        });
+            };
+            synchronizeDurations(interactionData);
+            interaction = await prisma.interaction.create({
+                data: interactionData
+            });
+        }
 
         res.json({
             message: 'Call logged successfully (without recording)',

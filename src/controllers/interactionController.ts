@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription } from '../utils/callUtils';
 import { logAudit } from '../utils/auditLogger';
 import { InteractionType, InteractionDirection } from '../generated/client';
 
@@ -29,7 +30,12 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
             recordingDuration,
             callStatus,
             phoneNumber,
-            date
+            date,
+            hardwareId,
+            callSessionId,
+            hardwareDuration,
+            onModel,
+            relatedTo
         } = req.body;
 
         const data: any = {
@@ -40,12 +46,28 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
             duration,
             recordingUrl,
             recordingDuration,
-            callStatus,
+            hardwareDuration,
+            callStatus: callStatus || (type === 'call' ? 'completed' : undefined),
             phoneNumber,
+            hardwareId,
+            callSessionId,
             date: date ? new Date(date) : new Date(),
             createdBy: { connect: { id: user.id } },
             branch: user.branchId ? { connect: { id: user.branchId } } : (req.body.branchId ? { connect: { id: req.body.branchId } } : undefined)
         };
+
+        // Synchronize units
+        if (type === 'call') {
+            synchronizeDurations(data);
+            if (!description || description.trim() === '') {
+                const bestSecs = resolveBestDurationSeconds(data);
+                if (bestSecs > 0) {
+                    data.description = formatCallDurationDescription(bestSecs, { 
+                        isCarrierVerified: !!data.hardwareDuration 
+                    });
+                }
+            }
+        }
 
         // Only connect organization if user has one
         if (orgId) {

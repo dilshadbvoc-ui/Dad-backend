@@ -63,7 +63,36 @@ export class ImportJobService {
             });
 
             // 2. Process File
-            const processStream = fs.createReadStream(job.fileUrl).pipe(csv());
+            let processStream: any;
+            const isExcel = job.fileUrl.endsWith('.xlsx') || job.fileUrl.endsWith('.xls');
+
+            if (isExcel) {
+                const ExcelJS = await import('exceljs');
+                const workbook = new ExcelJS.Workbook();
+                await workbook.xlsx.readFile(job.fileUrl);
+                const worksheet = workbook.getWorksheet(1);
+                const rows: any[] = [];
+                
+                if (worksheet) {
+                    const headers: string[] = [];
+                    worksheet.getRow(1).eachCell((cell, colNumber) => {
+                        headers[colNumber] = cell.value?.toString() || '';
+                    });
+
+                    worksheet.eachRow((row, rowNumber) => {
+                        if (rowNumber === 1) return; // Skip headers
+                        const rowData: any = {};
+                        row.eachCell((cell, colNumber) => {
+                            const header = headers[colNumber];
+                            if (header) rowData[header] = cell.value;
+                        });
+                        rows.push(rowData);
+                    });
+                }
+                processStream = rows;
+            } else {
+                processStream = fs.createReadStream(job.fileUrl).pipe(csv());
+            }
 
             // Get import options from metadata
             const metadata = job.metadata as any || {};
@@ -142,7 +171,7 @@ export class ImportJobService {
                         } else if (crmField.startsWith('address.')) {
                             const addressField = crmField.split('.')[1];
                             leadData.address[addressField] = value;
-                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue'].includes(crmField)) {
+                        } else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue', 'country', 'countryCode', 'phoneCountryCode', 'enquiryAbout'].includes(crmField)) {
                             if (['leadScore', 'potentialValue'].includes(crmField)) {
                                 (leadData as any)[crmField] = Number(value) || 0;
                             } else {
@@ -175,9 +204,28 @@ export class ImportJobService {
                         throw new Error('Missing required fields (First Name and at least Phone or Email)');
                     }
 
-                    // Sanitize phone
+                    // 4. Sanitize and Smart-Format Phone/Country
                     if (leadData.phone) {
-                        leadData.phone = leadData.phone.toString().replace(/\D/g, '');
+                        const rawPhone = leadData.phone.toString().trim();
+                        // Keep + if present, but remove all other non-digits
+                        leadData.phone = (rawPhone.startsWith('+') ? '+' : '') + rawPhone.replace(/\D/g, '');
+
+                        // Smart Country Detection (if not explicitly mapped)
+                        if (!leadData.country && !leadData.countryCode) {
+                            const digitsOnly = leadData.phone.replace(/\D/g, '');
+                            if (digitsOnly.startsWith('91') && digitsOnly.length >= 10) {
+                                leadData.country = 'India';
+                                leadData.countryCode = 'IN';
+                                if (!leadData.phoneCountryCode) leadData.phoneCountryCode = '+91';
+                                
+                                // Standardize: if it starts with 91 and is 12 digits, keep it as is.
+                                // If it's 10 digits, we could prepend 91, but let's stick to what's provided.
+                            } else if (digitsOnly.startsWith('1') && digitsOnly.length === 11) {
+                                leadData.country = 'United States';
+                                leadData.countryCode = 'US';
+                                if (!leadData.phoneCountryCode) leadData.phoneCountryCode = '+1';
+                            }
+                        }
                     }
 
                     // Handle Owner Lookup by Email

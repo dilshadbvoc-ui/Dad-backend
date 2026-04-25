@@ -5,7 +5,8 @@ import {
     getSalesBook, 
     exportToExcel, 
     getTeamPerformanceReport,
-    getUserPerformanceDetails 
+    getUserPerformanceDetails,
+    getDailyReport 
 } from '../controllers/reportController';
 import { protect as authMiddleware } from '../middleware/authMiddleware';
 
@@ -22,6 +23,9 @@ router.get('/user-performance', getUserPerformance);
 
 // Detailed user performance for Total Report (New)
 router.get('/user-performance-details', getUserPerformanceDetails);
+
+// Daily Report (New)
+router.get('/daily-report', getDailyReport);
 
 // Sales book with time period filter
 router.get('/sales-book', getSalesBook);

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { resolveBestDurationSeconds, synchronizeDurations } from '../utils/callUtils';
 import { FollowUpService } from '../services/followUpService';
 import path from 'path';
 import fs from 'fs';
@@ -78,8 +79,12 @@ export const completeCall = async (req: Request, res: Response) => {
 
         const updateData: any = {
             callStatus: status || 'completed',
-            duration: duration ? Number(duration) / 60 : undefined,
+            duration: duration ? Number(duration) : undefined,
         };
+
+        if (duration) {
+            synchronizeDurations(updateData);
+        }
 
         if (file) {
             updateData.recordingUrl = `/uploads/recordings/${file.filename}`;
@@ -458,17 +463,8 @@ export const getCallStats = async (req: Request, res: Response) => {
         let totalSeconds = 0;
         let validCalls = 0;
         callsWithDuration.forEach(c => {
-            // PRIORITY: hardwareDuration (Carrier Truth) > recordingDuration > duration (Estimated Mins)
-            if (c.hardwareDuration && c.hardwareDuration > 0) {
-                totalSeconds += c.hardwareDuration;
-                validCalls++;
-            } else if (c.recordingDuration && c.recordingDuration > 0) {
-                totalSeconds += c.recordingDuration;
-                validCalls++;
-            } else if (c.duration && c.duration > 0) {
-                totalSeconds += Math.round(c.duration * 60);
-                validCalls++;
-            }
+            totalSeconds += resolveBestDurationSeconds(c);
+            validCalls++;
         });
 
         const avgDuration = validCalls > 0 ? (totalSeconds / validCalls) / 60 : 0;
@@ -645,14 +641,7 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
                 if (i.callStatus === 'completed') {
                     stats.connectedCalls++;
                     
-                    // Priority: hardwareDuration (Seconds) > recordingDuration (Seconds) > duration (Minutes)
-                    if (i.hardwareDuration && i.hardwareDuration > 0) {
-                        stats.totalDurationSeconds += i.hardwareDuration;
-                    } else if (i.recordingDuration && i.recordingDuration > 0) {
-                        stats.totalDurationSeconds += i.recordingDuration;
-                    } else if (i.duration && i.duration > 0) {
-                        stats.totalDurationSeconds += Math.round(i.duration * 60);
-                    }
+                    stats.totalDurationSeconds += resolveBestDurationSeconds(i);
                 }
             }
         });

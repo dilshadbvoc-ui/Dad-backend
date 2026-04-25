@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import fs from 'fs';
 import path from 'path';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription } from '../utils/callUtils';
 
 // GET /api/android/leads
 // Returns minimal lead data (phone, id, name) for the Android app to cache locally.
@@ -142,12 +143,20 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const durationSecs = parseInt(duration, 10) || 0;
         const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
         
-        // Accurate Truth logic: If carrier told us exactly how long they talked, use that.
-        // Otherwise fallback to the recording/track duration.
-        const finalizedDurationSecs = carrierDurationSecs ?? durationSecs; 
-        const durationMinutes = finalizedDurationSecs / 60;
+        const tempDurationData = {
+            duration: durationSecs / 60,
+            recordingDuration: durationSecs,
+            hardwareDuration: carrierDurationSecs
+        };
+        synchronizeDurations(tempDurationData);
         
-        const formattedDescription = `Duration: ${Math.floor(finalizedDurationSecs / 60)}m ${finalizedDurationSecs % 60}s${file ? ' (Recording attached)' : ''}${carrierDurationSecs !== null ? ' [Carrier Verified]' : ''}`;
+        const finalizedDurationSecs = resolveBestDurationSeconds(tempDurationData);
+        const durationMinutes = tempDurationData.duration;
+        
+        const formattedDescription = formatCallDurationDescription(finalizedDurationSecs, { 
+            hasRecording: !!file,
+            isCarrierVerified: carrierDurationSecs !== null
+        });
 
         // 2. Link to existing interaction
         // PRIORITY 1: Match by callSessionId (UUID - 100% Accuracy)
@@ -361,11 +370,11 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 isDeleted: false,
                 phone: { not: '' }
             },
-            select: { id: true, phone: true, secondaryPhone: true, firstName: true, lastName: true }
+            select: { id: true, phone: true, secondaryPhone: true, firstName: true, lastName: true, status: true }
         });
 
         // Build a lookup map: last 10 digits of phone -> lead
-        const phoneToLead = new Map<string, { id: string; phone: string; firstName: string | null; lastName: string | null }>();
+        const phoneToLead = new Map<string, { id: string; phone: string; firstName: string | null; lastName: string | null; status: string }>();
         for (const lead of crmLeads) {
             if (lead.phone) {
                 const clean = lead.phone.replace(/[^0-9]/g, '').slice(-10);
@@ -455,15 +464,23 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         orderBy: { date: 'desc' }
                     });
                 }
-                let durationSecs = parseInt(duration, 10) || 0;
+                let durationSecs = normalizeDuration(duration);
 
                 if (existingInteraction) {
                     // HEAL EXISTING: Only update if new duration from Log is longer/better
                     const currentDuration = (existingInteraction.duration || 0) * 60;
                     const hasCarrierTruth = hardwareDuration !== null && hardwareDuration !== undefined;
+                    
                     if (hasCarrierTruth || durationSecs > currentDuration || !existingInteraction.duration || existingInteraction.callStatus === 'initiated') {
                         const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
-                        const finalizedSyncDurationSecs = carrierDurationSecs ?? durationSecs;
+                        
+                        const tempSyncData = {
+                            duration: durationSecs / 60,
+                            recordingDuration: durationSecs,
+                            hardwareDuration: carrierDurationSecs
+                        };
+                        synchronizeDurations(tempSyncData);
+                        const finalizedSyncDurationSecs = resolveBestDurationSeconds(tempSyncData);
 
                         console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${finalizedSyncDurationSecs}s (from ${existingInteraction.callStatus})`);
                         await prisma.interaction.update({
@@ -477,6 +494,33 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                                 callSessionId: callSessionId || undefined
                             }
                         });
+
+                        // 4b. Update Lead stats for healed interaction
+                        if (matchedLead) {
+                            const newStatus = (matchedLead.status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : null;
+                            
+                            await prisma.lead.update({
+                                where: { id: matchedLead.id },
+                                data: {
+                                    lastContactDate: callDate,
+                                    ...(newStatus ? { status: newStatus } : {})
+                                }
+                            });
+
+                            if (newStatus) {
+                                await prisma.leadHistory.create({
+                                    data: {
+                                        leadId: matchedLead.id,
+                                        fieldName: 'status',
+                                        oldValue: matchedLead.status,
+                                        newValue: newStatus,
+                                        changedById: user.id,
+                                        reason: 'Auto-updated via Android Sync (Heal)'
+                                    }
+                                });
+                            }
+                        }
+
                         results.synced.push(phoneNumber);
                     } else {
                         results.skipped++;
@@ -496,7 +540,19 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 durationSecs = parseInt(duration, 10) || 0;
                 const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
-                const finalizedNewDurationSecs = carrierDurationSecs ?? durationSecs;
+                
+                const tempNewData = {
+                    duration: durationSecs / 60,
+                    recordingDuration: durationSecs,
+                    hardwareDuration: carrierDurationSecs
+                };
+                synchronizeDurations(tempNewData);
+                
+                const finalizedNewDurationSecs = resolveBestDurationSeconds(tempNewData);
+                const durationMinutes = tempNewData.duration;
+                const formattedDescription = formatCallDurationDescription(finalizedNewDurationSecs, {
+                    isCarrierVerified: carrierDurationSecs !== null
+                });
 
                 if (outgoingIdentifiers.includes(rawType)) {
                     direction = 'outbound';
@@ -526,8 +582,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         subject = 'Mobile Inbound Call';
                     }
                 }
-                const durationMinutes = finalizedNewDurationSecs / 60;
-                const formattedDescription = `Duration: ${Math.floor(finalizedNewDurationSecs / 60)}m ${finalizedNewDurationSecs % 60}s${carrierDurationSecs !== null ? ' [Carrier Verified]' : ''}`;
 
                 // 5. Create the CallRecording record (no audio file for bulk sync)
                 await prisma.callRecording.create({
@@ -588,6 +642,32 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         hardwareId: hardwareId || undefined
                     }
                 });
+
+                // 6b. Update Lead stats for new interaction
+                if (matchedLead) {
+                    const newStatus = (matchedLead.status === 'new' && finalizedNewDurationSecs > 0) ? 'contacted' : null;
+
+                    await prisma.lead.update({
+                        where: { id: matchedLead.id },
+                        data: {
+                            lastContactDate: callDate,
+                            ...(newStatus ? { status: newStatus } : {})
+                        }
+                    });
+
+                    if (newStatus) {
+                        await prisma.leadHistory.create({
+                            data: {
+                                leadId: matchedLead.id,
+                                fieldName: 'status',
+                                oldValue: matchedLead.status,
+                                newValue: newStatus,
+                                changedById: user.id,
+                                reason: 'Auto-updated via Android Sync (New)'
+                            }
+                        });
+                    }
+                }
 
                 results.synced.push(phoneNumber);
             } catch (entryError) {
