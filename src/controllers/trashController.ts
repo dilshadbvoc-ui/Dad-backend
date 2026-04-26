@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import ResponseHandler from '../utils/responseHandler';
+import ApiResponse from '../utils/apiResponse';
 import { logger } from '../utils/logger';
-import { getOrgId } from '../utils/authUtils';
+import { getOrgId } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
 
 const prisma = new PrismaClient();
@@ -13,7 +13,7 @@ export const getTrashItems = async (req: Request, res: Response) => {
 
     try {
         if (!organisationId) {
-            return ResponseHandler.forbidden(res, 'User not associated with an organisation');
+            return ApiResponse.forbidden(res, 'User not associated with an organisation');
         }
 
         // Fetch deleted items from all relevant models
@@ -27,18 +27,18 @@ export const getTrashItems = async (req: Request, res: Response) => {
         ]);
 
         const trashItems = [
-            ...leads.map(item => ({ ...item, type: 'Lead' })),
-            ...contacts.map(item => ({ ...item, type: 'Contact' })),
-            ...accounts.map(item => ({ ...item, type: 'Account' })),
-            ...opportunities.map(item => ({ ...item, type: 'Opportunity' })),
-            ...tasks.map(item => ({ ...item, type: 'Task' })),
-            ...documents.map(item => ({ ...item, type: 'Document' }))
+            ...leads.map((item: any) => ({ ...item, type: 'Lead' })),
+            ...contacts.map((item: any) => ({ ...item, type: 'Contact' })),
+            ...accounts.map((item: any) => ({ ...item, type: 'Account' })),
+            ...opportunities.map((item: any) => ({ ...item, type: 'Opportunity' })),
+            ...tasks.map((item: any) => ({ ...item, type: 'Task' })),
+            ...documents.map((item: any) => ({ ...item, type: 'Document' }))
         ].sort((a, b) => (b.deletedAt?.getTime() || 0) - (a.deletedAt?.getTime() || 0));
 
-        return ResponseHandler.success(res, trashItems, 'Trash items fetched successfully');
+        return ApiResponse.success(res, trashItems, 'Trash items fetched successfully');
     } catch (error: any) {
         logger.apiError('GET', '/api/trash', error, user?.id, organisationId);
-        return ResponseHandler.serverError(res, 'Error fetching trash items');
+        return ApiResponse.serverError(res, 'Error fetching trash items');
     }
 };
 
@@ -49,7 +49,7 @@ export const restoreItem = async (req: Request, res: Response) => {
 
     try {
         if (!organisationId) {
-            return ResponseHandler.forbidden(res, 'User not associated with an organisation');
+            return ApiResponse.forbidden(res, 'User not associated with an organisation');
         }
 
         let result;
@@ -75,7 +75,7 @@ export const restoreItem = async (req: Request, res: Response) => {
                 result = await prisma.document.update({ where: { id, organisationId }, data });
                 break;
             default:
-                return ResponseHandler.validationError(res, 'Invalid item type');
+                return ApiResponse.validationError(res, 'Invalid item type');
         }
 
         await logAudit({
@@ -87,10 +87,10 @@ export const restoreItem = async (req: Request, res: Response) => {
             details: { restoredBy: user.id }
         });
 
-        return ResponseHandler.success(res, result, `${type} restored successfully`);
+        return ApiResponse.success(res, result, `${type} restored successfully`);
     } catch (error: any) {
         logger.apiError('POST', '/api/trash/restore', error, user?.id, organisationId);
-        return ResponseHandler.serverError(res, `Error restoring ${type}`);
+        return ApiResponse.serverError(res, `Error restoring ${type}`);
     }
 };
 
@@ -101,7 +101,7 @@ export const permanentDelete = async (req: Request, res: Response) => {
 
     try {
         if (!organisationId) {
-            return ResponseHandler.forbidden(res, 'User not associated with an organisation');
+            return ApiResponse.forbidden(res, 'User not associated with an organisation');
         }
 
         let result;
@@ -125,7 +125,7 @@ export const permanentDelete = async (req: Request, res: Response) => {
                 result = await prisma.document.delete({ where: { id, organisationId } });
                 break;
             default:
-                return ResponseHandler.validationError(res, 'Invalid item type');
+                return ApiResponse.validationError(res, 'Invalid item type');
         }
 
         await logAudit({
@@ -137,9 +137,9 @@ export const permanentDelete = async (req: Request, res: Response) => {
             details: { deletedBy: user.id }
         });
 
-        return ResponseHandler.success(res, result, `${type} permanently deleted`);
+        return ApiResponse.success(res, result, `${type} permanently deleted`);
     } catch (error: any) {
         logger.apiError('DELETE', '/api/trash/permanent', error, user?.id, organisationId);
-        return ResponseHandler.serverError(res, `Error permanently deleting ${type}`);
+        return ApiResponse.serverError(res, `Error permanently deleting ${type}`);
     }
 };

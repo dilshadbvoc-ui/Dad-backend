@@ -77,16 +77,6 @@ export const MetaLeadService = {
                 }
             });
 
-            // Extract country information from Meta lead
-            const { GeoLocationService } = await import('./geoLocationService');
-            let geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
-
-            // If not found via Meta fields, try detecting from phone (if available early)
-            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
-            if (!geoData && rawPhone) {
-                geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());
-            }
-
             // Helper to get field with multiple possible keys
             const getField = (keys: string[]) => {
                 for (const key of keys) {
@@ -94,6 +84,12 @@ export const MetaLeadService = {
                 }
                 return null;
             };
+
+            // If not found via Meta fields, try detecting from phone (if available early)
+            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
+            if (!geoData && rawPhone) {
+                geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());
+            }
 
             // Resolve Status: Priority 1: Payload mapping, Priority 2: Org default, Priority 3: 'new'
             let leadStatus = getField(['status', 'lead_status', 'lead status', 'ststus']) || "new";
