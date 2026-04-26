@@ -77,6 +77,10 @@ export const bulkLeadOperations = async (req: Request, res: Response) => {
       }
 
       case 'update-status':
+        if (!isOrgAdmin(user)) {
+          return ResponseHandler.forbidden(res, 'Only Org Admins can perform bulk status updates');
+        }
+
         if (!data?.status) {
           return ResponseHandler.validationError(res, 'status is required for update-status action');
         }
