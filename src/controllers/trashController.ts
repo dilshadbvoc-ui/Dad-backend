@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import ApiResponse from '../utils/apiResponse';
+import { ResponseHandler as ApiResponse } from '../utils/apiResponse';
 import { logger } from '../utils/logger';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
