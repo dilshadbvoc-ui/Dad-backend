@@ -28811,6 +28811,7 @@ export namespace Prisma {
     notifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
     previousOwnerId: string | null
     branchId: string | null
   }
@@ -28833,6 +28834,7 @@ export namespace Prisma {
     notifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
     previousOwnerId: string | null
     branchId: string | null
   }
@@ -28855,6 +28857,7 @@ export namespace Prisma {
     notifiedAt: number
     createdAt: number
     updatedAt: number
+    deletedAt: number
     previousOwnerId: number
     branchId: number
     _all: number
@@ -28879,6 +28882,7 @@ export namespace Prisma {
     notifiedAt?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     previousOwnerId?: true
     branchId?: true
   }
@@ -28901,6 +28905,7 @@ export namespace Prisma {
     notifiedAt?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     previousOwnerId?: true
     branchId?: true
   }
@@ -28923,6 +28928,7 @@ export namespace Prisma {
     notifiedAt?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     previousOwnerId?: true
     branchId?: true
     _all?: true
@@ -29018,6 +29024,7 @@ export namespace Prisma {
     notifiedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     previousOwnerId: string | null
     branchId: string | null
     _count: TaskCountAggregateOutputType | null
@@ -29057,6 +29064,7 @@ export namespace Prisma {
     notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     previousOwnerId?: boolean
     branchId?: boolean
     account?: boolean | Task$accountArgs<ExtArgs>
@@ -29088,6 +29096,7 @@ export namespace Prisma {
     notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     previousOwnerId?: boolean
     branchId?: boolean
     account?: boolean | Task$accountArgs<ExtArgs>
@@ -29119,6 +29128,7 @@ export namespace Prisma {
     notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     previousOwnerId?: boolean
     branchId?: boolean
   }
@@ -29177,6 +29187,7 @@ export namespace Prisma {
       notifiedAt: Date | null
       createdAt: Date
       updatedAt: Date
+      deletedAt: Date | null
       previousOwnerId: string | null
       branchId: string | null
     }, ExtArgs["result"]["task"]>
@@ -29598,6 +29609,7 @@ export namespace Prisma {
     readonly notifiedAt: FieldRef<"Task", 'DateTime'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
+    readonly deletedAt: FieldRef<"Task", 'DateTime'>
     readonly previousOwnerId: FieldRef<"Task", 'String'>
     readonly branchId: FieldRef<"Task", 'String'>
   }
@@ -30096,6 +30108,7 @@ export namespace Prisma {
     notifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type FollowUpMaxAggregateOutputType = {
@@ -30117,6 +30130,7 @@ export namespace Prisma {
     notifiedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type FollowUpCountAggregateOutputType = {
@@ -30138,6 +30152,7 @@ export namespace Prisma {
     notifiedAt: number
     createdAt: number
     updatedAt: number
+    deletedAt: number
     _all: number
   }
 
@@ -30161,6 +30176,7 @@ export namespace Prisma {
     notifiedAt?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
   }
 
   export type FollowUpMaxAggregateInputType = {
@@ -30182,6 +30198,7 @@ export namespace Prisma {
     notifiedAt?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
   }
 
   export type FollowUpCountAggregateInputType = {
@@ -30203,6 +30220,7 @@ export namespace Prisma {
     notifiedAt?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     _all?: true
   }
 
@@ -30297,6 +30315,7 @@ export namespace Prisma {
     notifiedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     _count: FollowUpCountAggregateOutputType | null
     _min: FollowUpMinAggregateOutputType | null
     _max: FollowUpMaxAggregateOutputType | null
@@ -30335,6 +30354,7 @@ export namespace Prisma {
     notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     account?: boolean | FollowUp$accountArgs<ExtArgs>
     assignedTo?: boolean | FollowUp$assignedToArgs<ExtArgs>
     contact?: boolean | FollowUp$contactArgs<ExtArgs>
@@ -30364,6 +30384,7 @@ export namespace Prisma {
     notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     account?: boolean | FollowUp$accountArgs<ExtArgs>
     assignedTo?: boolean | FollowUp$assignedToArgs<ExtArgs>
     contact?: boolean | FollowUp$contactArgs<ExtArgs>
@@ -30393,6 +30414,7 @@ export namespace Prisma {
     notifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
   }
 
   export type FollowUpInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -30447,6 +30469,7 @@ export namespace Prisma {
       notifiedAt: Date | null
       createdAt: Date
       updatedAt: Date
+      deletedAt: Date | null
     }, ExtArgs["result"]["followUp"]>
     composites: {}
   }
@@ -30866,6 +30889,7 @@ export namespace Prisma {
     readonly notifiedAt: FieldRef<"FollowUp", 'DateTime'>
     readonly createdAt: FieldRef<"FollowUp", 'DateTime'>
     readonly updatedAt: FieldRef<"FollowUp", 'DateTime'>
+    readonly deletedAt: FieldRef<"FollowUp", 'DateTime'>
   }
     
 
@@ -78203,6 +78227,7 @@ export namespace Prisma {
     notifiedAt: 'notifiedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt',
     previousOwnerId: 'previousOwnerId',
     branchId: 'branchId'
   };
@@ -78228,7 +78253,8 @@ export namespace Prisma {
     isDeleted: 'isDeleted',
     notifiedAt: 'notifiedAt',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
   };
 
   export type FollowUpScalarFieldEnum = (typeof FollowUpScalarFieldEnum)[keyof typeof FollowUpScalarFieldEnum]
@@ -81915,6 +81941,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     previousOwnerId?: StringNullableFilter<"Task"> | string | null
     branchId?: StringNullableFilter<"Task"> | string | null
     account?: XOR<AccountNullableRelationFilter, AccountWhereInput> | null
@@ -81946,6 +81973,7 @@ export namespace Prisma {
     notifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     previousOwnerId?: SortOrderInput | SortOrder
     branchId?: SortOrderInput | SortOrder
     account?: AccountOrderByWithRelationInput
@@ -81980,6 +82008,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     previousOwnerId?: StringNullableFilter<"Task"> | string | null
     branchId?: StringNullableFilter<"Task"> | string | null
     account?: XOR<AccountNullableRelationFilter, AccountWhereInput> | null
@@ -82011,6 +82040,7 @@ export namespace Prisma {
     notifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     previousOwnerId?: SortOrderInput | SortOrder
     branchId?: SortOrderInput | SortOrder
     _count?: TaskCountOrderByAggregateInput
@@ -82039,6 +82069,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     previousOwnerId?: StringNullableWithAggregatesFilter<"Task"> | string | null
     branchId?: StringNullableWithAggregatesFilter<"Task"> | string | null
   }
@@ -82065,6 +82096,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     account?: XOR<AccountNullableRelationFilter, AccountWhereInput> | null
     assignedTo?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     contact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
@@ -82094,6 +82126,7 @@ export namespace Prisma {
     notifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     account?: AccountOrderByWithRelationInput
     assignedTo?: UserOrderByWithRelationInput
     contact?: ContactOrderByWithRelationInput
@@ -82126,6 +82159,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     account?: XOR<AccountNullableRelationFilter, AccountWhereInput> | null
     assignedTo?: XOR<UserNullableRelationFilter, UserWhereInput> | null
     contact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
@@ -82155,6 +82189,7 @@ export namespace Prisma {
     notifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     _count?: FollowUpCountOrderByAggregateInput
     _max?: FollowUpMaxOrderByAggregateInput
     _min?: FollowUpMinOrderByAggregateInput
@@ -82182,6 +82217,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
   }
 
   export type InteractionWhereInput = {
@@ -89715,6 +89751,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -89744,6 +89781,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -89759,6 +89797,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -89788,6 +89827,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -89810,6 +89850,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -89825,6 +89866,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TaskUncheckedUpdateManyInput = {
@@ -89845,6 +89887,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -89860,6 +89903,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
@@ -89889,6 +89933,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpUpdateInput = {
@@ -89902,6 +89947,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
@@ -89931,6 +89977,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpCreateManyInput = {
@@ -89952,6 +89999,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpUpdateManyMutationInput = {
@@ -89965,6 +90013,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyInput = {
@@ -89986,6 +90035,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type InteractionCreateInput = {
@@ -97098,6 +97148,7 @@ export namespace Prisma {
     notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     previousOwnerId?: SortOrder
     branchId?: SortOrder
   }
@@ -97120,6 +97171,7 @@ export namespace Prisma {
     notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     previousOwnerId?: SortOrder
     branchId?: SortOrder
   }
@@ -97142,6 +97194,7 @@ export namespace Prisma {
     notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     previousOwnerId?: SortOrder
     branchId?: SortOrder
   }
@@ -97199,6 +97252,7 @@ export namespace Prisma {
     notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type FollowUpMaxOrderByAggregateInput = {
@@ -97220,6 +97274,7 @@ export namespace Prisma {
     notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type FollowUpMinOrderByAggregateInput = {
@@ -97241,6 +97296,7 @@ export namespace Prisma {
     notifiedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type EnumFollowUpStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -112452,6 +112508,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -112479,6 +112536,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -112504,6 +112562,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
@@ -112531,6 +112590,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutOrganisationInput = {
@@ -114555,6 +114615,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     previousOwnerId?: StringNullableFilter<"Task"> | string | null
     branchId?: StringNullableFilter<"Task"> | string | null
   }
@@ -114597,6 +114658,7 @@ export namespace Prisma {
     notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
   }
 
   export type TerritoryUpsertWithWhereUniqueWithoutOrganisationInput = {
@@ -117514,6 +117576,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
     contact?: ContactCreateNestedOneWithoutTasksInput
@@ -117541,6 +117604,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -117566,6 +117630,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -117593,6 +117658,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -117618,6 +117684,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
     createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
@@ -117645,6 +117712,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutAssignedToInput = {
@@ -117668,6 +117736,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
@@ -117695,6 +117764,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutCreatedByInput = {
@@ -118006,6 +118076,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     contact?: ContactCreateNestedOneWithoutTasksInput
@@ -118034,6 +118105,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     branchId?: string | null
   }
 
@@ -124285,6 +124357,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -124312,6 +124385,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -124337,6 +124411,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
@@ -124364,6 +124439,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutLeadInput = {
@@ -127496,6 +127572,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
     contact?: ContactCreateNestedOneWithoutTasksInput
@@ -127523,6 +127600,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -127548,6 +127626,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
     createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
@@ -127575,6 +127654,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutAccountInput = {
@@ -129846,6 +129926,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -129873,6 +129954,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -129898,6 +129980,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     createdBy?: UserCreateNestedOneWithoutCreatedFollowUpsInput
@@ -129925,6 +130008,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutContactInput = {
@@ -132214,6 +132298,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -132241,6 +132326,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -132266,6 +132352,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
@@ -132293,6 +132380,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutOpportunityInput = {
@@ -176734,6 +176822,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutTasksInput
     assignedTo?: UserCreateNestedOneWithoutAssignedTasksInput
     previousOwner?: UserCreateNestedOneWithoutPreviousTasksInput
@@ -176762,6 +176851,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
   }
 
@@ -176786,6 +176876,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account?: AccountCreateNestedOneWithoutFollowUpsInput
     assignedTo?: UserCreateNestedOneWithoutAssignedFollowUpsInput
     contact?: ContactCreateNestedOneWithoutFollowUpsInput
@@ -176813,6 +176904,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateOrConnectWithoutBranchInput = {
@@ -179933,6 +180025,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -179955,6 +180048,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TerritoryCreateManyOrganisationInput = {
@@ -181750,6 +181844,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -181777,6 +181872,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -181798,6 +181894,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -181813,6 +181910,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
@@ -181840,6 +181938,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutOrganisationInput = {
@@ -181860,6 +181959,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TerritoryUpdateWithoutOrganisationInput = {
@@ -183942,6 +184042,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -183963,6 +184064,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -183985,6 +184087,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type FollowUpCreateManyCreatedByInput = {
@@ -184005,6 +184108,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TerritoryCreateManyManagerInput = {
@@ -184117,6 +184221,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     branchId?: string | null
   }
 
@@ -187109,6 +187214,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
     contact?: ContactUpdateOneWithoutTasksNestedInput
@@ -187136,6 +187242,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -187157,6 +187264,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -187172,6 +187280,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -187199,6 +187308,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -187220,6 +187330,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -187235,6 +187346,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
     createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
@@ -187262,6 +187374,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutAssignedToInput = {
@@ -187282,6 +187395,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUpdateWithoutCreatedByInput = {
@@ -187295,6 +187409,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
@@ -187322,6 +187437,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutCreatedByInput = {
@@ -187342,6 +187458,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TerritoryUpdateWithoutManagerInput = {
@@ -187695,6 +187812,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     contact?: ContactUpdateOneWithoutTasksNestedInput
@@ -187723,6 +187841,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -187744,6 +187863,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -189718,6 +189838,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -189740,6 +189861,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type WhatsAppMessageCreateManyLeadInput = {
@@ -190142,6 +190264,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -190169,6 +190292,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -190190,6 +190314,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -190205,6 +190330,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
@@ -190232,6 +190358,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutLeadInput = {
@@ -190252,6 +190379,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EmailListUpdateWithoutLeadsInput = {
@@ -190993,6 +191121,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -191015,6 +191144,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type DocumentCreateManyAccountInput = {
@@ -191727,6 +191857,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
     contact?: ContactUpdateOneWithoutTasksNestedInput
@@ -191754,6 +191885,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -191775,6 +191907,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -191790,6 +191923,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
     createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
@@ -191817,6 +191951,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutAccountInput = {
@@ -191837,6 +191972,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DocumentUpdateWithoutAccountInput = {
@@ -192089,6 +192225,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -192111,6 +192248,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type WhatsAppMessageCreateManyContactInput = {
@@ -192541,6 +192679,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -192568,6 +192707,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -192589,6 +192729,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -192604,6 +192745,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     createdBy?: UserUpdateOneWithoutCreatedFollowUpsNestedInput
@@ -192631,6 +192773,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutContactInput = {
@@ -192651,6 +192794,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type EmailListUpdateWithoutContactsInput = {
@@ -193031,6 +193175,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
     branchId?: string | null
   }
@@ -193053,6 +193198,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type DocumentCreateManyOpportunityInput = {
@@ -193364,6 +193510,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -193391,6 +193538,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -193412,6 +193560,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -193427,6 +193576,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
@@ -193454,6 +193604,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutOpportunityInput = {
@@ -193474,6 +193625,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ContactUpdateWithoutOpportunitiesInput = {
@@ -195323,6 +195475,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     previousOwnerId?: string | null
   }
 
@@ -195344,6 +195497,7 @@ export namespace Prisma {
     notifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type InteractionCreateManyBranchInput = {
@@ -196138,6 +196292,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutTasksNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedTasksNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousTasksNestedInput
@@ -196166,6 +196321,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -196187,6 +196343,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -196201,6 +196358,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneWithoutFollowUpsNestedInput
     assignedTo?: UserUpdateOneWithoutAssignedFollowUpsNestedInput
     contact?: ContactUpdateOneWithoutFollowUpsNestedInput
@@ -196228,6 +196386,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FollowUpUncheckedUpdateManyWithoutBranchInput = {
@@ -196248,6 +196407,7 @@ export namespace Prisma {
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type InteractionUpdateWithoutBranchInput = {

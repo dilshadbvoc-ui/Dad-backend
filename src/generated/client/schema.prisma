@@ -632,6 +632,7 @@ model Task {
   notifiedAt      DateTime? // Tracks when the last reminder notification was sent
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
   account         Account?      @relation(fields: [accountId], references: [id])
   assignedTo      User?         @relation("TaskAssignee", fields: [assignedToId], references: [id])
   previousOwnerId String?
@@ -669,6 +670,7 @@ model FollowUp {
   notifiedAt DateTime? // Tracks when the last reminder notification was sent
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
 
   account      Account?      @relation(fields: [accountId], references: [id])
   assignedTo   User?         @relation("FollowUpAssignee", fields: [assignedToId], references: [id])

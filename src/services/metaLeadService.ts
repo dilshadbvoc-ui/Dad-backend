@@ -4,6 +4,7 @@ import { DistributionService } from './distributionService';
 import { NotificationService } from './notificationService';
 import { LeadSource, Prisma } from '../generated/client';
 import { decrypt } from '../utils/encryption';
+import { GeoLocationService } from '../utils/geoLocationService';
 
 export const MetaLeadService = {
     /**
@@ -86,6 +87,7 @@ export const MetaLeadService = {
             };
 
             // If not found via Meta fields, try detecting from phone (if available early)
+            let geoData = null;
             const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
             if (!geoData && rawPhone) {
                 geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());

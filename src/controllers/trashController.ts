@@ -37,7 +37,7 @@ export const getTrashItems = async (req: Request, res: Response) => {
 
         return ApiResponse.success(res, trashItems, 'Trash items fetched successfully');
     } catch (error: any) {
-        logger.apiError('GET', '/api/trash', error, user?.id, organisationId);
+        logger.apiError('GET', '/api/trash', error, user?.id, organisationId ?? undefined);
         return ApiResponse.serverError(res, 'Error fetching trash items');
     }
 };
@@ -89,7 +89,7 @@ export const restoreItem = async (req: Request, res: Response) => {
 
         return ApiResponse.success(res, result, `${type} restored successfully`);
     } catch (error: any) {
-        logger.apiError('POST', '/api/trash/restore', error, user?.id, organisationId);
+        logger.apiError('POST', '/api/trash/restore', error, user?.id, organisationId ?? undefined);
         return ApiResponse.serverError(res, `Error restoring ${type}`);
     }
 };
@@ -139,7 +139,7 @@ export const permanentDelete = async (req: Request, res: Response) => {
 
         return ApiResponse.success(res, result, `${type} permanently deleted`);
     } catch (error: any) {
-        logger.apiError('DELETE', '/api/trash/permanent', error, user?.id, organisationId);
+        logger.apiError('DELETE', '/api/trash/permanent', error, user?.id, organisationId ?? undefined);
         return ApiResponse.serverError(res, `Error permanently deleting ${type}`);
     }
 };

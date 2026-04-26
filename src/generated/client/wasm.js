@@ -470,6 +470,7 @@ exports.Prisma.TaskScalarFieldEnum = {
   notifiedAt: 'notifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   previousOwnerId: 'previousOwnerId',
   branchId: 'branchId'
 };
@@ -492,7 +493,8 @@ exports.Prisma.FollowUpScalarFieldEnum = {
   isDeleted: 'isDeleted',
   notifiedAt: 'notifiedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 };
 
 exports.Prisma.InteractionScalarFieldEnum = {
