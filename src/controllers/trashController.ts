@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/prisma';
 import { ResponseHandler as ApiResponse } from '../utils/apiResponse';
 import { logger } from '../utils/logger';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
-
-const prisma = new PrismaClient();
 
 export const getTrashItems = async (req: Request, res: Response) => {
     const user = (req as any).user;
