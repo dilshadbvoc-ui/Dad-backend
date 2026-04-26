@@ -79,7 +79,13 @@ export const MetaLeadService = {
 
             // Extract country information from Meta lead
             const { GeoLocationService } = await import('./geoLocationService');
-            const geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
+            let geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
+
+            // If not found via Meta fields, try detecting from phone (if available early)
+            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
+            if (!geoData && rawPhone) {
+                geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());
+            }
 
             // Helper to get field with multiple possible keys
             const getField = (keys: string[]) => {
@@ -107,7 +113,7 @@ export const MetaLeadService = {
                 lastName: getField(['last_name', 'lastname', 'last name', 'lname']) || 
                            fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
                 email: getField(['email', 'email_address', 'e-mail']),
-                phone: getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']) || '',
+                phone: rawPhone || '',
                 company: getField(['company_name', 'company', 'organization', 'organisation']),
                 jobTitle: getField(['job_title', 'position', 'designation']),
                 country: geoData?.country || getField(['country', 'location']),
@@ -128,10 +134,8 @@ export const MetaLeadService = {
 
             // 4. Sanitize Phone Number
             if (crmData.phone) {
+                // Keep all digits, do not truncate to 10
                 crmData.phone = crmData.phone.toString().replace(/\D/g, '');
-                if (crmData.phone.length > 10) {
-                    crmData.phone = crmData.phone.slice(-10);
-                }
             }
 
             // 5. Check for duplicate (by phone and org)

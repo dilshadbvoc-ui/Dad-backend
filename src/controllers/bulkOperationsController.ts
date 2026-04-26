@@ -6,6 +6,7 @@ import { logger } from '../utils/logger';
 import { EmailService } from '../services/emailService';
 import { WhatsAppService } from '../services/whatsAppService';
 import { logAudit } from '../utils/auditLogger';
+import { isOrgAdmin } from '../utils/roleUtils';
 
 /**
  * Bulk Operations Controller
@@ -264,6 +265,10 @@ export const bulkLeadOperations = async (req: Request, res: Response) => {
       }
 
       case 'delete':
+        if (!isOrgAdmin(user)) {
+          return ResponseHandler.forbidden(res, 'Only Org Admins can perform bulk deletion');
+        }
+
         result = await prisma.lead.updateMany({
           where: {
             id: { in: leadIds },
@@ -272,6 +277,7 @@ export const bulkLeadOperations = async (req: Request, res: Response) => {
           },
           data: {
             isDeleted: true,
+            deletedAt: new Date(),
             updatedAt: new Date()
           }
         });
@@ -434,6 +440,7 @@ export const bulkContactOperations = async (req: Request, res: Response) => {
           },
           data: {
             isDeleted: true,
+            deletedAt: new Date(),
             updatedAt: new Date()
           }
         });
@@ -577,6 +584,7 @@ export const bulkOpportunityOperations = async (req: Request, res: Response) => 
           },
           data: {
             isDeleted: true,
+            deletedAt: new Date(),
             updatedAt: new Date()
           }
         });

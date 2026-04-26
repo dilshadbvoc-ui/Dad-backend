@@ -8,6 +8,7 @@ const twilio_1 = __importDefault(require("twilio"));
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const telephonyService_1 = require("../services/telephonyService");
+const callUtils_1 = require("../utils/callUtils");
 const VoiceResponse = twilio_1.default.twiml.VoiceResponse;
 // Voice Webhook (Inbound or Outbound Answered)
 const handleVoiceWebhook = async (req, res) => {
@@ -166,8 +167,8 @@ const handleStatusWebhook = async (req, res) => {
                 data.recordingUrl = RecordingUrl;
             }
             if (RecordingDuration) {
-                data.duration = parseInt(RecordingDuration); // seconds
                 data.recordingDuration = parseInt(RecordingDuration);
+                (0, callUtils_1.synchronizeDurations)(data);
             }
             await prisma_1.default.interaction.update({
                 where: { id: interaction.id },

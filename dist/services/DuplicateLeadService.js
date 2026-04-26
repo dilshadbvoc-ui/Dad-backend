@@ -54,16 +54,27 @@ exports.DuplicateLeadService = {
                 { phone: cleanPhone },
                 { secondaryPhone: cleanPhone }
             ];
-            // Handle India specific variations (91 prefix)
-            if (cleanPhone.length === 10) {
-                const with91 = '91' + cleanPhone;
-                conditions.push({ phone: with91 });
-                conditions.push({ secondaryPhone: with91 });
+            // Handle international variations using libphonenumber-js
+            const { parsePhoneNumberFromString } = await Promise.resolve().then(() => __importStar(require('libphonenumber-js')));
+            // Try to parse the phone number to handle international matches
+            let phoneToParse = phone.toString().trim();
+            if (!phoneToParse.startsWith('+')) {
+                phoneToParse = `+${cleanPhone}`; // Assume digits include country code if no plus
             }
-            else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
-                const without91 = cleanPhone.slice(2);
-                conditions.push({ phone: without91 });
-                conditions.push({ secondaryPhone: without91 });
+            const phoneNumber = parsePhoneNumberFromString(phoneToParse);
+            if (phoneNumber) {
+                const e164NoPlus = phoneNumber.format('E.164').replace('+', '');
+                const national = phoneNumber.nationalNumber.toString();
+                // Add E.164 version if different
+                if (e164NoPlus !== cleanPhone) {
+                    conditions.push({ phone: e164NoPlus });
+                    conditions.push({ secondaryPhone: e164NoPlus });
+                }
+                // Add National version if different
+                if (national !== cleanPhone && national !== e164NoPlus) {
+                    conditions.push({ phone: national });
+                    conditions.push({ secondaryPhone: national });
+                }
             }
             if (email) {
                 conditions.push({ email, organisationId });
@@ -150,7 +161,10 @@ exports.DuplicateLeadService = {
             const updatedLead = await prisma_1.default.lead.update({
                 where: { id: existingLead.id },
                 data: {
-                    status: 're_enquiry',
+                    status: (newData.stage && (!existingLead.status || ['new', 're_enquiry'].includes(existingLead.status.toLowerCase())))
+                        ? newData.stage.toLowerCase()
+                        : 're_enquiry',
+                    stage: newData.stage || existingLead.stage,
                     isReEnquiry: true,
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },

@@ -42,3 +42,17 @@ export function isSuperAdmin(user: any): boolean {
 export function isAdmin(user: any): boolean {
     return checkRole(user, ['admin', 'super_admin']);
 }
+
+/**
+ * Helper for Org Admin check (includes Admin and Super Admin)
+ */
+export function isOrgAdmin(user: any): boolean {
+    return checkRole(user, ['org_admin', 'admin', 'super_admin']);
+}
+
+/**
+ * Helper for Manager check (includes Admin and Super Admin)
+ */
+export function isManager(user: any): boolean {
+    return checkRole(user, ['manager', 'admin', 'super_admin']);
+}

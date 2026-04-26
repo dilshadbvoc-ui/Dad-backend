@@ -41,6 +41,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const fs_1 = __importDefault(require("fs"));
 const csv_parser_1 = __importDefault(require("csv-parser"));
 const distributionService_1 = require("./distributionService");
+const notificationService_1 = require("./notificationService");
 class ImportJobService {
     static async createJob(userId, orgId, filePath, mapping, options) {
         return await prisma_1.default.importJob.create({
@@ -62,8 +63,9 @@ class ImportJobService {
         });
     }
     static async processJob(jobId) {
+        let job = null;
         try {
-            const job = await prisma_1.default.importJob.findUnique({ where: { id: jobId } });
+            job = await prisma_1.default.importJob.findUnique({ where: { id: jobId } });
             if (!job || !job.fileUrl)
                 return;
             // Update status to processing
@@ -86,7 +88,45 @@ class ImportJobService {
                 data: { total: totalLines }
             });
             // 2. Process File
-            const processStream = fs_1.default.createReadStream(job.fileUrl).pipe((0, csv_parser_1.default)());
+            let processStream;
+            const isExcel = job.fileUrl.endsWith('.xlsx') || job.fileUrl.endsWith('.xls');
+            if (isExcel) {
+                const ExcelJS = await Promise.resolve().then(() => __importStar(require('exceljs')));
+                const workbook = new ExcelJS.Workbook();
+                await workbook.xlsx.readFile(job.fileUrl);
+                const worksheet = workbook.getWorksheet(1);
+                const rows = [];
+                if (worksheet) {
+                    const headers = [];
+                    worksheet.getRow(1).eachCell((cell, colNumber) => {
+                        headers[colNumber] = cell.value?.toString() || '';
+                    });
+                    worksheet.eachRow((row, rowNumber) => {
+                        if (rowNumber === 1)
+                            return; // Skip headers
+                        const rowData = {};
+                        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                            const header = headers[colNumber];
+                            if (header) {
+                                // Prefer raw value to avoid scientific notation in .text
+                                // But handle formula results
+                                const val = cell.value;
+                                if (val && typeof val === 'object' && 'result' in val) {
+                                    rowData[header] = val.result;
+                                }
+                                else {
+                                    rowData[header] = val;
+                                }
+                            }
+                        });
+                        rows.push(rowData);
+                    });
+                }
+                processStream = rows;
+            }
+            else {
+                processStream = fs_1.default.createReadStream(job.fileUrl).pipe((0, csv_parser_1.default)());
+            }
             // Get import options from metadata
             const metadata = job.metadata || {};
             const defaultStatus = metadata.defaultStatus || 'new';
@@ -98,14 +138,15 @@ class ImportJobService {
             let splitIndex = 0;
             for await (const row of processStream) {
                 try {
-                    // Sanitize row data to remove null bytes
+                    // Sanitize row data: trim keys, trim values, remove null bytes/BOM
                     const sanitizedRow = {};
                     for (const [key, value] of Object.entries(row)) {
+                        const cleanKey = String(key).trim().replace(/^\uFEFF/, ''); // Remove BOM and trim
                         if (typeof value === 'string') {
-                            sanitizedRow[key] = value.replace(/\u0000/g, '');
+                            sanitizedRow[cleanKey] = value.replace(/\u0000/g, '').trim();
                         }
                         else {
-                            sanitizedRow[key] = value;
+                            sanitizedRow[cleanKey] = value;
                         }
                     }
                     const leadData = {
@@ -127,56 +168,150 @@ class ImportJobService {
                         leadData.branchId = branchId;
                     }
                     const mapping = job.mapping || {};
-                    // Map fields
-                    for (const [csvHeader, crmField] of Object.entries(mapping)) {
+                    // Map fields from CSV
+                    const csvValues = {};
+                    for (const [mappingHeader, crmField] of Object.entries(mapping)) {
                         if (!crmField)
                             continue;
-                        const value = sanitizedRow[csvHeader];
+                        const normalize = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const normalizedMappingHeader = normalize(mappingHeader);
+                        let value = sanitizedRow[mappingHeader];
+                        if (value === undefined || value === null) {
+                            const actualKey = Object.keys(sanitizedRow).find(k => normalize(k) === normalizedMappingHeader);
+                            if (actualKey)
+                                value = sanitizedRow[actualKey];
+                        }
                         if (value === undefined || value === null || value === '')
                             continue;
-                        if (String(crmField) === 'fullName') {
-                            // Split full name into first and last
+                        csvValues[crmField] = value;
+                    }
+                    // Process mapped values into leadData
+                    for (const [crmField, value] of Object.entries(csvValues)) {
+                        if (crmField === 'fullName') {
                             const nameParts = String(value).trim().split(/\s+/);
                             leadData.firstName = nameParts[0] || '';
                             leadData.lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
                         }
-                        else if (String(crmField) === 'tags') {
-                            // Handle comma-separated tags
+                        else if (crmField === 'tags') {
                             leadData.tags = String(value).split(',').map(t => t.trim()).filter(Boolean);
                         }
-                        else if (String(crmField) === 'notes') {
-                            // Store notes in customFields
+                        else if (crmField === 'notes') {
                             if (!leadData.customFields)
                                 leadData.customFields = {};
                             leadData.customFields.importNotes = value;
                         }
-                        else if (String(crmField).startsWith('address.')) {
-                            const addressField = String(crmField).split('.')[1];
+                        else if (crmField.startsWith('address.')) {
+                            const addressField = crmField.split('.')[1];
                             leadData.address[addressField] = value;
                         }
-                        else if (['firstName', 'lastName', 'email', 'phone', 'company', 'jobTitle', 'source', 'status', 'stage', 'assignedToId', 'ownerEmail'].includes(crmField)) {
-                            leadData[crmField] = value;
+                        else if (['firstName', 'lastName', 'email', 'phone', 'secondaryPhone', 'company', 'jobTitle', 'source', 'assignedToId', 'ownerEmail', 'leadScore', 'potentialValue', 'country', 'countryCode', 'phoneCountryCode', 'enquiryAbout'].includes(crmField)) {
+                            if (['leadScore', 'potentialValue'].includes(crmField)) {
+                                leadData[crmField] = Number(value) || 0;
+                            }
+                            else {
+                                leadData[crmField] = value;
+                            }
                         }
-                        else {
-                            // Custom Fields
+                        else if (crmField !== 'status' && crmField !== 'stage') {
                             if (!leadData.customFields)
                                 leadData.customFields = {};
                             leadData.customFields[crmField] = value;
                         }
                     }
+                    // Robust Status and Stage Resolution
+                    const rawStage = (csvValues.stage || csvValues.Status || csvValues.status || '').toString().trim().toLowerCase();
+                    const rawStatus = (csvValues.status || csvValues.Status || '').toString().trim().toLowerCase();
+                    // If stage provided but no status, sync them
+                    if (rawStage && (!rawStatus || rawStatus === 'new')) {
+                        leadData.status = rawStage;
+                        leadData.stage = rawStage;
+                    }
+                    else if (rawStatus && rawStatus !== 'new') {
+                        leadData.status = rawStatus;
+                        leadData.stage = rawStage || rawStatus;
+                    }
+                    else {
+                        leadData.status = rawStatus || defaultStatus || 'new';
+                        leadData.stage = rawStage || null;
+                    }
                     // Basic Validation
                     if (!leadData.firstName || (!leadData.phone && !leadData.email)) {
                         throw new Error('Missing required fields (First Name and at least Phone or Email)');
                     }
-                    // Sanitize phone
+                    // 4. Sanitize and Smart-Format Phone/Country
                     if (leadData.phone) {
-                        leadData.phone = leadData.phone.toString().replace(/\D/g, '');
+                        // Fix for scientific notation (e.g. 9.19E+11 -> 919...)
+                        let rawPhone = "";
+                        if (typeof leadData.phone === 'number') {
+                            // Ensure full precision for numbers (phone numbers can be large)
+                            rawPhone = leadData.phone.toLocaleString('fullwide', { useGrouping: false });
+                        }
+                        else {
+                            rawPhone = String(leadData.phone).trim();
+                            // If the string itself is in scientific notation (common in CSV exports from Excel)
+                            // We check for 'E' or 'e' followed by '+' or digits
+                            if (/[eE][+-]?\d+/.test(rawPhone)) {
+                                const num = Number(rawPhone);
+                                if (!isNaN(num)) {
+                                    rawPhone = num.toLocaleString('fullwide', { useGrouping: false });
+                                }
+                            }
+                        }
+                        // Keep + if present, but remove all other non-digits
+                        leadData.phone = (rawPhone.startsWith('+') ? '+' : '') + rawPhone.replace(/\D/g, '');
+                        // 5. Global Country Identification (Smart Auto-Identify)
+                        if (!leadData.countryCode || !leadData.phoneCountryCode) {
+                            try {
+                                const { parsePhoneNumberFromString } = await Promise.resolve().then(() => __importStar(require('libphonenumber-js')));
+                                // Try with + prefix if not present
+                                const phoneToParse = leadData.phone.startsWith('+') ? leadData.phone : '+' + leadData.phone;
+                                const phoneNumber = parsePhoneNumberFromString(phoneToParse);
+                                if (phoneNumber && phoneNumber.isValid()) {
+                                    if (!leadData.countryCode)
+                                        leadData.countryCode = phoneNumber.country;
+                                    if (!leadData.phoneCountryCode)
+                                        leadData.phoneCountryCode = '+' + phoneNumber.countryCallingCode;
+                                    // Identify full country name using Intl.DisplayNames
+                                    if (!leadData.country && leadData.countryCode) {
+                                        try {
+                                            const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+                                            leadData.country = regionNames.of(leadData.countryCode);
+                                        }
+                                        catch (e) {
+                                            // Fallback if Intl.DisplayNames is not supported
+                                        }
+                                    }
+                                }
+                            }
+                            catch (e) {
+                                console.error("Error auto-identifying country:", e);
+                            }
+                        }
+                        // Fallback for India if libphonenumber failed but prefix is 91
+                        if (!leadData.country && !leadData.countryCode) {
+                            const digitsOnly = leadData.phone.replace(/\D/g, '');
+                            if (digitsOnly.startsWith('91') && digitsOnly.length >= 10) {
+                                leadData.country = 'India';
+                                leadData.countryCode = 'IN';
+                                if (!leadData.phoneCountryCode)
+                                    leadData.phoneCountryCode = '+91';
+                            }
+                            else if (digitsOnly.startsWith('1') && digitsOnly.length === 11) {
+                                leadData.country = 'United States';
+                                leadData.countryCode = 'US';
+                                if (!leadData.phoneCountryCode)
+                                    leadData.phoneCountryCode = '+1';
+                            }
+                        }
                     }
                     // Handle Owner Lookup by Email
                     if (leadData.ownerEmail) {
                         const owner = await prisma_1.default.user.findFirst({
                             where: {
-                                email: leadData.ownerEmail,
+                                email: {
+                                    equals: String(leadData.ownerEmail).trim(),
+                                    mode: 'insensitive'
+                                },
                                 organisationId: job.organisationId,
                                 isActive: true
                             },
@@ -202,6 +337,7 @@ class ImportJobService {
                             email: leadData.email,
                             phone: leadData.phone,
                             company: leadData.company,
+                            stage: leadData.stage,
                             source: 'import',
                             sourceDetails: { importJobId: jobId }
                         }, job.organisationId);
@@ -228,7 +364,15 @@ class ImportJobService {
                     // If applyAssignmentRules is true and no explicit owner, leave it undefined
                     // The DistributionService will assign it after creation
                     leadData.assignedToId = initialAssignedToId;
-                    console.log(`[ImportJob ${jobId}] Creating lead with assignedToId: ${leadData.assignedToId}`);
+                    // BRUTE FORCE OVERRIDE: Ensure status matches stage if stage exists
+                    if (leadData.stage && (!leadData.status || leadData.status === 'new')) {
+                        leadData.status = leadData.stage;
+                    }
+                    console.log(`[ImportJob ${jobId}] Final LeadData for ${leadData.email || leadData.phone}:`, JSON.stringify({
+                        status: leadData.status,
+                        stage: leadData.stage,
+                        assignedToId: leadData.assignedToId
+                    }));
                     const createdLead = await prisma_1.default.lead.create({ data: leadData });
                     console.log(`[ImportJob ${jobId}] Lead created with ID: ${createdLead.id}, assignedToId: ${createdLead.assignedToId}`);
                     // Apply Assignment Rules if enabled (this will update the lead's assignedToId)
@@ -302,6 +446,18 @@ class ImportJobService {
             if (fs_1.default.existsSync(job.fileUrl)) {
                 fs_1.default.unlinkSync(job.fileUrl);
             }
+            // Send Notification to User
+            const notificationTitle = failureCount > 0 ? 'Lead Import Completed with Errors' : 'Lead Import Successful';
+            let notificationMessage = `Import finished: ${successCount} leads created.`;
+            if (failureCount > 0) {
+                notificationMessage += ` ${failureCount} rows failed.`;
+                // Add unique error reasons (top 3)
+                const uniqueErrors = Array.from(new Set(sanitizedErrors.map(e => e.error))).slice(0, 3);
+                if (uniqueErrors.length > 0) {
+                    notificationMessage += ` Reasons: ${uniqueErrors.join(', ')}`;
+                }
+            }
+            await notificationService_1.NotificationService.send(job.createdById, notificationTitle, notificationMessage, failureCount > 0 ? 'warning' : 'success');
         }
         catch (error) {
             console.error(`Job ${jobId} failed:`, error);
@@ -315,6 +471,10 @@ class ImportJobService {
                     errors: [{ error: sanitizedErrorMessage }]
                 }
             });
+            // Send Failure Notification
+            if (job) {
+                await notificationService_1.NotificationService.send(job.createdById, 'Lead Import Failed', `The import job encountered a critical error: ${sanitizedErrorMessage}`, 'error');
+            }
         }
     }
 }

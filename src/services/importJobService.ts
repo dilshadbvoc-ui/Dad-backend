@@ -85,9 +85,14 @@ export class ImportJobService {
                         row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                             const header = headers[colNumber];
                             if (header) {
-                                // Use .text to get the formatted string (preserves phone numbers)
-                                // Fallback to .value if .text is empty
-                                rowData[header] = cell.text || cell.value;
+                                // Prefer raw value to avoid scientific notation in .text
+                                // But handle formula results
+                                const val = cell.value;
+                                if (val && typeof val === 'object' && 'result' in val) {
+                                    rowData[header] = val.result;
+                                } else {
+                                    rowData[header] = val;
+                                }
                             }
                         });
                         rows.push(rowData);
@@ -213,13 +218,18 @@ export class ImportJobService {
                         // Fix for scientific notation (e.g. 9.19E+11 -> 919...)
                         let rawPhone = "";
                         if (typeof leadData.phone === 'number') {
-                            rawPhone = leadData.phone.toFixed(0);
+                            // Ensure full precision for numbers (phone numbers can be large)
+                            rawPhone = leadData.phone.toLocaleString('fullwide', { useGrouping: false });
                         } else {
                             rawPhone = String(leadData.phone).trim();
-                            // If the string itself is in scientific notation (rare but possible in CSV)
-                            if (rawPhone.includes('E+') || rawPhone.includes('e+')) {
+                            
+                            // If the string itself is in scientific notation (common in CSV exports from Excel)
+                            // We check for 'E' or 'e' followed by '+' or digits
+                            if (/[eE][+-]?\d+/.test(rawPhone)) {
                                 const num = Number(rawPhone);
-                                if (!isNaN(num)) rawPhone = num.toFixed(0);
+                                if (!isNaN(num)) {
+                                    rawPhone = num.toLocaleString('fullwide', { useGrouping: false });
+                                }
                             }
                         }
 

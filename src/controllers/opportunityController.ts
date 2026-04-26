@@ -538,7 +538,7 @@ export const deleteOpportunity = async (req: Request, res: Response) => {
 
         await prisma.opportunity.update({
             where: { id: opportunityId },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         // Audit Log

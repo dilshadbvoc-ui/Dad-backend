@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logQuickInteraction = exports.updateInteractionRecording = exports.getAllInteractions = exports.getLeadInteractions = exports.createInteraction = exports.createInteractionGeneric = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
+const callUtils_1 = require("../utils/callUtils");
 const auditLogger_1 = require("../utils/auditLogger");
 // POST /api/interactions - Create interaction (generic endpoint)
 const createInteractionGeneric = async (req, res) => {
@@ -16,7 +17,7 @@ const createInteractionGeneric = async (req, res) => {
         if (!orgId && user.role !== 'super_admin') {
             return res.status(400).json({ message: 'User must belong to an organization to create interactions' });
         }
-        const { lead, contact, account, opportunity, type, direction = 'outbound', subject, description, duration, recordingUrl, recordingDuration, callStatus, phoneNumber, date } = req.body;
+        const { lead, contact, account, opportunity, type, direction = 'outbound', subject, description, duration, recordingUrl, recordingDuration, callStatus, phoneNumber, date, hardwareId, callSessionId, hardwareDuration, onModel, relatedTo } = req.body;
         const data = {
             type: type,
             direction: direction,
@@ -25,12 +26,27 @@ const createInteractionGeneric = async (req, res) => {
             duration,
             recordingUrl,
             recordingDuration,
-            callStatus,
+            hardwareDuration,
+            callStatus: callStatus || (type === 'call' ? 'completed' : undefined),
             phoneNumber,
+            hardwareId,
+            callSessionId,
             date: date ? new Date(date) : new Date(),
             createdBy: { connect: { id: user.id } },
             branch: user.branchId ? { connect: { id: user.branchId } } : (req.body.branchId ? { connect: { id: req.body.branchId } } : undefined)
         };
+        // Synchronize units
+        if (type === 'call') {
+            (0, callUtils_1.synchronizeDurations)(data);
+            if (!description || description.trim() === '') {
+                const bestSecs = (0, callUtils_1.resolveBestDurationSeconds)(data);
+                if (bestSecs > 0) {
+                    data.description = (0, callUtils_1.formatCallDurationDescription)(bestSecs, {
+                        isCarrierVerified: !!data.hardwareDuration
+                    });
+                }
+            }
+        }
         // Only connect organization if user has one
         if (orgId) {
             data.organisation = { connect: { id: orgId } };

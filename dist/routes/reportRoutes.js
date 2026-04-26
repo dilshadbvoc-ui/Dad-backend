@@ -12,6 +12,8 @@ router.get('/leads', reportController_1.getLeadsReport);
 router.get('/user-performance', reportController_1.getUserPerformance);
 // Detailed user performance for Total Report (New)
 router.get('/user-performance-details', reportController_1.getUserPerformanceDetails);
+// Daily Report (New)
+router.get('/daily-report', reportController_1.getDailyReport);
 // Sales book with time period filter
 router.get('/sales-book', reportController_1.getSalesBook);
 // Team performance for managers

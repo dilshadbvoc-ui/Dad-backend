@@ -8074,6 +8074,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdBy: string | null
     whatsAppScrapingEnabled: boolean | null
   }
@@ -8098,6 +8099,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdBy: string | null
     whatsAppScrapingEnabled: boolean | null
   }
@@ -8125,6 +8127,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     isDeleted: number
+    deletedAt: number
     createdBy: number
     upsellConfig: number
     ssoConfig: number
@@ -8168,6 +8171,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
+    deletedAt?: true
     createdBy?: true
     whatsAppScrapingEnabled?: true
   }
@@ -8192,6 +8196,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
+    deletedAt?: true
     createdBy?: true
     whatsAppScrapingEnabled?: true
   }
@@ -8219,6 +8224,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
+    deletedAt?: true
     createdBy?: true
     upsellConfig?: true
     ssoConfig?: true
@@ -8336,6 +8342,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     isDeleted: boolean
+    deletedAt: Date | null
     createdBy: string | null
     upsellConfig: JsonValue | null
     ssoConfig: JsonValue | null
@@ -8385,6 +8392,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdBy?: boolean
     upsellConfig?: boolean
     ssoConfig?: boolean
@@ -8460,6 +8468,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdBy?: boolean
     upsellConfig?: boolean
     ssoConfig?: boolean
@@ -8490,6 +8499,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdBy?: boolean
     upsellConfig?: boolean
     ssoConfig?: boolean
@@ -8617,6 +8627,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       isDeleted: boolean
+      deletedAt: Date | null
       createdBy: string | null
       upsellConfig: Prisma.JsonValue | null
       ssoConfig: Prisma.JsonValue | null
@@ -9081,6 +9092,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Organisation", 'DateTime'>
     readonly updatedAt: FieldRef<"Organisation", 'DateTime'>
     readonly isDeleted: FieldRef<"Organisation", 'Boolean'>
+    readonly deletedAt: FieldRef<"Organisation", 'DateTime'>
     readonly createdBy: FieldRef<"Organisation", 'String'>
     readonly upsellConfig: FieldRef<"Organisation", 'Json'>
     readonly ssoConfig: FieldRef<"Organisation", 'Json'>
@@ -13258,6 +13270,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -13270,6 +13283,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -13282,6 +13296,7 @@ export namespace Prisma {
     createdById: number
     organisationId: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -13296,6 +13311,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -13308,6 +13324,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -13320,6 +13337,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -13405,6 +13423,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: TeamCountAggregateOutputType | null
@@ -13434,6 +13453,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     members?: boolean | Team$membersArgs<ExtArgs>
@@ -13452,6 +13472,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     manager?: boolean | Team$managerArgs<ExtArgs>
@@ -13467,6 +13488,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -13502,6 +13524,7 @@ export namespace Prisma {
       createdById: string
       organisationId: string
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["team"]>
@@ -13909,6 +13932,7 @@ export namespace Prisma {
     readonly createdById: FieldRef<"Team", 'String'>
     readonly organisationId: FieldRef<"Team", 'String'>
     readonly isDeleted: FieldRef<"Team", 'Boolean'>
+    readonly deletedAt: FieldRef<"Team", 'DateTime'>
     readonly createdAt: FieldRef<"Team", 'DateTime'>
     readonly updatedAt: FieldRef<"Team", 'DateTime'>
   }
@@ -15353,6 +15377,7 @@ export namespace Prisma {
     status: string | null
     stage: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     organisationId: string | null
@@ -15367,6 +15392,7 @@ export namespace Prisma {
     isReEnquiry: boolean | null
     reEnquiryCount: number | null
     lastEnquiryDate: Date | null
+    lastContactDate: Date | null
     originalLeadId: string | null
     createdById: string | null
     pipelineId: string | null
@@ -15396,6 +15422,7 @@ export namespace Prisma {
     status: string | null
     stage: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     organisationId: string | null
@@ -15410,6 +15437,7 @@ export namespace Prisma {
     isReEnquiry: boolean | null
     reEnquiryCount: number | null
     lastEnquiryDate: Date | null
+    lastContactDate: Date | null
     originalLeadId: string | null
     createdById: string | null
     pipelineId: string | null
@@ -15444,6 +15472,7 @@ export namespace Prisma {
     activities: number
     tags: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     organisationId: number
@@ -15458,6 +15487,7 @@ export namespace Prisma {
     isReEnquiry: number
     reEnquiryCount: number
     lastEnquiryDate: number
+    lastContactDate: number
     originalLeadId: number
     createdById: number
     pipelineId: number
@@ -15505,6 +15535,7 @@ export namespace Prisma {
     status?: true
     stage?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -15519,6 +15550,7 @@ export namespace Prisma {
     isReEnquiry?: true
     reEnquiryCount?: true
     lastEnquiryDate?: true
+    lastContactDate?: true
     originalLeadId?: true
     createdById?: true
     pipelineId?: true
@@ -15548,6 +15580,7 @@ export namespace Prisma {
     status?: true
     stage?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -15562,6 +15595,7 @@ export namespace Prisma {
     isReEnquiry?: true
     reEnquiryCount?: true
     lastEnquiryDate?: true
+    lastContactDate?: true
     originalLeadId?: true
     createdById?: true
     pipelineId?: true
@@ -15596,6 +15630,7 @@ export namespace Prisma {
     activities?: true
     tags?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -15610,6 +15645,7 @@ export namespace Prisma {
     isReEnquiry?: true
     reEnquiryCount?: true
     lastEnquiryDate?: true
+    lastContactDate?: true
     originalLeadId?: true
     createdById?: true
     pipelineId?: true
@@ -15731,6 +15767,7 @@ export namespace Prisma {
     activities: JsonValue | null
     tags: string[]
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     organisationId: string
@@ -15745,6 +15782,7 @@ export namespace Prisma {
     isReEnquiry: boolean
     reEnquiryCount: number
     lastEnquiryDate: Date | null
+    lastContactDate: Date | null
     originalLeadId: string | null
     createdById: string | null
     pipelineId: string | null
@@ -15798,6 +15836,7 @@ export namespace Prisma {
     activities?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -15812,6 +15851,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: boolean
     lastEnquiryDate?: boolean
+    lastContactDate?: boolean
     originalLeadId?: boolean
     createdById?: boolean
     pipelineId?: boolean
@@ -15867,6 +15907,7 @@ export namespace Prisma {
     activities?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -15881,6 +15922,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: boolean
     lastEnquiryDate?: boolean
+    lastContactDate?: boolean
     originalLeadId?: boolean
     createdById?: boolean
     pipelineId?: boolean
@@ -15921,6 +15963,7 @@ export namespace Prisma {
     activities?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -15935,6 +15978,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: boolean
     lastEnquiryDate?: boolean
+    lastContactDate?: boolean
     originalLeadId?: boolean
     createdById?: boolean
     pipelineId?: boolean
@@ -16025,6 +16069,7 @@ export namespace Prisma {
       activities: Prisma.JsonValue | null
       tags: string[]
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       organisationId: string
@@ -16039,6 +16084,7 @@ export namespace Prisma {
       isReEnquiry: boolean
       reEnquiryCount: number
       lastEnquiryDate: Date | null
+      lastContactDate: Date | null
       originalLeadId: string | null
       createdById: string | null
       pipelineId: string | null
@@ -16483,6 +16529,7 @@ export namespace Prisma {
     readonly activities: FieldRef<"Lead", 'Json'>
     readonly tags: FieldRef<"Lead", 'String[]'>
     readonly isDeleted: FieldRef<"Lead", 'Boolean'>
+    readonly deletedAt: FieldRef<"Lead", 'DateTime'>
     readonly createdAt: FieldRef<"Lead", 'DateTime'>
     readonly updatedAt: FieldRef<"Lead", 'DateTime'>
     readonly organisationId: FieldRef<"Lead", 'String'>
@@ -16497,6 +16544,7 @@ export namespace Prisma {
     readonly isReEnquiry: FieldRef<"Lead", 'Boolean'>
     readonly reEnquiryCount: FieldRef<"Lead", 'Int'>
     readonly lastEnquiryDate: FieldRef<"Lead", 'DateTime'>
+    readonly lastContactDate: FieldRef<"Lead", 'DateTime'>
     readonly originalLeadId: FieldRef<"Lead", 'String'>
     readonly createdById: FieldRef<"Lead", 'String'>
     readonly pipelineId: FieldRef<"Lead", 'String'>
@@ -18255,6 +18303,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     ownerId: string | null
     organisationId: string | null
     parentAccountId: string | null
@@ -18275,6 +18324,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     ownerId: string | null
     organisationId: string | null
     parentAccountId: string | null
@@ -18298,6 +18348,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     isDeleted: number
+    deletedAt: number
     ownerId: number
     organisationId: number
     parentAccountId: number
@@ -18328,6 +18379,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
+    deletedAt?: true
     ownerId?: true
     organisationId?: true
     parentAccountId?: true
@@ -18348,6 +18400,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
+    deletedAt?: true
     ownerId?: true
     organisationId?: true
     parentAccountId?: true
@@ -18371,6 +18424,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
+    deletedAt?: true
     ownerId?: true
     organisationId?: true
     parentAccountId?: true
@@ -18481,6 +18535,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     isDeleted: boolean
+    deletedAt: Date | null
     ownerId: string | null
     organisationId: string
     parentAccountId: string | null
@@ -18523,6 +18578,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     ownerId?: boolean
     organisationId?: boolean
     parentAccountId?: boolean
@@ -18565,6 +18621,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     ownerId?: boolean
     organisationId?: boolean
     parentAccountId?: boolean
@@ -18594,6 +18651,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     ownerId?: boolean
     organisationId?: boolean
     parentAccountId?: boolean
@@ -18669,6 +18727,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       isDeleted: boolean
+      deletedAt: Date | null
       ownerId: string | null
       organisationId: string
       parentAccountId: string | null
@@ -19100,6 +19159,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Account", 'DateTime'>
     readonly updatedAt: FieldRef<"Account", 'DateTime'>
     readonly isDeleted: FieldRef<"Account", 'Boolean'>
+    readonly deletedAt: FieldRef<"Account", 'DateTime'>
     readonly ownerId: FieldRef<"Account", 'String'>
     readonly organisationId: FieldRef<"Account", 'String'>
     readonly parentAccountId: FieldRef<"Account", 'String'>
@@ -19775,6 +19835,7 @@ export namespace Prisma {
     leadSource: string | null
     lastActivity: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     accountId: string | null
@@ -19797,6 +19858,7 @@ export namespace Prisma {
     leadSource: string | null
     lastActivity: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     accountId: string | null
@@ -19824,6 +19886,7 @@ export namespace Prisma {
     tags: number
     lastActivity: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     accountId: number
@@ -19848,6 +19911,7 @@ export namespace Prisma {
     leadSource?: true
     lastActivity?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     accountId?: true
@@ -19870,6 +19934,7 @@ export namespace Prisma {
     leadSource?: true
     lastActivity?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     accountId?: true
@@ -19897,6 +19962,7 @@ export namespace Prisma {
     tags?: true
     lastActivity?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     accountId?: true
@@ -19997,6 +20063,7 @@ export namespace Prisma {
     tags: string[]
     lastActivity: Date | null
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     accountId: string | null
@@ -20041,6 +20108,7 @@ export namespace Prisma {
     tags?: boolean
     lastActivity?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountId?: boolean
@@ -20086,6 +20154,7 @@ export namespace Prisma {
     tags?: boolean
     lastActivity?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountId?: boolean
@@ -20119,6 +20188,7 @@ export namespace Prisma {
     tags?: boolean
     lastActivity?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountId?: boolean
@@ -20196,6 +20266,7 @@ export namespace Prisma {
       tags: string[]
       lastActivity: Date | null
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       accountId: string | null
@@ -20630,6 +20701,7 @@ export namespace Prisma {
     readonly tags: FieldRef<"Contact", 'String[]'>
     readonly lastActivity: FieldRef<"Contact", 'DateTime'>
     readonly isDeleted: FieldRef<"Contact", 'Boolean'>
+    readonly deletedAt: FieldRef<"Contact", 'DateTime'>
     readonly createdAt: FieldRef<"Contact", 'DateTime'>
     readonly updatedAt: FieldRef<"Contact", 'DateTime'>
     readonly accountId: FieldRef<"Contact", 'String'>
@@ -21297,6 +21369,7 @@ export namespace Prisma {
     leadSource: string | null
     description: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     accountId: string | null
@@ -21321,6 +21394,7 @@ export namespace Prisma {
     leadSource: string | null
     description: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     accountId: string | null
@@ -21347,6 +21421,7 @@ export namespace Prisma {
     customFields: number
     tags: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     accountId: number
@@ -21383,6 +21458,7 @@ export namespace Prisma {
     leadSource?: true
     description?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     accountId?: true
@@ -21407,6 +21483,7 @@ export namespace Prisma {
     leadSource?: true
     description?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     accountId?: true
@@ -21433,6 +21510,7 @@ export namespace Prisma {
     customFields?: true
     tags?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     accountId?: true
@@ -21546,6 +21624,7 @@ export namespace Prisma {
     customFields: JsonValue | null
     tags: string[]
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     accountId: string
@@ -21591,6 +21670,7 @@ export namespace Prisma {
     customFields?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountId?: boolean
@@ -21634,6 +21714,7 @@ export namespace Prisma {
     customFields?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountId?: boolean
@@ -21667,6 +21748,7 @@ export namespace Prisma {
     customFields?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accountId?: boolean
@@ -21742,6 +21824,7 @@ export namespace Prisma {
       customFields: Prisma.JsonValue | null
       tags: string[]
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       accountId: string
@@ -22174,6 +22257,7 @@ export namespace Prisma {
     readonly customFields: FieldRef<"Opportunity", 'Json'>
     readonly tags: FieldRef<"Opportunity", 'String[]'>
     readonly isDeleted: FieldRef<"Opportunity", 'Boolean'>
+    readonly deletedAt: FieldRef<"Opportunity", 'DateTime'>
     readonly createdAt: FieldRef<"Opportunity", 'DateTime'>
     readonly updatedAt: FieldRef<"Opportunity", 'DateTime'>
     readonly accountId: FieldRef<"Opportunity", 'String'>
@@ -22814,6 +22898,7 @@ export namespace Prisma {
     validFrom: Date | null
     validUntil: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     createdById: string | null
@@ -22841,6 +22926,7 @@ export namespace Prisma {
     validFrom: Date | null
     validUntil: Date | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     createdById: string | null
@@ -22869,6 +22955,7 @@ export namespace Prisma {
     validFrom: number
     validUntil: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     createdById: number
@@ -22912,6 +22999,7 @@ export namespace Prisma {
     validFrom?: true
     validUntil?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     createdById?: true
@@ -22939,6 +23027,7 @@ export namespace Prisma {
     validFrom?: true
     validUntil?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     createdById?: true
@@ -22967,6 +23056,7 @@ export namespace Prisma {
     validFrom?: true
     validUntil?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     createdById?: true
@@ -23082,6 +23172,7 @@ export namespace Prisma {
     validFrom: Date | null
     validUntil: Date | null
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     createdById: string | null
@@ -23129,6 +23220,7 @@ export namespace Prisma {
     validFrom?: boolean
     validUntil?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
@@ -23166,6 +23258,7 @@ export namespace Prisma {
     validFrom?: boolean
     validUntil?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
@@ -23197,6 +23290,7 @@ export namespace Prisma {
     validFrom?: boolean
     validUntil?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
@@ -23254,6 +23348,7 @@ export namespace Prisma {
       validFrom: Date | null
       validUntil: Date | null
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       createdById: string | null
@@ -23680,6 +23775,7 @@ export namespace Prisma {
     readonly validFrom: FieldRef<"Product", 'DateTime'>
     readonly validUntil: FieldRef<"Product", 'DateTime'>
     readonly isDeleted: FieldRef<"Product", 'Boolean'>
+    readonly deletedAt: FieldRef<"Product", 'DateTime'>
     readonly createdAt: FieldRef<"Product", 'DateTime'>
     readonly updatedAt: FieldRef<"Product", 'DateTime'>
     readonly createdById: FieldRef<"Product", 'String'>
@@ -26240,6 +26336,7 @@ export namespace Prisma {
     respondedAt: Date | null
     pdfUrl: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     opportunityId: string | null
@@ -26272,6 +26369,7 @@ export namespace Prisma {
     respondedAt: Date | null
     pdfUrl: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     opportunityId: string | null
@@ -26304,6 +26402,7 @@ export namespace Prisma {
     respondedAt: number
     pdfUrl: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     opportunityId: number
@@ -26354,6 +26453,7 @@ export namespace Prisma {
     respondedAt?: true
     pdfUrl?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     opportunityId?: true
@@ -26386,6 +26486,7 @@ export namespace Prisma {
     respondedAt?: true
     pdfUrl?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     opportunityId?: true
@@ -26418,6 +26519,7 @@ export namespace Prisma {
     respondedAt?: true
     pdfUrl?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     opportunityId?: true
@@ -26537,6 +26639,7 @@ export namespace Prisma {
     respondedAt: Date | null
     pdfUrl: string | null
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     opportunityId: string | null
@@ -26588,6 +26691,7 @@ export namespace Prisma {
     respondedAt?: boolean
     pdfUrl?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     opportunityId?: boolean
@@ -26629,6 +26733,7 @@ export namespace Prisma {
     respondedAt?: boolean
     pdfUrl?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     opportunityId?: boolean
@@ -26668,6 +26773,7 @@ export namespace Prisma {
     respondedAt?: boolean
     pdfUrl?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     opportunityId?: boolean
@@ -26733,6 +26839,7 @@ export namespace Prisma {
       respondedAt: Date | null
       pdfUrl: string | null
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       opportunityId: string | null
@@ -27163,6 +27270,7 @@ export namespace Prisma {
     readonly respondedAt: FieldRef<"Quote", 'DateTime'>
     readonly pdfUrl: FieldRef<"Quote", 'String'>
     readonly isDeleted: FieldRef<"Quote", 'Boolean'>
+    readonly deletedAt: FieldRef<"Quote", 'DateTime'>
     readonly createdAt: FieldRef<"Quote", 'DateTime'>
     readonly updatedAt: FieldRef<"Quote", 'DateTime'>
     readonly opportunityId: FieldRef<"Quote", 'String'>
@@ -68138,6 +68246,7 @@ export namespace Prisma {
     fileSize: number | null
     category: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     organisationId: string | null
@@ -68159,6 +68268,7 @@ export namespace Prisma {
     fileSize: number | null
     category: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     organisationId: string | null
@@ -68181,6 +68291,7 @@ export namespace Prisma {
     category: number
     tags: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     organisationId: number
@@ -68212,6 +68323,7 @@ export namespace Prisma {
     fileSize?: true
     category?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -68233,6 +68345,7 @@ export namespace Prisma {
     fileSize?: true
     category?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -68255,6 +68368,7 @@ export namespace Prisma {
     category?: true
     tags?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     organisationId?: true
@@ -68364,6 +68478,7 @@ export namespace Prisma {
     category: string | null
     tags: string[]
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     organisationId: string
@@ -68405,6 +68520,7 @@ export namespace Prisma {
     category?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -68435,6 +68551,7 @@ export namespace Prisma {
     category?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -68463,6 +68580,7 @@ export namespace Prisma {
     category?: boolean
     tags?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
@@ -68515,6 +68633,7 @@ export namespace Prisma {
       category: string | null
       tags: string[]
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       organisationId: string
@@ -68934,6 +69053,7 @@ export namespace Prisma {
     readonly category: FieldRef<"Document", 'String'>
     readonly tags: FieldRef<"Document", 'String[]'>
     readonly isDeleted: FieldRef<"Document", 'Boolean'>
+    readonly deletedAt: FieldRef<"Document", 'DateTime'>
     readonly createdAt: FieldRef<"Document", 'DateTime'>
     readonly updatedAt: FieldRef<"Document", 'DateTime'>
     readonly organisationId: FieldRef<"Document", 'String'>
@@ -77716,6 +77836,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdBy: 'createdBy',
     upsellConfig: 'upsellConfig',
     ssoConfig: 'ssoConfig',
@@ -77769,6 +77890,7 @@ export namespace Prisma {
     createdById: 'createdById',
     organisationId: 'organisationId',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -77820,6 +77942,7 @@ export namespace Prisma {
     activities: 'activities',
     tags: 'tags',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     organisationId: 'organisationId',
@@ -77834,6 +77957,7 @@ export namespace Prisma {
     isReEnquiry: 'isReEnquiry',
     reEnquiryCount: 'reEnquiryCount',
     lastEnquiryDate: 'lastEnquiryDate',
+    lastContactDate: 'lastContactDate',
     originalLeadId: 'originalLeadId',
     createdById: 'createdById',
     pipelineId: 'pipelineId',
@@ -77874,6 +77998,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     ownerId: 'ownerId',
     organisationId: 'organisationId',
     parentAccountId: 'parentAccountId',
@@ -77902,6 +78027,7 @@ export namespace Prisma {
     tags: 'tags',
     lastActivity: 'lastActivity',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     accountId: 'accountId',
@@ -77927,6 +78053,7 @@ export namespace Prisma {
     customFields: 'customFields',
     tags: 'tags',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     accountId: 'accountId',
@@ -77965,6 +78092,7 @@ export namespace Prisma {
     validFrom: 'validFrom',
     validUntil: 'validUntil',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     createdById: 'createdById',
@@ -78025,6 +78153,7 @@ export namespace Prisma {
     respondedAt: 'respondedAt',
     pdfUrl: 'pdfUrl',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     opportunityId: 'opportunityId',
@@ -78821,6 +78950,7 @@ export namespace Prisma {
     category: 'category',
     tags: 'tags',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     organisationId: 'organisationId',
@@ -79297,6 +79427,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     isDeleted?: BoolFilter<"Organisation"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Organisation"> | Date | string | null
     createdBy?: StringNullableFilter<"Organisation"> | string | null
     upsellConfig?: JsonNullableFilter<"Organisation">
     ssoConfig?: JsonNullableFilter<"Organisation">
@@ -79371,6 +79502,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdBy?: SortOrderInput | SortOrder
     upsellConfig?: SortOrderInput | SortOrder
     ssoConfig?: SortOrderInput | SortOrder
@@ -79448,6 +79580,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     isDeleted?: BoolFilter<"Organisation"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Organisation"> | Date | string | null
     createdBy?: StringNullableFilter<"Organisation"> | string | null
     upsellConfig?: JsonNullableFilter<"Organisation">
     ssoConfig?: JsonNullableFilter<"Organisation">
@@ -79522,6 +79655,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdBy?: SortOrderInput | SortOrder
     upsellConfig?: SortOrderInput | SortOrder
     ssoConfig?: SortOrderInput | SortOrder
@@ -79560,6 +79694,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     isDeleted?: BoolWithAggregatesFilter<"Organisation"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Organisation"> | Date | string | null
     createdBy?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     upsellConfig?: JsonNullableWithAggregatesFilter<"Organisation">
     ssoConfig?: JsonNullableWithAggregatesFilter<"Organisation">
@@ -79968,6 +80103,7 @@ export namespace Prisma {
     createdById?: StringFilter<"Team"> | string
     organisationId?: StringFilter<"Team"> | string
     isDeleted?: BoolFilter<"Team"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Team"> | Date | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
     members?: UserListRelationFilter
@@ -79985,6 +80121,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     members?: UserOrderByRelationAggregateInput
@@ -80005,6 +80142,7 @@ export namespace Prisma {
     createdById?: StringFilter<"Team"> | string
     organisationId?: StringFilter<"Team"> | string
     isDeleted?: BoolFilter<"Team"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Team"> | Date | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
     members?: UserListRelationFilter
@@ -80022,6 +80160,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TeamCountOrderByAggregateInput
@@ -80040,6 +80179,7 @@ export namespace Prisma {
     createdById?: StringWithAggregatesFilter<"Team"> | string
     organisationId?: StringWithAggregatesFilter<"Team"> | string
     isDeleted?: BoolWithAggregatesFilter<"Team"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Team"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
   }
@@ -80159,6 +80299,7 @@ export namespace Prisma {
     activities?: JsonNullableFilter<"Lead">
     tags?: StringNullableListFilter<"Lead">
     isDeleted?: BoolFilter<"Lead"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
     organisationId?: StringFilter<"Lead"> | string
@@ -80173,6 +80314,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFilter<"Lead"> | boolean
     reEnquiryCount?: IntFilter<"Lead"> | number
     lastEnquiryDate?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    lastContactDate?: DateTimeNullableFilter<"Lead"> | Date | string | null
     originalLeadId?: StringNullableFilter<"Lead"> | string | null
     createdById?: StringNullableFilter<"Lead"> | string | null
     pipelineId?: StringNullableFilter<"Lead"> | string | null
@@ -80227,6 +80369,7 @@ export namespace Prisma {
     activities?: SortOrderInput | SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -80241,6 +80384,7 @@ export namespace Prisma {
     isReEnquiry?: SortOrder
     reEnquiryCount?: SortOrder
     lastEnquiryDate?: SortOrderInput | SortOrder
+    lastContactDate?: SortOrderInput | SortOrder
     originalLeadId?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
     pipelineId?: SortOrderInput | SortOrder
@@ -80299,6 +80443,7 @@ export namespace Prisma {
     activities?: JsonNullableFilter<"Lead">
     tags?: StringNullableListFilter<"Lead">
     isDeleted?: BoolFilter<"Lead"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
     organisationId?: StringFilter<"Lead"> | string
@@ -80313,6 +80458,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFilter<"Lead"> | boolean
     reEnquiryCount?: IntFilter<"Lead"> | number
     lastEnquiryDate?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    lastContactDate?: DateTimeNullableFilter<"Lead"> | Date | string | null
     originalLeadId?: StringNullableFilter<"Lead"> | string | null
     createdById?: StringNullableFilter<"Lead"> | string | null
     pipelineId?: StringNullableFilter<"Lead"> | string | null
@@ -80367,6 +80513,7 @@ export namespace Prisma {
     activities?: SortOrderInput | SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -80381,6 +80528,7 @@ export namespace Prisma {
     isReEnquiry?: SortOrder
     reEnquiryCount?: SortOrder
     lastEnquiryDate?: SortOrderInput | SortOrder
+    lastContactDate?: SortOrderInput | SortOrder
     originalLeadId?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
     pipelineId?: SortOrderInput | SortOrder
@@ -80423,6 +80571,7 @@ export namespace Prisma {
     activities?: JsonNullableWithAggregatesFilter<"Lead">
     tags?: StringNullableListFilter<"Lead">
     isDeleted?: BoolWithAggregatesFilter<"Lead"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
     organisationId?: StringWithAggregatesFilter<"Lead"> | string
@@ -80437,6 +80586,7 @@ export namespace Prisma {
     isReEnquiry?: BoolWithAggregatesFilter<"Lead"> | boolean
     reEnquiryCount?: IntWithAggregatesFilter<"Lead"> | number
     lastEnquiryDate?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
+    lastContactDate?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
     originalLeadId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     createdById?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     pipelineId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
@@ -80539,6 +80689,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Account"> | Date | string
     updatedAt?: DateTimeFilter<"Account"> | Date | string
     isDeleted?: BoolFilter<"Account"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Account"> | Date | string | null
     ownerId?: StringNullableFilter<"Account"> | string | null
     organisationId?: StringFilter<"Account"> | string
     parentAccountId?: StringNullableFilter<"Account"> | string | null
@@ -80580,6 +80731,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     ownerId?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     parentAccountId?: SortOrderInput | SortOrder
@@ -80624,6 +80776,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Account"> | Date | string
     updatedAt?: DateTimeFilter<"Account"> | Date | string
     isDeleted?: BoolFilter<"Account"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Account"> | Date | string | null
     ownerId?: StringNullableFilter<"Account"> | string | null
     organisationId?: StringFilter<"Account"> | string
     parentAccountId?: StringNullableFilter<"Account"> | string | null
@@ -80665,6 +80818,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     ownerId?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     parentAccountId?: SortOrderInput | SortOrder
@@ -80696,6 +80850,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
     isDeleted?: BoolWithAggregatesFilter<"Account"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Account"> | Date | string | null
     ownerId?: StringNullableWithAggregatesFilter<"Account"> | string | null
     organisationId?: StringWithAggregatesFilter<"Account"> | string
     parentAccountId?: StringNullableWithAggregatesFilter<"Account"> | string | null
@@ -80724,6 +80879,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Contact">
     lastActivity?: DateTimeNullableFilter<"Contact"> | Date | string | null
     isDeleted?: BoolFilter<"Contact"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Contact"> | Date | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
     accountId?: StringNullableFilter<"Contact"> | string | null
@@ -80768,6 +80924,7 @@ export namespace Prisma {
     tags?: SortOrder
     lastActivity?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrderInput | SortOrder
@@ -80815,6 +80972,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Contact">
     lastActivity?: DateTimeNullableFilter<"Contact"> | Date | string | null
     isDeleted?: BoolFilter<"Contact"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Contact"> | Date | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
     accountId?: StringNullableFilter<"Contact"> | string | null
@@ -80859,6 +81017,7 @@ export namespace Prisma {
     tags?: SortOrder
     lastActivity?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrderInput | SortOrder
@@ -80892,6 +81051,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Contact">
     lastActivity?: DateTimeNullableWithAggregatesFilter<"Contact"> | Date | string | null
     isDeleted?: BoolWithAggregatesFilter<"Contact"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Contact"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Contact"> | Date | string
     accountId?: StringNullableWithAggregatesFilter<"Contact"> | string | null
@@ -80917,6 +81077,7 @@ export namespace Prisma {
     customFields?: JsonNullableFilter<"Opportunity">
     tags?: StringNullableListFilter<"Opportunity">
     isDeleted?: BoolFilter<"Opportunity"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Opportunity"> | Date | string | null
     createdAt?: DateTimeFilter<"Opportunity"> | Date | string
     updatedAt?: DateTimeFilter<"Opportunity"> | Date | string
     accountId?: StringFilter<"Opportunity"> | string
@@ -80959,6 +81120,7 @@ export namespace Prisma {
     customFields?: SortOrderInput | SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -81004,6 +81166,7 @@ export namespace Prisma {
     customFields?: JsonNullableFilter<"Opportunity">
     tags?: StringNullableListFilter<"Opportunity">
     isDeleted?: BoolFilter<"Opportunity"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Opportunity"> | Date | string | null
     createdAt?: DateTimeFilter<"Opportunity"> | Date | string
     updatedAt?: DateTimeFilter<"Opportunity"> | Date | string
     accountId?: StringFilter<"Opportunity"> | string
@@ -81046,6 +81209,7 @@ export namespace Prisma {
     customFields?: SortOrderInput | SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -81080,6 +81244,7 @@ export namespace Prisma {
     customFields?: JsonNullableWithAggregatesFilter<"Opportunity">
     tags?: StringNullableListFilter<"Opportunity">
     isDeleted?: BoolWithAggregatesFilter<"Opportunity"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Opportunity"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Opportunity"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Opportunity"> | Date | string
     accountId?: StringWithAggregatesFilter<"Opportunity"> | string
@@ -81118,6 +81283,7 @@ export namespace Prisma {
     validFrom?: DateTimeNullableFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableFilter<"Product"> | Date | string | null
     isDeleted?: BoolFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     createdById?: StringNullableFilter<"Product"> | string | null
@@ -81154,6 +81320,7 @@ export namespace Prisma {
     validFrom?: SortOrderInput | SortOrder
     validUntil?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -81193,6 +81360,7 @@ export namespace Prisma {
     validFrom?: DateTimeNullableFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableFilter<"Product"> | Date | string | null
     isDeleted?: BoolFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     createdById?: StringNullableFilter<"Product"> | string | null
@@ -81229,6 +81397,7 @@ export namespace Prisma {
     validFrom?: SortOrderInput | SortOrder
     validUntil?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -81265,6 +81434,7 @@ export namespace Prisma {
     validFrom?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     isDeleted?: BoolWithAggregatesFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Product"> | Date | string
     createdById?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -81455,6 +81625,7 @@ export namespace Prisma {
     respondedAt?: DateTimeNullableFilter<"Quote"> | Date | string | null
     pdfUrl?: StringNullableFilter<"Quote"> | string | null
     isDeleted?: BoolFilter<"Quote"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Quote"> | Date | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     opportunityId?: StringNullableFilter<"Quote"> | string | null
@@ -81495,6 +81666,7 @@ export namespace Prisma {
     respondedAt?: SortOrderInput | SortOrder
     pdfUrl?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     opportunityId?: SortOrderInput | SortOrder
@@ -81538,6 +81710,7 @@ export namespace Prisma {
     respondedAt?: DateTimeNullableFilter<"Quote"> | Date | string | null
     pdfUrl?: StringNullableFilter<"Quote"> | string | null
     isDeleted?: BoolFilter<"Quote"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Quote"> | Date | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     opportunityId?: StringNullableFilter<"Quote"> | string | null
@@ -81578,6 +81751,7 @@ export namespace Prisma {
     respondedAt?: SortOrderInput | SortOrder
     pdfUrl?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     opportunityId?: SortOrderInput | SortOrder
@@ -81618,6 +81792,7 @@ export namespace Prisma {
     respondedAt?: DateTimeNullableWithAggregatesFilter<"Quote"> | Date | string | null
     pdfUrl?: StringNullableWithAggregatesFilter<"Quote"> | string | null
     isDeleted?: BoolWithAggregatesFilter<"Quote"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Quote"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Quote"> | Date | string
     opportunityId?: StringNullableWithAggregatesFilter<"Quote"> | string | null
@@ -85799,6 +85974,7 @@ export namespace Prisma {
     category?: StringNullableFilter<"Document"> | string | null
     tags?: StringNullableListFilter<"Document">
     isDeleted?: BoolFilter<"Document"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Document"> | Date | string | null
     createdAt?: DateTimeFilter<"Document"> | Date | string
     updatedAt?: DateTimeFilter<"Document"> | Date | string
     organisationId?: StringFilter<"Document"> | string
@@ -85828,6 +86004,7 @@ export namespace Prisma {
     category?: SortOrderInput | SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -85860,6 +86037,7 @@ export namespace Prisma {
     category?: StringNullableFilter<"Document"> | string | null
     tags?: StringNullableListFilter<"Document">
     isDeleted?: BoolFilter<"Document"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Document"> | Date | string | null
     createdAt?: DateTimeFilter<"Document"> | Date | string
     updatedAt?: DateTimeFilter<"Document"> | Date | string
     organisationId?: StringFilter<"Document"> | string
@@ -85889,6 +86067,7 @@ export namespace Prisma {
     category?: SortOrderInput | SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -85919,6 +86098,7 @@ export namespace Prisma {
     category?: StringNullableWithAggregatesFilter<"Document"> | string | null
     tags?: StringNullableListFilter<"Document">
     isDeleted?: BoolWithAggregatesFilter<"Document"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
     organisationId?: StringWithAggregatesFilter<"Document"> | string
@@ -86624,6 +86804,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -86698,6 +86879,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -86772,6 +86954,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -86846,6 +87029,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -86920,6 +87104,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -86950,6 +87135,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -86980,6 +87166,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -87484,6 +87671,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserCreateNestedManyWithoutTeamInput
@@ -87501,6 +87689,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserUncheckedCreateNestedManyWithoutTeamInput
@@ -87512,6 +87701,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUpdateManyWithoutTeamNestedInput
@@ -87529,6 +87719,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUncheckedUpdateManyWithoutTeamNestedInput
@@ -87543,6 +87734,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -87552,6 +87744,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -87564,6 +87757,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -87692,6 +87886,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -87703,6 +87898,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -87754,6 +87950,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -87768,6 +87965,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -87816,6 +88014,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -87827,6 +88026,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -87878,6 +88078,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -87892,6 +88093,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -87940,6 +88142,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -87954,6 +88157,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -87988,6 +88192,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -87999,6 +88204,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
   }
@@ -88030,6 +88236,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -88044,6 +88251,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88149,6 +88357,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -88184,6 +88393,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -88219,6 +88429,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -88254,6 +88465,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88289,6 +88501,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -88312,6 +88525,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AccountUncheckedUpdateManyInput = {
@@ -88329,6 +88543,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88354,6 +88569,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -88392,6 +88608,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -88430,6 +88647,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -88468,6 +88686,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88506,6 +88725,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -88533,6 +88753,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -88554,6 +88775,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88576,6 +88798,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -88611,6 +88834,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -88646,6 +88870,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -88681,6 +88906,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -88716,6 +88942,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -88742,6 +88969,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -88761,6 +88989,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -88796,6 +89025,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -88829,6 +89059,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -88862,6 +89093,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -88895,6 +89127,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -88928,6 +89161,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -88956,6 +89190,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -88981,6 +89216,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89165,6 +89401,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -89198,6 +89435,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -89231,6 +89469,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -89264,6 +89503,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89297,6 +89537,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -89329,6 +89570,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -89354,6 +89596,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -93933,6 +94176,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -93956,6 +94200,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -93979,6 +94224,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -94002,6 +94248,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -94025,6 +94272,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -94047,6 +94295,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -94063,6 +94312,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -94873,6 +95123,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type AccountListRelationFilter = {
     every?: AccountWhereInput
     some?: AccountWhereInput
@@ -95336,6 +95597,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdBy?: SortOrder
     upsellConfig?: SortOrder
     ssoConfig?: SortOrder
@@ -95370,6 +95632,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdBy?: SortOrder
     whatsAppScrapingEnabled?: SortOrder
   }
@@ -95394,6 +95657,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdBy?: SortOrder
     whatsAppScrapingEnabled?: SortOrder
   }
@@ -95504,7 +95768,7 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -95512,7 +95776,10 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type StringNullableListFilter<$PrismaModel = never> = {
@@ -95710,20 +95977,6 @@ export namespace Prisma {
     dailyLeadQuota?: SortOrder
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -95758,6 +96011,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -95770,6 +96024,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -95782,6 +96037,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -95904,6 +96160,7 @@ export namespace Prisma {
     activities?: SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -95918,6 +96175,7 @@ export namespace Prisma {
     isReEnquiry?: SortOrder
     reEnquiryCount?: SortOrder
     lastEnquiryDate?: SortOrder
+    lastContactDate?: SortOrder
     originalLeadId?: SortOrder
     createdById?: SortOrder
     pipelineId?: SortOrder
@@ -95955,6 +96213,7 @@ export namespace Prisma {
     status?: SortOrder
     stage?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -95969,6 +96228,7 @@ export namespace Prisma {
     isReEnquiry?: SortOrder
     reEnquiryCount?: SortOrder
     lastEnquiryDate?: SortOrder
+    lastContactDate?: SortOrder
     originalLeadId?: SortOrder
     createdById?: SortOrder
     pipelineId?: SortOrder
@@ -95998,6 +96258,7 @@ export namespace Prisma {
     status?: SortOrder
     stage?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -96012,6 +96273,7 @@ export namespace Prisma {
     isReEnquiry?: SortOrder
     reEnquiryCount?: SortOrder
     lastEnquiryDate?: SortOrder
+    lastContactDate?: SortOrder
     originalLeadId?: SortOrder
     createdById?: SortOrder
     pipelineId?: SortOrder
@@ -96135,6 +96397,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     ownerId?: SortOrder
     organisationId?: SortOrder
     parentAccountId?: SortOrder
@@ -96159,6 +96422,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     ownerId?: SortOrder
     organisationId?: SortOrder
     parentAccountId?: SortOrder
@@ -96179,6 +96443,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     ownerId?: SortOrder
     organisationId?: SortOrder
     parentAccountId?: SortOrder
@@ -96224,6 +96489,7 @@ export namespace Prisma {
     tags?: SortOrder
     lastActivity?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -96246,6 +96512,7 @@ export namespace Prisma {
     leadSource?: SortOrder
     lastActivity?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -96268,6 +96535,7 @@ export namespace Prisma {
     leadSource?: SortOrder
     lastActivity?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -96307,6 +96575,7 @@ export namespace Prisma {
     customFields?: SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -96336,6 +96605,7 @@ export namespace Prisma {
     leadSource?: SortOrder
     description?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -96360,6 +96630,7 @@ export namespace Prisma {
     leadSource?: SortOrder
     description?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accountId?: SortOrder
@@ -96420,6 +96691,7 @@ export namespace Prisma {
     validFrom?: SortOrder
     validUntil?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
@@ -96454,6 +96726,7 @@ export namespace Prisma {
     validFrom?: SortOrder
     validUntil?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
@@ -96481,6 +96754,7 @@ export namespace Prisma {
     validFrom?: SortOrder
     validUntil?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
@@ -96630,6 +96904,7 @@ export namespace Prisma {
     respondedAt?: SortOrder
     pdfUrl?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     opportunityId?: SortOrder
@@ -96670,6 +96945,7 @@ export namespace Prisma {
     respondedAt?: SortOrder
     pdfUrl?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     opportunityId?: SortOrder
@@ -96702,6 +96978,7 @@ export namespace Prisma {
     respondedAt?: SortOrder
     pdfUrl?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     opportunityId?: SortOrder
@@ -99068,6 +99345,7 @@ export namespace Prisma {
     category?: SortOrder
     tags?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -99093,6 +99371,7 @@ export namespace Prisma {
     fileSize?: SortOrder
     category?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -99114,6 +99393,7 @@ export namespace Prisma {
     fileSize?: SortOrder
     category?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrder
@@ -100195,6 +100475,10 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type AccountUpdateManyWithoutOrganisationNestedInput = {
@@ -102399,10 +102683,6 @@ export namespace Prisma {
     connectOrCreate?: PaymentRecordCreateOrConnectWithoutCreatedByInput | PaymentRecordCreateOrConnectWithoutCreatedByInput[]
     createMany?: PaymentRecordCreateManyCreatedByInputEnvelope
     connect?: PaymentRecordWhereUniqueInput | PaymentRecordWhereUniqueInput[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type UserUpdatepermissionsInput = {
@@ -110509,6 +110789,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -110623,17 +110914,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -110979,6 +111259,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
     parentAccount?: AccountCreateNestedOneWithoutChildAccountsInput
@@ -111013,6 +111294,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     parentAccountId?: string | null
     previousOwnerId?: string | null
@@ -111410,6 +111692,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -111447,6 +111730,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -111706,6 +111990,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -111717,6 +112002,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -111767,6 +112053,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedToId?: string | null
@@ -111780,6 +112067,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -111873,6 +112161,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -111907,6 +112196,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -111960,6 +112250,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -111992,6 +112283,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -112034,6 +112326,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -112066,6 +112359,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -113068,6 +113362,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserCreateNestedManyWithoutTeamInput
@@ -113083,6 +113378,7 @@ export namespace Prisma {
     managerId?: string | null
     createdById: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserUncheckedCreateNestedManyWithoutTeamInput
@@ -113149,6 +113445,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedDocumentsInput
@@ -113171,6 +113468,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -113417,6 +113715,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Account"> | Date | string
     updatedAt?: DateTimeFilter<"Account"> | Date | string
     isDeleted?: BoolFilter<"Account"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Account"> | Date | string | null
     ownerId?: StringNullableFilter<"Account"> | string | null
     organisationId?: StringFilter<"Account"> | string
     parentAccountId?: StringNullableFilter<"Account"> | string | null
@@ -113751,6 +114050,7 @@ export namespace Prisma {
     tags?: StringNullableListFilter<"Contact">
     lastActivity?: DateTimeNullableFilter<"Contact"> | Date | string | null
     isDeleted?: BoolFilter<"Contact"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Contact"> | Date | string | null
     createdAt?: DateTimeFilter<"Contact"> | Date | string
     updatedAt?: DateTimeFilter<"Contact"> | Date | string
     accountId?: StringNullableFilter<"Contact"> | string | null
@@ -113965,6 +114265,7 @@ export namespace Prisma {
     activities?: JsonNullableFilter<"Lead">
     tags?: StringNullableListFilter<"Lead">
     isDeleted?: BoolFilter<"Lead"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
     organisationId?: StringFilter<"Lead"> | string
@@ -113979,6 +114280,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFilter<"Lead"> | boolean
     reEnquiryCount?: IntFilter<"Lead"> | number
     lastEnquiryDate?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    lastContactDate?: DateTimeNullableFilter<"Lead"> | Date | string | null
     originalLeadId?: StringNullableFilter<"Lead"> | string | null
     createdById?: StringNullableFilter<"Lead"> | string | null
     pipelineId?: StringNullableFilter<"Lead"> | string | null
@@ -114057,6 +114359,7 @@ export namespace Prisma {
     customFields?: JsonNullableFilter<"Opportunity">
     tags?: StringNullableListFilter<"Opportunity">
     isDeleted?: BoolFilter<"Opportunity"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Opportunity"> | Date | string | null
     createdAt?: DateTimeFilter<"Opportunity"> | Date | string
     updatedAt?: DateTimeFilter<"Opportunity"> | Date | string
     accountId?: StringFilter<"Opportunity"> | string
@@ -114111,6 +114414,7 @@ export namespace Prisma {
     validFrom?: DateTimeNullableFilter<"Product"> | Date | string | null
     validUntil?: DateTimeNullableFilter<"Product"> | Date | string | null
     isDeleted?: BoolFilter<"Product"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Product"> | Date | string | null
     createdAt?: DateTimeFilter<"Product"> | Date | string
     updatedAt?: DateTimeFilter<"Product"> | Date | string
     createdById?: StringNullableFilter<"Product"> | string | null
@@ -114158,6 +114462,7 @@ export namespace Prisma {
     respondedAt?: DateTimeNullableFilter<"Quote"> | Date | string | null
     pdfUrl?: StringNullableFilter<"Quote"> | string | null
     isDeleted?: BoolFilter<"Quote"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Quote"> | Date | string | null
     createdAt?: DateTimeFilter<"Quote"> | Date | string
     updatedAt?: DateTimeFilter<"Quote"> | Date | string
     opportunityId?: StringNullableFilter<"Quote"> | string | null
@@ -114881,6 +115186,7 @@ export namespace Prisma {
     createdById?: StringFilter<"Team"> | string
     organisationId?: StringFilter<"Team"> | string
     isDeleted?: BoolFilter<"Team"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Team"> | Date | string | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
   }
@@ -114950,6 +115256,7 @@ export namespace Prisma {
     category?: StringNullableFilter<"Document"> | string | null
     tags?: StringNullableListFilter<"Document">
     isDeleted?: BoolFilter<"Document"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Document"> | Date | string | null
     createdAt?: DateTimeFilter<"Document"> | Date | string
     updatedAt?: DateTimeFilter<"Document"> | Date | string
     organisationId?: StringFilter<"Document"> | string
@@ -115135,6 +115442,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
     parentAccount?: AccountCreateNestedOneWithoutChildAccountsInput
@@ -115169,6 +115477,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId: string
     parentAccountId?: string | null
     previousOwnerId?: string | null
@@ -115715,6 +116024,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -115752,6 +116062,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -116105,6 +116416,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -116116,6 +116428,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -116166,6 +116479,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -116179,6 +116493,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -116237,6 +116552,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -116248,6 +116564,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -116298,6 +116615,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -116311,6 +116629,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -116369,6 +116688,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -116380,6 +116700,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -116430,6 +116751,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -116444,6 +116766,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     pipelineId?: string | null
     potentialValue?: number
@@ -116724,6 +117047,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -116758,6 +117082,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -116811,6 +117136,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutProductsInput
@@ -116843,6 +117169,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -116885,6 +117212,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -116917,6 +117245,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -116959,6 +117288,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -116991,6 +117321,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -117433,6 +117764,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     parentAccount?: AccountCreateNestedOneWithoutChildAccountsInput
@@ -117467,6 +117799,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -117513,6 +117846,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -117550,6 +117884,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -117592,6 +117927,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -117626,6 +117962,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -117781,6 +118118,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -117813,6 +118151,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -117967,6 +118306,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -118040,6 +118380,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -119142,6 +119483,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -119164,6 +119506,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -119189,6 +119532,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     manager?: UserCreateNestedOneWithoutManagedTeamsInput
@@ -119205,6 +119549,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     salesTargets?: SalesTargetUncheckedCreateNestedManyWithoutTeamInput
@@ -119220,6 +119565,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserCreateNestedManyWithoutTeamInput
@@ -119235,6 +119581,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserUncheckedCreateNestedManyWithoutTeamInput
@@ -119256,6 +119603,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserCreateNestedManyWithoutTeamInput
@@ -119271,6 +119619,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserUncheckedCreateNestedManyWithoutTeamInput
@@ -120307,6 +120656,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -120380,6 +120730,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -120949,6 +121300,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     manager?: UserUpdateOneWithoutManagedTeamsNestedInput
@@ -120965,6 +121317,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     salesTargets?: SalesTargetUncheckedUpdateManyWithoutTeamNestedInput
@@ -121742,6 +122095,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -121815,6 +122169,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -122398,6 +122753,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -122471,6 +122827,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -123347,6 +123704,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -123420,6 +123778,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -124118,6 +124477,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -124140,6 +124500,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -124234,6 +124595,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -124268,6 +124630,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -124314,6 +124677,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -124351,6 +124715,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -124393,6 +124758,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -124427,6 +124793,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -124831,6 +125198,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -124904,6 +125272,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -125697,6 +126066,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -125708,6 +126078,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -125758,6 +126129,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -125772,6 +126144,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -125835,6 +126208,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125846,6 +126220,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -125896,6 +126271,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -125910,6 +126286,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125953,6 +126330,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -126026,6 +126404,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -126502,6 +126881,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -126536,6 +126916,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -126575,6 +126956,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -126609,6 +126991,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     previousOwnerId?: string | null
@@ -126811,6 +127194,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -126848,6 +127232,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownerId?: string | null
@@ -126956,6 +127341,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -126990,6 +127376,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownerId?: string | null
@@ -127043,6 +127430,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedTo?: UserCreateNestedOneWithoutAssignedQuotesInput
@@ -127075,6 +127463,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -127210,6 +127599,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -127232,6 +127622,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -127279,6 +127670,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -127290,6 +127682,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -127340,6 +127733,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -127354,6 +127748,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -127500,6 +127895,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -127573,6 +127969,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -128067,6 +128464,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -128101,6 +128499,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128334,6 +128733,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128345,6 +128745,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -128395,6 +128796,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -128409,6 +128811,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128671,6 +129074,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -128705,6 +129109,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -128752,6 +129157,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -128825,6 +129231,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -129373,6 +129780,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -129405,6 +129813,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -129571,6 +129980,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -129605,6 +130015,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -129702,6 +130113,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -129724,6 +130136,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -129771,6 +130184,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -129782,6 +130196,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -129832,6 +130247,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -129846,6 +130262,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -129994,6 +130411,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -130028,6 +130446,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -130081,6 +130500,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -130154,6 +130574,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -130788,6 +131209,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -130799,6 +131221,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -130849,6 +131272,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -130863,6 +131287,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -131083,6 +131508,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -131117,6 +131543,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -131164,6 +131591,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -131237,6 +131665,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -131719,6 +132148,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -131751,6 +132181,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -131891,6 +132322,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -131928,6 +132360,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -131965,6 +132398,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -131987,6 +132421,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -132034,6 +132469,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -132045,6 +132481,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -132095,6 +132532,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -132109,6 +132547,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -132341,6 +132780,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -132375,6 +132815,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -132428,6 +132869,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -132501,6 +132943,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -133087,6 +133530,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133098,6 +133542,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -133148,6 +133593,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -133162,6 +133608,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133555,6 +134002,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -133628,6 +134076,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -134171,6 +134620,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -134244,6 +134694,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -134473,6 +134924,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -134484,6 +134936,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -134534,6 +134987,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -134548,6 +135002,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -134594,6 +135049,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -134626,6 +135082,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -134680,6 +135137,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134691,6 +135149,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -134741,6 +135200,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -134755,6 +135215,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134807,6 +135268,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -134839,6 +135301,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134865,6 +135328,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -134899,6 +135363,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -134944,6 +135409,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -134976,6 +135442,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -135015,6 +135482,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -135088,6 +135556,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -135169,6 +135638,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -135203,6 +135673,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -135254,6 +135725,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -135286,6 +135758,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -135331,6 +135804,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -135404,6 +135878,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -135469,6 +135944,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -135503,6 +135979,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -135950,6 +136427,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -135987,6 +136465,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -136227,6 +136706,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -136261,6 +136741,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -136311,6 +136792,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -136384,6 +136866,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -136501,6 +136984,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -136535,6 +137019,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -137000,6 +137485,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -137037,6 +137523,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -137289,6 +137776,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -137323,6 +137811,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -137379,6 +137868,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -137452,6 +137942,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -137539,6 +138030,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -137571,6 +138063,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -137608,6 +138101,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutQuotesInput
@@ -137640,6 +138134,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -137688,6 +138183,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -137720,6 +138216,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -137763,6 +138260,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -137795,6 +138293,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -137821,6 +138320,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -137855,6 +138355,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -138302,6 +138803,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -138339,6 +138841,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -138594,6 +139097,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -138605,6 +139109,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -138655,6 +139160,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -138669,6 +139175,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -138706,6 +139213,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -138740,6 +139248,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -138790,6 +139299,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -138863,6 +139373,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -138993,6 +139504,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -139027,6 +139539,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -139492,6 +140005,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -139529,6 +140043,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -139796,6 +140311,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -139807,6 +140323,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -139857,6 +140374,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -139871,6 +140389,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -139914,6 +140433,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -139948,6 +140468,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -140004,6 +140525,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -140077,6 +140599,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -140197,6 +140720,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -140231,6 +140755,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -140475,6 +141000,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -140512,6 +141038,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -140767,6 +141294,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -140778,6 +141306,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -140828,6 +141357,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -140842,6 +141372,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -140879,6 +141410,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -140913,6 +141445,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -140963,6 +141496,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -141036,6 +141570,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -141166,6 +141701,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -141200,6 +141736,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -141456,6 +141993,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -141493,6 +142031,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -141760,6 +142299,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -141771,6 +142311,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -141821,6 +142362,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -141835,6 +142377,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -141878,6 +142421,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -141912,6 +142456,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -141968,6 +142513,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -142041,6 +142587,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -142158,6 +142705,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutDocumentsInput
@@ -142180,6 +142728,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -142210,6 +142759,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -142244,6 +142794,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -142285,6 +142836,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -142322,6 +142874,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -142577,6 +143130,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -142588,6 +143142,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -142638,6 +143193,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -142652,6 +143208,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -142689,6 +143246,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -142723,6 +143281,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -142773,6 +143332,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -142846,6 +143406,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -142973,6 +143534,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -142995,6 +143557,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -143031,6 +143594,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -143065,6 +143629,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143112,6 +143677,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -143149,6 +143715,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143416,6 +143983,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143427,6 +143995,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -143477,6 +144046,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -143491,6 +144061,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143534,6 +144105,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -143568,6 +144140,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -143624,6 +144197,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -143697,6 +144271,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -143817,6 +144392,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -143851,6 +144427,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -143892,6 +144469,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     cases?: CaseCreateNestedManyWithoutContactInput
@@ -143929,6 +144507,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -144184,6 +144763,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -144195,6 +144775,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     checkIns?: CheckInCreateNestedManyWithoutLeadInput
@@ -144245,6 +144826,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -144259,6 +144841,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -144296,6 +144879,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -144330,6 +144914,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -144380,6 +144965,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -144453,6 +145039,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -144534,6 +145121,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -144568,6 +145156,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144615,6 +145204,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cases?: CaseUpdateManyWithoutContactNestedInput
@@ -144652,6 +145242,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144919,6 +145510,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144930,6 +145522,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     checkIns?: CheckInUpdateManyWithoutLeadNestedInput
@@ -144980,6 +145573,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -144994,6 +145588,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -145037,6 +145632,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -145071,6 +145667,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -145127,6 +145724,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -145200,6 +145798,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -145520,6 +146119,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -145593,6 +146193,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -145665,6 +146266,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -145702,6 +146304,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -145754,6 +146357,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -145765,6 +146369,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -145815,6 +146420,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -145829,6 +146435,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -146113,6 +146720,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -146186,6 +146794,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -146525,6 +147134,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -146598,6 +147208,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -146933,6 +147544,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147006,6 +147618,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147282,6 +147895,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147355,6 +147969,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147683,6 +148298,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147756,6 +148372,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147886,6 +148503,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -147959,6 +148577,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -148095,6 +148714,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -148168,6 +148788,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -148444,6 +149065,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -148517,6 +149139,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -148815,6 +149438,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -148888,6 +149512,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -150257,6 +150882,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -150330,6 +150956,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -150884,6 +151511,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -150957,6 +151585,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -151489,6 +152118,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -151562,6 +152192,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -152321,6 +152952,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -152394,6 +153026,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -153322,6 +153955,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserCreateNestedManyWithoutTeamInput
@@ -153338,6 +153972,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: UserUncheckedCreateNestedManyWithoutTeamInput
@@ -153371,6 +154006,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -153444,6 +154080,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -153635,6 +154272,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -153667,6 +154305,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -154326,6 +154965,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUpdateManyWithoutTeamNestedInput
@@ -154342,6 +154982,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUncheckedUpdateManyWithoutTeamNestedInput
@@ -154381,6 +155022,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -154454,6 +155096,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -154613,6 +155256,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -154645,6 +155289,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -155288,6 +155933,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -155361,6 +156007,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -156077,6 +156724,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -156150,6 +156798,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -156215,6 +156864,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -156249,6 +156899,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -156696,6 +157347,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -156733,6 +157385,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -156984,6 +157637,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -157057,6 +157711,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -157138,6 +157793,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -157172,6 +157828,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157637,6 +158294,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -157674,6 +158332,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157937,6 +158596,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -158010,6 +158670,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -158075,6 +158736,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -158109,6 +158771,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -158150,6 +158813,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -158187,6 +158851,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -158239,6 +158904,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -158250,6 +158916,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -158300,6 +158967,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -158314,6 +158982,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -158362,6 +159031,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -158435,6 +159105,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -158719,6 +159390,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -158753,6 +159425,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -158800,6 +159473,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -158837,6 +159511,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -158895,6 +159570,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -158906,6 +159582,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -158956,6 +159633,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -158970,6 +159648,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159024,6 +159703,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -159097,6 +159777,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -159582,6 +160263,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -159655,6 +160337,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -159953,6 +160636,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -160026,6 +160710,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -160714,6 +161399,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -160787,6 +161473,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -161085,6 +161772,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -161158,6 +161846,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -161434,6 +162123,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -161507,6 +162197,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -161805,6 +162496,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -161878,6 +162570,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -162154,6 +162847,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -162227,6 +162921,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -162525,6 +163220,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -162598,6 +163294,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -163083,6 +163780,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -163156,6 +163854,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -163245,6 +163944,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -163318,6 +164018,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -163598,6 +164299,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -163609,6 +164311,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -163659,6 +164362,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -163673,6 +164377,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -164351,6 +165056,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164362,6 +165068,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -164412,6 +165119,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -164426,6 +165134,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165090,6 +165799,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -165163,6 +165873,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -165461,6 +166172,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -165534,6 +166246,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -165607,6 +166320,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -165680,6 +166394,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -165965,6 +166680,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -165976,6 +166692,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -166026,6 +166743,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -166040,6 +166758,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     potentialValue?: number
@@ -166082,6 +166801,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -166116,6 +166836,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -166182,6 +166903,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -166255,6 +166977,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -166569,6 +167292,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -166642,6 +167366,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -166934,6 +167659,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -167007,6 +167733,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -167289,6 +168016,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -167362,6 +168090,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -167654,6 +168383,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -167727,6 +168457,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168009,6 +168740,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168082,6 +168814,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168432,6 +169165,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168505,6 +169239,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168803,6 +169538,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168876,6 +169612,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -168958,6 +169695,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -168969,6 +169707,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -169019,6 +169758,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -169033,6 +169773,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -169075,6 +169816,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -169112,6 +169854,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -169417,6 +170160,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -169490,6 +170234,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -169578,6 +170323,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169589,6 +170335,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -169639,6 +170386,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -169653,6 +170401,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169701,6 +170450,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -169738,6 +170488,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170242,6 +170993,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -170315,6 +171067,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -170816,6 +171569,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -170889,6 +171643,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -171171,6 +171926,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -171244,6 +172000,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -171536,6 +172293,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -171609,6 +172367,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -171891,6 +172650,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -171964,6 +172724,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -172256,6 +173017,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -172329,6 +173091,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -172611,6 +173374,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -172684,6 +173448,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -172969,6 +173734,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -172980,6 +173746,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -173030,6 +173797,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -173044,6 +173812,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -173086,6 +173855,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -173123,6 +173893,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -173163,6 +173934,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -173197,6 +173969,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -173233,6 +174006,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -173267,6 +174041,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -173394,6 +174169,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -173467,6 +174243,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -173764,6 +174541,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173775,6 +174553,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -173825,6 +174604,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -173839,6 +174619,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173887,6 +174668,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -173924,6 +174706,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173970,6 +174753,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -174004,6 +174788,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174046,6 +174831,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -174080,6 +174866,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -174139,6 +174926,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -174171,6 +174959,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -174413,6 +175202,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -174486,6 +175276,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -174573,6 +175364,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -174605,6 +175397,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174859,6 +175652,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -174932,6 +175726,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -175005,6 +175800,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -175078,6 +175874,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -175571,6 +176368,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teamId?: string | null
@@ -175582,6 +176380,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     potentialValue?: number
     events?: CalendarEventCreateNestedManyWithoutLeadInput
@@ -175632,6 +176431,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -175646,6 +176446,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -175693,6 +176494,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: CalendarEventCreateNestedManyWithoutContactInput
@@ -175730,6 +176532,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -175772,6 +176575,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -175806,6 +176610,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -175853,6 +176658,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutAccountsInput
     owner?: UserCreateNestedOneWithoutOwnedAccountsInput
     previousOwner?: UserCreateNestedOneWithoutPreviousAccountsInput
@@ -175887,6 +176693,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -176173,6 +176980,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedProductsInput
@@ -176205,6 +177013,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -176260,6 +177069,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -176333,6 +177143,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -176775,6 +177586,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -176848,6 +177660,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -176937,6 +177750,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -177010,6 +177824,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -177072,6 +177887,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -177106,6 +177922,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -177156,6 +177973,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -177229,6 +178047,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -177345,6 +178164,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -177379,6 +178199,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -177435,6 +178256,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -177508,6 +178330,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -177719,6 +178542,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     paymentStatus?: string
@@ -177753,6 +178577,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -178039,6 +178864,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -178112,6 +178938,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdBy?: string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -178190,6 +179017,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -178224,6 +179052,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -178528,6 +179357,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -178601,6 +179431,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
     upsellConfig?: NullableJsonNullValueInput | InputJsonValue
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
@@ -178666,6 +179497,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     parentAccountId?: string | null
     previousOwnerId?: string | null
@@ -178817,6 +179649,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -178931,6 +179764,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedToId?: string | null
@@ -178944,6 +179778,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -178983,6 +179818,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -179017,6 +179853,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -179044,6 +179881,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -179386,6 +180224,7 @@ export namespace Prisma {
     managerId?: string | null
     createdById: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -179416,6 +180255,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
@@ -179500,6 +180340,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
     parentAccount?: AccountUpdateOneWithoutChildAccountsNestedInput
@@ -179534,6 +180375,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -179568,6 +180410,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -179973,6 +180816,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -180010,6 +180854,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180047,6 +180892,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180323,6 +181169,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180334,6 +181181,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -180384,6 +181232,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180397,6 +181246,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180445,6 +181295,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180458,6 +181309,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180537,6 +181389,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -180571,6 +181424,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -180605,6 +181459,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -180639,6 +181494,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -180671,6 +181527,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180703,6 +181560,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180730,6 +181588,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -180762,6 +181621,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180794,6 +181654,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -181930,6 +182791,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUpdateManyWithoutTeamNestedInput
@@ -181945,6 +182807,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUncheckedUpdateManyWithoutTeamNestedInput
@@ -181958,6 +182821,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -182016,6 +182880,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedDocumentsNestedInput
@@ -182038,6 +182903,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -182060,6 +182926,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
@@ -182286,6 +183153,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId: string
     parentAccountId?: string | null
     previousOwnerId?: string | null
@@ -182515,6 +183383,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -182666,6 +183535,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -182679,6 +183549,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -182713,6 +183584,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -182726,6 +183598,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -182760,6 +183633,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -182774,6 +183648,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     pipelineId?: string | null
     potentialValue?: number
@@ -182881,6 +183756,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -182915,6 +183791,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -182942,6 +183819,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -182973,6 +183851,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -183159,6 +184038,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -183183,6 +184063,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -183204,6 +184085,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -183279,6 +184161,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -183609,6 +184492,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -183625,6 +184509,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -183636,6 +184521,7 @@ export namespace Prisma {
     createdById: string
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -183694,6 +184580,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
     parentAccount?: AccountUpdateOneWithoutChildAccountsNestedInput
@@ -183728,6 +184615,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183762,6 +184650,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184401,6 +185290,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -184438,6 +185328,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184475,6 +185366,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184862,6 +185754,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184873,6 +185766,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -184923,6 +185817,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -184936,6 +185831,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184984,6 +185880,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -184997,6 +185894,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185031,6 +185929,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185042,6 +185941,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -185092,6 +185992,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -185105,6 +186006,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185153,6 +186055,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -185166,6 +186069,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185200,6 +186104,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185211,6 +186116,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -185261,6 +186167,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -185275,6 +186182,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
@@ -185322,6 +186230,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -185336,6 +186245,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
@@ -185621,6 +186531,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -185655,6 +186566,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -185689,6 +186601,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -185723,6 +186636,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutProductsNestedInput
@@ -185755,6 +186669,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -185787,6 +186702,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -185814,6 +186730,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -185846,6 +186763,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185878,6 +186796,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185909,6 +186828,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -185941,6 +186861,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185973,6 +186894,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186485,6 +187407,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     parentAccount?: AccountUpdateOneWithoutChildAccountsNestedInput
@@ -186519,6 +187442,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186553,6 +187477,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186577,6 +187502,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -186614,6 +187540,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186651,6 +187578,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186672,6 +187600,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -186706,6 +187635,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -186740,6 +187670,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -186897,6 +187828,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -186929,6 +187861,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186961,6 +187894,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188053,6 +188987,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -188075,6 +189010,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -188097,6 +189033,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -188111,6 +189048,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUpdateManyWithoutTeamNestedInput
@@ -188126,6 +189064,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUncheckedUpdateManyWithoutTeamNestedInput
@@ -188139,6 +189078,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -188148,6 +189088,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUpdateManyWithoutTeamNestedInput
@@ -188163,6 +189104,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: UserUncheckedUpdateManyWithoutTeamNestedInput
@@ -188176,6 +189118,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -188835,6 +189778,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -188866,6 +189810,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -188890,6 +189835,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -188911,6 +189857,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -189428,6 +190375,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -189450,6 +190398,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -189472,6 +190421,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -189517,6 +190467,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -189551,6 +190502,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189585,6 +190537,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189609,6 +190562,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -189646,6 +190600,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189683,6 +190638,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189704,6 +190660,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -189738,6 +190695,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -189772,6 +190730,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -189833,6 +190792,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     previousOwnerId?: string | null
@@ -189920,6 +190880,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownerId?: string | null
@@ -189969,6 +190930,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownerId?: string | null
@@ -190003,6 +190965,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -190066,6 +191029,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -190104,6 +191068,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -190138,6 +191103,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190172,6 +191138,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190385,6 +191352,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -190422,6 +191390,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190459,6 +191428,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190564,6 +191534,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -190598,6 +191569,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190632,6 +191604,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190666,6 +191639,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedTo?: UserUpdateOneWithoutAssignedQuotesNestedInput
@@ -190698,6 +191672,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190730,6 +191705,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190875,6 +191851,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -190897,6 +191874,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -190919,6 +191897,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -191082,6 +192061,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     opportunityId?: string | null
@@ -191169,6 +192149,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -191472,6 +192453,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -191504,6 +192486,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191536,6 +192519,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191718,6 +192702,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -191752,6 +192737,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -191786,6 +192772,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -191884,6 +192871,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -191906,6 +192894,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -191928,6 +192917,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -192013,6 +193003,7 @@ export namespace Prisma {
     respondedAt?: Date | string | null
     pdfUrl?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -192076,6 +193067,7 @@ export namespace Prisma {
     category?: string | null
     tags?: DocumentCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -192284,6 +193276,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutQuotesNestedInput
@@ -192316,6 +193309,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192348,6 +193342,7 @@ export namespace Prisma {
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192498,6 +193493,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -192535,6 +193531,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192572,6 +193569,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192594,6 +193592,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
@@ -192616,6 +193615,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -192638,6 +193638,7 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: DocumentUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -193113,6 +194114,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -193150,6 +194152,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193187,6 +194190,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193224,6 +194228,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193235,6 +194240,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -193285,6 +194291,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -193299,6 +194306,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193346,6 +194354,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -193360,6 +194369,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193612,6 +194622,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -193626,6 +194637,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     potentialValue?: number
@@ -193644,6 +194656,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -193684,6 +194697,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193695,6 +194709,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -193745,6 +194760,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -193759,6 +194775,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
@@ -193806,6 +194823,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -193820,6 +194838,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
@@ -193838,6 +194857,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -193872,6 +194892,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -193906,6 +194927,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -194185,6 +195207,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId: string
@@ -194199,6 +195222,7 @@ export namespace Prisma {
     isReEnquiry?: boolean
     reEnquiryCount?: number
     lastEnquiryDate?: Date | string | null
+    lastContactDate?: Date | string | null
     originalLeadId?: string | null
     createdById?: string | null
     pipelineId?: string | null
@@ -194222,6 +195246,7 @@ export namespace Prisma {
     tags?: ContactCreatetagsInput | string[]
     lastActivity?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId?: string | null
@@ -194243,6 +195268,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityCreatetagsInput | string[]
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accountId: string
@@ -194271,6 +195297,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     ownerId?: string | null
     organisationId: string
     parentAccountId?: string | null
@@ -194397,6 +195424,7 @@ export namespace Prisma {
     validFrom?: Date | string | null
     validUntil?: Date | string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById?: string | null
@@ -194659,6 +195687,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194670,6 +195699,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     potentialValue?: FloatFieldUpdateOperationsInput | number
     events?: CalendarEventUpdateManyWithoutLeadNestedInput
@@ -194720,6 +195750,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -194734,6 +195765,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194781,6 +195813,7 @@ export namespace Prisma {
     activities?: NullableJsonNullValueInput | InputJsonValue
     tags?: LeadUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -194795,6 +195828,7 @@ export namespace Prisma {
     isReEnquiry?: BoolFieldUpdateOperationsInput | boolean
     reEnquiryCount?: IntFieldUpdateOperationsInput | number
     lastEnquiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastContactDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     originalLeadId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194818,6 +195852,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: CalendarEventUpdateManyWithoutContactNestedInput
@@ -194855,6 +195890,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194892,6 +195928,7 @@ export namespace Prisma {
     tags?: ContactUpdatetagsInput | string[]
     lastActivity?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194913,6 +195950,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
@@ -194947,6 +195985,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -194981,6 +196020,7 @@ export namespace Prisma {
     customFields?: NullableJsonNullValueInput | InputJsonValue
     tags?: OpportunityUpdatetagsInput | string[]
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accountId?: StringFieldUpdateOperationsInput | string
@@ -195009,6 +196049,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutAccountsNestedInput
     owner?: UserUpdateOneWithoutOwnedAccountsNestedInput
     previousOwner?: UserUpdateOneWithoutPreviousAccountsNestedInput
@@ -195043,6 +196084,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -195077,6 +196119,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     parentAccountId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -195399,6 +196442,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedProductsNestedInput
@@ -195431,6 +196475,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -195463,6 +196508,7 @@ export namespace Prisma {
     validFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: NullableStringFieldUpdateOperationsInput | string | null

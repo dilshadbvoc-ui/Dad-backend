@@ -32,6 +32,7 @@ model Organisation {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   isDeleted         Boolean          @default(false)
+  deletedAt         DateTime?
   createdBy         String?
   upsellConfig              Json?
   ssoConfig                 Json?
@@ -201,6 +202,7 @@ model Team {
   createdById    String
   organisationId String
   isDeleted      Boolean      @default(false)
+  deletedAt      DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   
@@ -255,6 +257,7 @@ model Lead {
   activities         Json?
   tags               String[]
   isDeleted          Boolean         @default(false)
+  deletedAt          DateTime?
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   organisationId     String
@@ -343,6 +346,7 @@ model Account {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   isDeleted       Boolean         @default(false)
+  deletedAt       DateTime?
   ownerId         String?
   organisationId  String
   parentAccountId String?
@@ -390,6 +394,7 @@ model Contact {
   tags           String[]
   lastActivity   DateTime?
   isDeleted      Boolean         @default(false)
+  deletedAt      DateTime?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   accountId      String?
@@ -434,6 +439,7 @@ model Opportunity {
   customFields   Json?
   tags           String[]
   isDeleted      Boolean         @default(false)
+  deletedAt      DateTime?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   accountId      String
@@ -496,6 +502,7 @@ model Product {
   validFrom      DateTime?
   validUntil     DateTime?
   isDeleted      Boolean         @default(false)
+  deletedAt      DateTime?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   createdById    String?
@@ -570,6 +577,7 @@ model Quote {
   respondedAt        DateTime?
   pdfUrl             String?
   isDeleted          Boolean         @default(false)
+  deletedAt          DateTime?
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   opportunityId      String?
@@ -1566,6 +1574,7 @@ model Document {
   category       String?      @default("other")
   tags           String[]
   isDeleted      Boolean      @default(false)
+  deletedAt      DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   

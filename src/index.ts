@@ -78,6 +78,7 @@ import bulkRoutes from './routes/bulkRoutes';
 import publicRoutes from './routes/publicRoutes';
 import teamRoutes from './routes/teamRoutes';
 import branchRoutes from './routes/branchRoutes';
+import trashRoutes from './routes/trashRoutes';
 import path from 'path';
 
 // import { dataIsolation } from './middleware/dataIsolation';
@@ -403,6 +404,7 @@ app.use('/api/organisation', organisationRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/bulk', bulkRoutes);
+app.use('/api/trash', trashRoutes);
 
 // Licensing & Multi-tenancy
 app.use('/api/plans', subscriptionPlanRoutes);

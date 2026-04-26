@@ -4,6 +4,8 @@ exports.normalizeRole = normalizeRole;
 exports.checkRole = checkRole;
 exports.isSuperAdmin = isSuperAdmin;
 exports.isAdmin = isAdmin;
+exports.isOrgAdmin = isOrgAdmin;
+exports.isManager = isManager;
 /**
  * Normalizes a role string or object to a standardized key format.
  * (e.g. "Super Admin" -> "super_admin")
@@ -41,4 +43,16 @@ function isSuperAdmin(user) {
  */
 function isAdmin(user) {
     return checkRole(user, ['admin', 'super_admin']);
+}
+/**
+ * Helper for Org Admin check (includes Admin and Super Admin)
+ */
+function isOrgAdmin(user) {
+    return checkRole(user, ['org_admin', 'admin', 'super_admin']);
+}
+/**
+ * Helper for Manager check (includes Admin and Super Admin)
+ */
+function isManager(user) {
+    return checkRole(user, ['manager', 'admin', 'super_admin']);
 }

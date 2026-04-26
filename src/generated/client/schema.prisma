@@ -32,6 +32,7 @@ model Organisation {
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
   isDeleted               Boolean            @default(false)
+  deletedAt               DateTime?
   createdBy               String?
   upsellConfig            Json?
   ssoConfig               Json?
@@ -194,15 +195,16 @@ model User {
 }
 
 model Team {
-  id             String   @id @default(uuid())
+  id             String    @id @default(uuid())
   name           String
   description    String?
   managerId      String?
   createdById    String
   organisationId String
-  isDeleted      Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isDeleted      Boolean   @default(false)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   members      User[]
   manager      User?         @relation("TeamManager", fields: [managerId], references: [id])
@@ -255,6 +257,7 @@ model Lead {
   activities         Json?
   tags               String[]
   isDeleted          Boolean    @default(false)
+  deletedAt          DateTime?
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
   organisationId     String
@@ -271,6 +274,7 @@ model Lead {
   isReEnquiry     Boolean   @default(false)
   reEnquiryCount  Int       @default(0)
   lastEnquiryDate DateTime?
+  lastContactDate DateTime?
   originalLeadId  String? // Reference to the original lead if this is a duplicate
 
   events                 CalendarEvent[]
@@ -342,6 +346,7 @@ model Account {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   isDeleted       Boolean          @default(false)
+  deletedAt       DateTime?
   ownerId         String?
   organisationId  String
   parentAccountId String?
@@ -389,6 +394,7 @@ model Contact {
   tags             String[]
   lastActivity     DateTime?
   isDeleted        Boolean           @default(false)
+  deletedAt        DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   accountId        String?
@@ -433,6 +439,7 @@ model Opportunity {
   customFields    Json?
   tags            String[]
   isDeleted       Boolean         @default(false)
+  deletedAt       DateTime?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   accountId       String
@@ -495,6 +502,7 @@ model Product {
   validFrom       DateTime?
   validUntil      DateTime?
   isDeleted       Boolean          @default(false)
+  deletedAt       DateTime?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   createdById     String?
@@ -570,6 +578,7 @@ model Quote {
   respondedAt        DateTime?
   pdfUrl             String?
   isDeleted          Boolean         @default(false)
+  deletedAt          DateTime?
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   opportunityId      String?
@@ -1553,7 +1562,7 @@ model AuditLog {
 }
 
 model Document {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   description String?
   fileKey     String // Original filename or identifier
@@ -1561,11 +1570,12 @@ model Document {
   fileData    Bytes? // Binary file data stored in database
   fileType    String
   fileSize    Int
-  category    String?  @default("other")
+  category    String?   @default("other")
   tags        String[]
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   organisationId String
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)

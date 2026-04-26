@@ -267,7 +267,7 @@ export const deleteContact = async (req: Request, res: Response) => {
 
         await prisma.contact.update({
             where,
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         // Audit Log

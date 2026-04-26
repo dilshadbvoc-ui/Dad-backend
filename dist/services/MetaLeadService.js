@@ -107,7 +107,12 @@ exports.MetaLeadService = {
             });
             // Extract country information from Meta lead
             const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('./geoLocationService')));
-            const geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
+            let geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
+            // If not found via Meta fields, try detecting from phone (if available early)
+            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
+            if (!geoData && rawPhone) {
+                geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());
+            }
             // Helper to get field with multiple possible keys
             const getField = (keys) => {
                 for (const key of keys) {
@@ -116,9 +121,10 @@ exports.MetaLeadService = {
                 }
                 return null;
             };
-            // Resolve Status from Org Settings
-            let leadStatus = "new";
-            if (org.leadStatuses && Array.isArray(org.leadStatuses)) {
+            // Resolve Status: Priority 1: Payload mapping, Priority 2: Org default, Priority 3: 'new'
+            let leadStatus = getField(['status', 'lead_status', 'lead status', 'ststus']) || "new";
+            // If it's still 'new' (either explicit or default), try to see if org has a custom default
+            if (leadStatus === 'new' && org.leadStatuses && Array.isArray(org.leadStatuses)) {
                 const statuses = org.leadStatuses;
                 const configuredDefault = statuses.find((s) => s.isDefault);
                 if (configuredDefault) {
@@ -131,13 +137,13 @@ exports.MetaLeadService = {
                 lastName: getField(['last_name', 'lastname', 'last name', 'lname']) ||
                     fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
                 email: getField(['email', 'email_address', 'e-mail']),
-                phone: getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']) || '',
+                phone: rawPhone || '',
                 company: getField(['company_name', 'company', 'organization', 'organisation']),
                 jobTitle: getField(['job_title', 'position', 'designation']),
                 country: geoData?.country || getField(['country', 'location']),
                 countryCode: geoData?.countryCode || null,
                 phoneCountryCode: geoData?.phoneCountryCode || null,
-                source: metaConfig._source || client_1.LeadSource.meta_leadgen,
+                source: getField(['source', 'lead_source', 'lead source']) || metaConfig._source || client_1.LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
                     metaFormId: formId,
@@ -151,10 +157,8 @@ exports.MetaLeadService = {
             };
             // 4. Sanitize Phone Number
             if (crmData.phone) {
+                // Keep all digits, do not truncate to 10
                 crmData.phone = crmData.phone.toString().replace(/\D/g, '');
-                if (crmData.phone.length > 10) {
-                    crmData.phone = crmData.phone.slice(-10);
-                }
             }
             // 5. Check for duplicate (by phone and org)
             const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));

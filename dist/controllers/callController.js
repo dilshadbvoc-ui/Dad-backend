@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserCallAnalytics = exports.deleteRecording = exports.getCallStats = exports.getAllCalls = exports.getRecording = exports.getLeadCalls = exports.completeCall = exports.initiateCall = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
+const callUtils_1 = require("../utils/callUtils");
 const followUpService_1 = require("../services/followUpService");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -75,8 +76,11 @@ const completeCall = async (req, res) => {
         const callId = req.params.id;
         const updateData = {
             callStatus: status || 'completed',
-            duration: duration ? Number(duration) / 60 : undefined,
+            duration: duration ? Number(duration) : undefined,
         };
+        if (duration) {
+            (0, callUtils_1.synchronizeDurations)(updateData);
+        }
         if (file) {
             updateData.recordingUrl = `/uploads/recordings/${file.filename}`;
         }
@@ -411,19 +415,8 @@ const getCallStats = async (req, res) => {
         let totalSeconds = 0;
         let validCalls = 0;
         callsWithDuration.forEach(c => {
-            // PRIORITY: hardwareDuration (Carrier Truth) > recordingDuration > duration (Estimated Mins)
-            if (c.hardwareDuration && c.hardwareDuration > 0) {
-                totalSeconds += c.hardwareDuration;
-                validCalls++;
-            }
-            else if (c.recordingDuration && c.recordingDuration > 0) {
-                totalSeconds += c.recordingDuration;
-                validCalls++;
-            }
-            else if (c.duration && c.duration > 0) {
-                totalSeconds += Math.round(c.duration * 60);
-                validCalls++;
-            }
+            totalSeconds += (0, callUtils_1.resolveBestDurationSeconds)(c);
+            validCalls++;
         });
         const avgDuration = validCalls > 0 ? (totalSeconds / validCalls) / 60 : 0;
         // Calls with recordings
@@ -579,16 +572,7 @@ const getUserCallAnalytics = async (req, res) => {
                 stats.totalCalls++;
                 if (i.callStatus === 'completed') {
                     stats.connectedCalls++;
-                    // Priority: hardwareDuration (Seconds) > recordingDuration (Seconds) > duration (Minutes)
-                    if (i.hardwareDuration && i.hardwareDuration > 0) {
-                        stats.totalDurationSeconds += i.hardwareDuration;
-                    }
-                    else if (i.recordingDuration && i.recordingDuration > 0) {
-                        stats.totalDurationSeconds += i.recordingDuration;
-                    }
-                    else if (i.duration && i.duration > 0) {
-                        stats.totalDurationSeconds += Math.round(i.duration * 60);
-                    }
+                    stats.totalDurationSeconds += (0, callUtils_1.resolveBestDurationSeconds)(i);
                 }
             }
         });

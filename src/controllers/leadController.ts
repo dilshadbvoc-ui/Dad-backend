@@ -140,16 +140,19 @@ export const createLead = async (req: express.Request, res: express.Response) =>
 
         if (!phone) return res.status(400).json({ message: 'Phone number is required' });
 
-        // Sanitize Phone
-        let cleanPhone = phone.toString().replace(/\D/g, '');
-        const phoneCountryCode = req.body.phoneCountryCode;
-
-        if (phoneCountryCode) {
-            const prefixNoPlus = phoneCountryCode.replace('+', '');
-            if (cleanPhone.startsWith(prefixNoPlus)) {
-                cleanPhone = cleanPhone.slice(prefixNoPlus.length);
+        // Sanitize Phone (Support scientific notation and international prefixes)
+        let cleanPhone = phone.toString();
+        
+        // Handle scientific notation (e.g., 9.19E+11)
+        if (cleanPhone.includes('E+') || cleanPhone.includes('e+')) {
+            const num = Number(cleanPhone);
+            if (!isNaN(num)) {
+                cleanPhone = num.toLocaleString('fullwide', { useGrouping: false });
             }
         }
+        
+        // Final digit-only cleaning
+        cleanPhone = cleanPhone.replace(/\D/g, '');
 
         const orgId = getOrgId((req as any).user);
         if (!orgId) return res.status(400).json({ message: 'Organisation context required' });
@@ -519,6 +522,31 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
             }
         }
 
+        // Phone Sanitization & Country Detection
+        if (updates.phone) {
+            let cleanPhone = updates.phone.toString();
+            
+            // Handle scientific notation
+            if (cleanPhone.includes('E+') || cleanPhone.includes('e+')) {
+                const num = Number(cleanPhone);
+                if (!isNaN(num)) {
+                    cleanPhone = num.toLocaleString('fullwide', { useGrouping: false });
+                }
+            }
+            
+            updates.phone = cleanPhone.replace(/\D/g, '');
+
+            // Detect country if not provided or explicitly requested
+            if (!updates.country || !updates.countryCode) {
+                const geoData = GeoLocationService.detectCountryFromPhone(updates.phone);
+                if (geoData) {
+                    updates.country = geoData.country;
+                    updates.countryCode = geoData.countryCode;
+                    updates.phoneCountryCode = geoData.phoneCountryCode;
+                }
+            }
+        }
+
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
             // CRITICAL: Block transition to 'qualified' or 'converted' if no products
@@ -794,20 +822,20 @@ export const deleteLead = async (req: express.Request, res: express.Response) =>
         await prisma.$transaction([
             prisma.lead.update({
                 where: { id: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             }),
             // Cascade delete related entities
             prisma.contact.updateMany({
                 where: { leadId: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             }),
             prisma.account.updateMany({
                 where: { leadId: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             }),
             prisma.opportunity.updateMany({
                 where: { leadId: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             })
         ]);
 

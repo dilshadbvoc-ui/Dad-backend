@@ -11,6 +11,7 @@ const logger_1 = require("../utils/logger");
 const emailService_1 = require("../services/emailService");
 const whatsAppService_1 = require("../services/whatsAppService");
 const auditLogger_1 = require("../utils/auditLogger");
+const roleUtils_1 = require("../utils/roleUtils");
 /**
  * Bulk Operations Controller
  * Handles bulk actions across different entities
@@ -223,6 +224,9 @@ const bulkLeadOperations = async (req, res) => {
                 break;
             }
             case 'delete':
+                if (!(0, roleUtils_1.isOrgAdmin)(user)) {
+                    return apiResponse_1.ResponseHandler.forbidden(res, 'Only Org Admins can perform bulk deletion');
+                }
                 result = await prisma_1.default.lead.updateMany({
                     where: {
                         id: { in: leadIds },

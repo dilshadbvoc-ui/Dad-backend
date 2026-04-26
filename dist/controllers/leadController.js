@@ -162,15 +162,17 @@ const createLead = async (req, res) => {
         const { email, phone } = req.body;
         if (!phone)
             return res.status(400).json({ message: 'Phone number is required' });
-        // Sanitize Phone
-        let cleanPhone = phone.toString().replace(/\D/g, '');
-        const phoneCountryCode = req.body.phoneCountryCode;
-        if (phoneCountryCode) {
-            const prefixNoPlus = phoneCountryCode.replace('+', '');
-            if (cleanPhone.startsWith(prefixNoPlus)) {
-                cleanPhone = cleanPhone.slice(prefixNoPlus.length);
+        // Sanitize Phone (Support scientific notation and international prefixes)
+        let cleanPhone = phone.toString();
+        // Handle scientific notation (e.g., 9.19E+11)
+        if (cleanPhone.includes('E+') || cleanPhone.includes('e+')) {
+            const num = Number(cleanPhone);
+            if (!isNaN(num)) {
+                cleanPhone = num.toLocaleString('fullwide', { useGrouping: false });
             }
         }
+        // Final digit-only cleaning
+        cleanPhone = cleanPhone.replace(/\D/g, '');
         const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
@@ -499,6 +501,27 @@ const updateLead = async (req, res) => {
                 notificationService_1.NotificationService.send(targetUserId, 'New Lead Assigned', `Lead "${leadName}" has been assigned to you by ${requester.firstName}.`, 'info').catch(console.error);
             }
         }
+        // Phone Sanitization & Country Detection
+        if (updates.phone) {
+            let cleanPhone = updates.phone.toString();
+            // Handle scientific notation
+            if (cleanPhone.includes('E+') || cleanPhone.includes('e+')) {
+                const num = Number(cleanPhone);
+                if (!isNaN(num)) {
+                    cleanPhone = num.toLocaleString('fullwide', { useGrouping: false });
+                }
+            }
+            updates.phone = cleanPhone.replace(/\D/g, '');
+            // Detect country if not provided or explicitly requested
+            if (!updates.country || !updates.countryCode) {
+                const geoData = geoLocationService_1.GeoLocationService.detectCountryFromPhone(updates.phone);
+                if (geoData) {
+                    updates.country = geoData.country;
+                    updates.countryCode = geoData.countryCode;
+                    updates.phoneCountryCode = geoData.phoneCountryCode;
+                }
+            }
+        }
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
             // CRITICAL: Block transition to 'qualified' or 'converted' if no products
@@ -613,7 +636,8 @@ const updateLead = async (req, res) => {
                     }
                     const product = await prisma_1.default.product.findUnique({ where: { id: item.productId } });
                     if (product) {
-                        const price = product.basePrice || 0;
+                        // Priority 1: Price from payload (custom pricing), Priority 2: Product base price
+                        const price = item.price !== undefined ? Number(item.price) : (product.basePrice || 0);
                         const quantity = item.quantity || 1;
                         totalValue += price * quantity;
                         await prisma_1.default.leadProduct.create({
@@ -851,6 +875,23 @@ const createBulkLeads = async (req, res) => {
                     finalOwnerId = await DistributionService.assignLead({ ...l, id: undefined, branchId: l.branchId || user.branchId || undefined }, orgId, ruleId, user.id // Importer fallback
                     ) || undefined;
                 }
+                // Robust Status and Stage Resolution for Bulk Creation
+                const csvStatus = (l.status || l.Status || '').toString().trim().toLowerCase();
+                const csvStage = (l.stage || l.Stage || '').toString().trim().toLowerCase();
+                let finalStatus = 'new';
+                let finalStage = null;
+                if (csvStage) {
+                    finalStatus = csvStage;
+                    finalStage = csvStage;
+                }
+                else if (csvStatus) {
+                    finalStatus = csvStatus;
+                    finalStage = csvStatus;
+                }
+                else {
+                    finalStatus = csvStatus || 'new';
+                    finalStage = null;
+                }
                 const data = {
                     firstName: l.firstName,
                     lastName: l.lastName || '',
@@ -862,9 +903,9 @@ const createBulkLeads = async (req, res) => {
                     phoneCountryCode: l.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                     organisation: { connect: { id: orgId } },
                     source: l.source || client_1.LeadSource.import,
-                    status: l.status || 'new',
+                    status: finalStatus,
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
-                    stage: l.stage || undefined,
+                    stage: finalStage || undefined,
                     createdBy: { connect: { id: user.id } }
                 };
                 // Connect to branch if available
@@ -1100,6 +1141,7 @@ const convertLead = async (req, res) => {
                             productId: leadProduct.productId,
                             organisationId: orgId,
                             quantity: leadProduct.quantity,
+                            price: leadProduct.price || 0, // Migrate custom price
                             purchaseDate: new Date(),
                             status: 'active',
                             notes: `Converted from lead: ${lead.firstName} ${lead.lastName || ''}`.trim()

@@ -332,7 +332,7 @@ export const deleteTask = async (req: Request, res: Response) => {
 
         await prisma.task.update({
             where,
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         await logAudit({
