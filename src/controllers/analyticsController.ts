@@ -29,16 +29,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         logDebug(`[Analytics] User: ${user?.id}, Org: ${orgId}, SuperAdmin: ${isSuperAdmin}`);
 
         const branchFilter = getBranchFilter(req);
-        // If user is not admin, they might be restricted to their own branch
-        // But for now, we trust the query param if valid, or fallback to user's branch if not admin?
-        // The requirement is "organisation admin dashboard can see branch vise data"
-        // So this is mainly for Admins filtering.
-        // If a normal user tries to filter by another branch, they shouldn't see data?
-        // For now, let's assume the UI handles visibility validation, and we just filter.
-        // But STRICTLY: standard users should default to their own branch if they have one?
-        // Existing logic for non-admins filters by `assignedToId` or `ownerId`, which implicitly handles branch (users in branch see their own stuff).
-        // So we just add the explicit branch filter.
-
+        
         logDebug('[Analytics] Importing hierarchyUtils...');
         const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
 
@@ -92,7 +83,8 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             lostTotal,
             activeOpportunitiesCount,
             totalOpportunitiesCount,
-            revenueThisMonthResult
+            revenueThisMonthResult,
+            pendingFollowUpsCount
         ] = await Promise.all([
             // Leads
             prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, ...visibilityFilter } }),
@@ -190,6 +182,16 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                     ...oppVisibilityFilter
                 },
                 _sum: { amount: true }
+            }),
+
+            // Pending Follow-ups
+            prisma.followUp.count({
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    status: { in: ['not_started', 'in_progress'] },
+                    ...(!isSuperAdmin && user.role !== 'admin' ? { assignedToId: { in: visibleUserIds } } : {})
+                }
             })
         ]);
 
@@ -208,6 +210,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             // Flat structure
             totalLeads,
             activeOpportunities: activeOpportunitiesCount,
+            pendingFollowUps: pendingFollowUpsCount,
             salesRevenue: totalRevenue,
             revenueThisMonth,
             winRate: Math.round(currentWinRate),
@@ -798,44 +801,24 @@ export const getUserWiseSales = async (req: Request, res: Response) => {
 
             const aggregates = await prisma.opportunity.aggregate({
                 where: {
-                    ownerId: uid, // Sales credited to owner
+                    ownerId: uid,
                     stage: 'closed_won',
                     isDeleted: false,
-                    ...orgFilter, // Safety check
                     ...dateFilter
                 },
                 _sum: { amount: true },
-                _count: { id: true },
-                _avg: { amount: true }
+                _count: { id: true }
             });
-
-            const totalOpportunities = await prisma.opportunity.count({
-                where: {
-                    ownerId: uid,
-                    isDeleted: false,
-                    ...orgFilter,
-                    ...dateFilter
-                }
-            });
-
-            const dealsCount = aggregates._count.id || 0;
-            const winRate = totalOpportunities > 0 ? (dealsCount / totalOpportunities) * 100 : 0;
 
             return {
-                userId: uid,
                 name: `${userDetails.firstName} ${userDetails.lastName}`,
                 email: userDetails.email,
                 totalRevenue: aggregates._sum.amount || 0,
-                dealsCount: dealsCount,
-                avgDealSize: Math.round(aggregates._avg.amount || 0),
-                totalOpportunities,
-                winRate: Math.round(winRate)
+                dealsWon: aggregates._count.id || 0
             };
         }));
 
-        const cleanStats = userStats.filter(s => s !== null).sort((a, b) => (b?.totalRevenue || 0) - (a?.totalRevenue || 0));
-
-        res.json(cleanStats);
+        res.json(userStats.filter(Boolean));
     } catch (error) {
         console.error('getUserWiseSales Error:', error);
         res.status(500).json({ message: (error as Error).message });
