@@ -1578,11 +1578,18 @@ export const generateAIResponse = async (req: express.Request, res: express.Resp
 // GET /api/leads/re-enquiries - Get all re-enquiry leads
 export const getReEnquiryLeads = async (req: express.Request, res: express.Response) => {
     try {
-        const orgId = getOrgId((req as any).user);
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
         if (!orgId) return res.status(403).json({ message: 'No organisation context' });
 
+        // Enforce hierarchy: Managers only see their branch's re-enquiries
+        let branchId = undefined;
+        if (!isAdmin(user) && !isOrgAdmin(user) && user.branchId) {
+            branchId = user.branchId;
+        }
+
         const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
-        const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
+        const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId, branchId);
 
         res.json({
             leads: reEnquiryLeads,

@@ -364,14 +364,20 @@ export const DuplicateLeadService = {
     /**
      * Get re-enquiry leads for an organization
      */
-    async getReEnquiryLeads(organisationId: string, limit = 50): Promise<any[]> {
+    async getReEnquiryLeads(organisationId: string, branchId?: string, limit = 50): Promise<any[]> {
         try {
+            const where: any = {
+                organisationId,
+                isDeleted: false,
+                isReEnquiry: true
+            };
+
+            if (branchId) {
+                where.branchId = branchId;
+            }
+
             const reEnquiryLeads = await prisma.lead.findMany({
-                where: {
-                    organisationId,
-                    isDeleted: false,
-                    isReEnquiry: true
-                },
+                where,
                 include: {
                     assignedTo: {
                         select: {
