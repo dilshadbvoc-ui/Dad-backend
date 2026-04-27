@@ -442,16 +442,28 @@ export class ImportJobService {
             }
             
             // Send Notification to User
-            const notificationTitle = failureCount > 0 ? 'Lead Import Completed with Errors' : 'Lead Import Successful';
-            let notificationMessage = `Import finished: ${successCount} leads created.`;
-            
+            let notificationTitle = 'Lead Import Successful';
+            let notificationMessage = `Import finished successfully. All ${successCount} leads from your file have been created.`;
+            let notificationType = 'success';
+
+            if (successCount === 0 && failureCount > 0) {
+                notificationTitle = 'Lead Import Failed';
+                notificationMessage = `The import was not successful. None of the ${failureCount} rows could be processed. \n\nPlease check your file headers and data mapping.`;
+                notificationType = 'error';
+            } else if (failureCount > 0) {
+                notificationTitle = 'Lead Import Partial Success';
+                notificationMessage = `The import was partially successful: ${successCount} leads were created, but ${failureCount} rows failed due to data errors.`;
+                notificationType = 'warning';
+            }
+
             if (failureCount > 0) {
-                notificationMessage += ` ${failureCount} rows failed.`;
-                
-                // Add unique error reasons (top 3)
                 const uniqueErrors = Array.from(new Set(sanitizedErrors.map(e => e.error))).slice(0, 3);
                 if (uniqueErrors.length > 0) {
-                    notificationMessage += ` Reasons: ${uniqueErrors.join(', ')}`;
+                    notificationMessage += `\n\nMain reasons for failure:\n• ${uniqueErrors.join('\n• ')}`;
+                    
+                    if (uniqueErrors.some(e => e.toLowerCase().includes('missing required fields'))) {
+                        notificationMessage += `\n\nSuggestion: Ensure your file includes "First Name" and either "Phone" or "Email" columns and they are correctly matched in the mapping step.`;
+                    }
                 }
             }
             
@@ -459,7 +471,7 @@ export class ImportJobService {
                 job.createdById,
                 notificationTitle,
                 notificationMessage,
-                failureCount > 0 ? 'warning' : 'success'
+                notificationType as any
             );
 
         } catch (error: any) {
@@ -479,8 +491,8 @@ export class ImportJobService {
             if (job) {
                 await NotificationService.send(
                     job.createdById,
-                    'Lead Import Failed',
-                    `The import job encountered a critical error: ${sanitizedErrorMessage}`,
+                    'Lead Import Critical Failure',
+                    `The import process encountered a system error: ${sanitizedErrorMessage}. \n\nThis usually happens if the file is corrupted or not in a standard format. Please verify your file and try again.`,
                     'error'
                 );
             }
