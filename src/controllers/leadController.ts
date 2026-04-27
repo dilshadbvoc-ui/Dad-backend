@@ -6,7 +6,7 @@ import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
 import { NotificationService } from '../services/notificationService';
 import { LeadSource } from '../generated/client';
-import { isAdmin, isSuperAdmin } from '../utils/roleUtils';
+import { isAdmin, isSuperAdmin, isOrgAdmin } from '../utils/roleUtils';
 import { GeoLocationService } from '../services/geoLocationService';
 import { FollowUpService } from '../services/followUpService';
 import { TaskService } from '../services/taskService';

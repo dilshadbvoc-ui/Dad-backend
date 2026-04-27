@@ -1,6 +1,6 @@
 import express from 'express';
 import { getLeads, createLead, getLeadById, updateLead, deleteLead, createBulkLeads, bulkAssignLeads, convertLead, getViolations, submitExplanation, getLeadHistory, getPendingFollowUpsCount, generateAIResponse, getReEnquiryLeads, getDuplicateLeads, syncToGallabox } from '../controllers/leadController';
-import { protect, admin } from '../middleware/authMiddleware';
+import { protect, admin, authorize } from '../middleware/authMiddleware';
 import { checkPlanLimits } from '../middleware/subscriptionMiddleware';
 
 const router = express.Router();
