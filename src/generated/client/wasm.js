@@ -1265,6 +1265,7 @@ exports.LeadSource = exports.$Enums.LeadSource = {
   google_ads: 'google_ads',
   facebook_payload: 'facebook_payload',
   lead_squared: 'lead_squared',
+  zapier: 'zapier',
   other: 'other'
 };
 

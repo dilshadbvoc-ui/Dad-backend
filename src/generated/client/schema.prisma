@@ -1285,6 +1285,7 @@ enum LeadSource {
   google_ads
   facebook_payload
   lead_squared
+  zapier
   other
 }
 
