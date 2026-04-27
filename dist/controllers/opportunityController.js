@@ -540,7 +540,7 @@ const deleteOpportunity = async (req, res) => {
             return res.status(404).json({ message: 'Opportunity not found' });
         await prisma_1.default.opportunity.update({
             where: { id: opportunityId },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         // Audit Log
         try {

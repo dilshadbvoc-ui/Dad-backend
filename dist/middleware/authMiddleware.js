@@ -13,16 +13,20 @@ const protect = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             token = req.headers.authorization.split(' ')[1];
+            console.log(`[AuthDebug] Incoming token: ${token.substring(0, 20)}...`);
             const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'secret_key_change_this');
+            console.log('[AuthDebug] Decoded payload:', decoded);
             // Fetch user from Postgres using Prisma
             const user = await prisma_1.default.user.findUnique({
                 where: { id: decoded.id },
                 include: { organisation: true }
             });
             if (!user) {
+                console.warn(`[AuthDebug] User not found for ID: ${decoded.id}`);
                 res.status(401).json({ message: 'Not authorized, token failed' });
                 return;
             }
+            console.log(`[AuthDebug] Authenticated user: ${user.email} (Role: ${user.role})`);
             // Exclude password from the object attached to request
             const userWithoutPassword = { ...user };
             delete userWithoutPassword.password;

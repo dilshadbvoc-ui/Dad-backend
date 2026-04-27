@@ -206,7 +206,7 @@ const deleteDocument = async (req, res) => {
         // Soft delete
         await prisma_1.default.document.update({
             where: { id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         res.json({ message: 'Document deleted successfully' });
     }

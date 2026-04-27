@@ -108,6 +108,7 @@ const landingPageRoutes_1 = __importDefault(require("./routes/landingPageRoutes"
 const bulkRoutes_1 = __importDefault(require("./routes/bulkRoutes"));
 const teamRoutes_1 = __importDefault(require("./routes/teamRoutes"));
 const branchRoutes_1 = __importDefault(require("./routes/branchRoutes"));
+const trashRoutes_1 = __importDefault(require("./routes/trashRoutes"));
 const path_1 = __importDefault(require("path"));
 // import { dataIsolation } from './middleware/dataIsolation';
 const compression_1 = __importDefault(require("compression"));
@@ -382,6 +383,7 @@ app.use('/api/organisation', organisationRoutes_1.default);
 app.use('/api/api-keys', apiKeyRoutes_1.default);
 app.use('/api/branches', branchRoutes_1.default);
 app.use('/api/bulk', bulkRoutes_1.default);
+app.use('/api/trash', trashRoutes_1.default);
 // Licensing & Multi-tenancy
 app.use('/api/plans', subscriptionPlanRoutes_1.default);
 app.use('/api/licenses', licenseRoutes_1.default);

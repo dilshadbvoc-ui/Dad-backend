@@ -289,7 +289,7 @@ const deleteContact = async (req, res) => {
         }
         await prisma_1.default.contact.update({
             where,
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         // Audit Log
         try {

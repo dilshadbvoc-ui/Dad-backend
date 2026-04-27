@@ -69,6 +69,9 @@ const bulkLeadOperations = async (req, res) => {
                 break;
             }
             case 'update-status':
+                if (!(0, roleUtils_1.isOrgAdmin)(user)) {
+                    return apiResponse_1.ResponseHandler.forbidden(res, 'Only Org Admins can perform bulk status updates');
+                }
                 if (!data?.status) {
                     return apiResponse_1.ResponseHandler.validationError(res, 'status is required for update-status action');
                 }
@@ -235,6 +238,7 @@ const bulkLeadOperations = async (req, res) => {
                     },
                     data: {
                         isDeleted: true,
+                        deletedAt: new Date(),
                         updatedAt: new Date()
                     }
                 });
@@ -375,6 +379,7 @@ const bulkContactOperations = async (req, res) => {
                     },
                     data: {
                         isDeleted: true,
+                        deletedAt: new Date(),
                         updatedAt: new Date()
                     }
                 });
@@ -500,6 +505,7 @@ const bulkOpportunityOperations = async (req, res) => {
                     },
                     data: {
                         isDeleted: true,
+                        deletedAt: new Date(),
                         updatedAt: new Date()
                     }
                 });

@@ -263,17 +263,17 @@ const deleteAccount = async (req, res) => {
             // Update Account
             await tx.account.update({
                 where: { id: accountId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             });
             // Update Contacts
             await tx.contact.updateMany({
                 where: { accountId: accountId, organisationId: orgId || account.organisationId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             });
             // Update Opportunities
             await tx.opportunity.updateMany({
                 where: { accountId: accountId, organisationId: orgId || account.organisationId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             });
             // Audit Log
             try {

@@ -260,5 +260,28 @@ const initCronJobs = () => {
         }
     });
     console.log('[Cron] Daily cleanup job scheduled.');
+    // Run every day at 02:00 AM (Trash Purge - 7 Days)
+    node_cron_1.default.schedule('0 2 * * *', async () => {
+        console.log('[Cron] Running daily trash purge...');
+        try {
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            const where = {
+                isDeleted: true,
+                deletedAt: { lt: sevenDaysAgo }
+            };
+            const models = ['lead', 'contact', 'account', 'opportunity', 'task', 'document'];
+            for (const model of models) {
+                const result = await prisma_1.prisma[model].deleteMany({ where });
+                if (result.count > 0) {
+                    console.log(`[Cron] Purged ${result.count} items from ${model} trash.`);
+                }
+            }
+        }
+        catch (error) {
+            console.error('[Cron] Error during trash purge:', error);
+        }
+    });
+    console.log('[Cron] Daily trash purge job scheduled.');
 };
 exports.initCronJobs = initCronJobs;

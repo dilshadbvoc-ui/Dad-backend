@@ -42,6 +42,7 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const notificationService_1 = require("./notificationService");
 const client_1 = require("../generated/client");
 const encryption_1 = require("../utils/encryption");
+const geoLocationService_1 = require("./geoLocationService");
 exports.MetaLeadService = {
     /**
      * Processes an incoming lead from Meta Webhook
@@ -105,14 +106,6 @@ exports.MetaLeadService = {
                     fieldMap[field.name.toLowerCase()] = field.values[0];
                 }
             });
-            // Extract country information from Meta lead
-            const { GeoLocationService } = await Promise.resolve().then(() => __importStar(require('./geoLocationService')));
-            let geoData = GeoLocationService.extractCountryFromMetaLead(fieldMap);
-            // If not found via Meta fields, try detecting from phone (if available early)
-            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
-            if (!geoData && rawPhone) {
-                geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());
-            }
             // Helper to get field with multiple possible keys
             const getField = (keys) => {
                 for (const key of keys) {
@@ -121,6 +114,12 @@ exports.MetaLeadService = {
                 }
                 return null;
             };
+            // If not found via Meta fields, try detecting from phone (if available early)
+            let geoData = null;
+            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
+            if (!geoData && rawPhone) {
+                geoData = geoLocationService_1.GeoLocationService.detectCountryFromPhone(rawPhone.toString());
+            }
             // Resolve Status: Priority 1: Payload mapping, Priority 2: Org default, Priority 3: 'new'
             let leadStatus = getField(['status', 'lead_status', 'lead status', 'ststus']) || "new";
             // If it's still 'new' (either explicit or default), try to see if org has a custom default

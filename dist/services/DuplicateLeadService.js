@@ -54,6 +54,19 @@ exports.DuplicateLeadService = {
                 { phone: cleanPhone },
                 { secondaryPhone: cleanPhone }
             ];
+            // Explicit Indian number normalization (91 prefix handling)
+            // If 12 digits starting with 91, add the 10-digit version
+            if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+                const tenDigit = cleanPhone.substring(2);
+                conditions.push({ phone: tenDigit });
+                conditions.push({ secondaryPhone: tenDigit });
+            }
+            // If 10 digits, add the 91-prefixed version
+            else if (cleanPhone.length === 10) {
+                const twelveDigit = '91' + cleanPhone;
+                conditions.push({ phone: twelveDigit });
+                conditions.push({ secondaryPhone: twelveDigit });
+            }
             // Handle international variations using libphonenumber-js
             const { parsePhoneNumberFromString } = await Promise.resolve().then(() => __importStar(require('libphonenumber-js')));
             // Try to parse the phone number to handle international matches

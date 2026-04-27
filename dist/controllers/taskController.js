@@ -329,7 +329,7 @@ const deleteTask = async (req, res) => {
         }
         await prisma_1.default.task.update({
             where,
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         await (0, auditLogger_1.logAudit)({
             organisationId: (orgId || (0, hierarchyUtils_1.getOrgId)(user)),

@@ -127,8 +127,18 @@ export const GeoLocationService = {
         try {
             // Standardize phone for parsing (needs a + prefix to detect country)
             let phoneToParse = phone.toString().trim();
+            const cleanPhone = phoneToParse.replace(/\D/g, '');
+
             if (!phoneToParse.startsWith('+')) {
-                phoneToParse = `+${phoneToParse.replace(/\D/g, '')}`;
+                // Heuristic for India: 10 digits starting with 6-9
+                if (cleanPhone.length === 10 && /^[6-9]/.test(cleanPhone)) {
+                    phoneToParse = `+91${cleanPhone}`;
+                } else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+                    phoneToParse = `+${cleanPhone}`;
+                } else {
+                    // Default behavior: just prepend + and hope for the best
+                    phoneToParse = `+${cleanPhone}`;
+                }
             }
 
             const phoneNumber = parsePhoneNumberFromString(phoneToParse);

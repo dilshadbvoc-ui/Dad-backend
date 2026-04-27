@@ -4,7 +4,7 @@ import { DistributionService } from './distributionService';
 import { NotificationService } from './notificationService';
 import { LeadSource, Prisma } from '../generated/client';
 import { decrypt } from '../utils/encryption';
-import { GeoLocationService } from '../utils/geoLocationService';
+import { GeoLocationService } from './geoLocationService';
 
 export const MetaLeadService = {
     /**

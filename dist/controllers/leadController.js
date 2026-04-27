@@ -758,20 +758,20 @@ const deleteLead = async (req, res) => {
         await prisma_1.default.$transaction([
             prisma_1.default.lead.update({
                 where: { id: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             }),
             // Cascade delete related entities
             prisma_1.default.contact.updateMany({
                 where: { leadId: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             }),
             prisma_1.default.account.updateMany({
                 where: { leadId: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             }),
             prisma_1.default.opportunity.updateMany({
                 where: { leadId: leadId },
-                data: { isDeleted: true }
+                data: { isDeleted: true, deletedAt: new Date() }
             })
         ]);
         // Audit Log
