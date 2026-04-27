@@ -11,6 +11,7 @@ import { GeoLocationService } from '../services/geoLocationService';
 import { FollowUpService } from '../services/followUpService';
 import { TaskService } from '../services/taskService';
 import { GallaboxService } from '../services/gallaboxService';
+import DuplicateLeadService from '../services/duplicateLeadService';
 // Dynamic import used for OpenAI to avoid startup errors if missing
 
 
@@ -163,7 +164,6 @@ export const createLead = async (req: express.Request, res: express.Response) =>
         const { firstName, lastName, source, sourceDetails, company, enquiryAbout } = req.body;
 
         // Check for duplicates using DuplicateLeadService
-        const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId || undefined);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
