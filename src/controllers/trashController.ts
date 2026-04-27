@@ -25,13 +25,13 @@ export const getTrashItems = async (req: Request, res: Response) => {
         ]);
 
         const trashItems = [
-            ...leads.map((item: any) => ({ ...item, type: 'Lead' })),
-            ...contacts.map((item: any) => ({ ...item, type: 'Contact' })),
-            ...accounts.map((item: any) => ({ ...item, type: 'Account' })),
-            ...opportunities.map((item: any) => ({ ...item, type: 'Opportunity' })),
-            ...tasks.map((item: any) => ({ ...item, type: 'Task' })),
-            ...documents.map((item: any) => ({ ...item, type: 'Document' }))
-        ].sort((a, b) => (b.deletedAt?.getTime() || 0) - (a.deletedAt?.getTime() || 0));
+            ...leads.map((item: any) => ({ ...item, type: 'Lead', name: `${item.firstName} ${item.lastName || ''}`.trim() })),
+            ...contacts.map((item: any) => ({ ...item, type: 'Contact', name: `${item.firstName} ${item.lastName || ''}`.trim() })),
+            ...accounts.map((item: any) => ({ ...item, type: 'Account', name: item.name })),
+            ...opportunities.map((item: any) => ({ ...item, type: 'Opportunity', name: item.name })),
+            ...tasks.map((item: any) => ({ ...item, type: 'Task', name: item.subject })),
+            ...documents.map((item: any) => ({ ...item, type: 'Document', name: item.name }))
+        ].sort((a, b) => (new Date(b.deletedAt).getTime() || 0) - (new Date(a.deletedAt).getTime() || 0));
 
         return ApiResponse.success(res, trashItems, 'Trash items fetched successfully');
     } catch (error: any) {
