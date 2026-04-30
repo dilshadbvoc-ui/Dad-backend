@@ -67,7 +67,9 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
 
         // Build Payment Filter
-        const paymentFilter: any = { organisationId: orgId };
+        const paymentFilter: any = {
+            ...(orgId ? { organisationId: orgId } : {})
+        };
         if (branchFilter.branchId) {
             paymentFilter.opportunity = { branchId: branchFilter.branchId };
         }
@@ -294,7 +296,7 @@ export const getSalesChartData = async (req: Request, res: Response) => {
         // Fetch PaymentRecords
         const payments = await prisma.paymentRecord.findMany({
             where: {
-                organisationId: orgId,
+                ...(orgId ? { organisationId: orgId as string } : {}),
                 paymentDate: { gte: sixMonthsAgo },
                 opportunity: {
                     ...(branchFilter.branchId ? { branchId: branchFilter.branchId } : {}),
