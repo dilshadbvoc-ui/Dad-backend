@@ -121,8 +121,6 @@ export const submitWebForm = async (req: Request, res: Response) => {
                 });
                 if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
             }
-        }
-
         // Check for duplicates in the RESOLVED branch
         const { DuplicateLeadService } = await import('../services/duplicateLeadService');
         const duplicateCheck = await DuplicateLeadService.checkDuplicate(
@@ -154,7 +152,7 @@ export const submitWebForm = async (req: Request, res: Response) => {
             });
         }
 
-        // 1. Create Lead
+        // 1. Create Lead with resolved assignment
         const lead = await prisma.lead.create({
             data: {
                 firstName: formData.firstName || 'Unknown',
@@ -164,16 +162,14 @@ export const submitWebForm = async (req: Request, res: Response) => {
                 company: formData.company,
                 source: 'website',
                 organisationId: orgId,
+                assignedToId: assignedUserId || undefined,
+                branchId: targetBranchId,
                 customFields: {
                     webFormId: id,
                     ...formData.customFields
                 }
             }
         });
-
-        // 2. Trigger Distribution
-        const { DistributionService } = await import('../services/distributionService');
-        await DistributionService.assignLead(lead, orgId);
 
         // 3. AI Scoring
         const { LeadScoringService } = await import('../services/leadScoringService');
