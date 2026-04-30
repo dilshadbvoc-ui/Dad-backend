@@ -352,8 +352,16 @@ export const DuplicateLeadService = {
             `;
 
             return [
-                ...duplicatesByPhone.map(d => ({ ...d, type: 'phone' })),
-                ...duplicatesByEmail.map(d => ({ ...d, type: 'email' }))
+                ...duplicatesByPhone.map(d => ({ 
+                    ...d, 
+                    count: Number(d.count), // Convert BigInt to Number
+                    type: 'phone' 
+                })),
+                ...duplicatesByEmail.map(d => ({ 
+                    ...d, 
+                    count: Number(d.count), // Convert BigInt to Number
+                    type: 'email' 
+                }))
             ];
         } catch (error) {
             console.error('[DuplicateLeadService] Error finding duplicates:', error);
