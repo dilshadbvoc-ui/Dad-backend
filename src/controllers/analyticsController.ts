@@ -58,10 +58,12 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             oppVisibilityFilter.ownerId = { in: visibleUserIds };
         }
 
-        // Current Month Dates
+        // Current Month Dates (Aligned to IST)
         const startOfMonth = new Date();
+        startOfMonth.setMinutes(startOfMonth.getMinutes() + 330); // Shift to IST
         startOfMonth.setDate(1);
         startOfMonth.setHours(0, 0, 0, 0);
+        startOfMonth.setMinutes(startOfMonth.getMinutes() - 330); // Shift back to UTC
 
         const startOfLastMonth = new Date(startOfMonth);
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
@@ -267,9 +269,11 @@ export const getSalesChartData = async (req: Request, res: Response) => {
         const requestedUserId = req.query.userId as string;
 
         const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Go back 5 months to include current month = 6 total
-        sixMonthsAgo.setDate(1); // Start of that month
+        sixMonthsAgo.setMinutes(sixMonthsAgo.getMinutes() + 330); // Shift to IST
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); 
+        sixMonthsAgo.setDate(1); 
         sixMonthsAgo.setHours(0, 0, 0, 0);
+        sixMonthsAgo.setMinutes(sixMonthsAgo.getMinutes() - 330); // Shift back to UTC
 
         // Visibility & User Filtering
         const visibilityFilter: any = {};
