@@ -102,15 +102,37 @@ export const submitWebForm = async (req: Request, res: Response) => {
 
         const orgId = webForm.organisationId;
 
-        // Sanitize phone
+        // Sanitize phone: keep all digits for the service to handle normalization
         let cleanPhone = formData.phone?.toString().replace(/\D/g, '') || '';
-        if (cleanPhone.length > 10) {
-            cleanPhone = cleanPhone.slice(-10);
+
+        // Resolve target branch early to isolate duplicate check
+        let targetBranchId = webForm.branchId;
+
+        // If form doesn't have a branch, see if distribution would assign one
+        if (!targetBranchId) {
+            const { DistributionService } = await import('../services/distributionService');
+            // Simulate assignment to find target owner and their branch
+            const assignedUserId = await DistributionService.assignLead(
+                { ...formData, organisationId: orgId }, 
+                orgId
+            );
+            if (assignedUserId) {
+                const assignedUser = await prisma.user.findUnique({
+                    where: { id: assignedUserId },
+                    select: { branchId: true }
+                });
+                if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
+            }
         }
 
-        // Check for duplicates
+        // Check for duplicates in the RESOLVED branch
         const { DuplicateLeadService } = await import('../services/duplicateLeadService');
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, formData.email, orgId);
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(
+            cleanPhone, 
+            formData.email, 
+            orgId, 
+            targetBranchId || undefined
+        );
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
