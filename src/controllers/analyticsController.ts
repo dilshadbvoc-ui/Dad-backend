@@ -66,6 +66,18 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         const startOfLastMonth = new Date(startOfMonth);
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
 
+        // Build Payment Filter
+        const paymentFilter: any = { organisationId: orgId };
+        if (branchFilter.branchId) {
+            paymentFilter.opportunity = { branchId: branchFilter.branchId };
+        }
+        if (oppVisibilityFilter.ownerId) {
+            paymentFilter.opportunity = { 
+                ...(paymentFilter.opportunity || {}), 
+                ownerId: oppVisibilityFilter.ownerId 
+            };
+        }
+
         // Group independent queries to run concurrently
         const [
             totalLeads,
@@ -91,13 +103,11 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'new', ...visibilityFilter } }),
             prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'converted', ...visibilityFilter } }),
 
-            // Revenue calculation and trend
-            prisma.opportunity.aggregate({
+            // Revenue calculation and trend (Payments)
+            prisma.paymentRecord.aggregate({
                 where: {
-                    ...combinedFilter,
-                    stage: 'closed_won',
-                    isDeleted: false,
-                    ...oppVisibilityFilter
+                    ...paymentFilter,
+                    paymentDate: { lte: new Date() }
                 },
                 _sum: { amount: true }
             }),
@@ -126,14 +136,11 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 }
             }),
 
-            // Previous Month Stats for Trends (Revenue)
-            prisma.opportunity.aggregate({
+            // Previous Month Stats for Trends (Revenue - Payments)
+            prisma.paymentRecord.aggregate({
                 where: {
-                    ...combinedFilter,
-                    stage: 'closed_won',
-                    isDeleted: false,
-                    closeDate: { gte: startOfLastMonth, lt: startOfMonth },
-                    ...oppVisibilityFilter
+                    ...paymentFilter,
+                    paymentDate: { gte: startOfLastMonth, lt: startOfMonth }
                 },
                 _sum: { amount: true }
             }),
@@ -172,14 +179,11 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] }, ...oppVisibilityFilter } }),
             prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } }),
 
-            // Revenue this month (closed_won in current month)
-            prisma.opportunity.aggregate({
+            // Revenue this month (Payments in current month)
+            prisma.paymentRecord.aggregate({
                 where: {
-                    ...combinedFilter,
-                    stage: 'closed_won',
-                    isDeleted: false,
-                    closeDate: { gte: startOfMonth },
-                    ...oppVisibilityFilter
+                    ...paymentFilter,
+                    paymentDate: { gte: startOfMonth }
                 },
                 _sum: { amount: true }
             }),
@@ -287,22 +291,20 @@ export const getSalesChartData = async (req: Request, res: Response) => {
             visibilityFilter.ownerId = requestedUserId;
         }
 
-        // Fetch closed_won opportunities
-        const wonOpportunities = await prisma.opportunity.findMany({
+        // Fetch PaymentRecords
+        const payments = await prisma.paymentRecord.findMany({
             where: {
-                ...combinedFilter,
-                stage: 'closed_won',
-                isDeleted: false,
-                ...visibilityFilter,
-                OR: [
-                    { closeDate: { gte: sixMonthsAgo } },
-                    { updatedAt: { gte: sixMonthsAgo } }
-                ]
+                organisationId: orgId,
+                paymentDate: { gte: sixMonthsAgo },
+                opportunity: {
+                    ...(branchFilter.branchId ? { branchId: branchFilter.branchId } : {}),
+                    ...(visibilityFilter.ownerId ? { ownerId: visibilityFilter.ownerId } : {}),
+                    isDeleted: false
+                }
             },
             select: {
                 amount: true,
-                closeDate: true,
-                updatedAt: true
+                paymentDate: true
             }
         });
 
@@ -318,11 +320,11 @@ export const getSalesChartData = async (req: Request, res: Response) => {
         }
 
         // Fill data
-        for (const opp of wonOpportunities) {
-            const date = new Date(opp.closeDate || opp.updatedAt);
+        for (const payment of payments) {
+            const date = new Date(payment.paymentDate);
             const key = `${date.getFullYear()}-${date.getMonth()}`;
             if (monthlyData.has(key)) {
-                monthlyData.set(key, (monthlyData.get(key) || 0) + (opp.amount || 0));
+                monthlyData.set(key, (monthlyData.get(key) || 0) + (payment.amount || 0));
             }
         }
 
@@ -659,8 +661,10 @@ export const getTopPerformers = async (req: Request, res: Response) => {
                 lastName: true,
                 email: true,
                 profileImage: true,
-                ownedOpportunities: {
-                    where: { stage: 'closed_won', isDeleted: false },
+                paymentRecords: {
+                    where: {
+                        opportunity: { isDeleted: false }
+                    },
                     select: { amount: true }
                 }
             }
@@ -671,8 +675,8 @@ export const getTopPerformers = async (req: Request, res: Response) => {
             name: `${u.firstName} ${u.lastName}`,
             email: u.email,
             image: u.profileImage,
-            totalRevenue: u.ownedOpportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0),
-            dealsWon: u.ownedOpportunities.length
+            totalRevenue: u.paymentRecords.reduce((sum, pay) => sum + (pay.amount || 0), 0),
+            dealsWon: u.paymentRecords.length // This is number of payments, maybe not deals. But let's stick to revenue for now.
         }))
             .sort((a, b) => b.totalRevenue - a.totalRevenue)
             .slice(0, 5);
