@@ -325,40 +325,40 @@ export const DuplicateLeadService = {
      */
     async findDuplicates(organisationId: string): Promise<any[]> {
         try {
-            // Find leads with duplicate phone numbers
+            // Find leads with duplicate phone numbers WITHIN THE SAME BRANCH
             const duplicatesByPhone = await prisma.$queryRaw<any[]>`
-                SELECT phone, COUNT(*) as count, 
+                SELECT phone, "branchId", COUNT(*) as count, 
                        array_agg(id) as lead_ids,
                        array_agg("firstName" || ' ' || "lastName") as names
                 FROM "Lead"
                 WHERE "organisationId" = ${organisationId}
                   AND "isDeleted" = false
-                GROUP BY phone
+                GROUP BY phone, "branchId"
                 HAVING COUNT(*) > 1
             `;
 
-            // Find leads with duplicate emails
+            // Find leads with duplicate emails WITHIN THE SAME BRANCH
             const duplicatesByEmail = await prisma.$queryRaw<any[]>`
-                SELECT email, COUNT(*) as count,
+                SELECT email, "branchId", COUNT(*) as count,
                        array_agg(id) as lead_ids,
                        array_agg("firstName" || ' ' || "lastName") as names
                 FROM "Lead"
                 WHERE "organisationId" = ${organisationId}
                   AND "isDeleted" = false
                   AND email IS NOT NULL
-                GROUP BY email
+                GROUP BY email, "branchId"
                 HAVING COUNT(*) > 1
             `;
 
             return [
                 ...duplicatesByPhone.map(d => ({ 
                     ...d, 
-                    count: Number(d.count), // Convert BigInt to Number
+                    count: Number(d.count),
                     type: 'phone' 
                 })),
                 ...duplicatesByEmail.map(d => ({ 
                     ...d, 
-                    count: Number(d.count), // Convert BigInt to Number
+                    count: Number(d.count),
                     type: 'email' 
                 }))
             ];
