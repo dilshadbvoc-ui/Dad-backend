@@ -130,18 +130,33 @@ export const MetaLeadService = {
                 branchId: metaConfig.branchId || null
             };
 
-            // 4. Sanitize Phone Number
-            if (crmData.phone) {
-                // Keep all digits, do not truncate to 10
-                crmData.phone = crmData.phone.toString().replace(/\D/g, '');
+            // 4. Resolve target owner and branch EARLY to isolate duplicate check
+            const { DistributionService } = await import('./distributionService');
+            const targetOwnerId = await DistributionService.assignLead(
+                { ...crmData, id: undefined }, 
+                org.id
+            );
+
+            let targetBranchId = crmData.branchId;
+            if (targetOwnerId) {
+                const assignedUser = await prisma.user.findUnique({
+                    where: { id: targetOwnerId },
+                    select: { branchId: true }
+                });
+                if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
             }
 
-            // 5. Check for duplicate (by phone and org)
+            // 5. Check for duplicates in the RESOLVED branch
             const { DuplicateLeadService } = await import('./duplicateLeadService');
-            const duplicateCheck = await DuplicateLeadService.checkDuplicate(crmData.phone, crmData.email, org.id);
+            const duplicateCheck = await DuplicateLeadService.checkDuplicate(
+                crmData.phone, 
+                crmData.email, 
+                org.id, 
+                targetBranchId || undefined
+            );
 
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                console.log(`[MetaLeadService] Duplicate lead detected (${duplicateCheck.existingLead.id}). Handling as re-enquiry.`);
+                console.log(`[MetaLeadService] Duplicate lead detected (${duplicateCheck.existingLead.id}) in branch ${targetBranchId}. Handling as re-enquiry.`);
                 await DuplicateLeadService.handleReEnquiry(
                     duplicateCheck.existingLead,
                     {
@@ -158,9 +173,13 @@ export const MetaLeadService = {
                 return;
             }
 
-            // 6. Create the Lead
+            // 6. Create the Lead with resolved assignment
             const lead = await prisma.lead.create({
-                data: crmData
+                data: {
+                    ...crmData,
+                    assignedToId: targetOwnerId || undefined,
+                    branchId: targetBranchId
+                }
             });
 
             console.log(`[MetaLeadService] Successfully created lead ${lead.id} from Meta`);
