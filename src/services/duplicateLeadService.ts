@@ -333,6 +333,8 @@ export const DuplicateLeadService = {
                 FROM "Lead"
                 WHERE "organisationId" = ${organisationId}
                   AND "isDeleted" = false
+                  AND phone IS NOT NULL
+                  AND phone != ''
                 GROUP BY phone, "branchId"
                 HAVING COUNT(*) > 1
             `;
@@ -346,6 +348,7 @@ export const DuplicateLeadService = {
                 WHERE "organisationId" = ${organisationId}
                   AND "isDeleted" = false
                   AND email IS NOT NULL
+                  AND email != ''
                 GROUP BY email, "branchId"
                 HAVING COUNT(*) > 1
             `;
