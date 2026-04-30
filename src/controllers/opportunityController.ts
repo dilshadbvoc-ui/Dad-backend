@@ -69,6 +69,7 @@ export const getOpportunities = async (req: Request, res: Response) => {
             include: {
                 account: { select: { name: true } },
                 owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } },
+                branch: { select: { name: true } },
                 emiSchedule: { select: { id: true, status: true } },
                 lead: { select: { id: true, firstName: true, lastName: true } }
             },
