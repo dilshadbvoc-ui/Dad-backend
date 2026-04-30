@@ -106,12 +106,10 @@ export const submitWebForm = async (req: Request, res: Response) => {
         let cleanPhone = formData.phone?.toString().replace(/\D/g, '') || '';
 
         // Resolve target branch early to isolate duplicate check
-        let targetBranchId = webForm.branchId;
+        let targetBranchId = null;
 
-        // If form doesn't have a branch, see if distribution would assign one
-        if (!targetBranchId) {
-            const { DistributionService } = await import('../services/distributionService');
-            // Simulate assignment to find target owner and their branch
+        const { DistributionService } = await import('../services/distributionService');
+        // Simulate assignment to find target owner and their branch
             const assignedUserId = await DistributionService.assignLead(
                 { ...formData, organisationId: orgId }, 
                 orgId
