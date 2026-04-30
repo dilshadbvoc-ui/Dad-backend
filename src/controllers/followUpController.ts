@@ -57,6 +57,11 @@ export const getFollowUps = async (req: Request, res: Response) => {
         if (status && status !== 'all') {
             where.status = status as any;
         }
+        
+        const branchId = req.query.branchId as string;
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
+        }
 
         console.log('[getFollowUps] Final query where:', JSON.stringify(where, null, 2));
 
@@ -75,6 +80,7 @@ export const getFollowUps = async (req: Request, res: Response) => {
                 contact: { select: { id: true, firstName: true, lastName: true } },
                 account: { select: { id: true, name: true } },
                 opportunity: { select: { id: true, name: true } },
+                branch: { select: { id: true, name: true } },
             },
             skip,
             take: limit,
