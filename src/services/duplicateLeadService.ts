@@ -93,14 +93,18 @@ export const DuplicateLeadService = {
                 organisationId
             };
 
-            // ORGANIZATION-WIDE CHECK:
-            // We search across all branches within the organisation.
-            // "same lead should not exist twice in any branch"
+            // BRANCH ISOLATION LOGIC:
+            // "in the same branch same lead should not exist twice thats it"
+            // We strictly isolate the check to the provided branchId.
+            if (branchId) {
+                where.branchId = branchId;
+            }
 
             console.log('[DuplicateLeadService] Checking duplicate with:', {
                 phone: cleanPhone,
                 email,
                 organisationId,
+                branchId,
                 where
             });
 
@@ -166,10 +170,14 @@ export const DuplicateLeadService = {
         try {
             const now = new Date();
 
-            // Update existing lead
+            // Update existing lead with latest contact info if provided
             const updatedLead = await prisma.lead.update({
                 where: { id: existingLead.id },
                 data: {
+                    firstName: newData.firstName || existingLead.firstName,
+                    lastName: newData.lastName || existingLead.lastName,
+                    email: (newData.email && newData.email.trim() !== '') ? newData.email.trim() : existingLead.email,
+                    company: newData.company || existingLead.company,
                     status: (newData.stage && (!existingLead.status || ['new', 're_enquiry'].includes(existingLead.status.toLowerCase()))) 
                         ? newData.stage.toLowerCase() 
                         : 're_enquiry',
@@ -178,7 +186,7 @@ export const DuplicateLeadService = {
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
-                    enquiryAbout: newData.sourceDetails?.message || existingLead.enquiryAbout,
+                    enquiryAbout: newData.enquiryAbout || newData.sourceDetails?.message || existingLead.enquiryAbout,
                     // Update source details to track re-enquiry
                     sourceDetails: {
                         ...(existingLead.sourceDetails as any || {}),

@@ -159,12 +159,23 @@ export const createLead = async (req: express.Request, res: express.Response) =>
         if (!orgId) return res.status(400).json({ message: 'Organisation context required' });
 
         const currentUser = (req as any).user;
-        const branchId = req.body.branchId || currentUser.branchId;
         const assignedTo = req.body.assignedTo;
+        const leadOwnerId = assignedTo || currentUser.id;
+
+        // Resolve Branch (Lead branch is the lead owner's branch)
+        let targetBranchId = req.body.branchId || currentUser.branchId;
+        if (assignedTo) {
+            const assignedUser = await prisma.user.findUnique({
+                where: { id: assignedTo },
+                select: { branchId: true }
+            });
+            if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
+        }
+
         const { firstName, lastName, source, sourceDetails, company, enquiryAbout } = req.body;
 
-        // Check for duplicates using DuplicateLeadService
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId || undefined);
+        // Check for duplicates using DuplicateLeadService (Strictly isolated by branch)
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, targetBranchId || undefined);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
@@ -196,19 +207,6 @@ export const createLead = async (req: express.Request, res: express.Response) =>
 
         // Sanitize email: treat empty string as no email
         const cleanEmail = email && email.trim() !== '' ? email.trim() : undefined;
-
-        // Manual assignment owner logic
-        const leadOwnerId = assignedTo || currentUser.id;
-
-        // Sync branch with assigned user
-        let leadBranchId = branchId || currentUser.branchId;
-        if (assignedTo) {
-            const assignedUser = await prisma.user.findUnique({
-                where: { id: assignedTo },
-                select: { branchId: true }
-            });
-            if (assignedUser?.branchId) leadBranchId = assignedUser.branchId;
-        }
 
         // Detect country from IP address if not provided
         let geoData = null;
