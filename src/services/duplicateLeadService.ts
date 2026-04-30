@@ -93,23 +93,14 @@ export const DuplicateLeadService = {
                 organisationId
             };
 
-            // BRANCH ISOLATION LOGIC:
-            // 1. If includeAllBranches is true, we look everywhere in the org.
-            // 2. If branchId is null/undefined, we ALSO look everywhere in the org 
-            //    to prevent creating a "global" duplicate of a branch-specific lead.
-            // 3. If branchId is provided, we strictly isolate to that branch (the default CRM behavior).
-            if (includeAllBranches || !branchId) {
-                // No branch filter added to 'where', so it searches organisation-wide
-            } else {
-                where.branchId = branchId;
-            }
+            // ORGANIZATION-WIDE CHECK:
+            // We search across all branches within the organisation.
+            // "same lead should not exist twice in any branch"
 
             console.log('[DuplicateLeadService] Checking duplicate with:', {
                 phone: cleanPhone,
                 email,
                 organisationId,
-                branchId,
-                includeAllBranches,
                 where
             });
 
