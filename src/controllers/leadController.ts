@@ -268,7 +268,7 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                 countryCode: req.body.countryCode || geoData?.countryCode || undefined,
                 phoneCountryCode: req.body.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                 organisation: { connect: { id: orgId } },
-                branch: leadBranchId ? { connect: { id: leadBranchId } } : undefined,
+                branch: targetBranchId ? { connect: { id: targetBranchId } } : undefined,
                 // Assign to creator by default, or to specified user
                 assignedTo: { connect: { id: leadOwnerId } },
                 source: req.body.source as LeadSource || LeadSource.manual,
@@ -897,15 +897,36 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
 
         for (const l of leadsData) {
             try {
-                // Sanitize phone
+                // Sanitize phone: keep all digits for the service to handle normalization
                 let cleanPhone = l.phone?.toString().replace(/\D/g, '') || '';
-                if (cleanPhone.length > 10) {
-                    cleanPhone = cleanPhone.slice(-10);
+
+                // Resolve owner and branch EARLY to correctly isolate duplicate check
+                let targetOwnerId = l.assignedTo || l.assignedToId;
+                let targetBranchId = l.branchId || user.branchId;
+
+                // Resolution via ownerEmail if provided in import
+                if (!targetOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
+                    const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
+                    if (resolvedId) targetOwnerId = resolvedId;
                 }
 
-                // Check for duplicates
+                // If specific user resolved, sync branch with them
+                if (targetOwnerId) {
+                    const assignedUser = await prisma.user.findUnique({
+                        where: { id: targetOwnerId },
+                        select: { branchId: true }
+                    });
+                    if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
+                }
+
+                // Check for duplicates in the RESOLVED branch
                 const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
-                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId, l.branchId || user.branchId || undefined);
+                const duplicateCheck = await DuplicateLeadService.checkDuplicate(
+                    cleanPhone, 
+                    l.email, 
+                    orgId, 
+                    targetBranchId || undefined
+                );
 
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                     // Handle as re-enquiry
@@ -933,25 +954,15 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     geoData = GeoLocationService.detectCountryFromPhone(cleanPhone);
                 }
 
-                // Determine final owner
-                let finalOwnerId = l.assignedTo || l.assignedToId;
-
-                // Resolution via ownerEmail if provided in import
-                if (!finalOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
-                    const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
-                    if (resolvedId) {
-                        finalOwnerId = resolvedId;
-                    }
-                }
+                let finalOwnerId = targetOwnerId;
 
                 if (splitIds.length > 0) {
                     finalOwnerId = splitIds[splitIndex % splitIds.length];
-                    console.log('[createBulkLeads] Split Assignment:', finalOwnerId, 'Index:', splitIndex);
                     splitIndex++;
                 } else if (!finalOwnerId && applyRules) {
                     const { DistributionService } = await import('../services/distributionService');
                     finalOwnerId = await DistributionService.assignLead(
-                        { ...l, id: undefined, branchId: l.branchId || user.branchId || undefined },
+                        { ...l, id: undefined, branchId: targetBranchId || undefined },
                         orgId,
                         ruleId,
                         user.id // Importer fallback
