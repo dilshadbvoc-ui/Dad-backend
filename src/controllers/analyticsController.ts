@@ -275,7 +275,7 @@ export const getSalesChartData = async (req: Request, res: Response) => {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
             
-            if (requestedUserId) {
+            if (requestedUserId && typeof requestedUserId === 'string') {
                 // If specific user requested, verify they are in visibility scope
                 if (visibleUserIds.includes(requestedUserId)) {
                     visibilityFilter.ownerId = requestedUserId;
@@ -661,23 +661,34 @@ export const getTopPerformers = async (req: Request, res: Response) => {
                 lastName: true,
                 email: true,
                 profileImage: true,
-                paymentRecords: {
-                    where: {
-                        opportunity: { isDeleted: false }
-                    },
-                    select: { amount: true }
+                ownedOpportunities: {
+                    where: { isDeleted: false },
+                    select: {
+                        paymentRecords: {
+                            select: { amount: true }
+                        }
+                    }
                 }
             }
         });
 
-        const leaderboard = topUsers.map(u => ({
-            id: u.id,
-            name: `${u.firstName} ${u.lastName}`,
-            email: u.email,
-            image: u.profileImage,
-            totalRevenue: u.paymentRecords.reduce((sum, pay) => sum + (pay.amount || 0), 0),
-            dealsWon: u.paymentRecords.length // This is number of payments, maybe not deals. But let's stick to revenue for now.
-        }))
+        const leaderboard = topUsers.map(u => {
+            const totalRevenue = u.ownedOpportunities.reduce((sum: number, opp: any) => {
+                const oppTotal = opp.paymentRecords.reduce((pSum: number, pay: any) => pSum + (pay.amount || 0), 0);
+                return sum + oppTotal;
+            }, 0);
+
+            const paymentsCount = u.ownedOpportunities.reduce((count: number, opp: any) => count + opp.paymentRecords.length, 0);
+
+            return {
+                id: u.id,
+                name: `${u.firstName} ${u.lastName}`,
+                email: u.email,
+                image: u.profileImage,
+                totalRevenue,
+                dealsWon: paymentsCount // Number of payments
+            };
+        })
             .sort((a, b) => b.totalRevenue - a.totalRevenue)
             .slice(0, 5);
 
