@@ -958,7 +958,43 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             });
         }
 
-        console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
+        console.log(`[WhatsAppSync] Logged interaction for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
+
+        // 3. Create a WhatsAppMessage record so it shows up in the WhatsApp Inbox
+        const msgDirection = direction === 'outbound' ? 'outgoing' : 'incoming';
+        
+        // Deduplicate WhatsAppMessage within same 5-minute window
+        const existingMessage = await prisma.whatsAppMessage.findFirst({
+            where: {
+                organisationId: user.organisationId,
+                phoneNumber: phoneNumber,
+                direction: msgDirection,
+                content: { path: ['text'], equals: messageText },
+                createdAt: { gte: windowStart, lte: windowEnd }
+            }
+        });
+
+        let waMessage;
+        if (!existingMessage) {
+            waMessage = await prisma.whatsAppMessage.create({
+                data: {
+                    conversationId: `${phoneNumber}_${callDate.getTime()}`,
+                    phoneNumber: phoneNumber,
+                    direction: msgDirection,
+                    messageType: 'text',
+                    content: { text: messageText },
+                    status: 'delivered',
+                    sentAt: callDate,
+                    organisationId: user.organisationId,
+                    leadId: targetLeadId || undefined,
+                    isReadByAgent: false,
+                    createdAt: callDate
+                }
+            });
+            console.log(`[WhatsAppSync] Logged WhatsAppMessage for Inbox: ${waMessage.id}`);
+        } else {
+            console.log(`[WhatsAppSync] Skipped duplicate WhatsAppMessage for Inbox`);
+        }
         
         // Emit socket event for real-time UI updates
         const io = req.app.get('io');
@@ -968,6 +1004,13 @@ export const logExternalMessage = async (req: Request, res: Response) => {
                     ...interaction,
                     type: 'whatsapp'
                 }
+            });
+        }
+        
+        if (io && waMessage && user.organisationId) {
+            io.to(`org:${user.organisationId}`).emit('whatsapp_message_received', {
+                message: waMessage,
+                phoneNumber: phoneNumber
             });
         }
 
