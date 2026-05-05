@@ -13,8 +13,8 @@ router.post('/bulk-assign', authMiddleware_1.protect, leadController_1.bulkAssig
 router.get('/violations', authMiddleware_1.protect, leadController_1.getViolations); // New Route
 router.post('/explanation', authMiddleware_1.protect, leadController_1.submitExplanation); // New Route
 router.get('/pending-follow-ups', authMiddleware_1.protect, leadController_1.getPendingFollowUpsCount);
-router.get('/re-enquiries', authMiddleware_1.protect, authMiddleware_1.admin, leadController_1.getReEnquiryLeads); // Admin only
-router.get('/duplicates', authMiddleware_1.protect, authMiddleware_1.admin, leadController_1.getDuplicateLeads); // Admin only
+router.get('/re-enquiries', authMiddleware_1.protect, (0, authMiddleware_1.authorize)('admin', 'manager', 'org_admin'), leadController_1.getReEnquiryLeads);
+router.get('/duplicates', authMiddleware_1.protect, (0, authMiddleware_1.authorize)('admin', 'manager', 'org_admin'), leadController_1.getDuplicateLeads);
 router.get('/', authMiddleware_1.protect, leadController_1.getLeads);
 router.post('/', authMiddleware_1.protect, (0, subscriptionMiddleware_1.checkPlanLimits)('leads'), leadController_1.createLead);
 router.get('/:id', authMiddleware_1.protect, leadController_1.getLeadById);

@@ -224,13 +224,25 @@ exports.WhatsAppIntegrationService = {
             });
             // Create lead if none exists and link to message
             if (!lead && !contactId) {
-                let cleanPhone = normalizedPhone;
-                if (cleanPhone.length > 10)
-                    cleanPhone = cleanPhone.slice(-10);
-                const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
-                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, null, organisationId);
-                let leadToLink;
                 const contactName = message.senderName || message.from;
+                const cleanPhone = normalizedPhone; // Service handles normalization
+                // Resolve target branch early to isolate duplicate check
+                const { DistributionService } = await Promise.resolve().then(() => __importStar(require('./distributionService')));
+                const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
+                // Simulate distribution to find target owner and their branch
+                // We use a dummy lead object for simulation
+                const targetOwnerId = await DistributionService.assignLead({ firstName: contactName, phone: cleanPhone, organisationId }, organisationId);
+                let targetBranchId = null;
+                if (targetOwnerId) {
+                    const assignedUser = await prisma_1.default.user.findUnique({
+                        where: { id: targetOwnerId },
+                        select: { branchId: true }
+                    });
+                    targetBranchId = assignedUser?.branchId || null;
+                }
+                // Check for duplicates in the RESOLVED branch
+                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, null, organisationId, targetBranchId);
+                let leadToLink;
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                     await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
                         firstName: contactName.split(' ')[0] || contactName,
@@ -249,7 +261,9 @@ exports.WhatsAppIntegrationService = {
                             phone: cleanPhone,
                             source: 'whatsapp',
                             status: 'new',
-                            organisationId
+                            organisationId,
+                            assignedToId: targetOwnerId || undefined,
+                            branchId: targetBranchId
                         }
                     });
                     leadToLink = newLead;

@@ -10343,6 +10343,8 @@ export namespace Prisma {
     timezone: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isDeleted: boolean | null
+    deletedAt: Date | null
     organisationId: string | null
     reportsToId: string | null
     dailyLeadQuota: number | null
@@ -10371,6 +10373,8 @@ export namespace Prisma {
     timezone: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isDeleted: boolean | null
+    deletedAt: Date | null
     organisationId: string | null
     reportsToId: string | null
     dailyLeadQuota: number | null
@@ -10402,6 +10406,8 @@ export namespace Prisma {
     timezone: number
     createdAt: number
     updatedAt: number
+    isDeleted: number
+    deletedAt: number
     organisationId: number
     reportsToId: number
     permissions: number
@@ -10441,6 +10447,8 @@ export namespace Prisma {
     timezone?: true
     createdAt?: true
     updatedAt?: true
+    isDeleted?: true
+    deletedAt?: true
     organisationId?: true
     reportsToId?: true
     dailyLeadQuota?: true
@@ -10469,6 +10477,8 @@ export namespace Prisma {
     timezone?: true
     createdAt?: true
     updatedAt?: true
+    isDeleted?: true
+    deletedAt?: true
     organisationId?: true
     reportsToId?: true
     dailyLeadQuota?: true
@@ -10500,6 +10510,8 @@ export namespace Prisma {
     timezone?: true
     createdAt?: true
     updatedAt?: true
+    isDeleted?: true
+    deletedAt?: true
     organisationId?: true
     reportsToId?: true
     permissions?: true
@@ -10619,6 +10631,8 @@ export namespace Prisma {
     timezone: string
     createdAt: Date
     updatedAt: Date
+    isDeleted: boolean
+    deletedAt: Date | null
     organisationId: string | null
     reportsToId: string | null
     permissions: string[]
@@ -10670,6 +10684,8 @@ export namespace Prisma {
     timezone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isDeleted?: boolean
+    deletedAt?: boolean
     organisationId?: boolean
     reportsToId?: boolean
     permissions?: boolean
@@ -10775,6 +10791,8 @@ export namespace Prisma {
     timezone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isDeleted?: boolean
+    deletedAt?: boolean
     organisationId?: boolean
     reportsToId?: boolean
     permissions?: boolean
@@ -10811,6 +10829,8 @@ export namespace Prisma {
     timezone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isDeleted?: boolean
+    deletedAt?: boolean
     organisationId?: boolean
     reportsToId?: boolean
     permissions?: boolean
@@ -11001,6 +11021,8 @@ export namespace Prisma {
       timezone: string
       createdAt: Date
       updatedAt: Date
+      isDeleted: boolean
+      deletedAt: Date | null
       organisationId: string | null
       reportsToId: string | null
       permissions: string[]
@@ -11495,6 +11517,8 @@ export namespace Prisma {
     readonly timezone: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly isDeleted: FieldRef<"User", 'Boolean'>
+    readonly deletedAt: FieldRef<"User", 'DateTime'>
     readonly organisationId: FieldRef<"User", 'String'>
     readonly reportsToId: FieldRef<"User", 'String'>
     readonly permissions: FieldRef<"User", 'String[]'>
@@ -35042,6 +35066,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -35058,6 +35083,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -35076,6 +35102,7 @@ export namespace Prisma {
     createdById: number
     organisationId: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -35094,6 +35121,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -35110,6 +35138,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -35128,6 +35157,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -35219,6 +35249,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: CampaignCountAggregateOutputType | null
@@ -35254,6 +35285,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | Campaign$createdByArgs<ExtArgs>
@@ -35275,6 +35307,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | Campaign$createdByArgs<ExtArgs>
@@ -35296,6 +35329,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -35332,6 +35366,7 @@ export namespace Prisma {
       createdById: string | null
       organisationId: string
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["campaign"]>
@@ -35743,6 +35778,7 @@ export namespace Prisma {
     readonly createdById: FieldRef<"Campaign", 'String'>
     readonly organisationId: FieldRef<"Campaign", 'String'>
     readonly isDeleted: FieldRef<"Campaign", 'Boolean'>
+    readonly deletedAt: FieldRef<"Campaign", 'DateTime'>
     readonly createdAt: FieldRef<"Campaign", 'DateTime'>
     readonly updatedAt: FieldRef<"Campaign", 'DateTime'>
   }
@@ -47668,6 +47704,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     previousOwnerId: string | null
@@ -47689,6 +47726,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     previousOwnerId: string | null
@@ -47710,6 +47748,7 @@ export namespace Prisma {
     createdById: number
     organisationId: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     previousOwnerId: number
@@ -47733,6 +47772,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     previousOwnerId?: true
@@ -47754,6 +47794,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     previousOwnerId?: true
@@ -47775,6 +47816,7 @@ export namespace Prisma {
     createdById?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     previousOwnerId?: true
@@ -47869,6 +47911,7 @@ export namespace Prisma {
     createdById: string | null
     organisationId: string
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     previousOwnerId: string | null
@@ -47907,6 +47950,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     previousOwnerId?: boolean
@@ -47934,6 +47978,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     previousOwnerId?: boolean
@@ -47961,6 +48006,7 @@ export namespace Prisma {
     createdById?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     previousOwnerId?: boolean
@@ -48009,6 +48055,7 @@ export namespace Prisma {
       createdById: string | null
       organisationId: string
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
       previousOwnerId: string | null
@@ -48426,6 +48473,7 @@ export namespace Prisma {
     readonly createdById: FieldRef<"Case", 'String'>
     readonly organisationId: FieldRef<"Case", 'String'>
     readonly isDeleted: FieldRef<"Case", 'Boolean'>
+    readonly deletedAt: FieldRef<"Case", 'DateTime'>
     readonly createdAt: FieldRef<"Case", 'DateTime'>
     readonly updatedAt: FieldRef<"Case", 'DateTime'>
     readonly previousOwnerId: FieldRef<"Case", 'String'>
@@ -70581,6 +70629,7 @@ export namespace Prisma {
     managerId: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70594,6 +70643,7 @@ export namespace Prisma {
     managerId: string | null
     organisationId: string | null
     isDeleted: boolean | null
+    deletedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70607,6 +70657,7 @@ export namespace Prisma {
     managerId: number
     organisationId: number
     isDeleted: number
+    deletedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -70622,6 +70673,7 @@ export namespace Prisma {
     managerId?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70635,6 +70687,7 @@ export namespace Prisma {
     managerId?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70648,6 +70701,7 @@ export namespace Prisma {
     managerId?: true
     organisationId?: true
     isDeleted?: true
+    deletedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -70734,6 +70788,7 @@ export namespace Prisma {
     managerId: string | null
     organisationId: string
     isDeleted: boolean
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: BranchCountAggregateOutputType | null
@@ -70764,6 +70819,7 @@ export namespace Prisma {
     managerId?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -70790,6 +70846,7 @@ export namespace Prisma {
     managerId?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -70805,6 +70862,7 @@ export namespace Prisma {
     managerId?: boolean
     organisationId?: boolean
     isDeleted?: boolean
+    deletedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -70854,6 +70912,7 @@ export namespace Prisma {
       managerId: string | null
       organisationId: string
       isDeleted: boolean
+      deletedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["branch"]>
@@ -71269,6 +71328,7 @@ export namespace Prisma {
     readonly managerId: FieldRef<"Branch", 'String'>
     readonly organisationId: FieldRef<"Branch", 'String'>
     readonly isDeleted: FieldRef<"Branch", 'Boolean'>
+    readonly deletedAt: FieldRef<"Branch", 'DateTime'>
     readonly createdAt: FieldRef<"Branch", 'DateTime'>
     readonly updatedAt: FieldRef<"Branch", 'DateTime'>
   }
@@ -77896,6 +77956,8 @@ export namespace Prisma {
     timezone: 'timezone',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     organisationId: 'organisationId',
     reportsToId: 'reportsToId',
     permissions: 'permissions',
@@ -78352,6 +78414,7 @@ export namespace Prisma {
     createdById: 'createdById',
     organisationId: 'organisationId',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -78605,6 +78668,7 @@ export namespace Prisma {
     createdById: 'createdById',
     organisationId: 'organisationId',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     previousOwnerId: 'previousOwnerId'
@@ -79018,6 +79082,7 @@ export namespace Prisma {
     managerId: 'managerId',
     organisationId: 'organisationId',
     isDeleted: 'isDeleted',
+    deletedAt: 'deletedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -79756,6 +79821,8 @@ export namespace Prisma {
     timezone?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    isDeleted?: BoolFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     organisationId?: StringNullableFilter<"User"> | string | null
     reportsToId?: StringNullableFilter<"User"> | string | null
     permissions?: StringNullableListFilter<"User">
@@ -79860,6 +79927,8 @@ export namespace Prisma {
     timezone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     organisationId?: SortOrderInput | SortOrder
     reportsToId?: SortOrderInput | SortOrder
     permissions?: SortOrder
@@ -79967,6 +80036,8 @@ export namespace Prisma {
     timezone?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    isDeleted?: BoolFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     organisationId?: StringNullableFilter<"User"> | string | null
     reportsToId?: StringNullableFilter<"User"> | string | null
     permissions?: StringNullableListFilter<"User">
@@ -80071,6 +80142,8 @@ export namespace Prisma {
     timezone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     organisationId?: SortOrderInput | SortOrder
     reportsToId?: SortOrderInput | SortOrder
     permissions?: SortOrder
@@ -80111,6 +80184,8 @@ export namespace Prisma {
     timezone?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    isDeleted?: BoolWithAggregatesFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     organisationId?: StringNullableWithAggregatesFilter<"User"> | string | null
     reportsToId?: StringNullableWithAggregatesFilter<"User"> | string | null
     permissions?: StringNullableListFilter<"User">
@@ -82675,6 +82750,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Campaign"> | string | null
     organisationId?: StringFilter<"Campaign"> | string
     isDeleted?: BoolFilter<"Campaign"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Campaign"> | Date | string | null
     createdAt?: DateTimeFilter<"Campaign"> | Date | string
     updatedAt?: DateTimeFilter<"Campaign"> | Date | string
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
@@ -82696,6 +82772,7 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdBy?: UserOrderByWithRelationInput
@@ -82720,6 +82797,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Campaign"> | string | null
     organisationId?: StringFilter<"Campaign"> | string
     isDeleted?: BoolFilter<"Campaign"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Campaign"> | Date | string | null
     createdAt?: DateTimeFilter<"Campaign"> | Date | string
     updatedAt?: DateTimeFilter<"Campaign"> | Date | string
     createdBy?: XOR<UserNullableRelationFilter, UserWhereInput> | null
@@ -82741,6 +82819,7 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CampaignCountOrderByAggregateInput
@@ -82765,6 +82844,7 @@ export namespace Prisma {
     createdById?: StringNullableWithAggregatesFilter<"Campaign"> | string | null
     organisationId?: StringWithAggregatesFilter<"Campaign"> | string
     isDeleted?: BoolWithAggregatesFilter<"Campaign"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Campaign"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Campaign"> | Date | string
   }
@@ -84019,6 +84099,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Case"> | string | null
     organisationId?: StringFilter<"Case"> | string
     isDeleted?: BoolFilter<"Case"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Case"> | Date | string | null
     createdAt?: DateTimeFilter<"Case"> | Date | string
     updatedAt?: DateTimeFilter<"Case"> | Date | string
     previousOwnerId?: StringNullableFilter<"Case"> | string | null
@@ -84046,6 +84127,7 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     previousOwnerId?: SortOrderInput | SortOrder
@@ -84076,6 +84158,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Case"> | string | null
     organisationId?: StringFilter<"Case"> | string
     isDeleted?: BoolFilter<"Case"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Case"> | Date | string | null
     createdAt?: DateTimeFilter<"Case"> | Date | string
     updatedAt?: DateTimeFilter<"Case"> | Date | string
     previousOwnerId?: StringNullableFilter<"Case"> | string | null
@@ -84103,6 +84186,7 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     previousOwnerId?: SortOrderInput | SortOrder
@@ -84130,6 +84214,7 @@ export namespace Prisma {
     createdById?: StringNullableWithAggregatesFilter<"Case"> | string | null
     organisationId?: StringWithAggregatesFilter<"Case"> | string
     isDeleted?: BoolWithAggregatesFilter<"Case"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Case"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Case"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Case"> | Date | string
     previousOwnerId?: StringNullableWithAggregatesFilter<"Case"> | string | null
@@ -86256,6 +86341,7 @@ export namespace Prisma {
     managerId?: StringNullableFilter<"Branch"> | string | null
     organisationId?: StringFilter<"Branch"> | string
     isDeleted?: BoolFilter<"Branch"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Branch"> | Date | string | null
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
     organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
@@ -86281,6 +86367,7 @@ export namespace Prisma {
     managerId?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
@@ -86309,6 +86396,7 @@ export namespace Prisma {
     managerId?: StringNullableFilter<"Branch"> | string | null
     organisationId?: StringFilter<"Branch"> | string
     isDeleted?: BoolFilter<"Branch"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Branch"> | Date | string | null
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
     organisation?: XOR<OrganisationRelationFilter, OrganisationWhereInput>
@@ -86334,6 +86422,7 @@ export namespace Prisma {
     managerId?: SortOrderInput | SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BranchCountOrderByAggregateInput
@@ -86353,6 +86442,7 @@ export namespace Prisma {
     managerId?: StringNullableWithAggregatesFilter<"Branch"> | string | null
     organisationId?: StringWithAggregatesFilter<"Branch"> | string
     isDeleted?: BoolWithAggregatesFilter<"Branch"> | boolean
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Branch"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Branch"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Branch"> | Date | string
   }
@@ -87235,6 +87325,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -87335,6 +87427,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -87435,6 +87529,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -87535,6 +87631,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -87635,6 +87733,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -87667,6 +87767,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
   }
@@ -87695,6 +87797,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -90522,6 +90626,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedCampaignsInput
@@ -90543,6 +90648,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -90558,6 +90664,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedCampaignsNestedInput
@@ -90579,6 +90686,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -90597,6 +90705,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -90612,6 +90721,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -90630,6 +90740,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -92029,6 +92140,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutCasesInput
@@ -92055,6 +92167,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -92071,6 +92184,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutCasesNestedInput
@@ -92097,6 +92211,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -92118,6 +92233,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -92134,6 +92250,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -92154,6 +92271,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -94483,6 +94601,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -94508,6 +94627,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -94529,6 +94649,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -94554,6 +94675,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -94577,6 +94699,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -94588,6 +94711,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -94601,6 +94725,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -95956,6 +96081,8 @@ export namespace Prisma {
     timezone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isDeleted?: SortOrder
+    deletedAt?: SortOrder
     organisationId?: SortOrder
     reportsToId?: SortOrder
     permissions?: SortOrder
@@ -95989,6 +96116,8 @@ export namespace Prisma {
     timezone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isDeleted?: SortOrder
+    deletedAt?: SortOrder
     organisationId?: SortOrder
     reportsToId?: SortOrder
     dailyLeadQuota?: SortOrder
@@ -96017,6 +96146,8 @@ export namespace Prisma {
     timezone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isDeleted?: SortOrder
+    deletedAt?: SortOrder
     organisationId?: SortOrder
     reportsToId?: SortOrder
     dailyLeadQuota?: SortOrder
@@ -97592,6 +97723,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -97608,6 +97740,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -97624,6 +97757,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -98386,6 +98520,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     previousOwnerId?: SortOrder
@@ -98407,6 +98542,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     previousOwnerId?: SortOrder
@@ -98428,6 +98564,7 @@ export namespace Prisma {
     createdById?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     previousOwnerId?: SortOrder
@@ -99537,6 +99674,7 @@ export namespace Prisma {
     managerId?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -99550,6 +99688,7 @@ export namespace Prisma {
     managerId?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -99563,6 +99702,7 @@ export namespace Prisma {
     managerId?: SortOrder
     organisationId?: SortOrder
     isDeleted?: SortOrder
+    deletedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -111607,6 +111747,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedCampaignsInput
@@ -111626,6 +111767,7 @@ export namespace Prisma {
     emailListId?: string | null
     createdById?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -111651,6 +111793,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutCasesInput
@@ -111675,6 +111818,7 @@ export namespace Prisma {
     assignedToId?: string | null
     createdById?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -112670,6 +112814,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -112769,6 +112915,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
@@ -113595,6 +113743,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     manager?: UserCreateNestedOneWithoutManagedBranchesInput
@@ -113618,6 +113767,7 @@ export namespace Prisma {
     contactPhone?: string | null
     managerId?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -113995,6 +114145,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Campaign"> | string | null
     organisationId?: StringFilter<"Campaign"> | string
     isDeleted?: BoolFilter<"Campaign"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Campaign"> | Date | string | null
     createdAt?: DateTimeFilter<"Campaign"> | Date | string
     updatedAt?: DateTimeFilter<"Campaign"> | Date | string
   }
@@ -114034,6 +114185,7 @@ export namespace Prisma {
     createdById?: StringNullableFilter<"Case"> | string | null
     organisationId?: StringFilter<"Case"> | string
     isDeleted?: BoolFilter<"Case"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Case"> | Date | string | null
     createdAt?: DateTimeFilter<"Case"> | Date | string
     updatedAt?: DateTimeFilter<"Case"> | Date | string
     previousOwnerId?: StringNullableFilter<"Case"> | string | null
@@ -114741,6 +114893,8 @@ export namespace Prisma {
     timezone?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    isDeleted?: BoolFilter<"User"> | boolean
+    deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     organisationId?: StringNullableFilter<"User"> | string | null
     reportsToId?: StringNullableFilter<"User"> | string | null
     permissions?: StringNullableListFilter<"User">
@@ -115392,6 +115546,7 @@ export namespace Prisma {
     managerId?: StringNullableFilter<"Branch"> | string | null
     organisationId?: StringFilter<"Branch"> | string
     isDeleted?: BoolFilter<"Branch"> | boolean
+    deletedAt?: DateTimeNullableFilter<"Branch"> | Date | string | null
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
   }
@@ -115895,6 +116050,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emailList?: EmailListCreateNestedOneWithoutCampaignsInput
@@ -115914,6 +116070,7 @@ export namespace Prisma {
     emailListId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -115939,6 +116096,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutCasesInput
@@ -115963,6 +116121,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -115989,6 +116148,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutCasesInput
@@ -116013,6 +116173,7 @@ export namespace Prisma {
     assignedToId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -118131,6 +118292,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutCasesInput
@@ -118156,6 +118318,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -118533,6 +118696,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -118632,6 +118797,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -118736,6 +118903,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -118835,6 +119004,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
@@ -119754,6 +119925,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -119778,6 +119950,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     leads?: LeadUncheckedCreateNestedManyWithoutBranchInput
@@ -119803,6 +119976,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -119826,6 +120000,7 @@ export namespace Prisma {
     contactPhone?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -120889,6 +121064,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -120988,6 +121165,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -121462,6 +121641,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -121486,6 +121666,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leads?: LeadUncheckedUpdateManyWithoutBranchNestedInput
@@ -121555,6 +121736,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -121654,6 +121837,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -121763,6 +121948,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -121862,6 +122049,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -121966,6 +122155,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -122065,6 +122256,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -122409,6 +122602,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -122508,6 +122703,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -122618,6 +122815,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -122717,6 +122916,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -122991,6 +123192,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -123090,6 +123293,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -123205,6 +123410,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -123304,6 +123511,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -123575,6 +123784,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -123674,6 +123885,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -123931,6 +124144,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -124030,6 +124245,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -124134,6 +124351,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -124233,6 +124452,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -124942,6 +125163,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -124966,6 +125188,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -125067,6 +125290,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -125166,6 +125391,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -125435,6 +125662,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -125534,6 +125763,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -125644,6 +125875,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -125743,6 +125976,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -126079,6 +126314,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -126103,6 +126339,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -126561,6 +126798,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     createdApiKeys?: ApiKeyCreateNestedManyWithoutCreatedByInput
@@ -126660,6 +126899,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -126764,6 +127005,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -126863,6 +127106,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -127173,6 +127418,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedTo?: UserCreateNestedOneWithoutAssignedCasesInput
@@ -127197,6 +127443,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -127900,6 +128147,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -127924,6 +128172,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -128136,6 +128385,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     createdApiKeys?: ApiKeyUpdateManyWithoutCreatedByNestedInput
@@ -128235,6 +128486,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -128345,6 +128598,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -128444,6 +128699,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -128947,6 +129204,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -128971,6 +129229,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -129059,6 +129318,7 @@ export namespace Prisma {
     resolvedAt?: Date | string | null
     resolution?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account?: AccountCreateNestedOneWithoutCasesInput
@@ -129083,6 +129343,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -129392,6 +129653,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -129491,6 +129754,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -129595,6 +129860,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -129694,6 +129961,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -130380,6 +130649,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -130404,6 +130674,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -130745,6 +131016,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -130844,6 +131117,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -130954,6 +131229,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -131053,6 +131330,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -131411,6 +131690,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -131435,6 +131715,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -131830,6 +132111,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -131929,6 +132212,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -132033,6 +132318,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -132132,6 +132419,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -132769,6 +133058,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -132793,6 +133083,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -133118,6 +133409,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -133217,6 +133510,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -133327,6 +133622,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -133426,6 +133723,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -133828,6 +134127,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -133852,6 +134152,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -133889,6 +134190,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -133988,6 +134291,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -134424,6 +134729,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -134448,6 +134754,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -134501,6 +134808,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -134600,6 +134909,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -134949,6 +135260,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -134973,6 +135285,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -136117,6 +136430,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -136216,6 +136531,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -136320,6 +136637,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -136419,6 +136738,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -136604,6 +136925,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -136703,6 +137026,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -137163,6 +137488,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -137262,6 +137589,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -137372,6 +137701,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -137471,6 +137802,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -137668,6 +138001,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -137767,6 +138102,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -138493,6 +138830,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -138592,6 +138931,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -138696,6 +139037,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -138795,6 +139138,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -138980,6 +139325,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -139079,6 +139426,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -139525,6 +139874,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -139549,6 +139899,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -139683,6 +140034,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -139782,6 +140135,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -139892,6 +140247,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -139991,6 +140348,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -140188,6 +140547,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -140287,6 +140648,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -140757,6 +141120,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -140781,6 +141145,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -140893,6 +141258,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -140992,6 +141359,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -141177,6 +141546,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -141276,6 +141647,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -141722,6 +142095,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -141746,6 +142120,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -141880,6 +142255,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -141979,6 +142356,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -142176,6 +142555,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -142275,6 +142656,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -142745,6 +143128,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -142769,6 +143153,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -143013,6 +143398,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -143112,6 +143499,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -143558,6 +143947,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -143582,6 +143972,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -143860,6 +144251,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -143959,6 +144352,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -144429,6 +144824,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -144453,6 +144849,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -144646,6 +145043,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -144745,6 +145144,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -145387,6 +145788,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -145486,6 +145889,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -145949,6 +146354,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedCampaignsInput
@@ -145968,6 +146374,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -146006,6 +146413,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -146105,6 +146514,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -146601,6 +147012,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -146700,6 +147113,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -146990,6 +147405,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -147089,6 +147506,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -147388,6 +147807,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -147487,6 +147908,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -147782,6 +148205,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -147881,6 +148306,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -148179,6 +148606,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -148278,6 +148707,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -148952,6 +149383,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -149051,6 +149484,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -149319,6 +149754,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -149418,6 +149855,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -149676,6 +150115,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -149775,6 +150216,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -149890,6 +150333,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -149989,6 +150434,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -150088,6 +150535,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -150187,6 +150636,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -150302,6 +150753,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -150401,6 +150854,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -150566,6 +151021,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -150665,6 +151122,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -150769,6 +151228,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -150868,6 +151329,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -151183,6 +151646,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -151282,6 +151747,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -151392,6 +151859,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -151491,6 +151960,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -151802,6 +152273,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -151901,6 +152374,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -152005,6 +152480,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -152104,6 +152581,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -152361,6 +152840,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -152460,6 +152941,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -152547,6 +153030,7 @@ export namespace Prisma {
     contactEmail?: string | null
     contactPhone?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutBranchesInput
@@ -152571,6 +153055,7 @@ export namespace Prisma {
     managerId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
@@ -152624,6 +153109,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -152723,6 +153210,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -152833,6 +153322,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -152932,6 +153423,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -153201,6 +153694,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -153300,6 +153795,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -153393,6 +153890,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -153417,6 +153915,7 @@ export namespace Prisma {
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -153454,6 +153953,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -153553,6 +154054,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -153657,6 +154160,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -153756,6 +154261,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -153860,6 +154367,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -153959,6 +154468,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -154446,6 +154957,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -154545,6 +155058,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -154655,6 +155170,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -154754,6 +155271,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -154864,6 +155383,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -154963,6 +155484,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -155414,6 +155937,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -155513,6 +156038,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -155617,6 +156144,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -155716,6 +156245,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -155820,6 +156351,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -155919,6 +156452,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -156187,6 +156722,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -156286,6 +156823,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -156396,6 +156935,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -156495,6 +157036,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -156605,6 +157148,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -156704,6 +157249,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -157037,6 +157584,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -157136,6 +157685,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -157240,6 +157791,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -157339,6 +157892,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -157524,6 +158079,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -157623,6 +158180,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -157972,6 +158531,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -158071,6 +158632,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -158181,6 +158744,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -158280,6 +158845,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -158477,6 +159044,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -158576,6 +159145,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -159274,6 +159845,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -159373,6 +159946,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -159952,6 +160527,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -160051,6 +160628,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -160150,6 +160729,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -160249,6 +160830,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -160517,6 +161100,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -160616,6 +161201,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -160874,6 +161461,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -160973,6 +161562,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -161088,6 +161679,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -161187,6 +161780,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -161286,6 +161881,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -161385,6 +161982,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -161653,6 +162252,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -161752,6 +162353,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -162010,6 +162613,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -162109,6 +162714,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -162377,6 +162984,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -162476,6 +163085,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -162734,6 +163345,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -162833,6 +163446,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -163101,6 +163716,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -163200,6 +163817,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -163458,6 +164077,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -163557,6 +164178,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -163672,6 +164295,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -163771,6 +164396,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -164182,6 +164809,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -164281,6 +164910,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -164516,6 +165147,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -164615,6 +165248,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -164719,6 +165354,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -164818,6 +165455,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -164933,6 +165572,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -165032,6 +165673,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -165279,6 +165922,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -165378,6 +166023,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -165488,6 +166135,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -165587,6 +166236,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -165686,6 +166337,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -165785,6 +166438,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -166053,6 +166708,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -166152,6 +166809,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -166563,6 +167222,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -166662,6 +167323,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -167152,6 +167815,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -167251,6 +167916,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -167535,6 +168202,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -167634,6 +168303,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -167908,6 +168579,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -168007,6 +168680,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -168259,6 +168934,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -168358,6 +169035,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -168632,6 +169311,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -168731,6 +169412,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -168983,6 +169666,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -169082,6 +169767,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -169414,6 +170101,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -169513,6 +170202,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -169993,6 +170684,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -170092,6 +170785,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -170633,6 +171328,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -170732,6 +171429,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -170880,6 +171579,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -170979,6 +171680,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -171236,6 +171939,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -171335,6 +172040,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -171450,6 +172157,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -171549,6 +172258,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -171818,6 +172529,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -171917,6 +172630,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -172169,6 +172884,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -172268,6 +172985,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -172542,6 +173261,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -172641,6 +173362,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -172893,6 +173616,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -172992,6 +173717,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -173266,6 +173993,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -173365,6 +174094,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -173617,6 +174348,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -173716,6 +174449,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -174418,6 +175153,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -174517,6 +175254,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -175089,6 +175828,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -175188,6 +175929,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -175533,6 +176276,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -175632,6 +176377,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -176043,6 +176790,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -176142,6 +176891,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -176246,6 +176997,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -176345,6 +177098,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -177322,6 +178077,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -177421,6 +178178,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -178755,6 +179514,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
     ownedAccounts?: AccountCreateNestedManyWithoutOwnerInput
@@ -178854,6 +179615,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -179242,6 +180005,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -179341,6 +180106,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -179685,6 +180452,7 @@ export namespace Prisma {
     emailListId?: string | null
     createdById?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -179704,6 +180472,7 @@ export namespace Prisma {
     assignedToId?: string | null
     createdById?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -180092,6 +180861,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
@@ -180382,6 +181153,7 @@ export namespace Prisma {
     contactPhone?: string | null
     managerId?: string | null
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -180746,6 +181518,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedCampaignsNestedInput
@@ -180765,6 +181538,7 @@ export namespace Prisma {
     emailListId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -180782,6 +181556,7 @@ export namespace Prisma {
     emailListId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -180797,6 +181572,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutCasesNestedInput
@@ -180821,6 +181597,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180841,6 +181618,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -182035,6 +182813,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -182134,6 +182914,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
@@ -182233,6 +183015,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
@@ -183086,6 +183870,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     manager?: UserUpdateOneWithoutManagedBranchesNestedInput
@@ -183109,6 +183894,7 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -183131,6 +183917,7 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -183407,6 +184194,7 @@ export namespace Prisma {
     emailListId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -183426,6 +184214,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -183446,6 +184235,7 @@ export namespace Prisma {
     assignedToId?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -184242,6 +185032,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -184346,6 +185137,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
     dailyLeadQuota?: number | null
@@ -184654,6 +185447,7 @@ export namespace Prisma {
     contactPhone?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -185171,6 +185965,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emailList?: EmailListUpdateOneWithoutCampaignsNestedInput
@@ -185190,6 +185985,7 @@ export namespace Prisma {
     emailListId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -185207,6 +186003,7 @@ export namespace Prisma {
     emailListId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -185222,6 +186019,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutCasesNestedInput
@@ -185246,6 +186044,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185266,6 +186065,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185282,6 +186082,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutCasesNestedInput
@@ -185306,6 +186107,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185326,6 +186128,7 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -187879,6 +188682,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutCasesNestedInput
@@ -187904,6 +188708,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187924,6 +188729,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -188184,6 +188990,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -188283,6 +189091,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
@@ -188382,6 +189192,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
@@ -189293,6 +190105,7 @@ export namespace Prisma {
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutBranchesNestedInput
@@ -189316,6 +190129,7 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
@@ -189338,6 +190152,7 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -189405,6 +190220,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -189460,6 +190277,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -189559,6 +190378,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -189658,6 +190479,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -190971,6 +191794,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -191369,6 +192193,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedTo?: UserUpdateOneWithoutAssignedCasesNestedInput
@@ -191393,6 +192218,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191413,6 +192239,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192128,6 +192955,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     previousOwnerId?: string | null
@@ -192390,6 +193218,7 @@ export namespace Prisma {
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolution?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneWithoutCasesNestedInput
@@ -192414,6 +193243,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192434,6 +193264,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194195,6 +195026,7 @@ export namespace Prisma {
     createdById?: string | null
     organisationId: string
     isDeleted?: boolean
+    deletedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -194210,6 +195042,7 @@ export namespace Prisma {
     stats?: NullableJsonNullValueInput | InputJsonValue
     customFields?: NullableJsonNullValueInput | InputJsonValue
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedCampaignsNestedInput
@@ -194229,6 +195062,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -194246,6 +195080,7 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     organisationId?: StringFieldUpdateOperationsInput | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -195326,6 +196161,8 @@ export namespace Prisma {
     timezone?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isDeleted?: boolean
+    deletedAt?: Date | string | null
     organisationId?: string | null
     reportsToId?: string | null
     permissions?: UserCreatepermissionsInput | string[]
@@ -195610,6 +196447,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     permissions?: UserUpdatepermissionsInput | string[]
     dailyLeadQuota?: NullableIntFieldUpdateOperationsInput | number | null
     ownedAccounts?: AccountUpdateManyWithoutOwnerNestedInput
@@ -195709,6 +196548,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]
@@ -195808,6 +196649,8 @@ export namespace Prisma {
     timezone?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     reportsToId?: NullableStringFieldUpdateOperationsInput | string | null
     permissions?: UserUpdatepermissionsInput | string[]

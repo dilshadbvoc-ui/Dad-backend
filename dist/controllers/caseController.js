@@ -299,7 +299,7 @@ const deleteCase = async (req, res) => {
                 id: req.params.id,
                 organisationId: orgId
             },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         await (0, auditLogger_1.logAudit)({
             organisationId: orgId,

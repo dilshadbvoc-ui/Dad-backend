@@ -4,6 +4,7 @@ import { ResponseHandler as ApiResponse } from '../utils/apiResponse';
 import { logger } from '../utils/logger';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
+import { TrashService } from '../services/trashService';
 
 export const getTrashItems = async (req: Request, res: Response) => {
     const user = (req as any).user;
@@ -15,13 +16,20 @@ export const getTrashItems = async (req: Request, res: Response) => {
         }
 
         // Fetch deleted items from all relevant models
-        const [leads, contacts, accounts, opportunities, tasks, documents] = await Promise.all([
+        const [leads, contacts, accounts, opportunities, tasks, documents, products, users, teams, quotes, campaigns, cases, branches] = await Promise.all([
             prisma.lead.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
             prisma.contact.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
             prisma.account.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
             prisma.opportunity.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
             prisma.task.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
-            prisma.document.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } })
+            prisma.document.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.product.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.user.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.team.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.quote.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.campaign.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.case.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } }),
+            prisma.branch.findMany({ where: { organisationId, isDeleted: true }, orderBy: { deletedAt: 'desc' } })
         ]);
 
         const trashItems = [
@@ -30,7 +38,14 @@ export const getTrashItems = async (req: Request, res: Response) => {
             ...accounts.map((item: any) => ({ ...item, type: 'Account', name: item.name })),
             ...opportunities.map((item: any) => ({ ...item, type: 'Opportunity', name: item.name })),
             ...tasks.map((item: any) => ({ ...item, type: 'Task', name: item.subject })),
-            ...documents.map((item: any) => ({ ...item, type: 'Document', name: item.name }))
+            ...documents.map((item: any) => ({ ...item, type: 'Document', name: item.name })),
+            ...products.map((item: any) => ({ ...item, type: 'Product', name: item.name })),
+            ...users.map((item: any) => ({ ...item, type: 'User', name: `${item.firstName} ${item.lastName}`.trim() })),
+            ...teams.map((item: any) => ({ ...item, type: 'Team', name: item.name })),
+            ...quotes.map((item: any) => ({ ...item, type: 'Quote', name: item.title || item.quoteNumber })),
+            ...campaigns.map((item: any) => ({ ...item, type: 'Campaign', name: item.name })),
+            ...cases.map((item: any) => ({ ...item, type: 'Case', name: item.subject })),
+            ...branches.map((item: any) => ({ ...item, type: 'Branch', name: item.name }))
         ].sort((a, b) => (new Date(b.deletedAt).getTime() || 0) - (new Date(a.deletedAt).getTime() || 0));
 
         return ApiResponse.success(res, trashItems, 'Trash items fetched successfully');
@@ -72,6 +87,27 @@ export const restoreItem = async (req: Request, res: Response) => {
             case 'Document':
                 result = await prisma.document.update({ where: { id, organisationId }, data });
                 break;
+            case 'Product':
+                result = await prisma.product.update({ where: { id, organisationId }, data });
+                break;
+            case 'User':
+                result = await prisma.user.update({ where: { id, organisationId }, data: { ...data, isActive: true } });
+                break;
+            case 'Team':
+                result = await prisma.team.update({ where: { id, organisationId }, data });
+                break;
+            case 'Quote':
+                result = await prisma.quote.update({ where: { id, organisationId }, data });
+                break;
+            case 'Campaign':
+                result = await prisma.campaign.update({ where: { id, organisationId }, data });
+                break;
+            case 'Case':
+                result = await prisma.case.update({ where: { id, organisationId }, data });
+                break;
+            case 'Branch':
+                result = await prisma.branch.update({ where: { id, organisationId }, data });
+                break;
             default:
                 return ApiResponse.validationError(res, 'Invalid item type');
         }
@@ -102,29 +138,7 @@ export const permanentDelete = async (req: Request, res: Response) => {
             return ApiResponse.forbidden(res, 'User not associated with an organisation');
         }
 
-        let result;
-        switch (type) {
-            case 'Lead':
-                result = await prisma.lead.delete({ where: { id, organisationId } });
-                break;
-            case 'Contact':
-                result = await prisma.contact.delete({ where: { id, organisationId } });
-                break;
-            case 'Account':
-                result = await prisma.account.delete({ where: { id, organisationId } });
-                break;
-            case 'Opportunity':
-                result = await prisma.opportunity.delete({ where: { id, organisationId } });
-                break;
-            case 'Task':
-                result = await prisma.task.delete({ where: { id, organisationId } });
-                break;
-            case 'Document':
-                result = await prisma.document.delete({ where: { id, organisationId } });
-                break;
-            default:
-                return ApiResponse.validationError(res, 'Invalid item type');
-        }
+        const result = await TrashService.permanentDelete(type, id, organisationId, user.id);
 
         await logAudit({
             organisationId,

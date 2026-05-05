@@ -48,6 +48,7 @@ const roleUtils_1 = require("../utils/roleUtils");
 const geoLocationService_1 = require("../services/geoLocationService");
 const followUpService_1 = require("../services/followUpService");
 const gallaboxService_1 = require("../services/gallaboxService");
+const duplicateLeadService_1 = __importDefault(require("../services/duplicateLeadService"));
 // Dynamic import used for OpenAI to avoid startup errors if missing
 // GET /api/leads
 const getLeads = async (req, res) => {
@@ -177,12 +178,21 @@ const createLead = async (req, res) => {
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
         const currentUser = req.user;
-        const branchId = req.body.branchId || currentUser.branchId;
         const assignedTo = req.body.assignedTo;
+        const leadOwnerId = assignedTo || currentUser.id;
+        // Resolve Branch (Lead branch is the lead owner's branch)
+        let targetBranchId = req.body.branchId || currentUser.branchId;
+        if (assignedTo) {
+            const assignedUser = await prisma_1.default.user.findUnique({
+                where: { id: assignedTo },
+                select: { branchId: true }
+            });
+            if (assignedUser?.branchId)
+                targetBranchId = assignedUser.branchId;
+        }
         const { firstName, lastName, source, sourceDetails, company, enquiryAbout } = req.body;
-        // Check for duplicates using DuplicateLeadService
-        const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, branchId || undefined);
+        // Check for duplicates using DuplicateLeadService (Strictly isolated by branch)
+        const duplicateCheck = await duplicateLeadService_1.default.checkDuplicate(cleanPhone, email, orgId, targetBranchId || undefined);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
             const reEnquiryData = {
@@ -195,7 +205,7 @@ const createLead = async (req, res) => {
                 source: source,
                 sourceDetails: sourceDetails
             };
-            const updatedLead = await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, reEnquiryData, orgId);
+            const updatedLead = await duplicateLeadService_1.default.handleReEnquiry(duplicateCheck.existingLead, reEnquiryData, orgId);
             return res.status(200).json({
                 message: 'Lead already exists. Marked as re-enquiry and notifications sent.',
                 lead: updatedLead,
@@ -206,18 +216,6 @@ const createLead = async (req, res) => {
         }
         // Sanitize email: treat empty string as no email
         const cleanEmail = email && email.trim() !== '' ? email.trim() : undefined;
-        // Manual assignment owner logic
-        const leadOwnerId = assignedTo || currentUser.id;
-        // Sync branch with assigned user
-        let leadBranchId = branchId || currentUser.branchId;
-        if (assignedTo) {
-            const assignedUser = await prisma_1.default.user.findUnique({
-                where: { id: assignedTo },
-                select: { branchId: true }
-            });
-            if (assignedUser?.branchId)
-                leadBranchId = assignedUser.branchId;
-        }
         // Detect country from IP address if not provided
         let geoData = null;
         if (!req.body.country && !req.body.countryCode) {
@@ -273,7 +271,7 @@ const createLead = async (req, res) => {
                 countryCode: req.body.countryCode || geoData?.countryCode || undefined,
                 phoneCountryCode: req.body.phoneCountryCode || geoData?.phoneCountryCode || undefined,
                 organisation: { connect: { id: orgId } },
-                branch: leadBranchId ? { connect: { id: leadBranchId } } : undefined,
+                branch: targetBranchId ? { connect: { id: targetBranchId } } : undefined,
                 // Assign to creator by default, or to specified user
                 assignedTo: { connect: { id: leadOwnerId } },
                 source: req.body.source || client_1.LeadSource.manual,
@@ -828,14 +826,29 @@ const createBulkLeads = async (req, res) => {
         const userEmailMap = new Map(orgUsers.map(u => [u.email.toLowerCase(), u.id]));
         for (const l of leadsData) {
             try {
-                // Sanitize phone
+                // Sanitize phone: keep all digits for the service to handle normalization
                 let cleanPhone = l.phone?.toString().replace(/\D/g, '') || '';
-                if (cleanPhone.length > 10) {
-                    cleanPhone = cleanPhone.slice(-10);
+                // Resolve owner and branch EARLY to correctly isolate duplicate check
+                let targetOwnerId = l.assignedTo || l.assignedToId;
+                let targetBranchId = l.branchId || user.branchId;
+                // Resolution via ownerEmail if provided in import
+                if (!targetOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
+                    const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
+                    if (resolvedId)
+                        targetOwnerId = resolvedId;
                 }
-                // Check for duplicates
+                // If specific user resolved, sync branch with them
+                if (targetOwnerId) {
+                    const assignedUser = await prisma_1.default.user.findUnique({
+                        where: { id: targetOwnerId },
+                        select: { branchId: true }
+                    });
+                    if (assignedUser?.branchId)
+                        targetBranchId = assignedUser.branchId;
+                }
+                // Check for duplicates in the RESOLVED branch
                 const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
-                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId, l.branchId || user.branchId || undefined);
+                const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, l.email, orgId, targetBranchId || undefined);
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
                     // Handle as re-enquiry
                     await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
@@ -856,23 +869,14 @@ const createBulkLeads = async (req, res) => {
                 if (!l.country && !l.countryCode && cleanPhone) {
                     geoData = geoLocationService_1.GeoLocationService.detectCountryFromPhone(cleanPhone);
                 }
-                // Determine final owner
-                let finalOwnerId = l.assignedTo || l.assignedToId;
-                // Resolution via ownerEmail if provided in import
-                if (!finalOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
-                    const resolvedId = userEmailMap.get(l.ownerEmail.toLowerCase());
-                    if (resolvedId) {
-                        finalOwnerId = resolvedId;
-                    }
-                }
+                let finalOwnerId = targetOwnerId;
                 if (splitIds.length > 0) {
                     finalOwnerId = splitIds[splitIndex % splitIds.length];
-                    console.log('[createBulkLeads] Split Assignment:', finalOwnerId, 'Index:', splitIndex);
                     splitIndex++;
                 }
                 else if (!finalOwnerId && applyRules) {
                     const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/distributionService')));
-                    finalOwnerId = await DistributionService.assignLead({ ...l, id: undefined, branchId: l.branchId || user.branchId || undefined }, orgId, ruleId, user.id // Importer fallback
+                    finalOwnerId = await DistributionService.assignLead({ ...l, id: undefined, branchId: targetBranchId || undefined }, orgId, ruleId, user.id // Importer fallback
                     ) || undefined;
                 }
                 // Robust Status and Stage Resolution for Bulk Creation
@@ -1430,11 +1434,17 @@ exports.generateAIResponse = generateAIResponse;
 // GET /api/leads/re-enquiries - Get all re-enquiry leads
 const getReEnquiryLeads = async (req, res) => {
     try {
-        const orgId = (0, hierarchyUtils_1.getOrgId)(req.user);
+        const user = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(403).json({ message: 'No organisation context' });
+        // Enforce hierarchy: Managers only see their branch's re-enquiries
+        let branchId = undefined;
+        if (!(0, roleUtils_1.isAdmin)(user) && !(0, roleUtils_1.isOrgAdmin)(user) && user.branchId) {
+            branchId = user.branchId;
+        }
         const DuplicateLeadService = (await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')))).default;
-        const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId);
+        const reEnquiryLeads = await DuplicateLeadService.getReEnquiryLeads(orgId, branchId);
         res.json({
             leads: reEnquiryLeads,
             count: reEnquiryLeads.length

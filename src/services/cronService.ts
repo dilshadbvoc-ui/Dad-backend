@@ -1,4 +1,5 @@
 import cron from 'node-cron';
+import { TrashService } from './trashService';
 import { prisma } from '../config/prisma';
 
 export const initCronJobs = () => {
@@ -250,24 +251,8 @@ export const initCronJobs = () => {
 
     // Run every day at 02:00 AM (Trash Purge - 7 Days)
     cron.schedule('0 2 * * *', async () => {
-        console.log('[Cron] Running daily trash purge...');
         try {
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-            const where = {
-                isDeleted: true,
-                deletedAt: { lt: sevenDaysAgo }
-            };
-
-            const models = ['lead', 'contact', 'account', 'opportunity', 'task', 'document'];
-            
-            for (const model of models) {
-                const result = await (prisma as any)[model].deleteMany({ where });
-                if (result.count > 0) {
-                    console.log(`[Cron] Purged ${result.count} items from ${model} trash.`);
-                }
-            }
+            await TrashService.runAutomatedPurge(7);
         } catch (error) {
             console.error('[Cron] Error during trash purge:', error);
         }

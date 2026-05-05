@@ -108,6 +108,8 @@ model User {
   timezone                    String                 @default("UTC")
   createdAt                   DateTime               @default(now())
   updatedAt                   DateTime               @updatedAt
+  isDeleted                   Boolean                @default(false)
+  deletedAt                   DateTime?
   organisationId              String?
   reportsToId                 String?
   permissions                 String[]
@@ -792,6 +794,7 @@ model Campaign {
   createdById    String?
   organisationId String
   isDeleted      Boolean      @default(false)
+  deletedAt      DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   createdBy      User?        @relation("CampaignCreator", fields: [createdById], references: [id])
@@ -1068,6 +1071,7 @@ model Case {
   createdById     String?
   organisationId  String
   isDeleted       Boolean      @default(false)
+  deletedAt       DateTime?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   account         Account?     @relation(fields: [accountId], references: [id])
@@ -1632,16 +1636,17 @@ model ProductShare {
 }
 
 model Branch {
-  id             String   @id @default(uuid())
+  id             String    @id @default(uuid())
   name           String
   location       String?
   contactEmail   String?
   contactPhone   String?
   managerId      String?
   organisationId String
-  isDeleted      Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isDeleted      Boolean   @default(false)
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   manager         User?            @relation("BranchManager", fields: [managerId], references: [id])

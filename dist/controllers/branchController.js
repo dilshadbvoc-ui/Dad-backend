@@ -130,7 +130,7 @@ const deleteBranch = async (req, res) => {
         }
         await prisma_1.default.branch.update({
             where: { id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         res.json({ message: 'Branch deleted successfully' });
     }

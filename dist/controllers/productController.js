@@ -223,7 +223,7 @@ const deleteProduct = async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         await prisma_1.default.product.update({
             where: { id: req.params.id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         // Audit Log
         const { logAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));

@@ -332,7 +332,7 @@ export const deleteQuote = async (req: Request, res: Response) => {
 
         await prisma.quote.update({
             where: { id: req.params.id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         // Audit Log

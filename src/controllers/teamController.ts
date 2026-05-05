@@ -162,7 +162,7 @@ export const deleteTeam = async (req: Request, res: Response) => {
 
         await prisma.team.update({
             where: { id: req.params.id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         await logAudit({

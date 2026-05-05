@@ -317,7 +317,7 @@ export const deleteCase = async (req: Request, res: Response) => {
                 id: req.params.id,
                 organisationId: orgId
             },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         await logAudit({

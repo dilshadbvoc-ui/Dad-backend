@@ -185,7 +185,7 @@ export const deleteCampaign = async (req: Request, res: Response) => {
         // Soft delete
         await prisma.campaign.update({
             where: { id: campaignId },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         // Audit Log

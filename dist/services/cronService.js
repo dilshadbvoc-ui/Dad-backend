@@ -38,6 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initCronJobs = void 0;
 const node_cron_1 = __importDefault(require("node-cron"));
+const trashService_1 = require("./trashService");
 const prisma_1 = require("../config/prisma");
 const initCronJobs = () => {
     // Run every day at midnight (00:00)
@@ -262,21 +263,8 @@ const initCronJobs = () => {
     console.log('[Cron] Daily cleanup job scheduled.');
     // Run every day at 02:00 AM (Trash Purge - 7 Days)
     node_cron_1.default.schedule('0 2 * * *', async () => {
-        console.log('[Cron] Running daily trash purge...');
         try {
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            const where = {
-                isDeleted: true,
-                deletedAt: { lt: sevenDaysAgo }
-            };
-            const models = ['lead', 'contact', 'account', 'opportunity', 'task', 'document'];
-            for (const model of models) {
-                const result = await prisma_1.prisma[model].deleteMany({ where });
-                if (result.count > 0) {
-                    console.log(`[Cron] Purged ${result.count} items from ${model} trash.`);
-                }
-            }
+            await trashService_1.TrashService.runAutomatedPurge(7);
         }
         catch (error) {
             console.error('[Cron] Error during trash purge:', error);

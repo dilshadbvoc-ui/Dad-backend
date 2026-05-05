@@ -195,7 +195,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
         await prisma.product.update({
             where: { id: req.params.id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
 
         // Audit Log

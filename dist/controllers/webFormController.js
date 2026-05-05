@@ -136,14 +136,24 @@ const submitWebForm = async (req, res) => {
             return res.status(404).json({ message: 'Form not found or inactive' });
         }
         const orgId = webForm.organisationId;
-        // Sanitize phone
+        // Sanitize phone: keep all digits for the service to handle normalization
         let cleanPhone = formData.phone?.toString().replace(/\D/g, '') || '';
-        if (cleanPhone.length > 10) {
-            cleanPhone = cleanPhone.slice(-10);
+        // Resolve target branch early to isolate duplicate check
+        let targetBranchId = null;
+        const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/distributionService')));
+        // Simulate assignment to find target owner and their branch
+        const assignedUserId = await DistributionService.assignLead({ ...formData, organisationId: orgId }, orgId);
+        if (assignedUserId) {
+            const assignedUser = await prisma_1.default.user.findUnique({
+                where: { id: assignedUserId },
+                select: { branchId: true }
+            });
+            if (assignedUser?.branchId)
+                targetBranchId = assignedUser.branchId;
         }
-        // Check for duplicates
+        // Check for duplicates in the RESOLVED branch
         const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('../services/duplicateLeadService')));
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, formData.email, orgId);
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, formData.email, orgId, targetBranchId || undefined);
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
             await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
@@ -160,7 +170,7 @@ const submitWebForm = async (req, res) => {
                 isReEnquiry: true
             });
         }
-        // 1. Create Lead
+        // 1. Create Lead with resolved assignment
         const lead = await prisma_1.default.lead.create({
             data: {
                 firstName: formData.firstName || 'Unknown',
@@ -170,15 +180,14 @@ const submitWebForm = async (req, res) => {
                 company: formData.company,
                 source: 'website',
                 organisationId: orgId,
+                assignedToId: assignedUserId || undefined,
+                branchId: targetBranchId,
                 customFields: {
                     webFormId: id,
                     ...formData.customFields
                 }
             }
         });
-        // 2. Trigger Distribution
-        const { DistributionService } = await Promise.resolve().then(() => __importStar(require('../services/distributionService')));
-        await DistributionService.assignLead(lead, orgId);
         // 3. AI Scoring
         const { LeadScoringService } = await Promise.resolve().then(() => __importStar(require('../services/leadScoringService')));
         LeadScoringService.scoreLead(lead.id).catch(console.error);

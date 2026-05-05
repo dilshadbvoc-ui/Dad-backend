@@ -158,7 +158,7 @@ const deleteTeam = async (req, res) => {
             return res.status(404).json({ message: 'Team not found' });
         await prisma_1.default.team.update({
             where: { id: req.params.id },
-            data: { isDeleted: true }
+            data: { isDeleted: true, deletedAt: new Date() }
         });
         await (0, auditLogger_1.logAudit)({
             organisationId: orgId,

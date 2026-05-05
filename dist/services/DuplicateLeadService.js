@@ -98,14 +98,9 @@ exports.DuplicateLeadService = {
                 organisationId
             };
             // BRANCH ISOLATION LOGIC:
-            // 1. If includeAllBranches is true, we look everywhere in the org.
-            // 2. If branchId is null/undefined, we ALSO look everywhere in the org 
-            //    to prevent creating a "global" duplicate of a branch-specific lead.
-            // 3. If branchId is provided, we strictly isolate to that branch (the default CRM behavior).
-            if (includeAllBranches || !branchId) {
-                // No branch filter added to 'where', so it searches organisation-wide
-            }
-            else {
+            // "in the same branch same lead should not exist twice thats it"
+            // We strictly isolate the check to the provided branchId.
+            if (branchId) {
                 where.branchId = branchId;
             }
             console.log('[DuplicateLeadService] Checking duplicate with:', {
@@ -113,7 +108,6 @@ exports.DuplicateLeadService = {
                 email,
                 organisationId,
                 branchId,
-                includeAllBranches,
                 where
             });
             // Check for existing lead IN THE SAME BRANCH
@@ -170,10 +164,14 @@ exports.DuplicateLeadService = {
     async handleReEnquiry(existingLead, newData, organisationId) {
         try {
             const now = new Date();
-            // Update existing lead
+            // Update existing lead with latest contact info if provided
             const updatedLead = await prisma_1.default.lead.update({
                 where: { id: existingLead.id },
                 data: {
+                    firstName: newData.firstName || existingLead.firstName,
+                    lastName: newData.lastName || existingLead.lastName,
+                    email: (newData.email && newData.email.trim() !== '') ? newData.email.trim() : existingLead.email,
+                    company: newData.company || existingLead.company,
                     status: (newData.stage && (!existingLead.status || ['new', 're_enquiry'].includes(existingLead.status.toLowerCase())))
                         ? newData.stage.toLowerCase()
                         : 're_enquiry',
@@ -182,7 +180,7 @@ exports.DuplicateLeadService = {
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
-                    enquiryAbout: newData.sourceDetails?.message || existingLead.enquiryAbout,
+                    enquiryAbout: newData.enquiryAbout || newData.sourceDetails?.message || existingLead.enquiryAbout,
                     // Update source details to track re-enquiry
                     sourceDetails: {
                         ...(existingLead.sourceDetails || {}),
@@ -302,32 +300,43 @@ exports.DuplicateLeadService = {
      */
     async findDuplicates(organisationId) {
         try {
-            // Find leads with duplicate phone numbers
+            // Find leads with duplicate phone numbers WITHIN THE SAME BRANCH
             const duplicatesByPhone = await prisma_1.default.$queryRaw `
-                SELECT phone, COUNT(*) as count, 
+                SELECT phone, "branchId", COUNT(*) as count, 
                        array_agg(id) as lead_ids,
                        array_agg("firstName" || ' ' || "lastName") as names
                 FROM "Lead"
                 WHERE "organisationId" = ${organisationId}
                   AND "isDeleted" = false
-                GROUP BY phone
+                  AND phone IS NOT NULL
+                  AND phone != ''
+                GROUP BY phone, "branchId"
                 HAVING COUNT(*) > 1
             `;
-            // Find leads with duplicate emails
+            // Find leads with duplicate emails WITHIN THE SAME BRANCH
             const duplicatesByEmail = await prisma_1.default.$queryRaw `
-                SELECT email, COUNT(*) as count,
+                SELECT email, "branchId", COUNT(*) as count,
                        array_agg(id) as lead_ids,
                        array_agg("firstName" || ' ' || "lastName") as names
                 FROM "Lead"
                 WHERE "organisationId" = ${organisationId}
                   AND "isDeleted" = false
                   AND email IS NOT NULL
-                GROUP BY email
+                  AND email != ''
+                GROUP BY email, "branchId"
                 HAVING COUNT(*) > 1
             `;
             return [
-                ...duplicatesByPhone.map(d => ({ ...d, type: 'phone' })),
-                ...duplicatesByEmail.map(d => ({ ...d, type: 'email' }))
+                ...duplicatesByPhone.map(d => ({
+                    ...d,
+                    count: Number(d.count),
+                    type: 'phone'
+                })),
+                ...duplicatesByEmail.map(d => ({
+                    ...d,
+                    count: Number(d.count),
+                    type: 'email'
+                }))
             ];
         }
         catch (error) {
@@ -338,14 +347,18 @@ exports.DuplicateLeadService = {
     /**
      * Get re-enquiry leads for an organization
      */
-    async getReEnquiryLeads(organisationId, limit = 50) {
+    async getReEnquiryLeads(organisationId, branchId, limit = 50) {
         try {
+            const where = {
+                organisationId,
+                isDeleted: false,
+                isReEnquiry: true
+            };
+            if (branchId) {
+                where.branchId = branchId;
+            }
             const reEnquiryLeads = await prisma_1.default.lead.findMany({
-                where: {
-                    organisationId,
-                    isDeleted: false,
-                    isReEnquiry: true
-                },
+                where,
                 include: {
                     assignedTo: {
                         select: {

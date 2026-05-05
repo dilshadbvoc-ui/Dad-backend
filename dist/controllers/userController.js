@@ -874,20 +874,25 @@ const permanentlyDeleteUser = async (req, res) => {
                 data: { reportsToId: transferTargetId }
             });
         }
-        // Finally, delete the User record
-        await prisma_1.default.user.delete({
-            where: { id: userId }
+        // 5. Soft Delete the User record
+        await prisma_1.default.user.update({
+            where: { id: userId },
+            data: {
+                isDeleted: true,
+                deletedAt: new Date(),
+                isActive: false
+            }
         });
         // Audit Log
         (0, auditLogger_1.logAudit)({
-            action: 'PERMANENTLY_DELETE_USER',
+            action: 'DELETE_USER',
             entity: 'User',
             entityId: userId,
             actorId: currentUser.id,
             organisationId: existing.organisationId || currentUser.organisationId,
-            details: { email: existing.email, deletedBy: currentUser.email, transferredTo: transferTargetId }
+            details: { email: existing.email, deletedBy: currentUser.email, transferredTo: transferTargetId, type: 'SOFT_DELETE' }
         });
-        res.json({ message: 'User permanently deleted and associations transferred' });
+        res.json({ message: 'User moved to trash and associations transferred' });
     }
     catch (error) {
         logger_1.logger.error('permanentlyDeleteUser Error', error, 'UserController');

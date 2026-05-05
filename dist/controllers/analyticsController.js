@@ -64,15 +64,6 @@ const getDashboardStats = async (req, res) => {
         const isSuperAdmin = (0, roleUtils_1.isSuperAdmin)(user);
         logDebug(`[Analytics] User: ${user?.id}, Org: ${orgId}, SuperAdmin: ${isSuperAdmin}`);
         const branchFilter = getBranchFilter(req);
-        // If user is not admin, they might be restricted to their own branch
-        // But for now, we trust the query param if valid, or fallback to user's branch if not admin?
-        // The requirement is "organisation admin dashboard can see branch vise data"
-        // So this is mainly for Admins filtering.
-        // If a normal user tries to filter by another branch, they shouldn't see data?
-        // For now, let's assume the UI handles visibility validation, and we just filter.
-        // But STRICTLY: standard users should default to their own branch if they have one?
-        // Existing logic for non-admins filters by `assignedToId` or `ownerId`, which implicitly handles branch (users in branch see their own stuff).
-        // So we just add the explicit branch filter.
         logDebug('[Analytics] Importing hierarchyUtils...');
         const { getVisibleUserIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
         logDebug('[Analytics] Fetching visibleUserIds...');
@@ -95,25 +86,38 @@ const getDashboardStats = async (req, res) => {
         if (!isSuperAdmin && user.role !== 'admin') {
             oppVisibilityFilter.ownerId = { in: visibleUserIds };
         }
-        // Current Month Dates
+        // Current Month Dates (Aligned to IST)
         const startOfMonth = new Date();
+        startOfMonth.setMinutes(startOfMonth.getMinutes() + 330); // Shift to IST
         startOfMonth.setDate(1);
         startOfMonth.setHours(0, 0, 0, 0);
+        startOfMonth.setMinutes(startOfMonth.getMinutes() - 330); // Shift back to UTC
         const startOfLastMonth = new Date(startOfMonth);
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
+        // Build Payment Filter
+        const paymentFilter = {
+            ...(orgId ? { organisationId: orgId } : {})
+        };
+        if (branchFilter.branchId) {
+            paymentFilter.opportunity = { branchId: branchFilter.branchId };
+        }
+        if (oppVisibilityFilter.ownerId) {
+            paymentFilter.opportunity = {
+                ...(paymentFilter.opportunity || {}),
+                ownerId: oppVisibilityFilter.ownerId
+            };
+        }
         // Group independent queries to run concurrently
-        const [totalLeads, newLeads, convertedLeads, revenueResult, pipelineResult, totalContacts, totalAccounts, prevLeads, prevRevenueResult, totalClosedCurrent, wonCurrent, wonTotal, lostTotal, activeOpportunitiesCount, totalOpportunitiesCount, revenueThisMonthResult] = await Promise.all([
+        const [totalLeads, newLeads, convertedLeads, revenueResult, pipelineResult, totalContacts, totalAccounts, prevLeads, prevRevenueResult, totalClosedCurrent, wonCurrent, wonTotal, lostTotal, activeOpportunitiesCount, totalOpportunitiesCount, revenueThisMonthResult, pendingFollowUpsCount] = await Promise.all([
             // Leads
             prisma_1.default.lead.count({ where: { ...combinedFilter, isDeleted: false, ...visibilityFilter } }),
             prisma_1.default.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'new', ...visibilityFilter } }),
             prisma_1.default.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'converted', ...visibilityFilter } }),
-            // Revenue calculation and trend
-            prisma_1.default.opportunity.aggregate({
+            // Revenue calculation and trend (Payments)
+            prisma_1.default.paymentRecord.aggregate({
                 where: {
-                    ...combinedFilter,
-                    stage: 'closed_won',
-                    isDeleted: false,
-                    ...oppVisibilityFilter
+                    ...paymentFilter,
+                    paymentDate: { lte: new Date() }
                 },
                 _sum: { amount: true }
             }),
@@ -138,14 +142,11 @@ const getDashboardStats = async (req, res) => {
                     ...visibilityFilter
                 }
             }),
-            // Previous Month Stats for Trends (Revenue)
-            prisma_1.default.opportunity.aggregate({
+            // Previous Month Stats for Trends (Revenue - Payments)
+            prisma_1.default.paymentRecord.aggregate({
                 where: {
-                    ...combinedFilter,
-                    stage: 'closed_won',
-                    isDeleted: false,
-                    closeDate: { gte: startOfLastMonth, lt: startOfMonth },
-                    ...oppVisibilityFilter
+                    ...paymentFilter,
+                    paymentDate: { gte: startOfLastMonth, lt: startOfMonth }
                 },
                 _sum: { amount: true }
             }),
@@ -179,16 +180,22 @@ const getDashboardStats = async (req, res) => {
             // Active and Total Opportunities
             prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] }, ...oppVisibilityFilter } }),
             prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } }),
-            // Revenue this month (closed_won in current month)
-            prisma_1.default.opportunity.aggregate({
+            // Revenue this month (Payments in current month)
+            prisma_1.default.paymentRecord.aggregate({
                 where: {
-                    ...combinedFilter,
-                    stage: 'closed_won',
-                    isDeleted: false,
-                    closeDate: { gte: startOfMonth },
-                    ...oppVisibilityFilter
+                    ...paymentFilter,
+                    paymentDate: { gte: startOfMonth }
                 },
                 _sum: { amount: true }
+            }),
+            // Pending Follow-ups
+            prisma_1.default.followUp.count({
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    status: { in: ['not_started', 'in_progress'] },
+                    ...(!isSuperAdmin && user.role !== 'admin' ? { assignedToId: { in: visibleUserIds } } : {})
+                }
             })
         ]);
         const totalRevenue = revenueResult._sum.amount || 0;
@@ -205,6 +212,7 @@ const getDashboardStats = async (req, res) => {
             // Flat structure
             totalLeads,
             activeOpportunities: activeOpportunitiesCount,
+            pendingFollowUps: pendingFollowUpsCount,
             salesRevenue: totalRevenue,
             revenueThisMonth,
             winRate: Math.round(currentWinRate),
@@ -251,15 +259,17 @@ const getSalesChartData = async (req, res) => {
         const combinedFilter = { ...orgFilter, ...branchFilter };
         const requestedUserId = req.query.userId;
         const sixMonthsAgo = new Date();
-        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Go back 5 months to include current month = 6 total
-        sixMonthsAgo.setDate(1); // Start of that month
+        sixMonthsAgo.setMinutes(sixMonthsAgo.getMinutes() + 330); // Shift to IST
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+        sixMonthsAgo.setDate(1);
         sixMonthsAgo.setHours(0, 0, 0, 0);
+        sixMonthsAgo.setMinutes(sixMonthsAgo.getMinutes() - 330); // Shift back to UTC
         // Visibility & User Filtering
         const visibilityFilter = {};
         if (user.role !== 'admin' && !isSuperAdmin) {
             const { getVisibleUserIds } = await Promise.resolve().then(() => __importStar(require('../utils/hierarchyUtils')));
             const visibleUserIds = await getVisibleUserIds(user.id);
-            if (requestedUserId) {
+            if (requestedUserId && typeof requestedUserId === 'string') {
                 // If specific user requested, verify they are in visibility scope
                 if (visibleUserIds.includes(requestedUserId)) {
                     visibilityFilter.ownerId = requestedUserId;
@@ -277,22 +287,20 @@ const getSalesChartData = async (req, res) => {
             // Admin can see any user
             visibilityFilter.ownerId = requestedUserId;
         }
-        // Fetch closed_won opportunities
-        const wonOpportunities = await prisma_1.default.opportunity.findMany({
+        // Fetch PaymentRecords
+        const payments = await prisma_1.default.paymentRecord.findMany({
             where: {
-                ...combinedFilter,
-                stage: 'closed_won',
-                isDeleted: false,
-                ...visibilityFilter,
-                OR: [
-                    { closeDate: { gte: sixMonthsAgo } },
-                    { updatedAt: { gte: sixMonthsAgo } }
-                ]
+                ...(orgId ? { organisationId: orgId } : {}),
+                paymentDate: { gte: sixMonthsAgo },
+                opportunity: {
+                    ...(branchFilter.branchId ? { branchId: branchFilter.branchId } : {}),
+                    ...(visibilityFilter.ownerId ? { ownerId: visibilityFilter.ownerId } : {}),
+                    isDeleted: false
+                }
             },
             select: {
                 amount: true,
-                closeDate: true,
-                updatedAt: true
+                paymentDate: true
             }
         });
         // Initialize last 6 months buckets
@@ -305,11 +313,11 @@ const getSalesChartData = async (req, res) => {
             monthlyData.set(key, 0);
         }
         // Fill data
-        for (const opp of wonOpportunities) {
-            const date = new Date(opp.closeDate || opp.updatedAt);
+        for (const payment of payments) {
+            const date = new Date(payment.paymentDate);
             const key = `${date.getFullYear()}-${date.getMonth()}`;
             if (monthlyData.has(key)) {
-                monthlyData.set(key, (monthlyData.get(key) || 0) + (opp.amount || 0));
+                monthlyData.set(key, (monthlyData.get(key) || 0) + (payment.amount || 0));
             }
         }
         // Format for frontend
@@ -612,19 +620,30 @@ const getTopPerformers = async (req, res) => {
                 email: true,
                 profileImage: true,
                 ownedOpportunities: {
-                    where: { stage: 'closed_won', isDeleted: false },
-                    select: { amount: true }
+                    where: { isDeleted: false },
+                    select: {
+                        paymentRecords: {
+                            select: { amount: true }
+                        }
+                    }
                 }
             }
         });
-        const leaderboard = topUsers.map(u => ({
-            id: u.id,
-            name: `${u.firstName} ${u.lastName}`,
-            email: u.email,
-            image: u.profileImage,
-            totalRevenue: u.ownedOpportunities.reduce((sum, opp) => sum + (opp.amount || 0), 0),
-            dealsWon: u.ownedOpportunities.length
-        }))
+        const leaderboard = topUsers.map(u => {
+            const totalRevenue = u.ownedOpportunities.reduce((sum, opp) => {
+                const oppTotal = opp.paymentRecords.reduce((pSum, pay) => pSum + (pay.amount || 0), 0);
+                return sum + oppTotal;
+            }, 0);
+            const paymentsCount = u.ownedOpportunities.reduce((count, opp) => count + opp.paymentRecords.length, 0);
+            return {
+                id: u.id,
+                name: `${u.firstName} ${u.lastName}`,
+                email: u.email,
+                image: u.profileImage,
+                totalRevenue,
+                dealsWon: paymentsCount // Number of payments
+            };
+        })
             .sort((a, b) => b.totalRevenue - a.totalRevenue)
             .slice(0, 5);
         res.json(leaderboard);
@@ -741,39 +760,22 @@ const getUserWiseSales = async (req, res) => {
                 return null;
             const aggregates = await prisma_1.default.opportunity.aggregate({
                 where: {
-                    ownerId: uid, // Sales credited to owner
+                    ownerId: uid,
                     stage: 'closed_won',
                     isDeleted: false,
-                    ...orgFilter, // Safety check
                     ...dateFilter
                 },
                 _sum: { amount: true },
-                _count: { id: true },
-                _avg: { amount: true }
+                _count: { id: true }
             });
-            const totalOpportunities = await prisma_1.default.opportunity.count({
-                where: {
-                    ownerId: uid,
-                    isDeleted: false,
-                    ...orgFilter,
-                    ...dateFilter
-                }
-            });
-            const dealsCount = aggregates._count.id || 0;
-            const winRate = totalOpportunities > 0 ? (dealsCount / totalOpportunities) * 100 : 0;
             return {
-                userId: uid,
                 name: `${userDetails.firstName} ${userDetails.lastName}`,
                 email: userDetails.email,
                 totalRevenue: aggregates._sum.amount || 0,
-                dealsCount: dealsCount,
-                avgDealSize: Math.round(aggregates._avg.amount || 0),
-                totalOpportunities,
-                winRate: Math.round(winRate)
+                dealsWon: aggregates._count.id || 0
             };
         }));
-        const cleanStats = userStats.filter(s => s !== null).sort((a, b) => (b?.totalRevenue || 0) - (a?.totalRevenue || 0));
-        res.json(cleanStats);
+        res.json(userStats.filter(Boolean));
     }
     catch (error) {
         console.error('getUserWiseSales Error:', error);

@@ -177,6 +177,8 @@ exports.Prisma.UserScalarFieldEnum = {
   timezone: 'timezone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   organisationId: 'organisationId',
   reportsToId: 'reportsToId',
   permissions: 'permissions',
@@ -579,6 +581,7 @@ exports.Prisma.CampaignScalarFieldEnum = {
   createdById: 'createdById',
   organisationId: 'organisationId',
   isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -799,6 +802,7 @@ exports.Prisma.CaseScalarFieldEnum = {
   createdById: 'createdById',
   organisationId: 'organisationId',
   isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   previousOwnerId: 'previousOwnerId'
@@ -1149,6 +1153,7 @@ exports.Prisma.BranchScalarFieldEnum = {
   managerId: 'managerId',
   organisationId: 'organisationId',
   isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
