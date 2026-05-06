@@ -192,8 +192,7 @@ export const getMessages = async (req: AuthRequest, res: Response) => {
                 { agentId: { in: visibleUserIds } },
                 { lead: { assignedToId: { in: visibleUserIds } } },
                 { lead: { createdById: { in: visibleUserIds } } },
-                { contact: { assignedToId: { in: visibleUserIds } } },
-                { contact: { createdById: { in: visibleUserIds } } }
+                { contact: { ownerId: { in: visibleUserIds } } },
             ];
         }
 
@@ -345,8 +344,7 @@ export const getConversations = async (req: AuthRequest, res: Response) => {
                 { agentId: { in: visibleUserIds } },
                 { lead: { assignedToId: { in: visibleUserIds } } },
                 { lead: { createdById: { in: visibleUserIds } } },
-                { contact: { assignedToId: { in: visibleUserIds } } },
-                { contact: { createdById: { in: visibleUserIds } } }
+                { contact: { ownerId: { in: visibleUserIds } } }
             ]
         };
 
@@ -700,8 +698,7 @@ export const getMessageStatistics = async (req: AuthRequest, res: Response) => {
                 { agentId: { in: visibleUserIds } },
                 { lead: { assignedToId: { in: visibleUserIds } } },
                 { lead: { createdById: { in: visibleUserIds } } },
-                { contact: { assignedToId: { in: visibleUserIds } } },
-                { contact: { createdById: { in: visibleUserIds } } }
+                { contact: { ownerId: { in: visibleUserIds } } },
             ];
         }
 
