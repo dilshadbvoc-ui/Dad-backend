@@ -378,17 +378,19 @@ export const getConversations = async (req: AuthRequest, res: Response) => {
                 },
                 include: {
                     lead: { select: { firstName: true, lastName: true, assignedToId: true } },
-                    contact: { select: { firstName: true, lastName: true, assignedToId: true } },
+                    contact: { select: { firstName: true, lastName: true, ownerId: true } },
                     agent: { select: { firstName: true, lastName: true } }
                 }
             });
 
             // Determine display name
             let displayName = conv.phoneNumber;
-            if (lastMessage?.contact) {
-                displayName = `${lastMessage.contact.firstName} ${lastMessage.contact.lastName}`;
-            } else if (lastMessage?.lead) {
-                displayName = `${lastMessage.lead.firstName} ${lastMessage.lead.lastName}`;
+            if ((lastMessage as any)?.contact) {
+                const contact = (lastMessage as any).contact;
+                displayName = `${contact.firstName} ${contact.lastName}`;
+            } else if ((lastMessage as any)?.lead) {
+                const lead = (lastMessage as any).lead;
+                displayName = `${lead.firstName} ${lead.lastName}`;
             }
 
             // Count unread messages for this specific conversation
@@ -413,8 +415,8 @@ export const getConversations = async (req: AuthRequest, res: Response) => {
                 messageType: lastMessage?.messageType,
                 unreadCount,
                 lastAgentId: lastMessage?.agentId,
-                lastAgentName: lastMessage?.agent ? `${lastMessage.agent.firstName} ${lastMessage.agent.lastName || ''}`.trim() : null,
-                ownerId: lastMessage?.lead?.assignedToId || lastMessage?.contact?.assignedToId || null
+                lastAgentName: (lastMessage as any)?.agent ? `${(lastMessage as any).agent.firstName} ${(lastMessage as any).agent.lastName || ''}`.trim() : null,
+                ownerId: (lastMessage as any)?.lead?.assignedToId || (lastMessage as any)?.contact?.ownerId || null
             };
         }));
 
