@@ -47,7 +47,7 @@ export function isAdmin(user: any): boolean {
  * Helper for Org Admin check (includes Admin and Super Admin)
  */
 export function isOrgAdmin(user: any): boolean {
-    return checkRole(user, ['org_admin', 'admin', 'super_admin']);
+    return checkRole(user, ['org_admin', 'organisation_admin', 'admin', 'super_admin']);
 }
 
 /**
