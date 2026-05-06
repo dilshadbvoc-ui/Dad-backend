@@ -953,10 +953,38 @@ export const getDailyReport = async (req: Request, res: Response) => {
             };
         }));
 
+        // Calculate Organization-wide Summary (All visible users)
+        const totalStats = await prisma.interaction.findMany({
+            where: {
+                organisationId: orgId,
+                type: 'call',
+                date: { gte: startOfDay, lte: endOfDay },
+                isDeleted: false,
+                createdById: { in: visibleUserIds }
+            }
+        });
+
+        const summary = {
+            totalCalls: totalStats.length,
+            incoming: totalStats.filter(c => c.direction === 'inbound').length,
+            outgoing: totalStats.filter(c => c.direction === 'outbound').length,
+            missed: totalStats.filter(c => c.direction === 'inbound' && c.callStatus === 'missed').length,
+            rejected: totalStats.filter(c => c.direction === 'inbound' && c.callStatus === 'rejected').length,
+            neverAttended: totalStats.filter(c => c.direction === 'inbound' && ['missed', 'rejected'].includes(c.callStatus || '')).length,
+            notPickedUp: totalStats.filter(c => c.direction === 'outbound' && (c.duration === 0 || c.callStatus === 'failed')).length,
+            unique: new Set(totalStats.map(c => c.phoneNumber).filter(Boolean)).size,
+            totalDuration: totalStats.reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            incomingDuration: totalStats.filter(c => c.direction === 'inbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            outgoingDuration: totalStats.filter(c => c.direction === 'outbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+        };
+
         // Sort by total calls descending as a default
         report.sort((a, b) => b.totalCalls - a.totalCalls);
 
-        res.json(report);
+        res.json({
+            table: report,
+            summary
+        });
     } catch (error) {
         console.error('[ReportController] getDailyReport error:', error);
         res.status(500).json({ message: 'Failed to fetch daily report' });

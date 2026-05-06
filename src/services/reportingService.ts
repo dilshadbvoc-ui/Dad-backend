@@ -58,6 +58,30 @@ export class ReportingService {
             _sum: { amount: true }
         });
 
+        // 6. Call Statistics
+        const callsToday = await prisma.interaction.findMany({
+            where: {
+                organisationId,
+                type: 'call',
+                date: { gte: today, lt: tomorrow },
+                isDeleted: false
+            }
+        });
+
+        const callStats = {
+            total: callsToday.length,
+            incoming: callsToday.filter(c => c.direction === 'inbound').length,
+            outgoing: callsToday.filter(c => c.direction === 'outbound').length,
+            missed: callsToday.filter(c => c.direction === 'inbound' && c.callStatus === 'missed').length,
+            rejected: callsToday.filter(c => c.direction === 'inbound' && c.callStatus === 'rejected').length,
+            neverAttended: callsToday.filter(c => c.direction === 'inbound' && ['missed', 'rejected'].includes(c.callStatus || '')).length,
+            notPickedUp: callsToday.filter(c => c.direction === 'outbound' && (c.duration === 0 || c.callStatus === 'failed')).length,
+            unique: new Set(callsToday.map(c => c.phoneNumber).filter(Boolean)).size,
+            totalDuration: callsToday.reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            incomingDuration: callsToday.filter(c => c.direction === 'inbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            outgoingDuration: callsToday.filter(c => c.direction === 'outbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+        };
+
         return {
             newLeads,
             revenueToday,
@@ -65,12 +89,19 @@ export class ReportingService {
             pendingTasks,
             overdueTasks,
             pipelineValue: pipelineResult._sum.amount || 0,
+            callStats,
             date: today.toLocaleDateString()
         };
     }
 
     static formatWhatsAppReport(stats: any, orgName: string) {
-        return `📊 *Daily Report: ${orgName}*
+        const formatDuration = (seconds: number) => {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}m ${s}s`;
+        };
+
+        let report = `📊 *Daily Report: ${orgName}*
 📅 Date: ${stats.date}
 
 📈 *Sales & Leads*
@@ -85,7 +116,18 @@ export class ReportingService {
 💰 *Pipeline*
 - Active Pipeline: ₹${stats.pipelineValue.toLocaleString()}
 
+📞 *Call Statistics*
+- Total Calls: ${stats.callStats.total} (${formatDuration(stats.callStats.totalDuration)})
+- Incoming: ${stats.callStats.incoming} (${formatDuration(stats.callStats.incomingDuration)})
+- Outgoing: ${stats.callStats.outgoing} (${formatDuration(stats.callStats.outgoingDuration)})
+- Missed: ${stats.callStats.missed}
+- Rejected: ${stats.callStats.rejected}
+- Never Attended: ${stats.callStats.neverAttended}
+- Not Pickup by Client: ${stats.callStats.notPickedUp}
+- Unique Calls: ${stats.callStats.unique}
+
 _Powered by CRM Automation_`;
+        return report;
     }
 
     static async getManagerDailyStats(managerId: string, organisationId: string) {
@@ -120,10 +162,34 @@ _Powered by CRM Automation_`;
             select: { ownerId: true, amount: true }
         });
 
+        // 3. Calls by User
+        const calls = await prisma.interaction.findMany({
+            where: {
+                organisationId,
+                createdById: { in: userIds },
+                type: 'call',
+                date: { gte: today, lt: tomorrow },
+                isDeleted: false
+            },
+            select: { createdById: true, direction: true, callStatus: true, duration: true, recordingDuration: true, phoneNumber: true }
+        });
+
         // Grouping logic
         const userStats: Record<string, any> = {};
         for (const id of userIds) {
-            userStats[id] = { leads: 0, revenue: 0, stages: {} };
+            userStats[id] = { 
+                leads: 0, 
+                revenue: 0, 
+                stages: {},
+                calls: {
+                    total: 0,
+                    incoming: 0,
+                    outgoing: 0,
+                    missed: 0,
+                    duration: 0,
+                    unique: new Set()
+                }
+            };
         }
 
         leads.forEach(l => {
@@ -140,6 +206,18 @@ _Powered by CRM Automation_`;
             }
         });
 
+        calls.forEach(c => {
+            if (c.createdById) {
+                const s = userStats[c.createdById].calls;
+                s.total++;
+                if (c.direction === 'inbound') s.incoming++;
+                if (c.direction === 'outbound') s.outgoing++;
+                if (c.callStatus === 'missed') s.missed++;
+                s.duration += (c.recordingDuration || 0);
+                if (c.phoneNumber) s.unique.add(c.phoneNumber);
+            }
+        });
+
         // Get user names
         const users = await prisma.user.findMany({
             where: { id: { in: userIds } },
@@ -150,18 +228,29 @@ _Powered by CRM Automation_`;
             name: `${u.firstName} ${u.lastName}`,
             leads: userStats[u.id].leads,
             revenue: userStats[u.id].revenue,
-            stages: userStats[u.id].stages
-        })).filter(s => s.leads > 0 || s.revenue > 0);
+            stages: userStats[u.id].stages,
+            calls: {
+                ...userStats[u.id].calls,
+                unique: userStats[u.id].calls.unique.size
+            }
+        })).filter(s => s.leads > 0 || s.revenue > 0 || s.calls.total > 0);
 
         return {
             teamStats: formattedStats,
             totalLeads: leads.length,
             totalRevenue: wonOpps.reduce((sum, o) => sum + (o.amount || 0), 0),
+            totalCalls: calls.length,
             date: today.toLocaleDateString()
         };
     }
 
     static formatManagerReport(stats: any, managerName: string) {
+        const formatDuration = (seconds: number) => {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}m ${s}s`;
+        };
+
         let report = `👔 *Manager Daily Report: ${managerName}*\n📅 Date: ${stats.date}\n\n`;
 
         if (stats.teamStats.length === 0) {
@@ -171,6 +260,7 @@ _Powered by CRM Automation_`;
                 report += `👤 *${user.name}*\n`;
                 report += `- New Leads: ${user.leads}\n`;
                 report += `- Revenue: ₹${user.revenue.toLocaleString()}\n`;
+                report += `- Calls: ${user.calls.total} (${formatDuration(user.calls.duration)})\n`;
                 if (Object.keys(user.stages).length > 0) {
                     const stages = Object.entries(user.stages).map(([s, c]) => `${s}: ${c}`).join(', ');
                     report += `- Stages: ${stages}\n`;
@@ -181,6 +271,7 @@ _Powered by CRM Automation_`;
             report += `📊 *Team Totals*\n`;
             report += `- Total Leads: ${stats.totalLeads}\n`;
             report += `- Total Revenue: ₹${stats.totalRevenue.toLocaleString()}\n`;
+            report += `- Total Calls: ${stats.totalCalls}\n`;
         }
 
         report += `\n_Generated by Sales Intelligence_`;
