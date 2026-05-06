@@ -21,6 +21,7 @@ const OAUTH_SCOPES = [
     'pages_read_engagement',
     'pages_show_list',
     'pages_manage_ads',
+    'pages_manage_metadata', // Required for webhook subscription
     'leads_retrieval',
     'email',
     'public_profile'
@@ -274,6 +275,15 @@ router.get('/callback', async (req, res) => {
                 }
             }
         });
+
+        // 6. AUTOMATIC WEBHOOK SUBSCRIPTION
+        // Loop through all retrieved pages and subscribe them to the app
+        const { metaService } = await import('../services/metaService');
+        for (const page of pages) {
+            if (page.id && page.access_token) {
+                await metaService.subscribePageToApp(page.id, page.access_token);
+            }
+        }
 
         const finalRedirectUrl = `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}`;
         console.log(`[Meta OAuth] Redirecting to: ${finalRedirectUrl}`);
