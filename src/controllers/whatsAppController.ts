@@ -3,7 +3,7 @@ import { WhatsAppService } from '../services/whatsAppService';
 import { WhatsAppIntegrationService } from '../services/whatsAppIntegrationService';
 import { GallaboxService } from '../services/gallaboxService';
 import prisma from '../config/prisma';
-import { getOrgId } from '../utils/hierarchyUtils';
+import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { getIO } from '../socket';
 
 // Type extension for Request to include user
@@ -173,16 +173,29 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
 
 export const getMessages = async (req: AuthRequest, res: Response) => {
     try {
-        const user = req.user;
+        const user = req.user as any;
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No organisation found' });
 
         const { phoneNumber, limit = 50, offset = 0 } = req.query;
 
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'org_admin' || user.role === 'super_admin';
+
         const where: any = {
             organisationId: orgId,
             isDeleted: false
         };
+
+        if (!isOrgAdmin) {
+            where.OR = [
+                { agentId: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { lead: { createdById: { in: visibleUserIds } } },
+                { contact: { assignedToId: { in: visibleUserIds } } },
+                { contact: { createdById: { in: visibleUserIds } } }
+            ];
+        }
 
         if (phoneNumber) {
             where.phoneNumber = phoneNumber;
@@ -320,16 +333,30 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
 
 export const getConversations = async (req: AuthRequest, res: Response) => {
     try {
-        const user = req.user;
+        const user = (req as any).user;
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No organisation found' });
+
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'org_admin' || user.role === 'super_admin';
+
+        const visibilityFilter: any = isOrgAdmin ? {} : {
+            OR: [
+                { agentId: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { lead: { createdById: { in: visibleUserIds } } },
+                { contact: { assignedToId: { in: visibleUserIds } } },
+                { contact: { createdById: { in: visibleUserIds } } }
+            ]
+        };
 
         // 1. Get unique phone numbers (conversations)
         const conversations = await prisma.whatsAppMessage.groupBy({
             by: ['phoneNumber'],
             where: {
                 organisationId: orgId,
-                isDeleted: false
+                isDeleted: false,
+                ...visibilityFilter
             },
             _max: {
                 createdAt: true
@@ -347,11 +374,12 @@ export const getConversations = async (req: AuthRequest, res: Response) => {
                 where: {
                     organisationId: orgId,
                     phoneNumber: conv.phoneNumber,
-                    createdAt: conv._max.createdAt!
+                    ...visibilityFilter
                 },
                 include: {
-                    lead: { select: { firstName: true, lastName: true } },
-                    contact: { select: { firstName: true, lastName: true } }
+                    lead: { select: { firstName: true, lastName: true, assignedToId: true } },
+                    contact: { select: { firstName: true, lastName: true, assignedToId: true } },
+                    agent: { select: { firstName: true, lastName: true } }
                 }
             });
 
@@ -370,7 +398,8 @@ export const getConversations = async (req: AuthRequest, res: Response) => {
                     phoneNumber: conv.phoneNumber,
                     direction: 'incoming',
                     isReadByAgent: false,
-                    isDeleted: false
+                    isDeleted: false,
+                    ...visibilityFilter
                 }
             });
 
@@ -382,7 +411,10 @@ export const getConversations = async (req: AuthRequest, res: Response) => {
                 leadId: lastMessage?.leadId,
                 contactId: lastMessage?.contactId,
                 messageType: lastMessage?.messageType,
-                unreadCount
+                unreadCount,
+                lastAgentId: lastMessage?.agentId,
+                lastAgentName: lastMessage?.agent ? `${lastMessage.agent.firstName} ${lastMessage.agent.lastName || ''}`.trim() : null,
+                ownerId: lastMessage?.lead?.assignedToId || lastMessage?.contact?.assignedToId || null
             };
         }));
 
@@ -647,16 +679,29 @@ export const getConversationAnalytics = async (req: AuthRequest, res: Response) 
 
 export const getMessageStatistics = async (req: AuthRequest, res: Response) => {
     try {
-        const user = req.user;
+        const user = req.user as any;
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No organisation found' });
 
         const { startDate, endDate, phoneNumber } = req.query;
 
+        const visibleUserIds = await getVisibleUserIds(user.id);
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'org_admin' || user.role === 'super_admin';
+
         const where: any = {
             organisationId: orgId,
             isDeleted: false
         };
+
+        if (!isOrgAdmin) {
+            where.OR = [
+                { agentId: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { lead: { createdById: { in: visibleUserIds } } },
+                { contact: { assignedToId: { in: visibleUserIds } } },
+                { contact: { createdById: { in: visibleUserIds } } }
+            ];
+        }
 
         if (startDate && endDate) {
             where.createdAt = {
