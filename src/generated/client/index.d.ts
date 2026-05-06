@@ -24296,6 +24296,7 @@ export namespace Prisma {
     productId: string | null
     quantity: number | null
     price: number | null
+    customName: string | null
   }
 
   export type LeadProductMaxAggregateOutputType = {
@@ -24304,6 +24305,7 @@ export namespace Prisma {
     productId: string | null
     quantity: number | null
     price: number | null
+    customName: string | null
   }
 
   export type LeadProductCountAggregateOutputType = {
@@ -24312,6 +24314,7 @@ export namespace Prisma {
     productId: number
     quantity: number
     price: number
+    customName: number
     _all: number
   }
 
@@ -24332,6 +24335,7 @@ export namespace Prisma {
     productId?: true
     quantity?: true
     price?: true
+    customName?: true
   }
 
   export type LeadProductMaxAggregateInputType = {
@@ -24340,6 +24344,7 @@ export namespace Prisma {
     productId?: true
     quantity?: true
     price?: true
+    customName?: true
   }
 
   export type LeadProductCountAggregateInputType = {
@@ -24348,6 +24353,7 @@ export namespace Prisma {
     productId?: true
     quantity?: true
     price?: true
+    customName?: true
     _all?: true
   }
 
@@ -24443,6 +24449,7 @@ export namespace Prisma {
     productId: string
     quantity: number
     price: number
+    customName: string | null
     _count: LeadProductCountAggregateOutputType | null
     _avg: LeadProductAvgAggregateOutputType | null
     _sum: LeadProductSumAggregateOutputType | null
@@ -24470,6 +24477,7 @@ export namespace Prisma {
     productId?: boolean
     quantity?: boolean
     price?: boolean
+    customName?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["leadProduct"]>
@@ -24480,6 +24488,7 @@ export namespace Prisma {
     productId?: boolean
     quantity?: boolean
     price?: boolean
+    customName?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["leadProduct"]>
@@ -24490,6 +24499,7 @@ export namespace Prisma {
     productId?: boolean
     quantity?: boolean
     price?: boolean
+    customName?: boolean
   }
 
   export type LeadProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24513,6 +24523,7 @@ export namespace Prisma {
       productId: string
       quantity: number
       price: number
+      customName: string | null
     }, ExtArgs["result"]["leadProduct"]>
     composites: {}
   }
@@ -24913,6 +24924,7 @@ export namespace Prisma {
     readonly productId: FieldRef<"LeadProduct", 'String'>
     readonly quantity: FieldRef<"LeadProduct", 'Int'>
     readonly price: FieldRef<"LeadProduct", 'Float'>
+    readonly customName: FieldRef<"LeadProduct", 'String'>
   }
     
 
@@ -25275,6 +25287,7 @@ export namespace Prisma {
     status: string | null
     notes: string | null
     price: number | null
+    customName: string | null
     accountId: string | null
     productId: string | null
     organisationId: string | null
@@ -25290,6 +25303,7 @@ export namespace Prisma {
     status: string | null
     notes: string | null
     price: number | null
+    customName: string | null
     accountId: string | null
     productId: string | null
     organisationId: string | null
@@ -25305,6 +25319,7 @@ export namespace Prisma {
     status: number
     notes: number
     price: number
+    customName: number
     accountId: number
     productId: number
     organisationId: number
@@ -25332,6 +25347,7 @@ export namespace Prisma {
     status?: true
     notes?: true
     price?: true
+    customName?: true
     accountId?: true
     productId?: true
     organisationId?: true
@@ -25347,6 +25363,7 @@ export namespace Prisma {
     status?: true
     notes?: true
     price?: true
+    customName?: true
     accountId?: true
     productId?: true
     organisationId?: true
@@ -25362,6 +25379,7 @@ export namespace Prisma {
     status?: true
     notes?: true
     price?: true
+    customName?: true
     accountId?: true
     productId?: true
     organisationId?: true
@@ -25464,6 +25482,7 @@ export namespace Prisma {
     status: string
     notes: string | null
     price: number
+    customName: string | null
     accountId: string
     productId: string
     organisationId: string
@@ -25498,6 +25517,7 @@ export namespace Prisma {
     status?: boolean
     notes?: boolean
     price?: boolean
+    customName?: boolean
     accountId?: boolean
     productId?: boolean
     organisationId?: boolean
@@ -25516,6 +25536,7 @@ export namespace Prisma {
     status?: boolean
     notes?: boolean
     price?: boolean
+    customName?: boolean
     accountId?: boolean
     productId?: boolean
     organisationId?: boolean
@@ -25534,6 +25555,7 @@ export namespace Prisma {
     status?: boolean
     notes?: boolean
     price?: boolean
+    customName?: boolean
     accountId?: boolean
     productId?: boolean
     organisationId?: boolean
@@ -25567,6 +25589,7 @@ export namespace Prisma {
       status: string
       notes: string | null
       price: number
+      customName: string | null
       accountId: string
       productId: string
       organisationId: string
@@ -25975,6 +25998,7 @@ export namespace Prisma {
     readonly status: FieldRef<"AccountProduct", 'String'>
     readonly notes: FieldRef<"AccountProduct", 'String'>
     readonly price: FieldRef<"AccountProduct", 'Float'>
+    readonly customName: FieldRef<"AccountProduct", 'String'>
     readonly accountId: FieldRef<"AccountProduct", 'String'>
     readonly productId: FieldRef<"AccountProduct", 'String'>
     readonly organisationId: FieldRef<"AccountProduct", 'String'>
@@ -78195,7 +78219,8 @@ export namespace Prisma {
     leadId: 'leadId',
     productId: 'productId',
     quantity: 'quantity',
-    price: 'price'
+    price: 'price',
+    customName: 'customName'
   };
 
   export type LeadProductScalarFieldEnum = (typeof LeadProductScalarFieldEnum)[keyof typeof LeadProductScalarFieldEnum]
@@ -78209,6 +78234,7 @@ export namespace Prisma {
     status: 'status',
     notes: 'notes',
     price: 'price',
+    customName: 'customName',
     accountId: 'accountId',
     productId: 'productId',
     organisationId: 'organisationId',
@@ -81553,6 +81579,7 @@ export namespace Prisma {
     productId?: StringFilter<"LeadProduct"> | string
     quantity?: IntFilter<"LeadProduct"> | number
     price?: FloatFilter<"LeadProduct"> | number
+    customName?: StringNullableFilter<"LeadProduct"> | string | null
     lead?: XOR<LeadRelationFilter, LeadWhereInput>
     product?: XOR<ProductRelationFilter, ProductWhereInput>
   }
@@ -81563,6 +81590,7 @@ export namespace Prisma {
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
+    customName?: SortOrderInput | SortOrder
     lead?: LeadOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
   }
@@ -81577,6 +81605,7 @@ export namespace Prisma {
     productId?: StringFilter<"LeadProduct"> | string
     quantity?: IntFilter<"LeadProduct"> | number
     price?: FloatFilter<"LeadProduct"> | number
+    customName?: StringNullableFilter<"LeadProduct"> | string | null
     lead?: XOR<LeadRelationFilter, LeadWhereInput>
     product?: XOR<ProductRelationFilter, ProductWhereInput>
   }, "id" | "leadId_productId">
@@ -81587,6 +81616,7 @@ export namespace Prisma {
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
+    customName?: SortOrderInput | SortOrder
     _count?: LeadProductCountOrderByAggregateInput
     _avg?: LeadProductAvgOrderByAggregateInput
     _max?: LeadProductMaxOrderByAggregateInput
@@ -81603,6 +81633,7 @@ export namespace Prisma {
     productId?: StringWithAggregatesFilter<"LeadProduct"> | string
     quantity?: IntWithAggregatesFilter<"LeadProduct"> | number
     price?: FloatWithAggregatesFilter<"LeadProduct"> | number
+    customName?: StringNullableWithAggregatesFilter<"LeadProduct"> | string | null
   }
 
   export type AccountProductWhereInput = {
@@ -81616,6 +81647,7 @@ export namespace Prisma {
     status?: StringFilter<"AccountProduct"> | string
     notes?: StringNullableFilter<"AccountProduct"> | string | null
     price?: FloatFilter<"AccountProduct"> | number
+    customName?: StringNullableFilter<"AccountProduct"> | string | null
     accountId?: StringFilter<"AccountProduct"> | string
     productId?: StringFilter<"AccountProduct"> | string
     organisationId?: StringFilter<"AccountProduct"> | string
@@ -81634,6 +81666,7 @@ export namespace Prisma {
     status?: SortOrder
     notes?: SortOrderInput | SortOrder
     price?: SortOrder
+    customName?: SortOrderInput | SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -81655,6 +81688,7 @@ export namespace Prisma {
     status?: StringFilter<"AccountProduct"> | string
     notes?: StringNullableFilter<"AccountProduct"> | string | null
     price?: FloatFilter<"AccountProduct"> | number
+    customName?: StringNullableFilter<"AccountProduct"> | string | null
     accountId?: StringFilter<"AccountProduct"> | string
     productId?: StringFilter<"AccountProduct"> | string
     organisationId?: StringFilter<"AccountProduct"> | string
@@ -81673,6 +81707,7 @@ export namespace Prisma {
     status?: SortOrder
     notes?: SortOrderInput | SortOrder
     price?: SortOrder
+    customName?: SortOrderInput | SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -81696,6 +81731,7 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"AccountProduct"> | string
     notes?: StringNullableWithAggregatesFilter<"AccountProduct"> | string | null
     price?: FloatWithAggregatesFilter<"AccountProduct"> | number
+    customName?: StringNullableWithAggregatesFilter<"AccountProduct"> | string | null
     accountId?: StringWithAggregatesFilter<"AccountProduct"> | string
     productId?: StringWithAggregatesFilter<"AccountProduct"> | string
     organisationId?: StringWithAggregatesFilter<"AccountProduct"> | string
@@ -89369,6 +89405,7 @@ export namespace Prisma {
     id?: string
     quantity?: number
     price: number
+    customName?: string | null
     lead: LeadCreateNestedOneWithoutProductsInput
     product: ProductCreateNestedOneWithoutLeadsInput
   }
@@ -89379,12 +89416,14 @@ export namespace Prisma {
     productId: string
     quantity?: number
     price: number
+    customName?: string | null
   }
 
   export type LeadProductUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     lead?: LeadUpdateOneRequiredWithoutProductsNestedInput
     product?: ProductUpdateOneRequiredWithoutLeadsNestedInput
   }
@@ -89395,6 +89434,7 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeadProductCreateManyInput = {
@@ -89403,12 +89443,14 @@ export namespace Prisma {
     productId: string
     quantity?: number
     price: number
+    customName?: string | null
   }
 
   export type LeadProductUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeadProductUncheckedUpdateManyInput = {
@@ -89417,6 +89459,7 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountProductCreateInput = {
@@ -89427,6 +89470,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account: AccountCreateNestedOneWithoutAccountProductsInput
@@ -89442,6 +89486,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     accountId: string
     productId: string
     organisationId: string
@@ -89457,6 +89502,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -89472,6 +89518,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -89487,6 +89534,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     accountId: string
     productId: string
     organisationId: string
@@ -89502,6 +89550,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -89514,6 +89563,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
@@ -96972,6 +97022,7 @@ export namespace Prisma {
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
+    customName?: SortOrder
   }
 
   export type LeadProductAvgOrderByAggregateInput = {
@@ -96985,6 +97036,7 @@ export namespace Prisma {
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
+    customName?: SortOrder
   }
 
   export type LeadProductMinOrderByAggregateInput = {
@@ -96993,6 +97045,7 @@ export namespace Prisma {
     productId?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
+    customName?: SortOrder
   }
 
   export type LeadProductSumOrderByAggregateInput = {
@@ -97008,6 +97061,7 @@ export namespace Prisma {
     status?: SortOrder
     notes?: SortOrder
     price?: SortOrder
+    customName?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -97028,6 +97082,7 @@ export namespace Prisma {
     status?: SortOrder
     notes?: SortOrder
     price?: SortOrder
+    customName?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -97043,6 +97098,7 @@ export namespace Prisma {
     status?: SortOrder
     notes?: SortOrder
     price?: SortOrder
+    customName?: SortOrder
     accountId?: SortOrder
     productId?: SortOrder
     organisationId?: SortOrder
@@ -113612,6 +113668,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account: AccountCreateNestedOneWithoutAccountProductsInput
@@ -113626,6 +113683,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     accountId: string
     productId: string
     createdAt?: Date | string
@@ -115435,6 +115493,7 @@ export namespace Prisma {
     status?: StringFilter<"AccountProduct"> | string
     notes?: StringNullableFilter<"AccountProduct"> | string | null
     price?: FloatFilter<"AccountProduct"> | number
+    customName?: StringNullableFilter<"AccountProduct"> | string | null
     accountId?: StringFilter<"AccountProduct"> | string
     productId?: StringFilter<"AccountProduct"> | string
     organisationId?: StringFilter<"AccountProduct"> | string
@@ -124858,6 +124917,7 @@ export namespace Prisma {
     id?: string
     quantity?: number
     price: number
+    customName?: string | null
     product: ProductCreateNestedOneWithoutLeadsInput
   }
 
@@ -124866,6 +124926,7 @@ export namespace Prisma {
     productId: string
     quantity?: number
     price: number
+    customName?: string | null
   }
 
   export type LeadProductCreateOrConnectWithoutLeadInput = {
@@ -126215,6 +126276,7 @@ export namespace Prisma {
     productId?: StringFilter<"LeadProduct"> | string
     quantity?: IntFilter<"LeadProduct"> | number
     price?: FloatFilter<"LeadProduct"> | number
+    customName?: StringNullableFilter<"LeadProduct"> | string | null
   }
 
   export type AccountUpsertWithWhereUniqueWithoutLeadInput = {
@@ -128110,6 +128172,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     product: ProductCreateNestedOneWithoutAccountProductsInput
@@ -128124,6 +128187,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     productId: string
     organisationId: string
     createdAt?: Date | string
@@ -134570,6 +134634,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     account: AccountCreateNestedOneWithoutAccountProductsInput
@@ -134584,6 +134649,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     accountId: string
     organisationId: string
     createdAt?: Date | string
@@ -134664,6 +134730,7 @@ export namespace Prisma {
     id?: string
     quantity?: number
     price: number
+    customName?: string | null
     lead: LeadCreateNestedOneWithoutProductsInput
   }
 
@@ -134672,6 +134739,7 @@ export namespace Prisma {
     leadId: string
     quantity?: number
     price: number
+    customName?: string | null
   }
 
   export type LeadProductCreateOrConnectWithoutProductInput = {
@@ -181103,6 +181171,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     accountId: string
     productId: string
     createdAt?: Date | string
@@ -183719,6 +183788,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -183733,6 +183803,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -183747,6 +183818,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -190739,6 +190811,7 @@ export namespace Prisma {
     productId: string
     quantity?: number
     price: number
+    customName?: string | null
   }
 
   export type AccountCreateManyLeadInput = {
@@ -191387,6 +191460,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     product?: ProductUpdateOneRequiredWithoutLeadsNestedInput
   }
 
@@ -191395,6 +191469,7 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeadProductUncheckedUpdateManyWithoutLeadInput = {
@@ -191402,6 +191477,7 @@ export namespace Prisma {
     productId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountUpdateWithoutLeadInput = {
@@ -192002,6 +192078,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     productId: string
     organisationId: string
     createdAt?: Date | string
@@ -192879,6 +192956,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -192893,6 +192971,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -192907,6 +192986,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     productId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -194692,6 +194772,7 @@ export namespace Prisma {
     status?: string
     notes?: string | null
     price?: number
+    customName?: string | null
     accountId: string
     organisationId: string
     createdAt?: Date | string
@@ -194727,6 +194808,7 @@ export namespace Prisma {
     leadId: string
     quantity?: number
     price: number
+    customName?: string | null
   }
 
   export type ProductShareCreateManyProductInput = {
@@ -194790,6 +194872,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutAccountProductsNestedInput
@@ -194804,6 +194887,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -194818,6 +194902,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     accountId?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -194902,6 +194987,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
     lead?: LeadUpdateOneRequiredWithoutProductsNestedInput
   }
 
@@ -194910,6 +194996,7 @@ export namespace Prisma {
     leadId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeadProductUncheckedUpdateManyWithoutProductInput = {
@@ -194917,6 +195004,7 @@ export namespace Prisma {
     leadId?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
+    customName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductShareUpdateWithoutProductInput = {

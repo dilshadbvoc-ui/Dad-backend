@@ -149,6 +149,14 @@ export const updateDocument = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Document not found' });
         }
 
+        // Authorization check: Admin or Creator
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'admin';
+        const isCreator = existingDoc.createdById === user.id;
+
+        if (!isOrgAdmin && !isCreator) {
+            return res.status(403).json({ message: 'You do not have permission to update this document' });
+        }
+
         const document = await prisma.document.update({
             where: { id },
             data: {
@@ -204,6 +212,14 @@ export const deleteDocument = async (req: Request, res: Response) => {
 
         if (!existingDoc) {
             return res.status(404).json({ message: 'Document not found' });
+        }
+
+        // Authorization check: Admin or Creator
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'admin';
+        const isCreator = existingDoc.createdById === user.id;
+
+        if (!isOrgAdmin && !isCreator) {
+            return res.status(403).json({ message: 'You do not have permission to delete this document' });
         }
 
         // Soft delete

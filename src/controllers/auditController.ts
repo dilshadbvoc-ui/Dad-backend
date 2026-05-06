@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { normalizeRole, isSuperAdmin as checkSuperAdmin } from '../utils/roleUtils';
+import { normalizeRole, isSuperAdmin as checkSuperAdmin, isOrgAdmin as checkIsOrgAdmin } from '../utils/roleUtils';
 
 export const getAuditLogs = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
-        const { entity, action, userId, startDate, endDate, page = 1, limit = 20 } = req.query;
+        const { entity, action, userId, startDate, endDate, page = 1, limit = 20, branchId } = req.query;
 
-        const normalisedUserRole = normalizeRole(user.role);
         const userIsSuperAdmin = checkSuperAdmin(user);
-        const isOrgAdmin = normalisedUserRole === 'admin';
+        const isOrgAdmin = checkIsOrgAdmin(user);
 
         const where: any = {};
 
@@ -82,7 +81,8 @@ export const getAuditLogs = async (req: Request, res: Response) => {
                         firstName: true,
                         lastName: true,
                         email: true,
-                        role: true
+                        role: true,
+                        branch: { select: { name: true } }
                     }
                 }
             }

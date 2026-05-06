@@ -21,15 +21,15 @@ function getHumanReadableAction(action: string, entity: string): string {
 
 export const getTimeline = async (req: Request, res: Response) => {
     try {
-        const { id, type } = req.params; // type = 'lead' | 'contact' | 'account'
+        const { id, type } = req.params; // type = 'lead' | 'contact' | 'account' | 'opportunity'
 
         // Basic validation
-        if (!['lead', 'contact', 'account'].includes(type) || !id) {
+        if (!['lead', 'contact', 'account', 'opportunity'].includes(type) || !id) {
             return res.status(400).json({ message: 'Invalid entity type or ID' });
         }
 
         // Fetch related data concurrently
-        const [interactions, tasks, events, auditLogs, callRecordings, followUpsData] = await Promise.all([
+        const [interactions, tasks, events, auditLogs, callRecordings, followUpsData, documents] = await Promise.all([
             prisma.interaction.findMany({
                 where: { 
                     [`${type}Id`]: id,
@@ -70,6 +70,15 @@ export const getTimeline = async (req: Request, res: Response) => {
                 },
                 orderBy: { dueDate: 'desc' },
                 include: { assignedTo: { select: { firstName: true, lastName: true } } }
+            }),
+            prisma.document.findMany({
+                where: {
+                    [`${type}Id`]: id,
+                    isDeleted: false,
+                    category: { not: 'recording' } // recordings are handled by interactions/recordings
+                },
+                orderBy: { createdAt: 'desc' },
+                include: { createdBy: { select: { firstName: true, lastName: true } } }
             })
         ]);
 
@@ -223,6 +232,20 @@ export const getTimeline = async (req: Request, res: Response) => {
                 date: f.dueDate,
                 actor: f.assignedTo,
                 meta: { priority: f.priority }
+            })),
+            ...documents.map(d => ({
+                id: d.id,
+                type: 'document',
+                subType: d.category,
+                title: d.name,
+                description: d.description,
+                date: d.createdAt,
+                actor: d.createdBy,
+                meta: {
+                    fileType: d.fileType,
+                    fileSize: d.fileSize,
+                    fileUrl: `/api/documents/${d.id}/download`
+                }
             }))
         ];
 

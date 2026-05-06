@@ -389,7 +389,8 @@ exports.Prisma.LeadProductScalarFieldEnum = {
   leadId: 'leadId',
   productId: 'productId',
   quantity: 'quantity',
-  price: 'price'
+  price: 'price',
+  customName: 'customName'
 };
 
 exports.Prisma.AccountProductScalarFieldEnum = {
@@ -400,6 +401,7 @@ exports.Prisma.AccountProductScalarFieldEnum = {
   status: 'status',
   notes: 'notes',
   price: 'price',
+  customName: 'customName',
   accountId: 'accountId',
   productId: 'productId',
   organisationId: 'organisationId',

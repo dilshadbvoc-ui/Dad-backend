@@ -93,10 +93,12 @@ export const getTasks = async (req: Request, res: Response) => {
         }
 
         if (status && status !== 'all') {
-            // Check enum validity or use string? TaskStatus is enum.
-            // Assuming frontend sends valid enum string like 'pending', 'completed'
-            // If strict enum needed: where.status = status as TaskStatus
             where.status = status as any;
+        }
+
+        const branchId = req.query.branchId as string;
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
         }
 
         const count = await prisma.task.count({ where });
@@ -104,6 +106,7 @@ export const getTasks = async (req: Request, res: Response) => {
             where,
             include: {
                 assignedTo: { select: { id: true, firstName: true, lastName: true, email: true } },
+                branch: { select: { id: true, name: true } },
                 // Include all potential relations to reconstruct 'relatedTo'
                 // Filter out deleted leads
                 lead: {

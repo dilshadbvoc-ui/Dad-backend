@@ -527,6 +527,7 @@ model LeadProduct {
   productId      String
   quantity       Int          @default(1)
   price          Float
+  customName     String?
   lead           Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
   product        Product      @relation(fields: [productId], references: [id])
 
@@ -541,6 +542,7 @@ model AccountProduct {
   status         String       @default("active") // active, churned, returned
   notes          String?
   price          Float        @default(0)
+  customName     String?
   
   accountId      String
   productId      String

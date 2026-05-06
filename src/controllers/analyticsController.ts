@@ -751,7 +751,8 @@ export const getSalesBook = async (req: Request, res: Response) => {
                 amount: true,
                 closeDate: true,
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true } } // Assuming 'owner' relation exists or 'assignedTo'
+                owner: { select: { firstName: true, lastName: true } },
+                branch: { select: { name: true } }
             },
             orderBy: { closeDate: 'desc' }
         });
@@ -762,7 +763,8 @@ export const getSalesBook = async (req: Request, res: Response) => {
             customerName: s.account?.name || 'N/A',
             amount: s.amount,
             closeDate: s.closeDate,
-            ownerName: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unknown'
+            ownerName: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unknown',
+            branchName: (s as any).branch?.name || 'N/A'
         }));
 
         res.json(formattedSales);

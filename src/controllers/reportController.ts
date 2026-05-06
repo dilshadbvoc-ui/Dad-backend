@@ -15,13 +15,15 @@ export const getLeadsReport = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         const subordinateIds = await getSubordinateIds(user.id);
 
-        const { stage, status, userId, startDate, endDate } = req.query;
+        const { stage, status, userId, startDate, endDate, branchId } = req.query;
 
         const where: any = {
             organisationId: orgId,
             isDeleted: false
         };
 
+        if (branchId) where.branchId = branchId as string;
+        
         // If not admin, restrict to self and subordinates (or managed branches)
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
@@ -40,7 +42,8 @@ export const getLeadsReport = async (req: Request, res: Response) => {
         const leads = await prisma.lead.findMany({
             where,
             include: {
-                assignedTo: { select: { id: true, firstName: true, lastName: true } }
+                assignedTo: { select: { id: true, firstName: true, lastName: true } },
+                branch: { select: { name: true } }
             },
             orderBy: { createdAt: 'desc' }
         });
@@ -80,26 +83,29 @@ export const getUserPerformance = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         const subordinateIds = await getSubordinateIds(user.id);
 
-        const { startDate, endDate } = req.query;
+        const { startDate, endDate, branchId } = req.query;
 
         const dateFilter: any = {};
         if (startDate) dateFilter.gte = new Date(startDate as string);
         if (endDate) dateFilter.lte = new Date(endDate as string);
 
         const visibleUserIds = await getVisibleUserIds(user.id);
+        const where: any = {
+            id: { in: visibleUserIds },
+            organisationId: orgId,
+            isActive: true
+        };
+        if (branchId) where.branchId = branchId as string;
 
         const users = await prisma.user.findMany({
-            where: {
-                id: { in: visibleUserIds },
-                organisationId: orgId,
-                isActive: true
-            },
+            where,
             select: {
                 id: true,
                 firstName: true,
                 lastName: true,
                 role: true,
-                dailyLeadQuota: true
+                dailyLeadQuota: true,
+                branch: { select: { name: true } }
             }
         });
 
@@ -147,7 +153,8 @@ export const getUserPerformance = async (req: Request, res: Response) => {
                     id: user.id,
                     name: `${user.firstName} ${user.lastName}`,
                     role: user.role,
-                    dailyQuota: user.dailyLeadQuota
+                    dailyQuota: user.dailyLeadQuota,
+                    branch: user.branch?.name || 'N/A'
                 },
                 metrics: {
                     leadsAssigned,
@@ -175,7 +182,7 @@ export const getSalesBook = async (req: Request, res: Response) => {
         const user = (req as any).user;
         const orgId = getOrgId(user);
         const subordinateIds = await getSubordinateIds(user.id);
-        const { period = 'month' } = req.query;
+        const { period = 'month', branchId } = req.query;
 
         const now = new Date();
         const startDate = new Date();
@@ -202,6 +209,8 @@ export const getSalesBook = async (req: Request, res: Response) => {
             updatedAt: { gte: startDate }
         };
 
+        if (branchId) where.branchId = branchId as string;
+
         // If not admin, restrict to self and subordinates
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
@@ -213,7 +222,8 @@ export const getSalesBook = async (req: Request, res: Response) => {
             where,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true } }
+                owner: { select: { firstName: true, lastName: true } },
+                branch: { select: { name: true } }
             },
             orderBy: { updatedAt: 'desc' }
         });
@@ -242,6 +252,7 @@ export const getSalesBook = async (req: Request, res: Response) => {
                 amount: s.amount,
                 account: (s as any).account?.name || 'N/A',
                 owner: (s as any).owner ? `${(s as any).owner.firstName} ${(s as any).owner.lastName}` : 'Unassigned',
+                branch: (s as any).branch?.name || 'N/A',
                 closedAt: s.updatedAt
             })),
             summary: {
@@ -264,7 +275,7 @@ export const getSalesBook = async (req: Request, res: Response) => {
 export const exportToExcel = async (req: Request, res: Response) => {
     try {
         const { type } = req.params;
-        const { startDate, endDate, branchId, userId, stage, status } = req.query;
+        const { startDate, endDate, branchId, userId, stage, status, source } = req.query;
         const user = (req as any).user;
         const orgId = getOrgId(user);
         if (!orgId) {
@@ -295,6 +306,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
             if (stage) where.stage = stage as string;
             if (status) where.status = status as string;
+            if (source) where.source = source as string;
             if (startDate || endDate) {
                 where.createdAt = {};
                 if (startDate) where.createdAt.gte = new Date(startDate as string);
@@ -438,7 +450,11 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
         } else if (type === 'campaigns') {
             const campaigns = await prisma.campaign.findMany({
-                where: { organisationId: orgId as string, isDeleted: false },
+                where: { 
+                    organisationId: orgId as string, 
+                    isDeleted: false,
+                    ...(branchId ? { createdBy: { branchId: branchId as string } } : {})
+                },
                 orderBy: { createdAt: 'desc' }
             });
 
@@ -463,7 +479,10 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
         } else if (type === 'check-ins') {
             const checkIns = await prisma.checkIn.findMany({
-                where: { organisationId: orgId as string },
+                where: { 
+                    organisationId: orgId as string,
+                    ...(branchId ? { user: { branchId: branchId as string } } : {})
+                },
                 include: {
                     user: { select: { firstName: true, lastName: true } },
                     lead: { select: { firstName: true, lastName: true } },
@@ -498,7 +517,11 @@ export const exportToExcel = async (req: Request, res: Response) => {
 
         } else if (type === 'tasks') {
             const tasks = await prisma.task.findMany({
-                where: { organisationId: orgId as string, isDeleted: false },
+                where: { 
+                    organisationId: orgId as string, 
+                    isDeleted: false,
+                    ...(branchId ? { branchId: branchId as string } : {})
+                },
                 include: {
                     assignedTo: { select: { firstName: true, lastName: true } }
                 },
@@ -545,15 +568,24 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(403).json({ message: 'No org' });
 
+        const { branchId } = req.query;
         const visibleUserIds = await getVisibleUserIds(user.id);
         const teamIds = visibleUserIds;
 
+        const where: any = { 
+            id: { in: teamIds },
+            organisationId: orgId as string,
+            isActive: true
+        };
+        if (branchId) where.branchId = branchId as string;
+
         const teamsData = await prisma.user.findMany({
-            where: { id: { in: teamIds } },
+            where,
             select: {
                 id: true,
                 firstName: true,
                 lastName: true,
+                branch: { select: { name: true } },
                 _count: {
                     select: {
                         assignedLeads: true,
@@ -588,6 +620,7 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
             return {
                 userId: u.id,
                 name: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: u.branch?.name || 'N/A',
                 totalLeads: u._count.assignedLeads,
                 totalSales: saleStats._sum.amount || 0,
                 salesCount: saleStats._count,
@@ -858,6 +891,7 @@ export const getDailyReport = async (req: Request, res: Response) => {
                 id: true,
                 firstName: true,
                 lastName: true,
+                branch: { select: { name: true } }
             }
         });
 
@@ -910,6 +944,7 @@ export const getDailyReport = async (req: Request, res: Response) => {
             return {
                 id: u.id,
                 userName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: (u as any).branch?.name || 'N/A',
                 totalCalls,
                 totalConnected: connectedCalls,
                 totalUnconnected: totalCalls - connectedCalls,

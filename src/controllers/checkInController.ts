@@ -80,7 +80,19 @@ export const getCheckIns = async (req: AuthRequest, res: Response) => {
         }
 
         // Get visible user IDs based on hierarchy (self, subordinates, branch members)
-        const visibleUserIds = await getVisibleUserIds(userId);
+        const { branchId } = req.query;
+        let visibleUserIds = await getVisibleUserIds(userId);
+
+        if (branchId) {
+            const branchUsers = await prisma.user.findMany({
+                where: {
+                    id: { in: visibleUserIds },
+                    branchId: branchId as string
+                },
+                select: { id: true }
+            });
+            visibleUserIds = branchUsers.map(u => u.id);
+        }
 
         const where: any = { 
             organisationId,
@@ -119,7 +131,13 @@ export const getCheckIns = async (req: AuthRequest, res: Response) => {
         const checkIns = await prisma.checkIn.findMany({
             where,
             include: {
-                user: { select: { firstName: true, lastName: true } },
+                user: { 
+                    select: { 
+                        firstName: true, 
+                        lastName: true,
+                        branch: { select: { name: true } }
+                    } 
+                },
                 lead: { select: { firstName: true, lastName: true, company: true } },
                 contact: { select: { firstName: true, lastName: true } },
                 account: { select: { name: true } }

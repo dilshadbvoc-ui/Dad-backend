@@ -552,7 +552,7 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
 
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { period = 'today', direction } = req.query; // direction: all, inbound, outbound
+        const { period = 'today', direction, branchId } = req.query; // direction: all, inbound, outbound
 
         // Calculate date range
         const now = new Date();
@@ -594,7 +594,23 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
 
         // Hierarchy filtering
         const visibleUserIds = await getVisibleUserIds(user.id);
-        baseWhere.createdById = { in: visibleUserIds };
+        
+        // Filter users by branch if provided
+        const userWhere: any = { id: { in: visibleUserIds } };
+        if (branchId) userWhere.branchId = branchId as string;
+
+        const users = await prisma.user.findMany({
+            where: userWhere,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                branch: { select: { name: true } }
+            }
+        });
+
+        const filteredUserIds = users.map(u => u.id);
+        baseWhere.createdById = { in: filteredUserIds };
 
         // Fetch all relevant interactions
         const interactions = await prisma.interaction.findMany({
@@ -609,16 +625,6 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
             }
         });
 
-        // Fetch users to map names
-        const users = await prisma.user.findMany({
-            where: { id: { in: visibleUserIds } },
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true
-            }
-        });
-
         // Aggregate by user
         const userStatsMap: Record<string, any> = {};
 
@@ -627,6 +633,7 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
             userStatsMap[u.id] = {
                 userId: u.id,
                 agentName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: u.branch?.name || 'N/A',
                 totalCalls: 0,
                 connectedCalls: 0,
                 totalDurationSeconds: 0

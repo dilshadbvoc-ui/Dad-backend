@@ -683,7 +683,8 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                                 leadId,
                                 productId: item.productId,
                                 quantity: quantity,
-                                price: price
+                                price: price,
+                                customName: item.customName || undefined
                             }
                         });
                     }
@@ -1266,6 +1267,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                             organisationId: orgId,
                             quantity: leadProduct.quantity,
                             price: leadProduct.price || 0, // Migrate custom price
+                            customName: leadProduct.customName, // Migrate custom name
                             purchaseDate: new Date(),
                             status: 'active',
                             notes: `Converted from lead: ${lead.firstName} ${lead.lastName || ''}`.trim()
