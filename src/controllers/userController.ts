@@ -547,39 +547,57 @@ export const inviteUser = async (req: Request, res: Response) => {
             }
         }
 
-        // Generate UserID
+        // Generate UserID with collision protection
         let generatedUserId: string | undefined;
-        if (org) {
-            // Atomic update
-            const updatedOrg = await prisma.organisation.update({
-                where: { id: targetOrgId },
-                data: { userIdCounter: { increment: 1 } }
-            });
-            const prefix = updatedOrg.name.slice(0, 3).toUpperCase();
-            const counter = updatedOrg.userIdCounter;
-            generatedUserId = `${prefix}${counter.toString().padStart(3, '0')}`;
+        let isUnique = false;
+        let attempts = 0;
+
+        while (!isUnique && attempts < 10) {
+            attempts++;
+            if (org) {
+                // Atomic update of the counter
+                const updatedOrg = await prisma.organisation.update({
+                    where: { id: targetOrgId },
+                    data: { userIdCounter: { increment: 1 } }
+                });
+                const prefix = updatedOrg.name.slice(0, 3).toUpperCase();
+                const counter = updatedOrg.userIdCounter;
+                generatedUserId = `${prefix}${counter.toString().padStart(3, '0')}`;
+
+                // Verify this ID isn't already in use (to recover from sync issues)
+                const collision = await prisma.user.findUnique({ where: { userId: generatedUserId } });
+                if (!collision) {
+                    isUnique = true;
+                } else {
+                    logger.warn(`UserId collision detected for ${generatedUserId}, incrementing and retrying...`, 'UserController');
+                }
+            } else {
+                isUnique = true; // No org prefix logic
+            }
         }
 
         const tempPassword = password || Math.random().toString(36).slice(-8);
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(tempPassword, salt);
 
-        const newUser = await prisma.user.create({
-            data: {
-                email,
-                firstName,
-                lastName,
-                password: hashedPassword,
-                role: role || 'sales_rep',
-                organisation: { connect: { id: targetOrgId } },
-                position,
-                phone,
-                userId: generatedUserId,
-                reportsTo: reportsTo ? { connect: { id: reportsTo } } : undefined,
-                branch: branchId ? { connect: { id: branchId } } : undefined,
-                isActive: true,
-                dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined
-            }
+        const newUser = await prisma.$transaction(async (prisma) => {
+            return await prisma.user.create({
+                data: {
+                    email,
+                    firstName,
+                    lastName,
+                    password: hashedPassword,
+                    role: role || 'sales_rep',
+                    organisation: { connect: { id: targetOrgId } },
+                    position,
+                    phone,
+                    userId: generatedUserId,
+                    reportsTo: reportsTo ? { connect: { id: reportsTo } } : undefined,
+                    branch: branchId ? { connect: { id: branchId } } : undefined,
+                    isActive: true,
+                    dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined
+                }
+            });
         });
 
         // Audit Log
