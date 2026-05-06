@@ -59,12 +59,17 @@ export const MetaLeadService = {
             const metaConfig = matchedAccount;
             const accessToken = decrypt(metaConfig.accessToken);
 
-            // 2. Fetch Lead details from Meta Graph API
+            // 2. Fetch Lead details from Meta Graph API with expanded fields
             const response = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
-                params: { access_token: accessToken }
+                params: { 
+                    access_token: accessToken,
+                    fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id'
+                }
             });
-
+            
             const metaLeadData = response.data;
+            console.log(`[MetaLeadService] Lead details fetched. Campaign: ${metaLeadData.campaign_name || 'N/A'}`);
+
             if (!metaLeadData || !metaLeadData.field_data) {
                 console.error(`[MetaLeadService] No field data found for lead ${leadgenId}`);
                 return;
@@ -120,8 +125,15 @@ export const MetaLeadService = {
                 source: getField(['source', 'lead_source', 'lead source']) || metaConfig._source || LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
-                    metaFormId: formId,
-                    metaAdId: adId,
+                    metaFormId: metaLeadData.form_id || formId,
+                    metaAdId: metaLeadData.ad_id || adId,
+                    metaAdName: metaLeadData.ad_name,
+                    metaAdSetId: metaLeadData.adset_id,
+                    metaAdSetName: metaLeadData.adset_name,
+                    metaCampaignId: metaLeadData.campaign_id,
+                    metaCampaignName: metaLeadData.campaign_name,
+                    campaignName: metaLeadData.campaign_name, // Explicit field for easier display
+                    adName: metaLeadData.ad_name,
                     rawMetaFields: fieldMap,
                     metaCreatedTime: metaLeadData.created_time
                 },

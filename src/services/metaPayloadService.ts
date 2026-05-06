@@ -61,7 +61,9 @@ export const MetaPayloadService = {
             const jobTitle = getField(['job_title', 'position', 'designation', 'role', 'title']);
             const country = getField(['country', 'location', 'region']);
             const city = getField(['city', 'town']);
-            const source = getField(['source', 'lead_source', 'lead source', 'utm_source']) || 'meta_payload';
+            const source = getField(['source', 'lead_source', 'lead source', 'utm_source']) || 'meta_leadgen';
+            const campaignName = getField(['campaign_name', 'campaignname', 'campaign', 'utm_campaign']);
+            const adName = getField(['ad_name', 'adname', 'ad', 'utm_content']);
 
             let geoData = null;
             if (rawPhone) {
@@ -93,6 +95,8 @@ export const MetaPayloadService = {
                 source: source,
                 sourceDetails: {
                     metaPayload: true,
+                    campaignName: campaignName,
+                    adName: adName,
                     rawPayload: payload,
                     receivedAt: new Date().toISOString()
                 },
