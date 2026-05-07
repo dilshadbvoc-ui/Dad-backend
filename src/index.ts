@@ -405,6 +405,7 @@ app.use('/api/organisation', organisationRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/bulk', bulkRoutes);
+app.use('/api/public', publicRoutes);
 app.use('/api/trash', trashRoutes);
 
 // Licensing & Multi-tenancy
