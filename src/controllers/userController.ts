@@ -443,11 +443,38 @@ export const createUser = async (req: Request, res: Response) => {
             }
         }
 
-        if (!password || password.length < 8) {
-            return res.status(400).json({ message: 'Password must be at least 8 characters' });
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Generate UserID with collision protection
+        let generatedUserId: string | undefined;
+        let isUnique = false;
+        let attempts = 0;
+
+        const org = await prisma.organisation.findUnique({ where: { id: targetOrgId } });
+
+        while (!isUnique && attempts < 20) {
+            attempts++;
+            if (org) {
+                // Atomic update of the counter
+                const updatedOrg = await prisma.organisation.update({
+                    where: { id: targetOrgId },
+                    data: { userIdCounter: { increment: 1 } }
+                });
+                
+                // Use Org Name prefix (3 chars) + part of Org ID (4 chars) + counter
+                const namePrefix = updatedOrg.name.slice(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, 'X');
+                const orgSuffix = targetOrgId.slice(0, 4).toUpperCase();
+                const counter = updatedOrg.userIdCounter;
+                generatedUserId = `${namePrefix}${orgSuffix}${counter.toString().padStart(3, '0')}`;
+
+                const collision = await prisma.user.findUnique({ where: { userId: generatedUserId } });
+                if (!collision) {
+                    isUnique = true;
+                }
+            } else {
+                isUnique = true;
+            }
+        }
 
         const newUser = await prisma.user.create({
             data: {
@@ -458,6 +485,7 @@ export const createUser = async (req: Request, res: Response) => {
                 lastName,
                 phone,
                 organisationId: targetOrgId,
+                userId: generatedUserId,
                 isActive: true, // Default to active
                 dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined,
                 // If currentUser is non-admin creating a user, maybe set reportsTo?

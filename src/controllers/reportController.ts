@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { isAdmin, isOrgAdmin } from '../utils/roleUtils';
 import ExcelJS from 'exceljs';
+import logger from '../utils/logger';
 
 /**
  * Get leads report with filters
@@ -867,6 +869,10 @@ export const getDailyReport = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
         const orgId = getOrgId(user);
+        if (!orgId) {
+            logger.warn(`getDailyReport: Organisation ID missing for user ${user.email}`, 'ReportController');
+            return res.status(400).json({ message: 'Organisation ID is required' });
+        }
         const { branchId } = req.query;
 
         // Calculate IST "today" boundaries
@@ -885,14 +891,17 @@ export const getDailyReport = async (req: Request, res: Response) => {
         const startOfDay = new Date(istStartOfDay.getTime() - istOffset);
         const endOfDay = new Date(istEndOfDay.getTime() - istOffset);
 
-        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+        const isUserAdmin = isOrgAdmin(user);
+        logger.info(`getDailyReport: user=${user.email}, role=${user.role}, isOrgAdmin=${isUserAdmin}, orgId=${orgId}`, 'ReportController');
+
         const visibleUserIds = await getVisibleUserIds(user.id);
         const where: any = {
             organisationId: orgId,
             isActive: true
         };
 
-        if (!isAdmin) {
+        if (!isUserAdmin) {
+            logger.info(`getDailyReport: restricting to ${visibleUserIds.length} visible users`, 'ReportController');
             where.id = { in: visibleUserIds };
         }
 
@@ -907,6 +916,8 @@ export const getDailyReport = async (req: Request, res: Response) => {
                 branch: { select: { name: true } }
             }
         });
+
+        logger.info(`getDailyReport: found ${users.length} users for report`, 'ReportController');
 
         const report = await Promise.all(users.map(async (u) => {
             const [
@@ -974,7 +985,7 @@ export const getDailyReport = async (req: Request, res: Response) => {
             isDeleted: false
         };
 
-        if (!isAdmin) {
+        if (!isUserAdmin) {
             summaryWhere.createdById = { in: visibleUserIds };
         }
 
