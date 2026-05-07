@@ -232,7 +232,7 @@ app.use((0, cors_1.default)({
 // This must be placed BEFORE app.use(express.json())
 // Meta webhook - NO AUTH, needs raw body for signature verification
 // This must be placed BEFORE app.use(express.json())
-app.use('/api/meta/callback', (req, res, next) => {
+app.use(['/api/meta/callback', '/api/meta/webhook'], (req, res, next) => {
     if (req.method === 'POST') {
         express_1.default.raw({ type: 'application/json' })(req, res, (err) => {
             if (err)
@@ -311,6 +311,7 @@ app.use(seoMiddleware_1.seoMiddleware);
 app.use('/', sitemapRoutes_1.default);
 app.use('/api', sitemapRoutes_1.default);
 // Auth & Core (with enhanced security)
+app.use('/api/reports', csrfProtection_1.verifyCSRFToken, reportRoutes_1.default);
 app.use('/api/auth', authRoutes_1.default);
 app.use('/api/analytics', csrfProtection_1.verifyCSRFToken, analyticsRoutes_1.default);
 app.use('/api/workflow', csrfProtection_1.verifyCSRFToken, workflowRoutes_1.default);
@@ -320,7 +321,7 @@ app.use('/api/email', csrfProtection_1.verifyCSRFToken, emailRoutes_1.default);
 const gmailRoutes_1 = __importDefault(require("./routes/gmailRoutes"));
 app.use('/api/gmail', gmailRoutes_1.default);
 app.use('/api/search', searchRoutes_1.default);
-app.use('/api/reports', csrfProtection_1.verifyCSRFToken, reportRoutes_1.default);
+app.use('/api/search', searchRoutes_1.default);
 app.use('/api/profile', profileRoutes_1.default);
 // Sales
 app.use('/api/leads', leadRoutes_1.default);

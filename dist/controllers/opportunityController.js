@@ -90,6 +90,9 @@ const getOpportunities = async (req, res) => {
                 { description: { contains: String(req.query.search), mode: 'insensitive' } }
             ];
         }
+        if (req.query.leadSource && req.query.leadSource !== 'all') {
+            where.leadSource = String(req.query.leadSource);
+        }
         // Add filters if needed (e.g. stage, etc.) based on query params if standard match Mongoose behavior which passed `query` directly sometimes?
         // Mongoose code had `const query: any = {}` and populated it manually.
         // It didn't seemingly blindly pass req.query to find()? 
@@ -527,7 +530,7 @@ const deleteOpportunity = async (req, res) => {
         const opportunityId = req.params.id;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         // 1. Role Check
-        if (user.role !== 'super_admin' && user.role !== 'admin') {
+        if (user.role !== 'super_admin' && user.role !== 'admin' && user.role !== 'organisation_admin') {
             return res.status(403).json({ message: 'Not authorized to delete opportunities' });
         }
         const where = { id: opportunityId };

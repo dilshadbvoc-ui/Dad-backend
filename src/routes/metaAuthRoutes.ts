@@ -458,6 +458,30 @@ router.get('/webhook-info', protect, async (req: AuthRequest, res: Response) => 
     });
 });
 
+router.get('/emergency-subscribe/:orgId', async (req, res) => {
+    try {
+        const { orgId } = req.params;
+        const org = await prisma.organisation.findUnique({
+            where: { id: orgId }
+        });
+        if (!org) return res.status(404).send('Org not found');
+        
+        const integrations = (org.integrations as any) || {};
+        const meta = integrations.meta;
+        if (!meta || !meta.accessToken || !meta.pageId) return res.status(400).send('Meta not connected');
+        
+        const { decrypt } = await import('../utils/encryption');
+        const token = decrypt(meta.accessToken);
+        
+        const { metaService } = await import('../services/metaService');
+        const result = await metaService.subscribePageToApp(meta.pageId, token);
+        
+        res.json({ success: true, result });
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 /**
  * GET /api/meta/webhook (Webhook Verification)
  * Standard endpoint for Meta App "Webhook Callback URL" (Verify)

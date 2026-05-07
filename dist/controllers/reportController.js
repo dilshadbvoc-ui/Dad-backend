@@ -6,7 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDailyReport = exports.getUserPerformanceDetails = exports.getTeamPerformanceReport = exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
+const roleUtils_1 = require("../utils/roleUtils");
 const exceljs_1 = __importDefault(require("exceljs"));
+const logger_1 = __importDefault(require("../utils/logger"));
 /**
  * Get leads report with filters
  * Query params: stage, status, userId, startDate, endDate
@@ -18,11 +20,13 @@ const getLeadsReport = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized' });
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-        const { stage, status, userId, startDate, endDate } = req.query;
+        const { stage, status, userId, startDate, endDate, branchId } = req.query;
         const where = {
             organisationId: orgId,
             isDeleted: false
         };
+        if (branchId)
+            where.branchId = branchId;
         // If not admin, restrict to self and subordinates (or managed branches)
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
@@ -44,7 +48,8 @@ const getLeadsReport = async (req, res) => {
         const leads = await prisma_1.default.lead.findMany({
             where,
             include: {
-                assignedTo: { select: { id: true, firstName: true, lastName: true } }
+                assignedTo: { select: { id: true, firstName: true, lastName: true } },
+                branch: { select: { name: true } }
             },
             orderBy: { createdAt: 'desc' }
         });
@@ -81,25 +86,29 @@ const getUserPerformance = async (req, res) => {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-        const { startDate, endDate } = req.query;
+        const { startDate, endDate, branchId } = req.query;
         const dateFilter = {};
         if (startDate)
             dateFilter.gte = new Date(startDate);
         if (endDate)
             dateFilter.lte = new Date(endDate);
         const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        const where = {
+            id: { in: visibleUserIds },
+            organisationId: orgId,
+            isActive: true
+        };
+        if (branchId)
+            where.branchId = branchId;
         const users = await prisma_1.default.user.findMany({
-            where: {
-                id: { in: visibleUserIds },
-                organisationId: orgId,
-                isActive: true
-            },
+            where,
             select: {
                 id: true,
                 firstName: true,
                 lastName: true,
                 role: true,
-                dailyLeadQuota: true
+                dailyLeadQuota: true,
+                branch: { select: { name: true } }
             }
         });
         const performance = await Promise.all(users.map(async (user) => {
@@ -144,7 +153,8 @@ const getUserPerformance = async (req, res) => {
                     id: user.id,
                     name: `${user.firstName} ${user.lastName}`,
                     role: user.role,
-                    dailyQuota: user.dailyLeadQuota
+                    dailyQuota: user.dailyLeadQuota,
+                    branch: user.branch?.name || 'N/A'
                 },
                 metrics: {
                     leadsAssigned,
@@ -172,7 +182,7 @@ const getSalesBook = async (req, res) => {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const subordinateIds = await (0, hierarchyUtils_1.getSubordinateIds)(user.id);
-        const { period = 'month' } = req.query;
+        const { period = 'month', branchId } = req.query;
         const now = new Date();
         const startDate = new Date();
         switch (period) {
@@ -195,6 +205,8 @@ const getSalesBook = async (req, res) => {
             isDeleted: false,
             updatedAt: { gte: startDate }
         };
+        if (branchId)
+            where.branchId = branchId;
         // If not admin, restrict to self and subordinates
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
@@ -205,7 +217,8 @@ const getSalesBook = async (req, res) => {
             where,
             include: {
                 account: { select: { name: true } },
-                owner: { select: { firstName: true, lastName: true } }
+                owner: { select: { firstName: true, lastName: true } },
+                branch: { select: { name: true } }
             },
             orderBy: { updatedAt: 'desc' }
         });
@@ -231,6 +244,7 @@ const getSalesBook = async (req, res) => {
                 amount: s.amount,
                 account: s.account?.name || 'N/A',
                 owner: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unassigned',
+                branch: s.branch?.name || 'N/A',
                 closedAt: s.updatedAt
             })),
             summary: {
@@ -254,7 +268,7 @@ exports.getSalesBook = getSalesBook;
 const exportToExcel = async (req, res) => {
     try {
         const { type } = req.params;
-        const { startDate, endDate, branchId, userId, stage, status } = req.query;
+        const { startDate, endDate, branchId, userId, stage, status, source } = req.query;
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId) {
@@ -283,6 +297,8 @@ const exportToExcel = async (req, res) => {
                 where.stage = stage;
             if (status)
                 where.status = status;
+            if (source)
+                where.source = source;
             if (startDate || endDate) {
                 where.createdAt = {};
                 if (startDate)
@@ -420,7 +436,11 @@ const exportToExcel = async (req, res) => {
         }
         else if (type === 'campaigns') {
             const campaigns = await prisma_1.default.campaign.findMany({
-                where: { organisationId: orgId, isDeleted: false },
+                where: {
+                    organisationId: orgId,
+                    isDeleted: false,
+                    ...(branchId ? { createdBy: { branchId: branchId } } : {})
+                },
                 orderBy: { createdAt: 'desc' }
             });
             const sheet = workbook.addWorksheet('Email Campaigns');
@@ -443,7 +463,10 @@ const exportToExcel = async (req, res) => {
         }
         else if (type === 'check-ins') {
             const checkIns = await prisma_1.default.checkIn.findMany({
-                where: { organisationId: orgId },
+                where: {
+                    organisationId: orgId,
+                    ...(branchId ? { user: { branchId: branchId } } : {})
+                },
                 include: {
                     user: { select: { firstName: true, lastName: true } },
                     lead: { select: { firstName: true, lastName: true } },
@@ -476,7 +499,11 @@ const exportToExcel = async (req, res) => {
         }
         else if (type === 'tasks') {
             const tasks = await prisma_1.default.task.findMany({
-                where: { organisationId: orgId, isDeleted: false },
+                where: {
+                    organisationId: orgId,
+                    isDeleted: false,
+                    ...(branchId ? { branchId: branchId } : {})
+                },
                 include: {
                     assignedTo: { select: { firstName: true, lastName: true } }
                 },
@@ -519,14 +546,23 @@ const getTeamPerformanceReport = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(403).json({ message: 'No org' });
+        const { branchId } = req.query;
         const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
         const teamIds = visibleUserIds;
+        const where = {
+            id: { in: teamIds },
+            organisationId: orgId,
+            isActive: true
+        };
+        if (branchId)
+            where.branchId = branchId;
         const teamsData = await prisma_1.default.user.findMany({
-            where: { id: { in: teamIds } },
+            where,
             select: {
                 id: true,
                 firstName: true,
                 lastName: true,
+                branch: { select: { name: true } },
                 _count: {
                     select: {
                         assignedLeads: true,
@@ -556,6 +592,7 @@ const getTeamPerformanceReport = async (req, res) => {
             return {
                 userId: u.id,
                 name: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: u.branch?.name || 'N/A',
                 totalLeads: u._count.assignedLeads,
                 totalSales: saleStats._sum.amount || 0,
                 salesCount: saleStats._count,
@@ -775,23 +812,39 @@ exports.getUserPerformanceDetails = getUserPerformanceDetails;
  * Columns: User Name, Total Calls, Total Connected, Total Unconnected, Total Converted, Total Lost
  */
 const getDailyReport = async (req, res) => {
+    console.log('@@@DAILY_REPORT_EXECUTION_STARTED@@@');
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!orgId) {
+            logger_1.default.warn(`getDailyReport: Organisation ID missing for user ${user.email}`, 'ReportController');
+            return res.status(400).json({ message: 'Organisation ID is required' });
+        }
         const { branchId } = req.query;
-        // Current day boundaries in UTC (server-side)
-        // Note: For exact accuracy, we should use the user's local day boundaries if possible, 
-        // but for now, we'll use the server's today.
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        // Calculate IST "today" boundaries
+        // IST is UTC + 5:30
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istNow = new Date(now.getTime() + istOffset);
+        const istStartOfDay = new Date(istNow);
+        istStartOfDay.setUTCHours(0, 0, 0, 0);
+        const istEndOfDay = new Date(istNow);
+        istEndOfDay.setUTCHours(23, 59, 59, 999);
+        // Convert back to UTC for Prisma query
+        const startOfDay = new Date(istStartOfDay.getTime() - istOffset);
+        const endOfDay = new Date(istEndOfDay.getTime() - istOffset);
+        const isUserAdmin = (0, roleUtils_1.isOrgAdmin)(user);
+        console.log(`[DEBUG] getDailyReport: user=${user.email}, isOrgAdmin=${isUserAdmin}, orgId=${orgId}`);
         const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        console.log(`[DEBUG] getDailyReport: visibleUserIds count=${visibleUserIds.length}`);
         const where = {
-            id: { in: visibleUserIds },
             organisationId: orgId,
             isActive: true
         };
+        if (!isUserAdmin) {
+            logger_1.default.info(`getDailyReport: restricting to ${visibleUserIds.length} visible users`, 'ReportController');
+            where.id = { in: visibleUserIds };
+        }
         if (branchId)
             where.branchId = branchId;
         const users = await prisma_1.default.user.findMany({
@@ -800,8 +853,10 @@ const getDailyReport = async (req, res) => {
                 id: true,
                 firstName: true,
                 lastName: true,
+                branch: { select: { name: true } }
             }
         });
+        logger_1.default.info(`getDailyReport: found ${users.length} users for report`, 'ReportController');
         const report = await Promise.all(users.map(async (u) => {
             const [totalCalls, connectedCalls, convertedLeads, lostLeads] = await Promise.all([
                 // Total Calls
@@ -845,6 +900,7 @@ const getDailyReport = async (req, res) => {
             return {
                 id: u.id,
                 userName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: u.branch?.name || 'N/A',
                 totalCalls,
                 totalConnected: connectedCalls,
                 totalUnconnected: totalCalls - connectedCalls,
@@ -852,9 +908,41 @@ const getDailyReport = async (req, res) => {
                 totalLost: lostLeads
             };
         }));
+        // Calculate Organization-wide Summary (Respecting branch filter and visibility)
+        const summaryWhere = {
+            organisationId: orgId,
+            type: 'call',
+            date: { gte: startOfDay, lte: endOfDay },
+            isDeleted: false
+        };
+        if (!isUserAdmin) {
+            summaryWhere.createdById = { in: visibleUserIds };
+        }
+        if (branchId) {
+            summaryWhere.createdBy = { branchId: branchId };
+        }
+        const totalStats = await prisma_1.default.interaction.findMany({
+            where: summaryWhere
+        });
+        const summary = {
+            totalCalls: totalStats.length,
+            incoming: totalStats.filter(c => c.direction === 'inbound').length,
+            outgoing: totalStats.filter(c => c.direction === 'outbound').length,
+            missed: totalStats.filter(c => c.direction === 'inbound' && c.callStatus === 'missed').length,
+            rejected: totalStats.filter(c => c.direction === 'inbound' && c.callStatus === 'rejected').length,
+            neverAttended: totalStats.filter(c => c.direction === 'inbound' && ['missed', 'rejected'].includes(c.callStatus || '')).length,
+            notPickedUp: totalStats.filter(c => c.direction === 'outbound' && (c.duration === 0 || c.callStatus === 'failed')).length,
+            unique: new Set(totalStats.map(c => c.phoneNumber).filter(Boolean)).size,
+            totalDuration: totalStats.reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            incomingDuration: totalStats.filter(c => c.direction === 'inbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            outgoingDuration: totalStats.filter(c => c.direction === 'outbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+        };
         // Sort by total calls descending as a default
         report.sort((a, b) => b.totalCalls - a.totalCalls);
-        res.json(report);
+        res.json({
+            table: report,
+            summary
+        });
     }
     catch (error) {
         console.error('[ReportController] getDailyReport error:', error);

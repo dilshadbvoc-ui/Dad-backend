@@ -643,7 +643,8 @@ const updateLead = async (req, res) => {
                                 leadId,
                                 productId: item.productId,
                                 quantity: quantity,
-                                price: price
+                                price: price,
+                                customName: item.customName || undefined
                             }
                         });
                     }
@@ -1146,6 +1147,7 @@ const convertLead = async (req, res) => {
                             organisationId: orgId,
                             quantity: leadProduct.quantity,
                             price: leadProduct.price || 0, // Migrate custom price
+                            customName: leadProduct.customName, // Migrate custom name
                             purchaseDate: new Date(),
                             status: 'active',
                             notes: `Converted from lead: ${lead.firstName} ${lead.lastName || ''}`.trim()

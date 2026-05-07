@@ -99,16 +99,18 @@ const getTasks = async (req, res) => {
             where.AND.push({ OR: searchConditions });
         }
         if (status && status !== 'all') {
-            // Check enum validity or use string? TaskStatus is enum.
-            // Assuming frontend sends valid enum string like 'pending', 'completed'
-            // If strict enum needed: where.status = status as TaskStatus
             where.status = status;
+        }
+        const branchId = req.query.branchId;
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
         }
         const count = await prisma_1.default.task.count({ where });
         const tasks = await prisma_1.default.task.findMany({
             where,
             include: {
                 assignedTo: { select: { id: true, firstName: true, lastName: true, email: true } },
+                branch: { select: { id: true, name: true } },
                 // Include all potential relations to reconstruct 'relatedTo'
                 // Filter out deleted leads
                 lead: {

@@ -496,7 +496,7 @@ const getUserCallAnalytics = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { period = 'today', direction } = req.query; // direction: all, inbound, outbound
+        const { period = 'today', direction, branchId } = req.query; // direction: all, inbound, outbound
         // Calculate date range
         const now = new Date();
         let startDate;
@@ -532,7 +532,21 @@ const getUserCallAnalytics = async (req, res) => {
         }
         // Hierarchy filtering
         const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-        baseWhere.createdById = { in: visibleUserIds };
+        // Filter users by branch if provided
+        const userWhere = { id: { in: visibleUserIds } };
+        if (branchId)
+            userWhere.branchId = branchId;
+        const users = await prisma_1.default.user.findMany({
+            where: userWhere,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                branch: { select: { name: true } }
+            }
+        });
+        const filteredUserIds = users.map(u => u.id);
+        baseWhere.createdById = { in: filteredUserIds };
         // Fetch all relevant interactions
         const interactions = await prisma_1.default.interaction.findMany({
             where: baseWhere,
@@ -545,15 +559,6 @@ const getUserCallAnalytics = async (req, res) => {
                 direction: true
             }
         });
-        // Fetch users to map names
-        const users = await prisma_1.default.user.findMany({
-            where: { id: { in: visibleUserIds } },
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true
-            }
-        });
         // Aggregate by user
         const userStatsMap = {};
         // Initialize for all visible users
@@ -561,6 +566,7 @@ const getUserCallAnalytics = async (req, res) => {
             userStatsMap[u.id] = {
                 userId: u.id,
                 agentName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: u.branch?.name || 'N/A',
                 totalCalls: 0,
                 connectedCalls: 0,
                 totalDurationSeconds: 0

@@ -42,10 +42,9 @@ const roleUtils_1 = require("../utils/roleUtils");
 const getAuditLogs = async (req, res) => {
     try {
         const user = req.user;
-        const { entity, action, userId, startDate, endDate, page = 1, limit = 20 } = req.query;
-        const normalisedUserRole = (0, roleUtils_1.normalizeRole)(user.role);
+        const { entity, action, userId, startDate, endDate, page = 1, limit = 20, branchId } = req.query;
         const userIsSuperAdmin = (0, roleUtils_1.isSuperAdmin)(user);
-        const isOrgAdmin = normalisedUserRole === 'admin';
+        const isOrgAdmin = (0, roleUtils_1.isOrgAdmin)(user);
         const where = {};
         // 1. ORGANISATION ISOLATION
         if (!userIsSuperAdmin) {
@@ -116,7 +115,8 @@ const getAuditLogs = async (req, res) => {
                         firstName: true,
                         lastName: true,
                         email: true,
-                        role: true
+                        role: true,
+                        branch: { select: { name: true } }
                     }
                 }
             }

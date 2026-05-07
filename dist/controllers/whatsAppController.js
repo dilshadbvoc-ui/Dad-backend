@@ -158,10 +158,20 @@ const getMessages = async (req, res) => {
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
         const { phoneNumber, limit = 50, offset = 0 } = req.query;
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'org_admin' || user.role === 'super_admin';
         const where = {
             organisationId: orgId,
             isDeleted: false
         };
+        if (!isOrgAdmin) {
+            where.OR = [
+                { agentId: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { lead: { createdById: { in: visibleUserIds } } },
+                { contact: { ownerId: { in: visibleUserIds } } },
+            ];
+        }
         if (phoneNumber) {
             where.phoneNumber = phoneNumber;
         }
@@ -296,12 +306,23 @@ const getConversations = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'org_admin' || user.role === 'super_admin';
+        const visibilityFilter = isOrgAdmin ? {} : {
+            OR: [
+                { agentId: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { lead: { createdById: { in: visibleUserIds } } },
+                { contact: { ownerId: { in: visibleUserIds } } }
+            ]
+        };
         // 1. Get unique phone numbers (conversations)
         const conversations = await prisma_1.default.whatsAppMessage.groupBy({
             by: ['phoneNumber'],
             where: {
                 organisationId: orgId,
-                isDeleted: false
+                isDeleted: false,
+                ...visibilityFilter
             },
             _max: {
                 createdAt: true
@@ -318,20 +339,23 @@ const getConversations = async (req, res) => {
                 where: {
                     organisationId: orgId,
                     phoneNumber: conv.phoneNumber,
-                    createdAt: conv._max.createdAt
+                    ...visibilityFilter
                 },
                 include: {
-                    lead: { select: { firstName: true, lastName: true } },
-                    contact: { select: { firstName: true, lastName: true } }
+                    lead: { select: { firstName: true, lastName: true, assignedToId: true } },
+                    contact: { select: { firstName: true, lastName: true, ownerId: true } },
+                    agent: { select: { firstName: true, lastName: true } }
                 }
             });
             // Determine display name
             let displayName = conv.phoneNumber;
             if (lastMessage?.contact) {
-                displayName = `${lastMessage.contact.firstName} ${lastMessage.contact.lastName}`;
+                const contact = lastMessage.contact;
+                displayName = `${contact.firstName} ${contact.lastName}`;
             }
             else if (lastMessage?.lead) {
-                displayName = `${lastMessage.lead.firstName} ${lastMessage.lead.lastName}`;
+                const lead = lastMessage.lead;
+                displayName = `${lead.firstName} ${lead.lastName}`;
             }
             // Count unread messages for this specific conversation
             const unreadCount = await prisma_1.default.whatsAppMessage.count({
@@ -340,7 +364,8 @@ const getConversations = async (req, res) => {
                     phoneNumber: conv.phoneNumber,
                     direction: 'incoming',
                     isReadByAgent: false,
-                    isDeleted: false
+                    isDeleted: false,
+                    ...visibilityFilter
                 }
             });
             return {
@@ -351,7 +376,10 @@ const getConversations = async (req, res) => {
                 leadId: lastMessage?.leadId,
                 contactId: lastMessage?.contactId,
                 messageType: lastMessage?.messageType,
-                unreadCount
+                unreadCount,
+                lastAgentId: lastMessage?.agentId,
+                lastAgentName: lastMessage?.agent ? `${lastMessage.agent.firstName} ${lastMessage.agent.lastName || ''}`.trim() : null,
+                ownerId: lastMessage?.lead?.assignedToId || lastMessage?.contact?.ownerId || null
             };
         }));
         res.json(conversationDetails);
@@ -594,10 +622,20 @@ const getMessageStatistics = async (req, res) => {
         if (!orgId)
             return res.status(400).json({ message: 'No organisation found' });
         const { startDate, endDate, phoneNumber } = req.query;
+        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+        const isOrgAdmin = user.role === 'organisation_admin' || user.role === 'org_admin' || user.role === 'super_admin';
         const where = {
             organisationId: orgId,
             isDeleted: false
         };
+        if (!isOrgAdmin) {
+            where.OR = [
+                { agentId: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+                { lead: { createdById: { in: visibleUserIds } } },
+                { contact: { ownerId: { in: visibleUserIds } } },
+            ];
+        }
         if (startDate && endDate) {
             where.createdAt = {
                 gte: new Date(startDate),
@@ -861,7 +899,41 @@ const logExternalMessage = async (req, res) => {
                 }
             });
         }
-        console.log(`[WhatsAppSync] Logged message for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
+        console.log(`[WhatsAppSync] Logged interaction for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
+        // 3. Create a WhatsAppMessage record so it shows up in the WhatsApp Inbox
+        const msgDirection = direction === 'outbound' ? 'outgoing' : 'incoming';
+        // Deduplicate WhatsAppMessage within same 5-minute window
+        const existingMessage = await prisma_1.default.whatsAppMessage.findFirst({
+            where: {
+                organisationId: user.organisationId,
+                phoneNumber: phoneNumber,
+                direction: msgDirection,
+                content: { path: ['text'], equals: messageText },
+                createdAt: { gte: windowStart, lte: windowEnd }
+            }
+        });
+        let waMessage;
+        if (!existingMessage) {
+            waMessage = await prisma_1.default.whatsAppMessage.create({
+                data: {
+                    conversationId: `${phoneNumber}_${callDate.getTime()}`,
+                    phoneNumber: phoneNumber,
+                    direction: msgDirection,
+                    messageType: 'text',
+                    content: { text: messageText },
+                    status: 'delivered',
+                    sentAt: callDate,
+                    organisationId: user.organisationId,
+                    leadId: targetLeadId || undefined,
+                    isReadByAgent: false,
+                    createdAt: callDate
+                }
+            });
+            console.log(`[WhatsAppSync] Logged WhatsAppMessage for Inbox: ${waMessage.id}`);
+        }
+        else {
+            console.log(`[WhatsAppSync] Skipped duplicate WhatsAppMessage for Inbox`);
+        }
         // Emit socket event for real-time UI updates
         const io = req.app.get('io');
         if (io && targetLeadId) {
@@ -870,6 +942,12 @@ const logExternalMessage = async (req, res) => {
                     ...interaction,
                     type: 'whatsapp'
                 }
+            });
+        }
+        if (io && waMessage && user.organisationId) {
+            io.to(`org:${user.organisationId}`).emit('whatsapp_message_received', {
+                message: waMessage,
+                phoneNumber: phoneNumber
             });
         }
         res.status(201).json({

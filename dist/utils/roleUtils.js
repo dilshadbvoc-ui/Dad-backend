@@ -48,7 +48,7 @@ function isAdmin(user) {
  * Helper for Org Admin check (includes Admin and Super Admin)
  */
 function isOrgAdmin(user) {
-    return checkRole(user, ['org_admin', 'admin', 'super_admin']);
+    return checkRole(user, ['org_admin', 'organisation_admin', 'admin', 'super_admin']);
 }
 /**
  * Helper for Manager check (includes Admin and Super Admin)

@@ -46,6 +46,7 @@ class CSRFProtection {
         return (req, res, next) => {
             // Skip CSRF for safe methods
             if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+                console.log(`[CSRF] Skipping for ${req.method} ${req.path}`);
                 return next();
             }
             // Skip CSRF for API key authentication

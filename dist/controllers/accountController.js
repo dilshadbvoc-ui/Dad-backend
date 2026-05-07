@@ -304,7 +304,7 @@ const addAccountProduct = async (req, res) => {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { accountId } = req.params;
-        const { productId, quantity, purchaseDate, serialNumber, status, notes, price, isFinalSale } = req.body;
+        const { productId, quantity, purchaseDate, serialNumber, status, notes, price, isFinalSale, customName } = req.body;
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
         const account = await prisma_1.default.account.findFirst({
@@ -322,6 +322,7 @@ const addAccountProduct = async (req, res) => {
                 status: status || 'active',
                 notes,
                 price: Number(price) || 0,
+                customName,
                 organisationId: orgId
             },
             include: { product: true }
@@ -330,8 +331,8 @@ const addAccountProduct = async (req, res) => {
             data: {
                 accountId,
                 type: 'note',
-                subject: `Added Asset: ${asset.product.name}`,
-                description: `Added product: ${asset.product.name} (Qty: ${asset.quantity})`,
+                subject: `Added Asset: ${customName || asset.product.name}`,
+                description: `Added product: ${customName || asset.product.name} (Qty: ${asset.quantity})`,
                 createdById: user.id,
                 organisationId: orgId
             }
@@ -341,12 +342,12 @@ const addAccountProduct = async (req, res) => {
             const finalAmount = (Number(price) || 0) * (Number(quantity) || 1);
             await prisma_1.default.opportunity.create({
                 data: {
-                    name: `Upsell: ${asset.product.name} (${asset.quantity})`,
+                    name: `Upsell: ${customName || asset.product.name} (${asset.quantity})`,
                     amount: finalAmount,
                     stage: 'closed_won',
                     probability: 100,
                     closeDate: new Date(),
-                    description: `Automatically created from finalized asset purchase. Product: ${asset.product.name}, Serial: ${serialNumber || 'N/A'}`,
+                    description: `Automatically created from finalized asset purchase. Product: ${customName || asset.product.name}, Serial: ${serialNumber || 'N/A'}`,
                     type: 'UPSALE',
                     organisation: { connect: { id: orgId } },
                     owner: { connect: { id: user.id } },

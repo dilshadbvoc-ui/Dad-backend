@@ -228,7 +228,7 @@ app.use(cors({
 // This must be placed BEFORE app.use(express.json())
 // Meta webhook - NO AUTH, needs raw body for signature verification
 // This must be placed BEFORE app.use(express.json())
-app.use('/api/meta/callback', (req, res, next) => {
+app.use(['/api/meta/callback', '/api/meta/webhook'], (req, res, next) => {
     if (req.method === 'POST') {
         express.raw({ type: 'application/json' })(req, res, (err) => {
             if (err) return next(err);
@@ -319,6 +319,7 @@ app.use('/', sitemapRoutes);
 app.use('/api', sitemapRoutes);
 
 // Auth & Core (with enhanced security)
+app.use('/api/reports', verifyCSRFToken, reportRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/analytics', verifyCSRFToken, analyticsRoutes);
 app.use('/api/workflow', verifyCSRFToken, workflowRoutes);
@@ -328,7 +329,7 @@ app.use('/api/email', verifyCSRFToken, emailRoutes);
 import gmailRoutes from './routes/gmailRoutes';
 app.use('/api/gmail', gmailRoutes);
 app.use('/api/search', searchRoutes);
-app.use('/api/reports', verifyCSRFToken, reportRoutes);
+app.use('/api/search', searchRoutes);
 
 app.use('/api/profile', profileRoutes);
 

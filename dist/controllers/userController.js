@@ -439,10 +439,34 @@ const createUser = async (req, res) => {
                 logger_1.logger.info(`Renamed suspended user ${existingUser.id} to free up email ${email}`, 'UserController');
             }
         }
-        if (!password || password.length < 8) {
-            return res.status(400).json({ message: 'Password must be at least 8 characters' });
-        }
         const hashedPassword = await bcryptjs_1.default.hash(password, 10);
+        // Generate UserID with collision protection
+        let generatedUserId;
+        let isUnique = false;
+        let attempts = 0;
+        const org = await prisma_1.default.organisation.findUnique({ where: { id: targetOrgId } });
+        while (!isUnique && attempts < 20) {
+            attempts++;
+            if (org) {
+                // Atomic update of the counter
+                const updatedOrg = await prisma_1.default.organisation.update({
+                    where: { id: targetOrgId },
+                    data: { userIdCounter: { increment: 1 } }
+                });
+                // Use Org Name prefix (3 chars) + part of Org ID (4 chars) + counter
+                const namePrefix = updatedOrg.name.slice(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, 'X');
+                const orgSuffix = targetOrgId.slice(0, 4).toUpperCase();
+                const counter = updatedOrg.userIdCounter;
+                generatedUserId = `${namePrefix}${orgSuffix}${counter.toString().padStart(3, '0')}`;
+                const collision = await prisma_1.default.user.findUnique({ where: { userId: generatedUserId } });
+                if (!collision) {
+                    isUnique = true;
+                }
+            }
+            else {
+                isUnique = true;
+            }
+        }
         const newUser = await prisma_1.default.user.create({
             data: {
                 email,
@@ -452,6 +476,7 @@ const createUser = async (req, res) => {
                 lastName,
                 phone,
                 organisationId: targetOrgId,
+                userId: generatedUserId,
                 isActive: true, // Default to active
                 dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined,
                 // If currentUser is non-admin creating a user, maybe set reportsTo?
@@ -531,37 +556,58 @@ const inviteUser = async (req, res) => {
                 return res.status(403).json({ message: 'User limit reached' });
             }
         }
-        // Generate UserID
+        // Generate UserID with collision protection
         let generatedUserId;
-        if (org) {
-            // Atomic update
-            const updatedOrg = await prisma_1.default.organisation.update({
-                where: { id: targetOrgId },
-                data: { userIdCounter: { increment: 1 } }
-            });
-            const prefix = updatedOrg.name.slice(0, 3).toUpperCase();
-            const counter = updatedOrg.userIdCounter;
-            generatedUserId = `${prefix}${counter.toString().padStart(3, '0')}`;
+        let isUnique = false;
+        let attempts = 0;
+        while (!isUnique && attempts < 20) {
+            attempts++;
+            if (org) {
+                // Atomic update of the counter
+                const updatedOrg = await prisma_1.default.organisation.update({
+                    where: { id: targetOrgId },
+                    data: { userIdCounter: { increment: 1 } }
+                });
+                // Use Org Name prefix (3 chars) + part of Org ID (4 chars) + counter
+                // This ensures uniqueness across organisations even if names are similar
+                const namePrefix = updatedOrg.name.slice(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, 'X');
+                const orgSuffix = targetOrgId.slice(0, 4).toUpperCase();
+                const counter = updatedOrg.userIdCounter;
+                generatedUserId = `${namePrefix}${orgSuffix}${counter.toString().padStart(3, '0')}`;
+                // Verify this ID isn't already in use globally
+                const collision = await prisma_1.default.user.findUnique({ where: { userId: generatedUserId } });
+                if (!collision) {
+                    isUnique = true;
+                }
+                else {
+                    logger_1.logger.warn(`UserId collision detected for ${generatedUserId}, retrying with next counter...`, 'UserController');
+                }
+            }
+            else {
+                isUnique = true; // No org prefix logic
+            }
         }
         const tempPassword = password || Math.random().toString(36).slice(-8);
         const salt = await bcryptjs_1.default.genSalt(10);
         const hashedPassword = await bcryptjs_1.default.hash(tempPassword, salt);
-        const newUser = await prisma_1.default.user.create({
-            data: {
-                email,
-                firstName,
-                lastName,
-                password: hashedPassword,
-                role: role || 'sales_rep',
-                organisation: { connect: { id: targetOrgId } },
-                position,
-                phone,
-                userId: generatedUserId,
-                reportsTo: reportsTo ? { connect: { id: reportsTo } } : undefined,
-                branch: branchId ? { connect: { id: branchId } } : undefined,
-                isActive: true,
-                dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined
-            }
+        const newUser = await prisma_1.default.$transaction(async (prisma) => {
+            return await prisma.user.create({
+                data: {
+                    email,
+                    firstName,
+                    lastName,
+                    password: hashedPassword,
+                    role: role || 'sales_rep',
+                    organisation: { connect: { id: targetOrgId } },
+                    position,
+                    phone,
+                    userId: generatedUserId,
+                    reportsTo: reportsTo ? { connect: { id: reportsTo } } : undefined,
+                    branch: branchId ? { connect: { id: branchId } } : undefined,
+                    isActive: true,
+                    dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined
+                }
+            });
         });
         // Audit Log
         (0, auditLogger_1.logAudit)({

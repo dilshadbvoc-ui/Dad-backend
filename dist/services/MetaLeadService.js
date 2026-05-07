@@ -90,15 +90,28 @@ exports.MetaLeadService = {
             }
             const metaConfig = matchedAccount;
             const accessToken = (0, encryption_1.decrypt)(metaConfig.accessToken);
-            // 2. Fetch Lead details from Meta Graph API
+            // 2. Fetch Lead details from Meta Graph API with expanded fields
             const response = await axios_1.default.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
-                params: { access_token: accessToken }
+                params: {
+                    access_token: accessToken,
+                    fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id,ad{account_id}'
+                }
             });
             const metaLeadData = response.data;
-            if (!metaLeadData || !metaLeadData.field_data) {
-                console.error(`[MetaLeadService] No field data found for lead ${leadgenId}`);
-                return;
+            // 2b. Check if this Ad Account is enabled for sync
+            const adAccountId = metaLeadData.ad?.account_id || metaLeadData.ad_account_id;
+            const enabledAccounts = metaConfig.enabledLeadSyncAccounts || [];
+            if (enabledAccounts.length > 0 && adAccountId) {
+                // Meta returns account_id without 'act_' prefix usually, or sometimes with it.
+                // We should be careful with the format.
+                const normalizedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
+                const isEnabled = enabledAccounts.some(id => id === normalizedId || id === adAccountId);
+                if (!isEnabled) {
+                    console.log(`[MetaLeadService] Lead ${leadgenId} ignored. Ad Account ${adAccountId} is not enabled for sync.`);
+                    return;
+                }
             }
+            console.log(`[MetaLeadService] Lead details fetched. Campaign: ${metaLeadData.campaign_name || 'N/A'}`);
             // 3. Map Meta field_data to CRM fields with better coverage
             const fieldMap = {};
             metaLeadData.field_data.forEach((field) => {
@@ -145,8 +158,15 @@ exports.MetaLeadService = {
                 source: getField(['source', 'lead_source', 'lead source']) || metaConfig._source || client_1.LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
-                    metaFormId: formId,
-                    metaAdId: adId,
+                    metaFormId: metaLeadData.form_id || formId,
+                    metaAdId: metaLeadData.ad_id || adId,
+                    metaAdName: metaLeadData.ad_name,
+                    metaAdSetId: metaLeadData.adset_id,
+                    metaAdSetName: metaLeadData.adset_name,
+                    metaCampaignId: metaLeadData.campaign_id,
+                    metaCampaignName: metaLeadData.campaign_name,
+                    campaignName: metaLeadData.campaign_name, // Explicit field for easier display
+                    adName: metaLeadData.ad_name,
                     rawMetaFields: fieldMap,
                     metaCreatedTime: metaLeadData.created_time
                 },

@@ -225,6 +225,25 @@ class MetaService {
         // Otherwise prepend act_
         return `act_${adAccountId}`;
     }
+    /**
+     * Subscribes a Facebook Page to the CRM's App
+     * This enables automatic lead delivery via webhooks
+     */
+    async subscribePageToApp(pageId, pageAccessToken) {
+        try {
+            console.log(`[MetaService] Attempting to subscribe Page ${pageId} to app...`);
+            const response = await this.makePostRequest(`${pageId}/subscribed_apps`, pageAccessToken, {
+                subscribed_fields: ['leadgen', 'ads']
+            });
+            console.log(`[MetaService] Successfully subscribed Page ${pageId}:`, response);
+            return response;
+        }
+        catch (error) {
+            console.error(`[MetaService] Failed to subscribe Page ${pageId}:`, error.message);
+            // Don't throw, just log. Subscription might fail if permissions are missing.
+            return null;
+        }
+    }
 }
 exports.MetaService = MetaService;
 exports.metaService = new MetaService();

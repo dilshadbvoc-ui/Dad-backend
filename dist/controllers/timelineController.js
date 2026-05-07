@@ -23,13 +23,13 @@ function getHumanReadableAction(action, entity) {
 }
 const getTimeline = async (req, res) => {
     try {
-        const { id, type } = req.params; // type = 'lead' | 'contact' | 'account'
+        const { id, type } = req.params; // type = 'lead' | 'contact' | 'account' | 'opportunity'
         // Basic validation
-        if (!['lead', 'contact', 'account'].includes(type) || !id) {
+        if (!['lead', 'contact', 'account', 'opportunity'].includes(type) || !id) {
             return res.status(400).json({ message: 'Invalid entity type or ID' });
         }
         // Fetch related data concurrently
-        const [interactions, tasks, events, auditLogs, callRecordings, followUpsData] = await Promise.all([
+        const [interactions, tasks, events, auditLogs, callRecordings, followUpsData, documents] = await Promise.all([
             prisma_1.default.interaction.findMany({
                 where: {
                     [`${type}Id`]: id,
@@ -70,6 +70,15 @@ const getTimeline = async (req, res) => {
                 },
                 orderBy: { dueDate: 'desc' },
                 include: { assignedTo: { select: { firstName: true, lastName: true } } }
+            }),
+            prisma_1.default.document.findMany({
+                where: {
+                    [`${type}Id`]: id,
+                    isDeleted: false,
+                    category: { not: 'recording' } // recordings are handled by interactions/recordings
+                },
+                orderBy: { createdAt: 'desc' },
+                include: { createdBy: { select: { firstName: true, lastName: true } } }
             })
         ]);
         // Filter out CallRecordings that are already represented by Interactions to avoid timeline duplicates.
@@ -219,6 +228,20 @@ const getTimeline = async (req, res) => {
                 date: f.dueDate,
                 actor: f.assignedTo,
                 meta: { priority: f.priority }
+            })),
+            ...documents.map(d => ({
+                id: d.id,
+                type: 'document',
+                subType: d.category,
+                title: d.name,
+                description: d.description,
+                date: d.createdAt,
+                actor: d.createdBy,
+                meta: {
+                    fileType: d.fileType,
+                    fileSize: d.fileSize,
+                    fileUrl: `/api/documents/${d.id}/download`
+                }
             }))
         ];
         // Sort by date descending

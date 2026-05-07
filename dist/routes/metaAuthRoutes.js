@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -23,6 +56,7 @@ const OAUTH_SCOPES = [
     'pages_read_engagement',
     'pages_show_list',
     'pages_manage_ads',
+    'pages_manage_metadata', // Required for webhook subscription
     'leads_retrieval',
     'email',
     'public_profile'
@@ -241,6 +275,14 @@ router.get('/callback', async (req, res) => {
                 }
             }
         });
+        // 6. AUTOMATIC WEBHOOK SUBSCRIPTION
+        // Loop through all retrieved pages and subscribe them to the app
+        const { metaService } = await Promise.resolve().then(() => __importStar(require('../services/metaService')));
+        for (const page of pages) {
+            if (page.id && page.access_token) {
+                await metaService.subscribePageToApp(page.id, page.access_token);
+            }
+        }
         const finalRedirectUrl = `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}`;
         console.log(`[Meta OAuth] Redirecting to: ${finalRedirectUrl}`);
         // Set headers for no-cache to ensure redirect is followed and not stalled by Service Worker
@@ -389,6 +431,28 @@ router.get('/webhook-info', authMiddleware_1.protect, async (req, res) => {
         webhookUrl: `${serverUrl}/api/meta/webhook`,
         verifyToken: process.env.META_VERIFY_TOKEN || 'my_secure_token'
     });
+});
+router.get('/emergency-subscribe/:orgId', async (req, res) => {
+    try {
+        const { orgId } = req.params;
+        const org = await prisma_1.default.organisation.findUnique({
+            where: { id: orgId }
+        });
+        if (!org)
+            return res.status(404).send('Org not found');
+        const integrations = org.integrations || {};
+        const meta = integrations.meta;
+        if (!meta || !meta.accessToken || !meta.pageId)
+            return res.status(400).send('Meta not connected');
+        const { decrypt } = await Promise.resolve().then(() => __importStar(require('../utils/encryption')));
+        const token = decrypt(meta.accessToken);
+        const { metaService } = await Promise.resolve().then(() => __importStar(require('../services/metaService')));
+        const result = await metaService.subscribePageToApp(meta.pageId, token);
+        res.json({ success: true, result });
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 /**
  * GET /api/meta/webhook (Webhook Verification)

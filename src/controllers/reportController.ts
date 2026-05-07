@@ -866,6 +866,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
  * Columns: User Name, Total Calls, Total Connected, Total Unconnected, Total Converted, Total Lost
  */
 export const getDailyReport = async (req: Request, res: Response) => {
+    console.log('@@@DAILY_REPORT_EXECUTION_STARTED@@@');
     try {
         const user = (req as any).user;
         const orgId = getOrgId(user);
@@ -892,9 +893,10 @@ export const getDailyReport = async (req: Request, res: Response) => {
         const endOfDay = new Date(istEndOfDay.getTime() - istOffset);
 
         const isUserAdmin = isOrgAdmin(user);
-        logger.info(`getDailyReport: user=${user.email}, role=${user.role}, isOrgAdmin=${isUserAdmin}, orgId=${orgId}`, 'ReportController');
+        console.log(`[DEBUG] getDailyReport: user=${user.email}, isOrgAdmin=${isUserAdmin}, orgId=${orgId}`);
 
         const visibleUserIds = await getVisibleUserIds(user.id);
+        console.log(`[DEBUG] getDailyReport: visibleUserIds count=${visibleUserIds.length}`);
         const where: any = {
             organisationId: orgId,
             isActive: true
