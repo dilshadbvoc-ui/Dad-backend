@@ -874,6 +874,7 @@ const getDailyReport = async (req, res) => {
                         createdById: u.id,
                         type: 'call',
                         callStatus: 'completed',
+                        duration: { gt: 0 },
                         date: { gte: startOfDay, lte: endOfDay },
                         isDeleted: false
                     }

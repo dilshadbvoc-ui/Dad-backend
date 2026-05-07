@@ -16,7 +16,6 @@ export const MetaLeadService = {
             console.log(`[MetaLeadService] Processing lead ${leadgenId} from Page ${pageId}...`);
 
             // 1. Find the organisation connected to this Page ID
-            // Try matching valid accounts in metaAccounts array or legacy meta object
             let org = await prisma.organisation.findFirst({
                 where: {
                     isDeleted: false,
@@ -27,7 +26,6 @@ export const MetaLeadService = {
                 }
             });
 
-            // If not found via primary, scan metaAccounts array
             if (!org) {
                 const candidates = await prisma.organisation.findMany({
                     where: { isDeleted: false, integrations: { path: ['metaAccounts'], not: Prisma.JsonNull } }
@@ -39,27 +37,35 @@ export const MetaLeadService = {
             }
 
             if (!org) {
-                console.error(`[MetaLeadService] No organisation found with Meta Page ID: ${pageId}. Ensure the Page is connected in Settings.`);
+                console.error(`[MetaLeadService] No organisation found with Meta Page ID: ${pageId}.`);
                 return;
             }
 
-            // Extract the correct account config
+            // 2. Check if lead already exists by Meta Lead ID (Deduplication P1)
+            const allMetaLeads = await prisma.lead.findMany({
+                where: { organisationId: org.id, source: 'meta_leadgen' },
+                select: { id: true, sourceDetails: true }
+            });
+
+            const existingByMetaId = allMetaLeads.find(l => (l.sourceDetails as any)?.metaLeadgenId === leadgenId);
+
+            if (existingByMetaId) {
+                console.log(`[MetaLeadService] Lead ${leadgenId} already exists (ID: ${existingByMetaId.id}). Skipping.`);
+                return;
+            }
+
+            // 3. Fetch Access Token and Lead Details
             const integrations = (org.integrations as any) || {};
             const accounts = [...(integrations.metaAccounts || [])];
-            if (integrations.meta) accounts.push({ ...integrations.meta, _source: LeadSource.meta_leadgen });
-            if (integrations.facebook_payload) accounts.push({ ...integrations.facebook_payload, _source: (LeadSource as any).facebook_payload });
-
+            if (integrations.meta) accounts.push(integrations.meta);
             const matchedAccount = accounts.find((acc: any) => acc.pageId === pageId);
 
             if (!matchedAccount || !matchedAccount.accessToken) {
-                console.error(`[MetaLeadService] Organisation ${org.id} has no Access Token for Page ${pageId}`);
+                console.error(`[MetaLeadService] No token for Page ${pageId}`);
                 return;
             }
 
-            const metaConfig = matchedAccount;
-            const accessToken = decrypt(metaConfig.accessToken);
-
-            // 2. Fetch Lead details from Meta Graph API with expanded fields
+            const accessToken = decrypt(matchedAccount.accessToken);
             const response = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
                 params: { 
                     access_token: accessToken,
@@ -69,25 +75,20 @@ export const MetaLeadService = {
             
             const metaLeadData = response.data;
             
-            // 2b. Check if this Ad Account is enabled for sync
-            const adAccountId = metaLeadData.ad?.account_id || metaLeadData.ad_account_id;
-            const enabledAccounts = (metaConfig.enabledLeadSyncAccounts as string[]) || [];
+            // 4. Check if this Ad Account is enabled for sync
+            const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
+            const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
             
             if (enabledAccounts.length > 0 && adAccountId) {
-                // Meta returns account_id without 'act_' prefix usually, or sometimes with it.
-                // We should be careful with the format.
                 const normalizedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
                 const isEnabled = enabledAccounts.some(id => id === normalizedId || id === adAccountId);
-                
                 if (!isEnabled) {
-                    console.log(`[MetaLeadService] Lead ${leadgenId} ignored. Ad Account ${adAccountId} is not enabled for sync.`);
+                    console.log(`[MetaLeadService] Lead ${leadgenId} ignored. Ad Account ${adAccountId} is not enabled.`);
                     return;
                 }
             }
 
-            console.log(`[MetaLeadService] Lead details fetched. Campaign: ${metaLeadData.campaign_name || 'N/A'}`);
-
-            // 3. Map Meta field_data to CRM fields with better coverage
+            // 5. Map Field Data
             const fieldMap: Record<string, string> = {};
             metaLeadData.field_data.forEach((field: any) => {
                 if (field.values && field.values.length > 0) {
@@ -95,82 +96,44 @@ export const MetaLeadService = {
                 }
             });
 
-            // Helper to get field with multiple possible keys
             const getField = (keys: string[]) => {
                 for (const key of keys) {
                     if (fieldMap[key]) return fieldMap[key];
                 }
-                return null;
+                return '';
             };
 
-            // If not found via Meta fields, try detecting from phone (if available early)
-            let geoData = null;
-            const rawPhone = getField(['phone_number', 'phone', 'mobile_number', 'mobile_phone', 'contact_number']);
-            if (!geoData && rawPhone) {
-                geoData = GeoLocationService.detectCountryFromPhone(rawPhone.toString());
-            }
+            const leadData = {
+                full_name: getField(['full name', 'full_name', 'name', 'first_name', 'first name']),
+                phone: getField(['phone', 'phone number', 'phone_number', 'mobile', 'mobile number']),
+                email: getField(['email', 'email address', 'email_address']),
+                city: getField(['city', 'location']),
+                company: getField(['company', 'organization', 'company name']),
+                campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || `Form: ${metaLeadData.form_id}` || 'Meta Lead'
+            };
 
-            // Resolve Status: Priority 1: Payload mapping, Priority 2: Org default, Priority 3: 'new'
-            let leadStatus = getField(['status', 'lead_status', 'lead status', 'ststus']) || "new";
-            
-            // If it's still 'new' (either explicit or default), try to see if org has a custom default
-            if (leadStatus === 'new' && org.leadStatuses && Array.isArray(org.leadStatuses)) {
-                const statuses = org.leadStatuses as any[];
-                const configuredDefault = statuses.find((s) => s.isDefault);
-                if (configuredDefault) {
-                    leadStatus = configuredDefault.id;
-                }
-            }
+            // 6. Distribution & Deduplication (P2: Phone/Email)
+            const targetBranchId = await DistributionService.resolveBranchForMetaPage(org.id, pageId);
 
-            const crmData: any = {
-                firstName: getField(['first_name', 'firstname', 'first name', 'fname']) || 
-                           fieldMap.full_name?.split(' ')[0] || 'Meta',
-                lastName: getField(['last_name', 'lastname', 'last name', 'lname']) || 
-                           fieldMap.full_name?.split(' ').slice(1).join(' ') || 'Lead',
-                email: getField(['email', 'email_address', 'e-mail']),
-                phone: rawPhone || '',
-                company: getField(['company_name', 'company', 'organization', 'organisation']),
-                jobTitle: getField(['job_title', 'position', 'designation']),
-                country: geoData?.country || getField(['country', 'location']),
-                countryCode: geoData?.countryCode || null,
-                phoneCountryCode: geoData?.phoneCountryCode || null,
-                source: getField(['source', 'lead_source', 'lead source']) || metaConfig._source || LeadSource.meta_leadgen,
+            const crmData = {
+                firstName: leadData.full_name || 'Meta Lead',
+                lastName: '', // ReEnquiryData requires this
+                phone: leadData.phone || '',
+                email: leadData.email || undefined,
+                organisationId: org.id,
+                source: LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
-                    metaFormId: metaLeadData.form_id || formId,
-                    metaAdId: metaLeadData.ad_id || adId,
+                    metaFormId: formId || metaLeadData.form_id,
+                    metaPageId: pageId,
+                    metaAdId: adId || metaLeadData.ad_id,
                     metaAdName: metaLeadData.ad_name,
-                    metaAdSetId: metaLeadData.adset_id,
-                    metaAdSetName: metaLeadData.adset_name,
                     metaCampaignId: metaLeadData.campaign_id,
-                    metaCampaignName: metaLeadData.campaign_name,
-                    campaignName: metaLeadData.campaign_name, // Explicit field for easier display
-                    adName: metaLeadData.ad_name,
-                    rawMetaFields: fieldMap,
+                    metaCampaignName: leadData.campaign_name,
                     metaCreatedTime: metaLeadData.created_time
-                },
-                status: leadStatus,
-                organisationId: org.id,
-                branchId: metaConfig.branchId || null
+                }
             };
 
-            // 4. Resolve target owner and branch EARLY to isolate duplicate check
-            const { DistributionService } = await import('./distributionService');
-            const targetOwnerId = await DistributionService.assignLead(
-                { ...crmData, id: undefined }, 
-                org.id
-            );
-
-            let targetBranchId = crmData.branchId;
-            if (targetOwnerId) {
-                const assignedUser = await prisma.user.findUnique({
-                    where: { id: targetOwnerId },
-                    select: { branchId: true }
-                });
-                if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
-            }
-
-            // 5. Check for duplicates in the RESOLVED branch
             const { DuplicateLeadService } = await import('./duplicateLeadService');
             const duplicateCheck = await DuplicateLeadService.checkDuplicate(
                 crmData.phone, 
@@ -180,59 +143,39 @@ export const MetaLeadService = {
             );
 
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                console.log(`[MetaLeadService] Duplicate lead detected (${duplicateCheck.existingLead.id}) in branch ${targetBranchId}. Handling as re-enquiry.`);
-                await DuplicateLeadService.handleReEnquiry(
-                    duplicateCheck.existingLead,
-                    {
-                        firstName: crmData.firstName,
-                        lastName: crmData.lastName,
-                        email: crmData.email,
-                        phone: crmData.phone,
-                        company: crmData.company,
-                        source: 'meta_leadgen',
-                        sourceDetails: crmData.sourceDetails
-                    },
-                    org.id
-                );
+                console.log(`[MetaLeadService] Duplicate found (${duplicateCheck.existingLead.id}). Re-enquiry.`);
+                await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, crmData, org.id);
                 return;
             }
 
-            // 6. Create the Lead with resolved assignment
+            // 7. Create Lead (Unassigned initially, then assign via rules)
             const lead = await prisma.lead.create({
                 data: {
                     ...crmData,
-                    assignedToId: targetOwnerId || undefined,
                     branchId: targetBranchId
                 }
             });
 
-            console.log(`[MetaLeadService] Successfully created lead ${lead.id} from Meta`);
+            console.log(`[MetaLeadService] Created lead ${lead.id} from Meta. Running strict distribution...`);
 
-            // 8. Create Notification for Sales/Admin
+            // 8. Run Distribution Service (Strict Campaign Rules)
+            await DistributionService.assignLead(lead, org.id);
+
+            // 8. Notify
             try {
                 const admins = await prisma.user.findMany({
-                    where: {
-                        organisationId: org.id,
-                        role: { in: ['admin', 'super_admin'] },
-                        isActive: true
-                    },
+                    where: { organisationId: org.id, role: { in: ['admin', 'super_admin'] }, isActive: true },
                     select: { id: true }
                 });
-
                 for (const admin of admins) {
-                    await NotificationService.send(
-                        admin.id,
-                        'New Meta Lead',
-                        `New lead received: ${crmData.firstName} ${crmData.lastName}`,
-                        'info'
-                    );
+                    await NotificationService.send(admin.id, 'New Meta Lead', `New lead: ${crmData.firstName}`, 'info');
                 }
             } catch (notifyErr) {
-                console.warn('[MetaLeadService] Notification failed:', notifyErr);
+                console.warn('[MetaLeadService] Notification failed');
             }
 
         } catch (error: any) {
-            console.error('[MetaLeadService] Error processing Meta lead:', error.response?.data || error.message);
+            console.error('[MetaLeadService] Error:', error.response?.data || error.message);
             throw error;
         }
     }

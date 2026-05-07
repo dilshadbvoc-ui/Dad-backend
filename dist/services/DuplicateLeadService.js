@@ -52,7 +52,9 @@ exports.DuplicateLeadService = {
             // Build OR conditions for duplicate check
             const conditions = [
                 { phone: cleanPhone },
-                { secondaryPhone: cleanPhone }
+                { secondaryPhone: cleanPhone },
+                { phone: `+${cleanPhone}` },
+                { secondaryPhone: `+${cleanPhone}` }
             ];
             // Explicit Indian number normalization (91 prefix handling)
             // If 12 digits starting with 91, add the 10-digit version

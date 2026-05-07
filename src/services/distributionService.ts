@@ -108,11 +108,13 @@ export const DistributionService = {
             }
 
             // 2. Iterate through rules to find a match
+            let matchedAnyRule = false;
             for (const rule of rules) {
                 // strict check: if rule has branchId, it MUST match (already covered by query, but double check)
                 if (rule.branchId && rule.branchId !== lead.branchId) continue;
 
                 if (this.matchesRule(rule, lead)) {
+                    matchedAnyRule = true;
                     console.log(`[DistributionService] Matched rule: ${rule.name} (${rule.distributionType})`);
                     let assignedUserId: string | null = null;
 
@@ -220,6 +222,41 @@ export const DistributionService = {
                         console.log(`[DistributionService] Escalated to manager ${managerId} for manual assignment`);
                         return managerId;
                     }
+                }
+            }
+
+            // [STRICT RULE] If no rule matched for a Meta Lead, assign to Admin
+            if (!matchedAnyRule && lead.source === 'meta_leadgen') {
+                console.log(`[DistributionService] No campaign rules matched for Meta Lead ${lead.id}. Falling back to Admin.`);
+                
+                const orgAdmin = await prisma.user.findFirst({
+                    where: {
+                        organisationId: organisationId,
+                        role: 'admin',
+                        isActive: true
+                    },
+                    select: { id: true, branchId: true }
+                });
+
+                if (orgAdmin) {
+                    await prisma.lead.update({
+                        where: { id: lead.id },
+                        data: {
+                            assignedToId: orgAdmin.id,
+                            branchId: orgAdmin.branchId || lead.branchId
+                        }
+                    });
+
+                    await prisma.leadHistory.create({
+                        data: {
+                            leadId: lead.id,
+                            newOwnerId: orgAdmin.id,
+                            changedById: orgAdmin.id,
+                            reason: 'Auto-assigned to admin (no matching campaign rules found)'
+                        }
+                    });
+                    
+                    return orgAdmin.id;
                 }
             }
 
@@ -611,6 +648,65 @@ export const DistributionService = {
         } catch (err) {
             console.error('[DistributionService] Error checking user availability:', err);
             return true; // Fallback to available if error
+        }
+    },
+
+    /**
+     * Resolve which branch a Meta Page belongs to
+     */
+    async resolveBranchForMetaPage(organisationId: string, pageId: string): Promise<string | null> {
+        try {
+            const org = await prisma.organisation.findUnique({
+                where: { id: organisationId },
+                select: { integrations: true }
+            });
+
+            if (!org || !org.integrations) return null;
+
+            const integrations = org.integrations as any;
+            const accounts = integrations.metaAccounts || [];
+            
+            // 1. Try to find branchId in metaAccounts array
+            const matchedAccount = accounts.find((acc: any) => acc.pageId === pageId);
+            if (matchedAccount?.branchId) return matchedAccount.branchId;
+
+            // 2. Try legacy meta object
+            if (integrations.meta?.pageId === pageId && integrations.meta?.branchId) {
+                return integrations.meta.branchId;
+            }
+
+            return null;
+        } catch (error) {
+            console.error('[DistributionService] Error resolving branch for Meta page:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Resolve owner for a Meta lead (Round Robin or fallback)
+     */
+    async resolveOwnerForMetaLead(organisationId: string, branchId?: string | null): Promise<string | null> {
+        try {
+            // Find a rule specifically for Meta leads or use general assignLead
+            // For now, we use a simple round-robin among active users in that branch
+            const users = await prisma.user.findMany({
+                where: {
+                    organisationId,
+                    branchId: branchId || undefined,
+                    isActive: true,
+                    role: { in: ['sales_rep', 'manager', 'admin'] }
+                },
+                orderBy: { id: 'asc' }
+            });
+
+            if (users.length === 0) return null;
+
+            // Simple round-robin (fallback if no complex rules match)
+            const randomIndex = Math.floor(Math.random() * users.length);
+            return users[randomIndex].id;
+        } catch (error) {
+            console.error('[DistributionService] Error resolving owner for Meta lead:', error);
+            return null;
         }
     },
 

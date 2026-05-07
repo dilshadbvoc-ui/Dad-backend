@@ -24,7 +24,7 @@ echo "📡 Connecting to EC2 server..."
 echo ""
 
 # Deploy via SSH
-ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'ENDSSH'
+ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" "DEPLOY_ARGS='$*' bash -s" << 'ENDSSH'
     set -e
     
     echo "📂 Navigating to backend directory..."
@@ -38,9 +38,9 @@ ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'ENDSSH'
     git fetch origin main
     git reset --hard origin/main
     
-    echo "🔧 Running deployment script..."
+    echo "🔧 Running deployment script with args: $DEPLOY_ARGS"
     chmod +x scripts/deploy.sh
-    ./scripts/deploy.sh
+    ./scripts/deploy.sh $DEPLOY_ARGS
     
     echo ""
     echo "✅ Deployment completed successfully!"

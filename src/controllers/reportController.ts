@@ -943,6 +943,7 @@ export const getDailyReport = async (req: Request, res: Response) => {
                         createdById: u.id,
                         type: 'call',
                         callStatus: 'completed',
+                        duration: { gt: 0 },
                         date: { gte: startOfDay, lte: endOfDay },
                         isDeleted: false
                     }

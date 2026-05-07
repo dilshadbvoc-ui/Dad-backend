@@ -221,7 +221,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     recordingDuration: shouldUpdate ? durationSecs : undefined,
                     hardwareDuration: shouldUpdate ? carrierDurationSecs : undefined,
                     recordingUrl: recording.fileUrl || undefined,
-                    callStatus: 'completed',
+                    callStatus: durationSecs > 0 ? 'completed' : 'failed',
                     lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                     phoneNumber: phoneNumber || undefined,
                     hardwareId: hardwareId || undefined,
@@ -253,8 +253,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     return res.status(200).json({ message: 'Iron Veil: Discarded 0-sec ghost outbound call.' });
                 }
                 
-                if (finalizedDurationSecs === 0 && existingInteraction) {
-                    status = 'failed'; // Or 'busy'
+                if (finalizedDurationSecs === 0) {
+                    status = 'failed';
                     subject = 'Outbound Call Attempt (No Answer)';
                 }
             } else if (missedIdentifiers.includes(rawType)) {
@@ -489,7 +489,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                                 duration: Math.round((finalizedSyncDurationSecs / 60) * 100) / 100,
                                 recordingDuration: durationSecs,
                                 hardwareDuration: carrierDurationSecs,
-                                callStatus: 'completed',
+                                callStatus: durationSecs > 0 ? 'completed' : 'failed',
                                 hardwareId: hardwareId || undefined,
                                 callSessionId: callSessionId || undefined
                             }
@@ -564,7 +564,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         results.skipped++;
                         continue;
                     }
-                    if (finalizedNewDurationSecs === 0 && existingInteraction) {
+                    if (finalizedNewDurationSecs === 0) {
                         status = 'failed';
                         subject = 'Outbound Call Attempt (No Answer)';
                     }

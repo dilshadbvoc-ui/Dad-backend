@@ -39,7 +39,9 @@ export const DuplicateLeadService = {
             // Build OR conditions for duplicate check
             const conditions: any[] = [
                 { phone: cleanPhone },
-                { secondaryPhone: cleanPhone }
+                { secondaryPhone: cleanPhone },
+                { phone: `+${cleanPhone}` },
+                { secondaryPhone: `+${cleanPhone}` }
             ];
 
             // Explicit Indian number normalization (91 prefix handling)
