@@ -869,20 +869,33 @@ export const getDailyReport = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         const { branchId } = req.query;
 
-        // Current day boundaries in UTC (server-side)
-        // Note: For exact accuracy, we should use the user's local day boundaries if possible, 
-        // but for now, we'll use the server's today.
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        // Calculate IST "today" boundaries
+        // IST is UTC + 5:30
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istNow = new Date(now.getTime() + istOffset);
+        
+        const istStartOfDay = new Date(istNow);
+        istStartOfDay.setUTCHours(0, 0, 0, 0);
+        
+        const istEndOfDay = new Date(istNow);
+        istEndOfDay.setUTCHours(23, 59, 59, 999);
+        
+        // Convert back to UTC for Prisma query
+        const startOfDay = new Date(istStartOfDay.getTime() - istOffset);
+        const endOfDay = new Date(istEndOfDay.getTime() - istOffset);
 
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
         const visibleUserIds = await getVisibleUserIds(user.id);
         const where: any = {
-            id: { in: visibleUserIds },
             organisationId: orgId,
             isActive: true
         };
+
+        if (!isAdmin) {
+            where.id = { in: visibleUserIds };
+        }
+
         if (branchId) where.branchId = branchId as string;
 
         const users = await prisma.user.findMany({
@@ -953,15 +966,24 @@ export const getDailyReport = async (req: Request, res: Response) => {
             };
         }));
 
-        // Calculate Organization-wide Summary (All visible users)
+        // Calculate Organization-wide Summary (Respecting branch filter and visibility)
+        const summaryWhere: any = {
+            organisationId: orgId,
+            type: 'call',
+            date: { gte: startOfDay, lte: endOfDay },
+            isDeleted: false
+        };
+
+        if (!isAdmin) {
+            summaryWhere.createdById = { in: visibleUserIds };
+        }
+
+        if (branchId) {
+            summaryWhere.createdBy = { branchId: branchId as string };
+        }
+
         const totalStats = await prisma.interaction.findMany({
-            where: {
-                organisationId: orgId,
-                type: 'call',
-                date: { gte: startOfDay, lte: endOfDay },
-                isDeleted: false,
-                createdById: { in: visibleUserIds }
-            }
+            where: summaryWhere
         });
 
         const summary = {

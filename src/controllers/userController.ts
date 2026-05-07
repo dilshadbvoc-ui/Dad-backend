@@ -552,7 +552,7 @@ export const inviteUser = async (req: Request, res: Response) => {
         let isUnique = false;
         let attempts = 0;
 
-        while (!isUnique && attempts < 10) {
+        while (!isUnique && attempts < 20) {
             attempts++;
             if (org) {
                 // Atomic update of the counter
@@ -560,16 +560,20 @@ export const inviteUser = async (req: Request, res: Response) => {
                     where: { id: targetOrgId },
                     data: { userIdCounter: { increment: 1 } }
                 });
-                const prefix = updatedOrg.name.slice(0, 3).toUpperCase();
+                
+                // Use Org Name prefix (3 chars) + part of Org ID (4 chars) + counter
+                // This ensures uniqueness across organisations even if names are similar
+                const namePrefix = updatedOrg.name.slice(0, 3).toUpperCase().replace(/[^A-Z0-9]/g, 'X');
+                const orgSuffix = targetOrgId.slice(0, 4).toUpperCase();
                 const counter = updatedOrg.userIdCounter;
-                generatedUserId = `${prefix}${counter.toString().padStart(3, '0')}`;
+                generatedUserId = `${namePrefix}${orgSuffix}${counter.toString().padStart(3, '0')}`;
 
-                // Verify this ID isn't already in use (to recover from sync issues)
+                // Verify this ID isn't already in use globally
                 const collision = await prisma.user.findUnique({ where: { userId: generatedUserId } });
                 if (!collision) {
                     isUnique = true;
                 } else {
-                    logger.warn(`UserId collision detected for ${generatedUserId}, incrementing and retrying...`, 'UserController');
+                    logger.warn(`UserId collision detected for ${generatedUserId}, retrying with next counter...`, 'UserController');
                 }
             } else {
                 isUnique = true; // No org prefix logic
