@@ -127,9 +127,9 @@ export const MetaLeadService = {
                     metaFormId: formId || metaLeadData.form_id,
                     metaPageId: pageId,
                     metaAdId: adId || metaLeadData.ad_id,
-                    metaAdName: metaLeadData.ad_name,
-                    metaCampaignId: metaLeadData.campaign_id,
-                    metaCampaignName: leadData.campaign_name,
+                    adName: metaLeadData.ad_name,
+                    campaignId: metaLeadData.campaign_id,
+                    campaignName: leadData.campaign_name,
                     metaCreatedTime: metaLeadData.created_time
                 }
             };
