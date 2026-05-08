@@ -10,8 +10,6 @@ export const MetaPollingService = {
      */
     async pollAllOrganisations() {
         try {
-            logger.info('Starting Meta lead polling for all organisations...', 'MetaPolling');
-
             const organisations = await prisma.organisation.findMany({
                 where: {
                     isDeleted: false,
@@ -24,6 +22,8 @@ export const MetaPollingService = {
                 }
             });
 
+            logger.info(`Found ${organisations.length} organisations to check for Meta integrations.`, 'MetaPolling');
+            
             for (const org of organisations) {
                 const integrations = (org.integrations as any) || {};
                 const accounts = [...(integrations.metaAccounts || [])];
@@ -34,7 +34,10 @@ export const MetaPollingService = {
                     if (!exists) accounts.push(integrations.meta);
                 }
 
-                if (accounts.length === 0) continue;
+                if (accounts.length === 0) {
+                    // logger.info(`No Meta accounts found for ${org.name}`, 'MetaPolling', undefined, org.id);
+                    continue;
+                }
 
                 logger.info(`Polling ${accounts.length} Meta accounts for ${org.name}`, 'MetaPolling', undefined, org.id);
 

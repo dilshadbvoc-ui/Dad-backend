@@ -89,7 +89,8 @@ router.get('/auth', authMiddleware_1.protect, (req, res) => {
         `&scope=${encodeURIComponent(OAUTH_SCOPES)}` +
         `&state=${state}` +
         (configId ? `&config_id=${configId}` : '') +
-        `&response_type=code`;
+        `&response_type=code` +
+        `&auth_type=rerequest`;
     res.json({ url: authUrl });
 });
 /**
@@ -231,39 +232,52 @@ router.get('/callback', async (req, res) => {
         }
         // Update organisation with Meta integration data
         const currentIntegrations = org.integrations || {};
-        const metaAccounts = currentIntegrations.metaAccounts || [];
-        const newAccount = {
+        let metaAccounts = Array.isArray(currentIntegrations.metaAccounts) ? [...currentIntegrations.metaAccounts] : [];
+        // 5. Prepare all account objects
+        const newAccounts = pages.map((page) => ({
             connected: true,
-            accessToken: primaryPage?.access_token || longLivedToken,
-            userAccessToken: longLivedToken, // Store user token for marketing API
+            accessToken: page.access_token,
+            userAccessToken: longLivedToken,
+            adAccountId: primaryAdAccount?.id || null, // Best effort link to primary ad account
+            adAccountName: primaryAdAccount?.name || null,
+            pageId: page.id,
+            pageName: page.name,
+            appId: appId,
+            connectedAt: new Date().toISOString()
+        }));
+        // Merge new accounts into metaAccounts
+        for (const newAcc of newAccounts) {
+            const existingIndex = metaAccounts.findIndex((acc) => acc.pageId === newAcc.pageId);
+            if (existingIndex >= 0) {
+                metaAccounts[existingIndex] = { ...metaAccounts[existingIndex], ...newAcc };
+            }
+            else {
+                metaAccounts.push(newAcc);
+            }
+        }
+        const primaryAccount = newAccounts[0] || {
+            connected: true,
+            accessToken: longLivedToken,
+            userAccessToken: longLivedToken,
             adAccountId: primaryAdAccount?.id || null,
             adAccountName: primaryAdAccount?.name || null,
-            pageId: primaryPage?.id || null,
-            pageName: primaryPage?.name || null,
             appId: appId,
             connectedAt: new Date().toISOString()
         };
-        // Check if account already exists (by Ad Account ID or Page ID)
-        const accountIndex = metaAccounts.findIndex((acc) => (newAccount.adAccountId && acc.adAccountId === newAccount.adAccountId) ||
-            (newAccount.pageId && acc.pageId === newAccount.pageId));
-        if (accountIndex >= 0) {
-            metaAccounts[accountIndex] = newAccount; // Update
-        }
-        else {
-            metaAccounts.push(newAccount); // Add new
-        }
         await prisma_1.default.organisation.update({
             where: { id: orgId },
             data: {
                 integrations: {
                     ...currentIntegrations,
                     meta: {
-                        ...newAccount,
-                        accessToken: (0, encryption_1.encrypt)(newAccount.accessToken)
+                        ...primaryAccount,
+                        accessToken: (0, encryption_1.encrypt)(primaryAccount.accessToken)
                     },
                     metaAccounts: metaAccounts.map((acc) => ({
                         ...acc,
-                        accessToken: acc.adAccountId === newAccount.adAccountId ? (0, encryption_1.encrypt)(newAccount.accessToken) : acc.accessToken
+                        accessToken: typeof acc.accessToken === 'string' && !acc.accessToken.includes(':')
+                            ? (0, encryption_1.encrypt)(acc.accessToken)
+                            : acc.accessToken
                     })),
                     whatsapp: {
                         connected: !!wabaId && !!phoneNumberId,

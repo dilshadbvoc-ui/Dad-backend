@@ -48,17 +48,19 @@ class MetaService {
     }
     async makePostRequest(endpoint, accessToken, data = {}, retries = 2) {
         let lastError;
+        console.log(`[MetaService] POST request to ${endpoint} starting (retries: ${retries})...`);
         for (let attempt = 1; attempt <= retries; attempt++) {
             try {
                 const response = await axios_1.default.post(`${this.baseUrl}/${endpoint}`, data, {
                     params: { access_token: accessToken },
                     timeout: 60000 // Post might take longer
                 });
+                console.log(`[MetaService] POST request to ${endpoint} SUCCESS on attempt ${attempt}`);
                 return response.data;
             }
             catch (error) {
                 lastError = error;
-                console.error(`Meta API POST Error (attempt ${attempt}/${retries}):`, error.response?.data || error.message);
+                console.error(`[MetaService] POST request to ${endpoint} FAILED (attempt ${attempt}/${retries}):`, error.response?.data || error.message);
                 if (error.response?.status >= 400 && error.response?.status < 500 && error.response?.status !== 429) {
                     break;
                 }
@@ -70,6 +72,7 @@ class MetaService {
         }
         const metaError = lastError?.response?.data?.error;
         const errorMsg = metaError?.error_user_msg || metaError?.message || lastError?.message || 'Failed to post data to Meta API';
+        console.error(`[MetaService] POST request to ${endpoint} FINAL FAILURE: ${errorMsg}`);
         throw new Error(errorMsg);
     }
     async exchangeForLongLivedToken(shortLivedToken, config) {
