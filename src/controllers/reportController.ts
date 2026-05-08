@@ -558,6 +558,18 @@ export const exportToExcel = async (req: Request, res: Response) => {
         await workbook.xlsx.write(res);
         res.end();
 
+        // Audit Log for Export
+        try {
+            const { logExportAudit } = await import('../utils/auditLogger');
+            await logExportAudit(req, `${type.toUpperCase()} Excel Export`, {
+                branchId,
+                startDate,
+                endDate
+            });
+        } catch (auditErr) {
+            console.error('Failed to log export audit:', auditErr);
+        }
+
     } catch (error) {
         console.error('[ReportController] exportToExcel error:', error);
         res.status(500).json({ message: 'Failed to export report' });
