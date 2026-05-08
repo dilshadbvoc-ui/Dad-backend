@@ -121,14 +121,17 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const canSyncUnknown = settings ? settings.syncNonCrmContacts : true; // Default to true if not set
 
         // Only add call data for phone numbers that exist in the CRM setup, 
-        // unless syncNonCrmContacts is enabled
-        if (!targetLeadId && !canSyncUnknown) {
+        // unless syncNonCrmContacts is enabled OR it is a MISSED CALL
+        const rawType = String(callType || 'UNKNOWN').toUpperCase();
+        const isMissed = ['3', 'MISSED', 'MISS'].includes(rawType);
+
+        if (!targetLeadId && !canSyncUnknown && !isMissed) {
             console.warn(`[AndroidUpload] Upload skipped: Phone number ${phoneNumber} is not associated with any Lead and Contact Synchronization is OFF.`);
             return res.status(200).json({ message: 'Call dropped: Contact synchronization disabled for non-CRM numbers' });
         }
 
         // Create recording record (linked to lead if found)
-        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'}, canSyncUnknown=${canSyncUnknown})`);
+        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'}, isMissed=${isMissed})`);
         const recording = await prisma.callRecording.create({
             data: {
                 lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
@@ -231,7 +234,6 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             });
         } else {
             // No existing interaction: Create a new record for lead or standalone
-            const rawType = String(callType || 'UNKNOWN').toUpperCase();
             
             // 3. Map Android CallLog types (Refined Mapping v2.0)
             let direction: 'inbound' | 'outbound' = 'inbound';
@@ -259,17 +261,22 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 }
             } else if (missedIdentifiers.includes(rawType)) {
                 direction = 'inbound';
-                subject = 'Missed Call from Lead';
+                subject = targetLeadId ? 'Missed Call from Lead' : `Missed Call from ${phoneNumber}`;
                 status = 'missed';
             } else if (rejectedIdentifiers.includes(rawType)) {
                 direction = 'inbound';
-                subject = 'Rejected Call from Lead';
+                subject = targetLeadId ? 'Rejected Call from Lead' : `Rejected Call from ${phoneNumber}`;
                 status = 'rejected';
             } else {
                 direction = 'inbound';
                 if (incomingIdentifiers.includes(rawType)) {
                     subject = 'Mobile Inbound Call';
                 }
+            }
+
+            // DURATION OVERRIDE (v4.0): If duration > 0, it's NEVER 'failed' or 'missed'
+            if (finalizedDurationSecs > 0) {
+                status = 'completed';
             }
 
             console.log(`[AndroidUpload] No target interaction found after fuzzy search. Creating new '${direction}' record (Lead: ${targetLeadId || 'null'})`);
@@ -413,9 +420,11 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 }
 
                 const matchedLead = phoneToLead.get(last10);
+                const rawType = String(callType || 'UNKNOWN').toUpperCase();
+                const isMissed = ['3', 'MISSED', 'MISS'].includes(rawType);
                 
-                // If not matched to a lead, only proceed if Contact Sync is enabled
-                if (!matchedLead && !canSyncUnknown) {
+                // If not matched to a lead, only proceed if Contact Sync is enabled OR it is a MISSED CALL
+                if (!matchedLead && !canSyncUnknown && !isMissed) {
                     // Not a CRM number and sync disabled — skip silently
                     results.skipped++;
                     continue;
@@ -528,7 +537,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     continue;
                 }
 
-                const rawType = String(callType || 'UNKNOWN').toUpperCase();
                 let direction: 'inbound' | 'outbound' = 'inbound';
                 let subject = 'Mobile Call';
                 let status = 'completed';
@@ -570,17 +578,22 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     }
                 } else if (missedIdentifiers.includes(rawType)) {
                     direction = 'inbound';
-                    subject = 'Missed Call from Lead';
+                    subject = matchedLead ? 'Missed Call from Lead' : `Missed Call from ${phoneNumber}`;
                     status = 'missed';
                 } else if (rejectedIdentifiers.includes(rawType)) {
                     direction = 'inbound';
-                    subject = 'Rejected Call from Lead';
+                    subject = matchedLead ? 'Rejected Call from Lead' : `Rejected Call from ${phoneNumber}`;
                     status = 'rejected';
                 } else {
                     direction = 'inbound';
                     if (incomingIdentifiers.includes(rawType)) {
                         subject = 'Mobile Inbound Call';
                     }
+                }
+
+                // DURATION OVERRIDE (v4.0): If duration > 0, it's NEVER 'failed' or 'missed'
+                if (finalizedNewDurationSecs > 0) {
+                    status = 'completed';
                 }
 
                 // 5. Create the CallRecording record (no audio file for bulk sync)
@@ -638,7 +651,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
                         organisation: { connect: { id: user.organisationId } },
                         createdBy: { connect: { id: user.id } },
-                        phoneNumber: matchedLead ? matchedLead.phone : phoneNumber,
+                        phoneNumber: matchedLead ? matchedLead.phone : (phoneNumber ? (phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber.replace(/[^0-9]/g, '').slice(-10)}`) : undefined),
                         hardwareId: hardwareId || undefined
                     }
                 });
