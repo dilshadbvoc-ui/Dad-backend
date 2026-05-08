@@ -95,12 +95,24 @@ export const MetaPollingService = {
                                 }
                             } catch (formErr: any) {
                                 const errorData = formErr.response?.data || formErr.message;
-                                logger.error(`Failed to fetch leads for form ${form.id} (${org.name}): ${JSON.stringify(errorData)}`, formErr, 'MetaPolling', undefined, org.id);
+                                const errorString = JSON.stringify(errorData);
+                                logger.error(`Failed to fetch leads for form ${form.id} (${org.name}): ${errorString}`, formErr, 'MetaPolling', undefined, org.id);
+                                
+                                // Send alert for critical API errors (e.g. expired tokens)
+                                if (errorString.includes('Error validating access token') || errorString.includes('OAuthException')) {
+                                    await this.sendAlertEmail(errorString, org.name, org.id);
+                                }
                             }
                         }
                     } catch (accountErr: any) {
                         const errorData = accountErr.response?.data || accountErr.message;
-                        logger.error(`Failed to poll Meta account ${account.pageId} (${org.name}): ${JSON.stringify(errorData)}`, accountErr, 'MetaPolling', undefined, org.id);
+                        const errorString = JSON.stringify(errorData);
+                        logger.error(`Failed to poll Meta account ${account.pageId} (${org.name}): ${errorString}`, accountErr, 'MetaPolling', undefined, org.id);
+                        
+                        // Send alert for authentication failures
+                        if (errorString.includes('access token') || errorString.includes('permission')) {
+                            await this.sendAlertEmail(errorString, org.name, org.id);
+                        }
                     }
                 }
             }
@@ -108,6 +120,34 @@ export const MetaPollingService = {
             logger.error('Critical error in MetaPollingService:', error, 'MetaPolling');
         } finally {
             isPolling = false;
+        }
+    },
+    
+    /**
+     * Sends a warning email if polling fails
+     */
+    async sendAlertEmail(errorMsg: string, orgName: string, orgId: string) {
+        try {
+            const { EmailService } = await import('./emailService');
+            const subject = `⚠️ ALERT: Meta Lead Polling Failure - ${orgName}`;
+            const html = `
+                <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                    <h2 style="color: #d32f2f;">Meta Polling Integration Error</h2>
+                    <p>The system encountered an error while polling for leads for <strong>${orgName}</strong>.</p>
+                    <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; border-left: 5px solid #d32f2f;">
+                        <code>${errorMsg}</code>
+                    </div>
+                    <p><strong>Org ID:</strong> ${orgId}</p>
+                    <p>Please check the Meta integration settings and ensure the Page Access Token is still valid.</p>
+                    <hr/>
+                    <p style="font-size: 12px; color: #777;">This is an automated security alert from CRM Meta Service.</p>
+                </div>
+            `;
+            
+            await EmailService.sendEmail('hostixpro@gmail.com', subject, html);
+            logger.info(`Sent polling alert email to hostixpro@gmail.com for ${orgName}`, 'MetaPolling');
+        } catch (e) {
+            logger.error('Failed to send Meta alert email:', e, 'MetaPolling');
         }
     }
 };
