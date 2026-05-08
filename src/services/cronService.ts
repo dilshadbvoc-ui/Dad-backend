@@ -260,8 +260,8 @@ export const initCronJobs = () => {
 
     console.log('[Cron] Daily trash purge job scheduled.');
 
-    // Run every minute for Meta Lead Polling (Real-time fallback)
-    cron.schedule('* * * * *', async () => {
+    // Run every 10 minutes for Meta Lead Polling (Real-time fallback)
+    cron.schedule('*/10 * * * *', async () => {
         try {
             const { MetaPollingService } = await import('./metaPollingService');
             await MetaPollingService.pollAllOrganisations();
