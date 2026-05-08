@@ -91,6 +91,7 @@ router.get('/auth', authMiddleware_1.protect, (req, res) => {
         (configId ? `&config_id=${configId}` : '') +
         `&response_type=code` +
         `&auth_type=rerequest`;
+    console.log(`[Meta Auth] Generated URL: ${authUrl}`);
     res.json({ url: authUrl });
 });
 /**

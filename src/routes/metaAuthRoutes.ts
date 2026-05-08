@@ -62,6 +62,7 @@ router.get('/auth', protect, (req: AuthRequest, res: Response) => {
         `&response_type=code` +
         `&auth_type=rerequest`;
 
+    console.log(`[Meta Auth] Generated URL: ${authUrl}`);
     res.json({ url: authUrl });
 });
 

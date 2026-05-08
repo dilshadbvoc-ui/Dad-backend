@@ -13,16 +13,19 @@ export const MetaPollingService = {
             const organisations = await prisma.organisation.findMany({
                 where: {
                     isDeleted: false,
-                    status: 'active'
+                    // Allow polling for active and suspended orgs so we don't silently drop leads
+                    // if an admin forgot to reactivate a paying client.
+                    status: { in: ['active', 'suspended'] }
                 },
                 select: {
                     id: true,
                     name: true,
+                    status: true,
                     integrations: true
                 }
             });
 
-            logger.info(`Found ${organisations.length} organisations to check for Meta integrations.`, 'MetaPolling');
+            logger.info(`Found ${organisations.length} organisations (active/suspended) to check for Meta integrations.`, 'MetaPolling');
             
             for (const org of organisations) {
                 const integrations = (org.integrations as any) || {};

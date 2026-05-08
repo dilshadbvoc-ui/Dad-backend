@@ -176,6 +176,12 @@ app.use(compression()); // Enable gzip compression
 // Apply rate limiting
 app.use('/api/', generalLimiter);
 
+// Global Request Logger
+app.use('/api/', (req, res, next) => {
+    console.log(`[Request] ${new Date().toISOString()} ${req.method} ${req.originalUrl}`);
+    next();
+});
+
 // CORS Configuration - Allow production frontend
 const allowedOrigins = [
     'http://localhost:5173',
