@@ -320,7 +320,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                         lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                         organisation: { connect: { id: user.organisationId } },
                         createdBy: { connect: { id: user.id } },
-                        branchId: user.branchId || undefined
+                        branch: user.branchId ? { connect: { id: user.branchId } } : undefined
                     }
                 });
             } catch (err: any) {
