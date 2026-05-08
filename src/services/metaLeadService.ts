@@ -6,6 +6,18 @@ import { LeadSource, Prisma } from '../generated/client';
 import { decrypt } from '../utils/encryption';
 import { GeoLocationService } from './geoLocationService';
 
+interface QueuedLead {
+    leadgenId: string;
+    pageId: string;
+    adId?: string;
+    formId?: string;
+    attempts: number;
+    nextRetry: number;
+}
+
+let leadQueue: QueuedLead[] = [];
+let isProcessingQueue = false;
+
 export const MetaLeadService = {
     /**
      * Processes an incoming lead from Meta Webhook
@@ -22,12 +34,11 @@ export const MetaLeadService = {
                     OR: [
                         { integrations: { path: ['meta', 'pageId'], equals: pageId } },
                         { integrations: { path: ['facebook_payload', 'pageId'], equals: pageId } },
-                        { integrations: { path: ['metaAccounts'], array_contains: [{ pageId: pageId }] } } // Check JSON array
+                        { integrations: { path: ['metaAccounts'], array_contains: [{ pageId: pageId }] } } 
                     ]
                 }
             });
 
-            // Extra check for candidates that have metaAccounts array (Prisma path might not catch all cases depending on structure)
             const allCandidates = [...candidates];
             if (allCandidates.length === 0) {
                 const potentialOrgs = await prisma.organisation.findMany({
@@ -47,11 +58,10 @@ export const MetaLeadService = {
                 return;
             }
 
-            console.log(`[MetaLeadService] Found ${allCandidates.length} candidate organisations for Page ${pageId}.`);
-
-            // 2. Fetch Lead Details once using a token from one of the valid candidates
+            // 2. Fetch Lead Details
             let metaLeadData: any = null;
             let fetchedSuccess = false;
+            let lastError: any = null;
 
             for (const candidate of allCandidates) {
                 const integrations = (candidate.integrations as any) || {};
@@ -70,19 +80,29 @@ export const MetaLeadService = {
                         });
                         metaLeadData = response.data;
                         fetchedSuccess = true;
-                        break; // Successfully fetched
-                    } catch (e) {
+                        break; 
+                    } catch (e: any) {
+                        lastError = e;
                         console.warn(`[MetaLeadService] Token for org ${candidate.id} failed, trying next...`);
                     }
                 }
             }
 
+            // 3. RETRY QUEUE LOGIC
             if (!fetchedSuccess || !metaLeadData) {
-                console.error(`[MetaLeadService] Failed to fetch lead data from Meta for lead ${leadgenId}.`);
+                const errorMsg = lastError?.response?.data?.error?.message || lastError?.message;
+                const isRateLimit = errorMsg?.includes('rate') || lastError?.response?.status === 400;
+
+                if (isRateLimit) {
+                    console.warn(`[MetaLeadService] Rate limited by Meta. Adding lead ${leadgenId} to retry queue.`);
+                    this.addToQueue(leadgenId, pageId, adId, formId);
+                } else {
+                    console.error(`[MetaLeadService] Failed to fetch lead data from Meta for lead ${leadgenId}: ${errorMsg}`);
+                }
                 return;
             }
 
-            // 3. Process the lead for EACH matching organisation
+            // 4. Process the lead for EACH matching organisation
             for (const org of allCandidates) {
                 try {
                     const integrations = (org.integrations as any) || {};
@@ -92,31 +112,82 @@ export const MetaLeadService = {
 
                     if (!matchedAccount) continue;
 
-                    // STRICT AD ACCOUNT CHECK
                     const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
                     const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
 
-                    // If this org has specific enabled accounts, the incoming lead MUST be one of them
                     if (enabledAccounts.length > 0 && adAccountId) {
                         const normalizedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
                         const isEnabled = enabledAccounts.some(id => id === normalizedId || id === adAccountId);
-                        if (!isEnabled) {
-                            console.log(`[MetaLeadService] Org ${org.id} ignored lead ${leadgenId}. Ad Account ${adAccountId} is not enabled for this org.`);
-                            continue;
-                        }
+                        if (!isEnabled) continue;
                     }
 
                     await this.saveAndDistributeLead(org.id, pageId, metaLeadData, formId, adId);
-
                 } catch (orgErr: any) {
                     console.error(`[MetaLeadService] Error processing for Org ${org.id}:`, orgErr.message);
                 }
             }
-
         } catch (error: any) {
             console.error('[MetaLeadService] Error:', error.response?.data || error.message);
             throw error;
         }
+    },
+
+    /**
+     * Add lead to retry queue with backoff
+     */
+    addToQueue(leadgenId: string, pageId: string, adId?: string, formId?: string, attempts = 0) {
+        if (attempts >= 5) {
+            console.error(`[MetaLeadService] Max retries reached for lead ${leadgenId}. Giving up.`);
+            return;
+        }
+
+        // Exponential backoff: 1m, 2m, 4m, 8m, 16m
+        const delay = Math.pow(2, attempts) * 60 * 1000;
+        
+        const alreadyInQueue = leadQueue.some(l => l.leadgenId === leadgenId);
+        if (alreadyInQueue && attempts === 0) return; // Don't add fresh if already retrying
+
+        leadQueue.push({
+            leadgenId,
+            pageId,
+            adId,
+            formId,
+            attempts: attempts + 1,
+            nextRetry: Date.now() + delay
+        });
+
+        console.log(`[MetaLeadService] Lead ${leadgenId} scheduled for retry #${attempts + 1} in ${delay / 1000}s`);
+        this.startQueueProcessor();
+    },
+
+    /**
+     * Periodically check and process the queue
+     */
+    startQueueProcessor() {
+        if (isProcessingQueue) return;
+        isProcessingQueue = true;
+
+        const timer = setInterval(async () => {
+            if (leadQueue.length === 0) {
+                clearInterval(timer);
+                isProcessingQueue = false;
+                return;
+            }
+
+            const now = Date.now();
+            const readyToProcess = leadQueue.filter(l => l.nextRetry <= now);
+            leadQueue = leadQueue.filter(l => l.nextRetry > now);
+
+            for (const item of readyToProcess) {
+                console.log(`[MetaLeadService] Retrying lead ${item.leadgenId} (Attempt ${item.attempts})...`);
+                try {
+                    // Try to process again
+                    await this.processIncomingLead(item.leadgenId, item.pageId, item.adId, item.formId);
+                } catch (err) {
+                    // processIncomingLead will re-add to queue if it fails with rate limit
+                }
+            }
+        }, 30000); // Check every 30s
     },
 
     /**
@@ -135,7 +206,6 @@ export const MetaLeadService = {
             });
 
             if (existing) {
-                console.log(`[MetaLeadService] Lead ${leadgenId} already exists in Org ${orgId}. Skipping.`);
                 return;
             }
 
@@ -206,7 +276,6 @@ export const MetaLeadService = {
 
             await DistributionService.assignLead(lead, orgId);
 
-            // Notifications
             const admins = await prisma.user.findMany({
                 where: { organisationId: orgId, role: { in: ['admin', 'super_admin'] }, isActive: true },
                 select: { id: true }
