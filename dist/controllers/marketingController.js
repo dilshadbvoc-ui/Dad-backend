@@ -24,7 +24,14 @@ const getMetaAccessToken = async (user) => {
             return null;
         }
         // Decrypt the stored token
-        return (0, encryption_1.decrypt)(metaIntegration.accessToken);
+        const decrypted = (0, encryption_1.decrypt)(metaIntegration.accessToken);
+        // If decryption failed, decrypt returns the original string.
+        // We can detect this by checking if the returned string still looks like an encrypted one (contains colons)
+        if (decrypted === metaIntegration.accessToken && decrypted.includes(':')) {
+            console.error('[Marketing] Meta token decryption failed for org:', orgId);
+            return null;
+        }
+        return decrypted;
     }
     catch (error) {
         console.error('[Marketing] Error getting Meta token:', error);
@@ -32,6 +39,7 @@ const getMetaAccessToken = async (user) => {
     }
 };
 const getAdAccounts = async (req, res) => {
+    console.log('[MarketingController] getAdAccounts called');
     try {
         const accessToken = await getMetaAccessToken(req.user);
         if (!accessToken) {
@@ -50,8 +58,15 @@ const getAdAccounts = async (req, res) => {
         });
     }
     catch (error) {
-        console.error('Get Ad Accounts Error:', error);
-        res.status(500).json({ message: error.message });
+        console.error('[MarketingController] Get Ad Accounts Error:', error.message);
+        if (error.response) {
+            console.error('[MarketingController] Meta API Error Data:', JSON.stringify(error.response.data));
+        }
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            details: error.response?.data || null
+        });
     }
 };
 exports.getAdAccounts = getAdAccounts;

@@ -20,9 +20,11 @@ class MarketingAPIService {
      */
     async getAdAccounts(fields = 'id,name,account_id,account_status,currency,timezone_name') {
         try {
+            console.log(`[MarketingService] GET /me/adaccounts with token: ${this.customAxios.defaults.params.access_token.substring(0, 10)}...`);
             const response = await this.customAxios.get('/me/adaccounts', {
                 params: { fields },
             });
+            console.log(`[MarketingService] Successfully fetched ${response.data.data?.length || 0} ad accounts`);
             return response.data.data;
         }
         catch (error) {
