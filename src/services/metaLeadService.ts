@@ -106,94 +106,7 @@ export const MetaLeadService = {
                         }
                     }
 
-                    // 4. Check if lead already exists in THIS organisation
-                    const existing = await prisma.lead.findFirst({
-                        where: { 
-                            organisationId: org.id, 
-                            sourceDetails: { path: ['metaLeadgenId'], equals: leadgenId }
-                        }
-                    });
-
-                    if (existing) {
-                        console.log(`[MetaLeadService] Lead ${leadgenId} already exists in Org ${org.id}. Skipping.`);
-                        continue;
-                    }
-
-                    // 5. Map Field Data
-                    const fieldMap: Record<string, string> = {};
-                    metaLeadData.field_data.forEach((field: any) => {
-                        if (field.values && field.values.length > 0) {
-                            fieldMap[field.name.toLowerCase()] = field.values[0];
-                        }
-                    });
-
-                    const getField = (keys: string[]) => {
-                        for (const key of keys) {
-                            if (fieldMap[key]) return fieldMap[key];
-                        }
-                        return '';
-                    };
-
-                    const leadData = {
-                        full_name: getField(['full name', 'full_name', 'name', 'first_name', 'first name']),
-                        phone: getField(['phone', 'phone number', 'phone_number', 'mobile', 'mobile number']),
-                        email: getField(['email', 'email address', 'email_address']),
-                        city: getField(['city', 'location']),
-                        company: getField(['company', 'organization', 'company name']),
-                        campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || `Form: ${metaLeadData.form_id}` || 'Meta Lead'
-                    };
-
-                    const targetBranchId = await DistributionService.resolveBranchForMetaPage(org.id, pageId);
-
-                    const crmData = {
-                        firstName: leadData.full_name || 'Meta Lead',
-                        lastName: '',
-                        phone: leadData.phone || '',
-                        email: leadData.email || undefined,
-                        organisationId: org.id,
-                        source: LeadSource.meta_leadgen,
-                        sourceDetails: {
-                            metaLeadgenId: leadgenId,
-                            metaFormId: formId || metaLeadData.form_id,
-                            metaPageId: pageId,
-                            metaAdId: adId || metaLeadData.ad_id,
-                            adName: metaLeadData.ad_name,
-                            campaignId: metaLeadData.campaign_id,
-                            campaignName: leadData.campaign_name,
-                            metaCreatedTime: metaLeadData.created_time
-                        }
-                    };
-
-                    const { DuplicateLeadService } = await import('./duplicateLeadService');
-                    const duplicateCheck = await DuplicateLeadService.checkDuplicate(
-                        crmData.phone, 
-                        crmData.email, 
-                        org.id, 
-                        targetBranchId || undefined
-                    );
-
-                    if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                        await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, crmData, org.id);
-                        continue;
-                    }
-
-                    const lead = await prisma.lead.create({
-                        data: {
-                            ...crmData,
-                            branchId: targetBranchId
-                        }
-                    });
-
-                    await DistributionService.assignLead(lead, org.id);
-
-                    // Notifications
-                    const admins = await prisma.user.findMany({
-                        where: { organisationId: org.id, role: { in: ['admin', 'super_admin'] }, isActive: true },
-                        select: { id: true }
-                    });
-                    for (const admin of admins) {
-                        await NotificationService.send(admin.id, 'New Meta Lead', `New lead: ${crmData.firstName}`, 'info');
-                    }
+                    await this.saveAndDistributeLead(org.id, pageId, metaLeadData, formId, adId);
 
                 } catch (orgErr: any) {
                     console.error(`[MetaLeadService] Error processing for Org ${org.id}:`, orgErr.message);
@@ -202,6 +115,107 @@ export const MetaLeadService = {
 
         } catch (error: any) {
             console.error('[MetaLeadService] Error:', error.response?.data || error.message);
+            throw error;
+        }
+    },
+
+    /**
+     * Internal helper to save and distribute a lead
+     */
+    async saveAndDistributeLead(orgId: string, pageId: string, metaLeadData: any, formId?: string, adId?: string) {
+        try {
+            const leadgenId = metaLeadData.id;
+            
+            // 1. Check if lead already exists in THIS organisation
+            const existing = await prisma.lead.findFirst({
+                where: { 
+                    organisationId: orgId, 
+                    sourceDetails: { path: ['metaLeadgenId'], equals: leadgenId }
+                }
+            });
+
+            if (existing) {
+                console.log(`[MetaLeadService] Lead ${leadgenId} already exists in Org ${orgId}. Skipping.`);
+                return;
+            }
+
+            // 2. Map Field Data
+            const fieldMap: Record<string, string> = {};
+            metaLeadData.field_data.forEach((field: any) => {
+                if (field.values && field.values.length > 0) {
+                    fieldMap[field.name.toLowerCase()] = field.values[0];
+                }
+            });
+
+            const getField = (keys: string[]) => {
+                for (const key of keys) {
+                    if (fieldMap[key]) return fieldMap[key];
+                }
+                return '';
+            };
+
+            const leadData = {
+                full_name: getField(['full name', 'full_name', 'name', 'first_name', 'first name']),
+                phone: getField(['phone', 'phone number', 'phone_number', 'mobile', 'mobile number']),
+                email: getField(['email', 'email address', 'email_address']),
+                city: getField(['city', 'location']),
+                company: getField(['company', 'organization', 'company name']),
+                campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || `Form: ${metaLeadData.form_id}` || 'Meta Lead'
+            };
+
+            const targetBranchId = await DistributionService.resolveBranchForMetaPage(orgId, pageId);
+
+            const crmData = {
+                firstName: leadData.full_name || 'Meta Lead',
+                lastName: '',
+                phone: leadData.phone || '',
+                email: leadData.email || undefined,
+                organisationId: orgId,
+                source: LeadSource.meta_leadgen,
+                sourceDetails: {
+                    metaLeadgenId: leadgenId,
+                    metaFormId: formId || metaLeadData.form_id,
+                    metaPageId: pageId,
+                    metaAdId: adId || metaLeadData.ad_id,
+                    adName: metaLeadData.ad_name,
+                    campaignId: metaLeadData.campaign_id,
+                    campaignName: leadData.campaign_name,
+                    metaCreatedTime: metaLeadData.created_time
+                }
+            };
+
+            const { DuplicateLeadService } = await import('./duplicateLeadService');
+            const duplicateCheck = await DuplicateLeadService.checkDuplicate(
+                crmData.phone, 
+                crmData.email, 
+                orgId, 
+                targetBranchId || undefined
+            );
+
+            if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
+                await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, crmData, orgId);
+                return;
+            }
+
+            const lead = await prisma.lead.create({
+                data: {
+                    ...crmData,
+                    branchId: targetBranchId
+                }
+            });
+
+            await DistributionService.assignLead(lead, orgId);
+
+            // Notifications
+            const admins = await prisma.user.findMany({
+                where: { organisationId: orgId, role: { in: ['admin', 'super_admin'] }, isActive: true },
+                select: { id: true }
+            });
+            for (const admin of admins) {
+                await NotificationService.send(admin.id, 'New Meta Lead', `New lead: ${crmData.firstName}`, 'info');
+            }
+        } catch (error: any) {
+            console.error(`[MetaLeadService] Error saving lead ${metaLeadData.id} for Org ${orgId}:`, error.message);
             throw error;
         }
     }
