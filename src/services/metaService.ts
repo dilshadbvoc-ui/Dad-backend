@@ -8,7 +8,7 @@ interface MetaConfig {
 }
 
 export class MetaService {
-    private baseUrl = 'https://graph.facebook.com/v21.0';
+    private baseUrl = 'https://graph.facebook.com/v18.0';
 
     async makeRequest(endpoint: string, accessToken: string, params: any = {}, retries: number = 3) {
         let lastError: any;

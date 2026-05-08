@@ -234,7 +234,7 @@ router.get('/callback', async (req, res) => {
         const metaAccounts = currentIntegrations.metaAccounts || [];
         const newAccount = {
             connected: true,
-            accessToken: longLivedToken,
+            accessToken: primaryPage?.access_token || longLivedToken,
             adAccountId: primaryAdAccount?.id || null,
             adAccountName: primaryAdAccount?.name || null,
             pageId: primaryPage?.id || null,
@@ -431,28 +431,6 @@ router.get('/webhook-info', authMiddleware_1.protect, async (req, res) => {
         webhookUrl: `${serverUrl}/api/meta/webhook`,
         verifyToken: process.env.META_VERIFY_TOKEN || 'my_secure_token'
     });
-});
-router.get('/emergency-subscribe/:orgId', async (req, res) => {
-    try {
-        const { orgId } = req.params;
-        const org = await prisma_1.default.organisation.findUnique({
-            where: { id: orgId }
-        });
-        if (!org)
-            return res.status(404).send('Org not found');
-        const integrations = org.integrations || {};
-        const meta = integrations.meta;
-        if (!meta || !meta.accessToken || !meta.pageId)
-            return res.status(400).send('Meta not connected');
-        const { decrypt } = await Promise.resolve().then(() => __importStar(require('../utils/encryption')));
-        const token = decrypt(meta.accessToken);
-        const { metaService } = await Promise.resolve().then(() => __importStar(require('../services/metaService')));
-        const result = await metaService.subscribePageToApp(meta.pageId, token);
-        res.json({ success: true, result });
-    }
-    catch (err) {
-        res.status(500).json({ error: err.message });
-    }
 });
 /**
  * GET /api/meta/webhook (Webhook Verification)

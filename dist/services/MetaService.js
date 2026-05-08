@@ -7,7 +7,7 @@ exports.metaService = exports.MetaService = void 0;
 const axios_1 = __importDefault(require("axios"));
 class MetaService {
     constructor() {
-        this.baseUrl = 'https://graph.facebook.com/v21.0';
+        this.baseUrl = 'https://graph.facebook.com/v18.0';
     }
     async makeRequest(endpoint, accessToken, params = {}, retries = 3) {
         let lastError;
