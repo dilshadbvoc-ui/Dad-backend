@@ -112,13 +112,30 @@ export const MetaLeadService = {
 
                     if (!matchedAccount) continue;
 
+                    // --- STRICT AD ACCOUNT VALIDATION ---
                     const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
-                    const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
+                    if (adAccountId) {
+                        const normalizedLeadAdId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
+                        
+                        // 1. Check in Whitelist (enabledLeadSyncAccounts)
+                        const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
+                        const isWhitelisted = enabledAccounts.some(id => {
+                            const normalizedId = id.startsWith('act_') ? id : `act_${id}`;
+                            return normalizedId === normalizedLeadAdId;
+                        });
 
-                    if (enabledAccounts.length > 0 && adAccountId) {
-                        const normalizedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
-                        const isEnabled = enabledAccounts.some(id => id === normalizedId || id === adAccountId);
-                        if (!isEnabled) continue;
+                        // 2. Check in Main Ad Account Field (adAccountId)
+                        const mainAdAccountId = matchedAccount.adAccountId;
+                        const isMainMatch = mainAdAccountId && (
+                            (mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId
+                        );
+
+                        // 3. If it matches NEITHER, block it.
+                        // This prevents cross-org contamination if two orgs share a Page ID
+                        if (!isWhitelisted && !isMainMatch) {
+                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}`);
+                            continue;
+                        }
                     }
 
                     await this.saveAndDistributeLead(org.id, pageId, metaLeadData, formId, adId);
