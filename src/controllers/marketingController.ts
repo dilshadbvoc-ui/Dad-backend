@@ -21,17 +21,24 @@ const getMetaAccessToken = async (user: any): Promise<string | null> => {
 
         const integrations = (org?.integrations as any) || {};
         const metaIntegration = integrations.meta;
+        
+        if (!metaIntegration?.connected) {
+            return null;
+        }
 
-        if (!metaIntegration?.connected || !metaIntegration?.accessToken) {
+        // Use userAccessToken for marketing API if available, fallback to accessToken
+        const tokenToDecrypt = metaIntegration.userAccessToken || metaIntegration.accessToken;
+        
+        if (!tokenToDecrypt) {
             return null;
         }
 
         // Decrypt the stored token
-        const decrypted = decrypt(metaIntegration.accessToken);
+        const decrypted = decrypt(tokenToDecrypt);
         
         // If decryption failed, decrypt returns the original string.
         // We can detect this by checking if the returned string still looks like an encrypted one (contains colons)
-        if (decrypted === metaIntegration.accessToken && decrypted.includes(':')) {
+        if (decrypted === tokenToDecrypt && decrypted.includes(':')) {
             console.error('[Marketing] Meta token decryption failed for org:', orgId);
             return null;
         }
@@ -44,7 +51,6 @@ const getMetaAccessToken = async (user: any): Promise<string | null> => {
 };
 
 export const getAdAccounts = async (req: AuthRequest, res: Response) => {
-    console.log('[MarketingController] getAdAccounts called');
     try {
         const accessToken = await getMetaAccessToken(req.user);
 
@@ -66,13 +72,9 @@ export const getAdAccounts = async (req: AuthRequest, res: Response) => {
         });
     } catch (error: any) {
         console.error('[MarketingController] Get Ad Accounts Error:', error.message);
-        if (error.response) {
-            console.error('[MarketingController] Meta API Error Data:', JSON.stringify(error.response.data));
-        }
         res.status(500).json({ 
             success: false,
-            message: error.message,
-            details: error.response?.data || null
+            message: error.message
         });
     }
 };

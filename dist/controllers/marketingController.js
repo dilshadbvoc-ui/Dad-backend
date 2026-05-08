@@ -20,14 +20,19 @@ const getMetaAccessToken = async (user) => {
         });
         const integrations = org?.integrations || {};
         const metaIntegration = integrations.meta;
-        if (!metaIntegration?.connected || !metaIntegration?.accessToken) {
+        if (!metaIntegration?.connected) {
+            return null;
+        }
+        // Use userAccessToken for marketing API if available, fallback to accessToken
+        const tokenToDecrypt = metaIntegration.userAccessToken || metaIntegration.accessToken;
+        if (!tokenToDecrypt) {
             return null;
         }
         // Decrypt the stored token
-        const decrypted = (0, encryption_1.decrypt)(metaIntegration.accessToken);
+        const decrypted = (0, encryption_1.decrypt)(tokenToDecrypt);
         // If decryption failed, decrypt returns the original string.
         // We can detect this by checking if the returned string still looks like an encrypted one (contains colons)
-        if (decrypted === metaIntegration.accessToken && decrypted.includes(':')) {
+        if (decrypted === tokenToDecrypt && decrypted.includes(':')) {
             console.error('[Marketing] Meta token decryption failed for org:', orgId);
             return null;
         }
@@ -39,7 +44,6 @@ const getMetaAccessToken = async (user) => {
     }
 };
 const getAdAccounts = async (req, res) => {
-    console.log('[MarketingController] getAdAccounts called');
     try {
         const accessToken = await getMetaAccessToken(req.user);
         if (!accessToken) {
@@ -59,13 +63,9 @@ const getAdAccounts = async (req, res) => {
     }
     catch (error) {
         console.error('[MarketingController] Get Ad Accounts Error:', error.message);
-        if (error.response) {
-            console.error('[MarketingController] Meta API Error Data:', JSON.stringify(error.response.data));
-        }
         res.status(500).json({
             success: false,
-            message: error.message,
-            details: error.response?.data || null
+            message: error.message
         });
     }
 };

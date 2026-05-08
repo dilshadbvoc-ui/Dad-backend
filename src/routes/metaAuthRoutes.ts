@@ -231,6 +231,7 @@ router.get('/callback', async (req, res) => {
         const newAccount = {
             connected: true,
             accessToken: primaryPage?.access_token || longLivedToken,
+            userAccessToken: longLivedToken, // Store user token for marketing API
             adAccountId: primaryAdAccount?.id || null,
             adAccountName: primaryAdAccount?.name || null,
             pageId: primaryPage?.id || null,
