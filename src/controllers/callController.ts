@@ -230,7 +230,8 @@ export const getAllCalls = async (req: Request, res: Response) => {
             startDate,
             endDate,
             search,
-            hasRecording
+            hasRecording,
+            branchId
         } = req.query;
 
         const pageNum = parseInt(page as string, 10);
@@ -254,6 +255,10 @@ export const getAllCalls = async (req: Request, res: Response) => {
 
         if (hasRecording === 'true') {
             where.recordingUrl = { not: null };
+        }
+
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
         }
 
         if (user.role !== 'admin' && user.role !== 'super_admin') {

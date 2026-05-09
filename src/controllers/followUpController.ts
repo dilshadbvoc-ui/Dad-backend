@@ -63,6 +63,11 @@ export const getFollowUps = async (req: Request, res: Response) => {
             where.branchId = branchId;
         }
 
+        const userId = req.query.userId as string;
+        if (userId && userId !== 'all') {
+            where.assignedToId = userId;
+        }
+
         console.log('[getFollowUps] Final query where:', JSON.stringify(where, null, 2));
 
         const count = await prisma.followUp.count({ where });
