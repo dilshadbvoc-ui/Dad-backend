@@ -477,13 +477,23 @@ export const sendTestReport = async (req: Request, res: Response) => {
         }
 
         const waClient = await WhatsAppService.getClientForOrg(orgId);
-        if (!waClient) {
-            return res.status(400).json({ message: 'WhatsApp not connected for this organisation' });
+        if (waClient && targetPhone) {
+            await waClient.sendTextMessage(targetPhone, report);
         }
 
-        await waClient.sendTextMessage(targetPhone, report);
+        // Send Email if enabled
+        if (org.dailyReportEmailEnabled && user.email) {
+            const { EmailService } = await import('../services/emailService');
+            const emailHtml = ReportingService.formatEmailReport(stats, org.name);
+            await EmailService.sendEmail(
+                user.email,
+                `Test Daily Business Report - ${org.name}`,
+                emailHtml,
+                orgId
+            );
+        }
 
-        res.json({ message: `Test report sent to ${targetPhone}`, stats });
+        res.json({ message: `Test report sent`, stats });
     } catch (error) {
         console.error('sendTestReport Error:', error);
         res.status(500).json({ message: (error as Error).message });

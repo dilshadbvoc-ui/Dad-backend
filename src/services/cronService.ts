@@ -130,6 +130,7 @@ export const initCronJobs = () => {
 
             const { ReportingService } = await import('./reportingService');
             const { WhatsAppService } = await import('./whatsAppService');
+            const { EmailService } = await import('./emailService');
 
             for (const org of organisations) {
                 try {
@@ -155,9 +156,23 @@ export const initCronJobs = () => {
                     // Send to Admins
                     for (const admin of admins) {
                         const targetPhone = admin.phone || org.contactPhone;
+                        
+                        // WhatsApp
                         if (targetPhone && waClient) {
-                            console.log(`[Cron] Sending general report to ${org.name} admin: ${admin.firstName} (${targetPhone})`);
+                            console.log(`[Cron] Sending general WhatsApp report to ${org.name} admin: ${admin.firstName} (${targetPhone})`);
                             await waClient.sendTextMessage(targetPhone, adminReport);
+                        }
+
+                        // Email
+                        if (org.dailyReportEmailEnabled && admin.email) {
+                            console.log(`[Cron] Sending daily Email report to ${org.name} admin: ${admin.email}`);
+                            const emailHtml = ReportingService.formatEmailReport(stats, org.name);
+                            await EmailService.sendEmail(
+                                admin.email,
+                                `Daily Business Report - ${org.name}`,
+                                emailHtml,
+                                org.id
+                            );
                         }
                     }
 
