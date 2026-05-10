@@ -466,6 +466,7 @@ model Opportunity {
   lead           Lead?           @relation("LeadToOpportunity", fields: [leadId], references: [id])
   pipelineId     String?
   pipeline       Pipeline?       @relation(fields: [pipelineId], references: [id])
+  lostReason     String?
   emiSchedule    EMISchedule?
   paymentRecords PaymentRecord[]
 

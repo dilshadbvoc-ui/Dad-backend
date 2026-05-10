@@ -142,6 +142,7 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   integrations: 'integrations',
   leadScoringConfig: 'leadScoringConfig',
   dailyReportTime: 'dailyReportTime',
+  dailyReportEmailEnabled: 'dailyReportEmailEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   isDeleted: 'isDeleted',
@@ -351,6 +352,7 @@ exports.Prisma.OpportunityScalarFieldEnum = {
   previousOwnerId: 'previousOwnerId',
   leadId: 'leadId',
   pipelineId: 'pipelineId',
+  lostReason: 'lostReason',
   type: 'type',
   branchId: 'branchId'
 };

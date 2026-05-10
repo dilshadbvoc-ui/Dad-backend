@@ -1112,7 +1112,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
         const { id } = req.params;
         const leadId = id;
 
-        const { dealName, amount, accountId, accountName, contactName } = req.body;
+        const { dealName, amount, accountId, accountName, contactName, stage, paymentType, paidAmount, installments, lostReason } = req.body;
         const user = (req as any).user;
         
         // Initial org check for the converting user
@@ -1239,7 +1239,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 data: {
                     name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
-                    stage: 'prospecting',
+                    stage: stage || 'prospecting',
                     closeDate: new Date(), // Set to today by default instead of +30 days
                     organisationId: orgId,
                     ownerId: finalOwnerId,
@@ -1247,7 +1247,8 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                     leadId: lead.id,
                     branchId: lead.branchId || undefined,
                     pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
-                    contacts: { connect: { id: contact.id } }
+                    contacts: { connect: { id: contact.id } },
+                    lostReason: stage === 'closed_lost' ? lostReason : undefined
                 }
             });
 
@@ -1347,6 +1348,75 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 `Your lead "${leadName}" has been moved to the pipeline by ${user.firstName}.`,
                 'info'
             ).catch(console.error);
+        }
+
+        // --- NEW: Handle Immediate Closure Logic ---
+        if (stage === 'closed_won' && result.opportunity) {
+            const oppId = result.opportunity.id;
+            
+            if (paymentType === 'paid') {
+                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, user.id, orgId));
+            } else if (paymentType === 'partial') {
+                import('../services/paymentService').then(async m => {
+                    if (paidAmount > 0) {
+                        await m.default.recordPartialPayment(oppId, paidAmount, user.id, orgId);
+                    }
+                    if (installments && installments.length > 0) {
+                        const { default: EMIService } = await import('../services/emiService');
+                        await EMIService.convertToEMI(oppId, installments, orgId);
+                    }
+                });
+            } else if (paymentType === 'emi') {
+                (async () => {
+                    try {
+                        await prisma.opportunity.update({
+                            where: { id: oppId },
+                            data: { paymentStatus: 'partial' }
+                        });
+                        if (installments && installments.length > 0) {
+                            const { default: EMIService } = await import('../services/emiService');
+                            await EMIService.convertToEMI(oppId, installments, orgId);
+                        }
+                    } catch (error) {
+                        console.error('Error in EMI conversion:', error);
+                    }
+                })();
+            }
+
+            // Target/Goal Updates
+            import('../services/salesTargetService').then(({ SalesTargetService }) => {
+                SalesTargetService.updateProgressForUser(result.opportunity.ownerId!).catch(console.error);
+            });
+            import('../services/goalService').then(({ GoalService }) => {
+                GoalService.updateProgressForUser(result.opportunity.ownerId!, 'revenue').catch(console.error);
+            });
+
+            // Hierarchy Notification
+            try {
+                if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
+                    const { NotificationService } = await import('../services/notificationService');
+                    const owner = await prisma.user.findUnique({
+                        where: { id: result.opportunity.ownerId! },
+                        select: { reportsToId: true, firstName: true, lastName: true }
+                    });
+
+                    if (owner && owner.reportsToId) {
+                        let paymentMessage = '';
+                        if (paymentType === 'paid') paymentMessage = `Full payment of ₹${result.opportunity.amount.toLocaleString('en-IN')} received.`;
+                        else if (paymentType === 'partial') paymentMessage = `Partial payment of ₹${paidAmount?.toLocaleString('en-IN')} received (Total: ₹${result.opportunity.amount.toLocaleString('en-IN')}).`;
+                        else if (paymentType === 'emi') paymentMessage = `EMI payment plan initiated for ₹${result.opportunity.amount.toLocaleString('en-IN')}.`;
+
+                        await NotificationService.sendToHierarchy(
+                            result.opportunity.ownerId!,
+                            'Sale Closed with Payment! 🎉💰',
+                            `${owner.firstName} ${owner.lastName} closed a deal "${result.opportunity.name}". ${paymentMessage}`,
+                            'success'
+                        );
+                    }
+                }
+            } catch (notifyErr) {
+                console.error('Hierarchy notification error:', notifyErr);
+            }
         }
 
         res.json({

@@ -8072,6 +8072,7 @@ export namespace Prisma {
     userIdCounter: number | null
     apiKey: string | null
     dailyReportTime: string | null
+    dailyReportEmailEnabled: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
@@ -8097,6 +8098,7 @@ export namespace Prisma {
     userIdCounter: number | null
     apiKey: string | null
     dailyReportTime: string | null
+    dailyReportEmailEnabled: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     isDeleted: boolean | null
@@ -8125,6 +8127,7 @@ export namespace Prisma {
     integrations: number
     leadScoringConfig: number
     dailyReportTime: number
+    dailyReportEmailEnabled: number
     createdAt: number
     updatedAt: number
     isDeleted: number
@@ -8169,6 +8172,7 @@ export namespace Prisma {
     userIdCounter?: true
     apiKey?: true
     dailyReportTime?: true
+    dailyReportEmailEnabled?: true
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
@@ -8194,6 +8198,7 @@ export namespace Prisma {
     userIdCounter?: true
     apiKey?: true
     dailyReportTime?: true
+    dailyReportEmailEnabled?: true
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
@@ -8222,6 +8227,7 @@ export namespace Prisma {
     integrations?: true
     leadScoringConfig?: true
     dailyReportTime?: true
+    dailyReportEmailEnabled?: true
     createdAt?: true
     updatedAt?: true
     isDeleted?: true
@@ -8340,6 +8346,7 @@ export namespace Prisma {
     integrations: JsonValue | null
     leadScoringConfig: JsonValue | null
     dailyReportTime: string
+    dailyReportEmailEnabled: boolean
     createdAt: Date
     updatedAt: Date
     isDeleted: boolean
@@ -8390,6 +8397,7 @@ export namespace Prisma {
     integrations?: boolean
     leadScoringConfig?: boolean
     dailyReportTime?: boolean
+    dailyReportEmailEnabled?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
@@ -8466,6 +8474,7 @@ export namespace Prisma {
     integrations?: boolean
     leadScoringConfig?: boolean
     dailyReportTime?: boolean
+    dailyReportEmailEnabled?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
@@ -8497,6 +8506,7 @@ export namespace Prisma {
     integrations?: boolean
     leadScoringConfig?: boolean
     dailyReportTime?: boolean
+    dailyReportEmailEnabled?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     isDeleted?: boolean
@@ -8625,6 +8635,7 @@ export namespace Prisma {
       integrations: Prisma.JsonValue | null
       leadScoringConfig: Prisma.JsonValue | null
       dailyReportTime: string
+      dailyReportEmailEnabled: boolean
       createdAt: Date
       updatedAt: Date
       isDeleted: boolean
@@ -9090,6 +9101,7 @@ export namespace Prisma {
     readonly integrations: FieldRef<"Organisation", 'Json'>
     readonly leadScoringConfig: FieldRef<"Organisation", 'Json'>
     readonly dailyReportTime: FieldRef<"Organisation", 'String'>
+    readonly dailyReportEmailEnabled: FieldRef<"Organisation", 'Boolean'>
     readonly createdAt: FieldRef<"Organisation", 'DateTime'>
     readonly updatedAt: FieldRef<"Organisation", 'DateTime'>
     readonly isDeleted: FieldRef<"Organisation", 'Boolean'>
@@ -21405,6 +21417,7 @@ export namespace Prisma {
     previousOwnerId: string | null
     leadId: string | null
     pipelineId: string | null
+    lostReason: string | null
     type: $Enums.OpportunityType | null
     branchId: string | null
   }
@@ -21430,6 +21443,7 @@ export namespace Prisma {
     previousOwnerId: string | null
     leadId: string | null
     pipelineId: string | null
+    lostReason: string | null
     type: $Enums.OpportunityType | null
     branchId: string | null
   }
@@ -21457,6 +21471,7 @@ export namespace Prisma {
     previousOwnerId: number
     leadId: number
     pipelineId: number
+    lostReason: number
     type: number
     branchId: number
     _all: number
@@ -21494,6 +21509,7 @@ export namespace Prisma {
     previousOwnerId?: true
     leadId?: true
     pipelineId?: true
+    lostReason?: true
     type?: true
     branchId?: true
   }
@@ -21519,6 +21535,7 @@ export namespace Prisma {
     previousOwnerId?: true
     leadId?: true
     pipelineId?: true
+    lostReason?: true
     type?: true
     branchId?: true
   }
@@ -21546,6 +21563,7 @@ export namespace Prisma {
     previousOwnerId?: true
     leadId?: true
     pipelineId?: true
+    lostReason?: true
     type?: true
     branchId?: true
     _all?: true
@@ -21660,6 +21678,7 @@ export namespace Prisma {
     previousOwnerId: string | null
     leadId: string | null
     pipelineId: string | null
+    lostReason: string | null
     type: $Enums.OpportunityType
     branchId: string | null
     _count: OpportunityCountAggregateOutputType | null
@@ -21706,6 +21725,7 @@ export namespace Prisma {
     previousOwnerId?: boolean
     leadId?: boolean
     pipelineId?: boolean
+    lostReason?: boolean
     type?: boolean
     branchId?: boolean
     events?: boolean | Opportunity$eventsArgs<ExtArgs>
@@ -21750,6 +21770,7 @@ export namespace Prisma {
     previousOwnerId?: boolean
     leadId?: boolean
     pipelineId?: boolean
+    lostReason?: boolean
     type?: boolean
     branchId?: boolean
     account?: boolean | AccountDefaultArgs<ExtArgs>
@@ -21784,6 +21805,7 @@ export namespace Prisma {
     previousOwnerId?: boolean
     leadId?: boolean
     pipelineId?: boolean
+    lostReason?: boolean
     type?: boolean
     branchId?: boolean
   }
@@ -21860,6 +21882,7 @@ export namespace Prisma {
       previousOwnerId: string | null
       leadId: string | null
       pipelineId: string | null
+      lostReason: string | null
       type: $Enums.OpportunityType
       branchId: string | null
     }, ExtArgs["result"]["opportunity"]>
@@ -22293,6 +22316,7 @@ export namespace Prisma {
     readonly previousOwnerId: FieldRef<"Opportunity", 'String'>
     readonly leadId: FieldRef<"Opportunity", 'String'>
     readonly pipelineId: FieldRef<"Opportunity", 'String'>
+    readonly lostReason: FieldRef<"Opportunity", 'String'>
     readonly type: FieldRef<"Opportunity", 'OpportunityType'>
     readonly branchId: FieldRef<"Opportunity", 'String'>
   }
@@ -77942,6 +77966,7 @@ export namespace Prisma {
     integrations: 'integrations',
     leadScoringConfig: 'leadScoringConfig',
     dailyReportTime: 'dailyReportTime',
+    dailyReportEmailEnabled: 'dailyReportEmailEnabled',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     isDeleted: 'isDeleted',
@@ -78175,6 +78200,7 @@ export namespace Prisma {
     previousOwnerId: 'previousOwnerId',
     leadId: 'leadId',
     pipelineId: 'pipelineId',
+    lostReason: 'lostReason',
     type: 'type',
     branchId: 'branchId'
   };
@@ -79286,6 +79312,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -79296,13 +79329,6 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -79542,6 +79568,7 @@ export namespace Prisma {
     integrations?: JsonNullableFilter<"Organisation">
     leadScoringConfig?: JsonNullableFilter<"Organisation">
     dailyReportTime?: StringFilter<"Organisation"> | string
+    dailyReportEmailEnabled?: BoolFilter<"Organisation"> | boolean
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     isDeleted?: BoolFilter<"Organisation"> | boolean
@@ -79617,6 +79644,7 @@ export namespace Prisma {
     integrations?: SortOrderInput | SortOrder
     leadScoringConfig?: SortOrderInput | SortOrder
     dailyReportTime?: SortOrder
+    dailyReportEmailEnabled?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -79695,6 +79723,7 @@ export namespace Prisma {
     integrations?: JsonNullableFilter<"Organisation">
     leadScoringConfig?: JsonNullableFilter<"Organisation">
     dailyReportTime?: StringFilter<"Organisation"> | string
+    dailyReportEmailEnabled?: BoolFilter<"Organisation"> | boolean
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     isDeleted?: BoolFilter<"Organisation"> | boolean
@@ -79770,6 +79799,7 @@ export namespace Prisma {
     integrations?: SortOrderInput | SortOrder
     leadScoringConfig?: SortOrderInput | SortOrder
     dailyReportTime?: SortOrder
+    dailyReportEmailEnabled?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -79809,6 +79839,7 @@ export namespace Prisma {
     integrations?: JsonNullableWithAggregatesFilter<"Organisation">
     leadScoringConfig?: JsonNullableWithAggregatesFilter<"Organisation">
     dailyReportTime?: StringWithAggregatesFilter<"Organisation"> | string
+    dailyReportEmailEnabled?: BoolWithAggregatesFilter<"Organisation"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     isDeleted?: BoolWithAggregatesFilter<"Organisation"> | boolean
@@ -81216,6 +81247,7 @@ export namespace Prisma {
     previousOwnerId?: StringNullableFilter<"Opportunity"> | string | null
     leadId?: StringNullableFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableFilter<"Opportunity"> | string | null
+    lostReason?: StringNullableFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableFilter<"Opportunity"> | string | null
     events?: CalendarEventListRelationFilter
@@ -81259,6 +81291,7 @@ export namespace Prisma {
     previousOwnerId?: SortOrderInput | SortOrder
     leadId?: SortOrderInput | SortOrder
     pipelineId?: SortOrderInput | SortOrder
+    lostReason?: SortOrderInput | SortOrder
     type?: SortOrder
     branchId?: SortOrderInput | SortOrder
     events?: CalendarEventOrderByRelationAggregateInput
@@ -81305,6 +81338,7 @@ export namespace Prisma {
     previousOwnerId?: StringNullableFilter<"Opportunity"> | string | null
     leadId?: StringNullableFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableFilter<"Opportunity"> | string | null
+    lostReason?: StringNullableFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableFilter<"Opportunity"> | string | null
     events?: CalendarEventListRelationFilter
@@ -81348,6 +81382,7 @@ export namespace Prisma {
     previousOwnerId?: SortOrderInput | SortOrder
     leadId?: SortOrderInput | SortOrder
     pipelineId?: SortOrderInput | SortOrder
+    lostReason?: SortOrderInput | SortOrder
     type?: SortOrder
     branchId?: SortOrderInput | SortOrder
     _count?: OpportunityCountOrderByAggregateInput
@@ -81383,6 +81418,7 @@ export namespace Prisma {
     previousOwnerId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
     leadId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
+    lostReason?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeWithAggregatesFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
   }
@@ -86964,6 +87000,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -87039,6 +87076,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -87114,6 +87152,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -87189,6 +87228,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -87264,6 +87304,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -87295,6 +87336,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -87326,6 +87368,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -88980,6 +89023,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -89022,6 +89066,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -89052,6 +89097,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -89094,6 +89140,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -89130,6 +89177,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -89151,6 +89199,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
   }
 
@@ -89177,6 +89226,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -95333,6 +95383,11 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -95342,11 +95397,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -95820,6 +95870,7 @@ export namespace Prisma {
     integrations?: SortOrder
     leadScoringConfig?: SortOrder
     dailyReportTime?: SortOrder
+    dailyReportEmailEnabled?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -95855,6 +95906,7 @@ export namespace Prisma {
     userIdCounter?: SortOrder
     apiKey?: SortOrder
     dailyReportTime?: SortOrder
+    dailyReportEmailEnabled?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -95880,6 +95932,7 @@ export namespace Prisma {
     userIdCounter?: SortOrder
     apiKey?: SortOrder
     dailyReportTime?: SortOrder
+    dailyReportEmailEnabled?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     isDeleted?: SortOrder
@@ -95972,6 +96025,14 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -95984,14 +96045,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -96818,6 +96871,7 @@ export namespace Prisma {
     previousOwnerId?: SortOrder
     leadId?: SortOrder
     pipelineId?: SortOrder
+    lostReason?: SortOrder
     type?: SortOrder
     branchId?: SortOrder
   }
@@ -96848,6 +96902,7 @@ export namespace Prisma {
     previousOwnerId?: SortOrder
     leadId?: SortOrder
     pipelineId?: SortOrder
+    lostReason?: SortOrder
     type?: SortOrder
     branchId?: SortOrder
   }
@@ -96873,6 +96928,7 @@ export namespace Prisma {
     previousOwnerId?: SortOrder
     leadId?: SortOrder
     pipelineId?: SortOrder
+    lostReason?: SortOrder
     type?: SortOrder
     branchId?: SortOrder
   }
@@ -100722,12 +100778,12 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -111026,6 +111082,11 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -111035,11 +111096,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -111147,6 +111203,14 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -111159,14 +111223,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -112423,6 +112479,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -112463,6 +112520,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -114641,6 +114699,7 @@ export namespace Prisma {
     previousOwnerId?: StringNullableFilter<"Opportunity"> | string | null
     leadId?: StringNullableFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableFilter<"Opportunity"> | string | null
+    lostReason?: StringNullableFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableFilter<"Opportunity"> | string | null
   }
@@ -117335,6 +117394,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -117375,6 +117435,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -118223,6 +118284,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -118263,6 +118325,7 @@ export namespace Prisma {
     paymentDate?: Date | string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -118598,6 +118661,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -118672,6 +118736,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -120960,6 +121025,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -121034,6 +121100,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -122417,6 +122484,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -122491,6 +122559,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -123083,6 +123152,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -123157,6 +123227,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -124046,6 +124117,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -124120,6 +124192,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -125122,6 +125195,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -125162,6 +125236,7 @@ export namespace Prisma {
     paymentDate?: Date | string | null
     previousOwnerId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -125560,6 +125635,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -125634,6 +125710,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -126703,6 +126780,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -126777,6 +126855,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -127732,6 +127811,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -127772,6 +127852,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -128286,6 +128367,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -128360,6 +128442,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -129560,6 +129643,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -129634,6 +129718,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -130403,6 +130488,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -130444,6 +130530,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -130917,6 +131004,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -130991,6 +131079,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -132018,6 +132107,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -132092,6 +132182,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -133310,6 +133401,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -133384,6 +133476,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -134457,6 +134550,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -134531,6 +134625,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -135085,6 +135180,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -135159,6 +135255,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -135949,6 +136046,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -136023,6 +136121,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -136271,6 +136370,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -136345,6 +136445,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -137193,6 +137294,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -137234,6 +137336,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -137271,6 +137374,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -137345,6 +137449,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -138275,6 +138380,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -138316,6 +138422,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -138359,6 +138466,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -138433,6 +138541,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -139724,6 +139833,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -139765,6 +139875,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -139802,6 +139913,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -139876,6 +139988,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -140958,6 +141071,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -140999,6 +141113,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -141042,6 +141157,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -141116,6 +141232,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -141945,6 +142062,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -141986,6 +142104,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -142023,6 +142142,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -142097,6 +142217,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -142966,6 +143087,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -143007,6 +143129,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -143050,6 +143173,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -143124,6 +143248,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -143797,6 +143922,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     account: AccountCreateNestedOneWithoutOpportunitiesInput
@@ -143838,6 +143964,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -143875,6 +144002,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -143949,6 +144077,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -144662,6 +144791,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
@@ -144703,6 +144833,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -144746,6 +144877,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -144820,6 +144952,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -145442,6 +145575,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
     account: AccountCreateNestedOneWithoutOpportunitiesInput
@@ -145483,6 +145617,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
@@ -145520,6 +145655,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -145594,6 +145730,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -146199,6 +146336,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
     account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
@@ -146240,6 +146378,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -146283,6 +146422,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -146357,6 +146497,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -146684,6 +146825,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -146758,6 +146900,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -147289,6 +147432,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -147363,6 +147507,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -147707,6 +147852,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -147781,6 +147927,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -148121,6 +148268,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -148195,6 +148343,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -148476,6 +148625,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -148550,6 +148700,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -148883,6 +149034,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -148957,6 +149109,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -149088,6 +149241,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -149162,6 +149316,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -149299,6 +149454,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -149373,6 +149529,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -149654,6 +149811,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -149728,6 +149886,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -150031,6 +150190,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -150105,6 +150265,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -151499,6 +151660,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -151573,6 +151735,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -152136,6 +152299,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -152210,6 +152374,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -152751,6 +152916,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -152825,6 +152991,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -153599,6 +153766,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -153673,6 +153841,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -154671,6 +154840,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -154745,6 +154915,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -155699,6 +155870,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -155773,6 +155945,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -156622,6 +156795,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -156696,6 +156870,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -157425,6 +157600,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -157499,6 +157675,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -158350,6 +158527,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -158424,6 +158602,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -159321,6 +159500,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -159395,6 +159575,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -159756,6 +159937,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -159830,6 +160012,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -160432,6 +160615,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -160506,6 +160690,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -161000,6 +161185,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -161074,6 +161260,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -161377,6 +161564,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -161451,6 +161639,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -162152,6 +162341,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -162226,6 +162416,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -162529,6 +162720,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -162603,6 +162795,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -162884,6 +163077,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -162958,6 +163152,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -163261,6 +163456,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -163335,6 +163531,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -163616,6 +163813,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -163690,6 +163888,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -163993,6 +164192,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -164067,6 +164267,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -164561,6 +164762,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -164635,6 +164837,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -164725,6 +164928,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -164799,6 +165003,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -166608,6 +166813,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -166682,6 +166888,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -166985,6 +167192,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -167059,6 +167267,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -167133,6 +167342,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -167207,6 +167417,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -167626,6 +167837,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -167666,6 +167878,7 @@ export namespace Prisma {
     paymentDate?: Date | string | null
     previousOwnerId?: string | null
     leadId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -167720,6 +167933,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -167794,6 +168008,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -168113,6 +168328,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -168187,6 +168403,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -168484,6 +168701,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -168558,6 +168776,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -168845,6 +169064,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -168919,6 +169139,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -169216,6 +169437,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -169290,6 +169512,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -169577,6 +169800,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -169651,6 +169875,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -170006,6 +170231,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -170080,6 +170306,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -170383,6 +170610,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -170457,6 +170685,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -171009,6 +171238,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -171083,6 +171313,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -171850,6 +172081,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -171924,6 +172156,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -172434,6 +172667,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -172508,6 +172742,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -172795,6 +173030,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -172869,6 +173105,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -173166,6 +173403,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -173240,6 +173478,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -173527,6 +173766,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -173601,6 +173841,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -173898,6 +174139,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -173972,6 +174214,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -174259,6 +174502,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -174333,6 +174577,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -174903,6 +175148,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -174944,6 +175190,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -175058,6 +175305,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -175132,6 +175380,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -175732,6 +175981,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -175773,6 +176023,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -176099,6 +176350,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -176173,6 +176425,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -176553,6 +176806,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -176627,6 +176881,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -176701,6 +176956,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -176775,6 +177031,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -177492,6 +177749,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -177533,6 +177791,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
@@ -177982,6 +178241,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -178056,6 +178316,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -178503,6 +178764,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -178577,6 +178839,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -178667,6 +178930,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -178741,6 +179005,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -178812,6 +179077,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -178853,6 +179119,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -178890,6 +179157,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -178964,6 +179232,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -179089,6 +179358,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -179130,6 +179400,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -179173,6 +179444,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -179247,6 +179519,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -179467,6 +179740,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     paymentStatus?: string
     paymentDate?: Date | string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -179508,6 +179782,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -179785,6 +180060,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -179859,6 +180135,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: string
+    dailyReportEmailEnabled?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     isDeleted?: boolean
@@ -179946,6 +180223,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -179987,6 +180265,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -180282,6 +180561,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -180356,6 +180636,7 @@ export namespace Prisma {
     integrations?: NullableJsonNullValueInput | InputJsonValue
     leadScoringConfig?: NullableJsonNullValueInput | InputJsonValue
     dailyReportTime?: StringFieldUpdateOperationsInput | string
+    dailyReportEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
@@ -180758,6 +181039,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -182336,6 +182618,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -182376,6 +182659,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -182411,6 +182695,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -184729,6 +185014,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -185062,6 +185348,7 @@ export namespace Prisma {
     paymentDate?: Date | string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -187517,6 +187804,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -187557,6 +187845,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -187592,6 +187881,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -188598,6 +188888,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -188638,6 +188929,7 @@ export namespace Prisma {
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -188673,6 +188965,7 @@ export namespace Prisma {
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -190886,6 +191179,7 @@ export namespace Prisma {
     paymentDate?: Date | string | null
     previousOwnerId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -191693,6 +191987,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -191733,6 +192028,7 @@ export namespace Prisma {
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -191768,6 +192064,7 @@ export namespace Prisma {
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -191969,6 +192266,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -192574,6 +192872,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -192614,6 +192913,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -192649,6 +192949,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -193763,6 +194064,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -193804,6 +194106,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -193839,6 +194142,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -195742,6 +196046,7 @@ export namespace Prisma {
     paymentDate?: Date | string | null
     previousOwnerId?: string | null
     leadId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -195938,6 +196243,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -195978,6 +196284,7 @@ export namespace Prisma {
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -196013,6 +196320,7 @@ export namespace Prisma {
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -196357,6 +196665,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     pipelineId?: string | null
+    lostReason?: string | null
     type?: $Enums.OpportunityType
   }
 
@@ -197041,6 +197350,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -197082,6 +197392,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -197117,6 +197428,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
   }
 

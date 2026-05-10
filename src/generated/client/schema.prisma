@@ -29,6 +29,7 @@ model Organisation {
   integrations            Json?
   leadScoringConfig       Json?
   dailyReportTime         String             @default("09:00") // Time to send daily business report (HH:mm)
+  dailyReportEmailEnabled Boolean            @default(false)
   createdAt               DateTime           @default(now())
   updatedAt               DateTime           @updatedAt
   isDeleted               Boolean            @default(false)
@@ -465,6 +466,7 @@ model Opportunity {
   lead            Lead?           @relation("LeadToOpportunity", fields: [leadId], references: [id])
   pipelineId      String?
   pipeline        Pipeline?       @relation(fields: [pipelineId], references: [id])
+  lostReason      String?
   emiSchedule     EMISchedule?
   paymentRecords  PaymentRecord[]
   type            OpportunityType @default(NEW_BUSINESS)
