@@ -32,7 +32,7 @@ if [ "$AVAILABLE_KB" -lt 2000000 ]; then
     sudo journalctl --vacuum-time=1d 2>/dev/null || true
     
     # Remove old log files (older than 7 days)
-    find ~/backend -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
+    # find ~/backend -name "*.log" -type f -mtime +7 -delete 2>/dev/null || true
     
     # Clean apt cache if we have sudo
     sudo apt-get clean 2>/dev/null || true
@@ -96,8 +96,8 @@ elif [ -f /tmp/.env.backup ]; then
 fi
 
 # Remove duplicate uppercase service files (Linux is case-sensitive)
-echo "🔧 Cleaning up duplicate service files..."
-find src/services -name "[A-Z]*.ts" -delete
+# echo "🔧 Cleaning up duplicate service files..."
+# find src/services -name "[A-Z]*.ts" -delete
 
 # Remove package-lock.json to force regeneration with correct versions
 echo "🔄 Regenerating package-lock.json..."

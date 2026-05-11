@@ -1,6 +1,39 @@
 import prisma from '../config/prisma';
 import { NotificationService } from './notificationService';
 
+interface ReminderItem {
+    id: string;
+    subject: string;
+    dueDate: Date;
+    assignedToId: string | null;
+    type: 'task' | 'followUp';
+    assignedTo?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        reportsToId: string | null;
+    } | null;
+    lead?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        company: string | null;
+    } | null;
+    contact?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    } | null;
+    account?: {
+        id: string;
+        name: string;
+    } | null;
+    opportunity?: {
+        id: string;
+        name: string;
+    } | null;
+}
+
 export class FollowUpNotificationService {
     /**
      * Check for upcoming follow-ups and send notifications
@@ -142,9 +175,9 @@ export class FollowUpNotificationService {
                 }
             });
 
-            const allReminders = [
-                ...tasks.map(t => ({ ...t, type: 'task' })),
-                ...followUps.map(f => ({ ...f, type: 'followUp' }))
+            const allReminders: ReminderItem[] = [
+                ...tasks.map(t => ({ ...t, type: 'task' as const })),
+                ...followUps.map(f => ({ ...f, type: 'followUp' as const }))
             ];
 
             console.log(`[FollowUpNotificationService] Found ${allReminders.length} items for 30-minute reminders (${tasks.length} tasks, ${followUps.length} follow-ups)`);
@@ -332,9 +365,9 @@ export class FollowUpNotificationService {
                 }
             });
 
-            const allReminders = [
-                ...tasks.map(t => ({ ...t, type: 'task' })),
-                ...followUps.map(f => ({ ...f, type: 'followUp' }))
+            const allReminders: ReminderItem[] = [
+                ...tasks.map(t => ({ ...t, type: 'task' as const })),
+                ...followUps.map(f => ({ ...f, type: 'followUp' as const }))
             ];
 
             console.log(`[FollowUpNotificationService] Found ${allReminders.length} items due today (${tasks.length} tasks, ${followUps.length} follow-ups)`);
