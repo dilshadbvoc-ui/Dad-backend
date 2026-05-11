@@ -4,7 +4,7 @@ import { NotificationService } from './notificationService';
 interface ReminderItem {
     id: string;
     subject: string;
-    dueDate: Date;
+    dueDate: Date | null;
     assignedToId: string | null;
     type: 'task' | 'followUp';
     assignedTo?: {
