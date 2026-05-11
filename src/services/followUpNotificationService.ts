@@ -10,19 +10,19 @@ interface ReminderItem {
     assignedTo?: {
         id: string;
         firstName: string;
-        lastName: string;
+        lastName: string | null;
         reportsToId: string | null;
     } | null;
     lead?: {
         id: string;
         firstName: string;
-        lastName: string;
+        lastName: string | null;
         company: string | null;
     } | null;
     contact?: {
         id: string;
         firstName: string;
-        lastName: string;
+        lastName: string | null;
     } | null;
     account?: {
         id: string;
