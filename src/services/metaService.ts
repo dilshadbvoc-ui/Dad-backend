@@ -87,7 +87,7 @@ export class MetaService {
         throw new Error(errorMsg);
     }
 
-    async exchangeForLongLivedToken(shortLivedToken: string, config?: MetaConfig): Promise<string> {
+    async exchangeForLongLivedToken(shortLivedToken: string, config?: MetaConfig): Promise<{ accessToken: string, expiresAt?: Date }> {
         try {
             // Prefer config values (from DB), fallback to env vars (system default)
             const appId = config?.appId || process.env.META_APP_ID;
@@ -95,7 +95,7 @@ export class MetaService {
 
             if (!appId || !appSecret) {
                 console.warn('Meta App ID or Secret not configured (neither in DB nor ENV), skipping token exchange');
-                return shortLivedToken;
+                return { accessToken: shortLivedToken };
             }
 
             const response = await axios.get(`${this.baseUrl}/oauth/access_token`, {
@@ -109,14 +109,22 @@ export class MetaService {
 
             if (response.data && response.data.access_token) {
                 console.log('Successfully exchanged for long-lived Meta token');
-                return response.data.access_token;
+                const result: { accessToken: string, expiresAt?: Date } = {
+                    accessToken: response.data.access_token
+                };
+
+                if (response.data.expires_in) {
+                    result.expiresAt = new Date(Date.now() + (response.data.expires_in * 1000));
+                }
+
+                return result;
             }
 
-            return shortLivedToken;
+            return { accessToken: shortLivedToken };
         } catch (error: any) {
             console.error('Failed to exchange Meta token:', error.response?.data || error.message);
             // Return original token on failure to avoid breaking the flow completely
-            return shortLivedToken;
+            return { accessToken: shortLivedToken };
         }
     }
 

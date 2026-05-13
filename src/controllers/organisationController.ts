@@ -235,11 +235,14 @@ export const updateOrganisation = async (req: Request, res: Response) => {
                 const isEncrypted = currentToken.split(':').length === 3;
 
                 if (!isEncrypted) {
-                    const longLivedToken = await metaService.exchangeForLongLivedToken(
+                    const exchangeResult = await metaService.exchangeForLongLivedToken(
                         currentToken,
                         data.integrations.meta
                     );
-                    data.integrations.meta.accessToken = encrypt(longLivedToken);
+                    data.integrations.meta.accessToken = encrypt(exchangeResult.accessToken);
+                    if (exchangeResult.expiresAt) {
+                        data.integrations.meta.tokenExpiresAt = exchangeResult.expiresAt;
+                    }
                 }
             } catch (error) {
                 console.error('Error exchanging Meta token:', error);
