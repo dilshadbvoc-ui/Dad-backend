@@ -372,7 +372,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     return res.status(201).json({ message: 'Merged into existing interaction', interactionId: raceCheck.id });
                 }
 
-                await prisma.interaction.create({
+                const interaction = await prisma.interaction.create({
                     data: {
                         type: 'call',
                         direction: direction,
