@@ -594,16 +594,19 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         const finalizedSyncDurationSecs = resolveBestDurationSeconds(tempSyncData);
 
                         console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${finalizedSyncDurationSecs}s (from ${existingInteraction.callStatus})`);
+                        const updatePayload: any = {
+                            duration: Math.round((finalizedSyncDurationSecs / 60) * 100) / 100,
+                            recordingDuration: durationSecs,
+                            callStatus: durationSecs > 0 ? 'completed' : 'failed',
+                        };
+
+                        if (hardwareId) updatePayload.hardwareId = hardwareId;
+                        if (callSessionId) updatePayload.callSessionId = callSessionId;
+                        if (carrierDurationSecs !== null) updatePayload.hardwareDuration = carrierDurationSecs;
+
                         await prisma.interaction.update({
                             where: { id: existingInteraction.id },
-                            data: {
-                                duration: Math.round((finalizedSyncDurationSecs / 60) * 100) / 100,
-                                recordingDuration: durationSecs,
-                                hardwareDuration: carrierDurationSecs,
-                                callStatus: durationSecs > 0 ? 'completed' : 'failed',
-                                hardwareId: hardwareId || undefined,
-                                callSessionId: callSessionId || undefined
-                            }
+                            data: updatePayload
                         });
 
                         // 4b. Update Lead/Contact stats for healed interaction
