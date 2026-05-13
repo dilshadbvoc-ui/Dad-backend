@@ -168,7 +168,7 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
         if (type === 'call' || type === 'meeting' || type === 'other') {
             if (lead) {
                 const leadRecord = await prisma.lead.findUnique({ where: { id: lead }, select: { status: true } });
-                const newStatus = (leadRecord?.status === 'new' && (type === 'call' || type === 'meeting')) ? 'contacted' : undefined;
+                const newStatus = (leadRecord?.status === 'new' && (type === 'call' || type === 'meeting' || type === 'whatsapp')) ? 'contacted' : undefined;
 
                 await prisma.lead.update({
                     where: { id: lead },

@@ -393,6 +393,17 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                         branch: user.branchId ? { connect: { id: user.branchId } } : undefined
                     }
                 });
+
+                if (targetLeadId && (newInteraction.type === 'call' || newInteraction.type === 'meeting' || newInteraction.type === 'whatsapp')) {
+                    const leadRecord = await prisma.lead.findUnique({ where: { id: targetLeadId }, select: { status: true } });
+                    const newStatus = (leadRecord?.status === 'new') ? 'contacted' : undefined;
+                    if (newStatus) {
+                        await prisma.lead.update({
+                            where: { id: targetLeadId },
+                            data: { status: newStatus, lastContactDate: callDate }
+                        }).catch(() => {});
+                    }
+                }
             } catch (err: any) {
                 if (err.code === 'P2002') {
                     console.log(`[AndroidUpload] Duplicate report suppressed via database unique constraint (HwId: ${hardwareId}, SessId: ${callSessionId})`);
@@ -554,7 +565,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         where: {
                             organisationId: user.organisationId,
                             type: 'call',
-                            callStatus: { in: ['initiated', 'completed'] },
+                            callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
                             phoneNumber: { contains: phoneSuffix },
                             date: {
                                 gte: searchWindowStart,
@@ -597,17 +608,14 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                         // 4b. Update Lead/Contact stats for healed interaction
                         if (targetLeadId) {
-                            const newStatus = (entity?.type === 'lead' && entity.status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : null;
+                            const leadRecord = await prisma.lead.findUnique({ where: { id: targetLeadId }, select: { status: true } });
+                            const newStatus = (leadRecord?.status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : undefined;
                             
-                            await prisma.lead.update({
-                                where: { id: targetLeadId },
-                                data: {
-                                    lastContactDate: callDate,
-                                    ...(newStatus ? { status: newStatus } : {})
-                                }
-                            });
-
                             if (newStatus) {
+                                await prisma.lead.update({
+                                    where: { id: targetLeadId },
+                                    data: { status: newStatus, lastContactDate: callDate }
+                                });
                                 await prisma.leadHistory.create({
                                     data: {
                                         leadId: targetLeadId,

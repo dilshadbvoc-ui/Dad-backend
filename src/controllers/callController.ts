@@ -99,6 +99,28 @@ export const completeCall = async (req: Request, res: Response) => {
             include: { createdBy: true }
         });
 
+        // Auto-update lead status to 'contacted' if it was 'new'
+        if (interaction.leadId && interaction.callStatus === 'completed' && (interaction.duration || 0) > 0) {
+            const lead = await prisma.lead.findUnique({ where: { id: interaction.leadId }, select: { status: true } });
+            if (lead?.status === 'new') {
+                await prisma.lead.update({
+                    where: { id: interaction.leadId },
+                    data: { status: 'contacted' }
+                }).catch(() => {});
+                
+                await prisma.leadHistory.create({
+                    data: {
+                        leadId: interaction.leadId,
+                        fieldName: 'status',
+                        oldValue: 'new',
+                        newValue: 'contacted',
+                        changedById: interaction.createdById || user.id,
+                        reason: 'Auto-updated via Browser Call Completion'
+                    }
+                }).catch(() => {});
+            }
+        }
+
         // Emit socket event for real-time update
         const io = req.app.get('io');
         if (io && interaction.createdBy?.id) {
@@ -599,10 +621,14 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
         }
 
         // Hierarchy filtering
-        const visibleUserIds = await getVisibleUserIds(user.id);
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin' || user.role === 'organisation_admin';
+        let userWhere: any = {};
+
+        if (!isAdmin) {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            userWhere.id = { in: visibleUserIds };
+        }
         
-        // Filter users by branch if provided
-        const userWhere: any = { id: { in: visibleUserIds } };
         if (branchId) userWhere.branchId = branchId as string;
 
         const users = await prisma.user.findMany({
