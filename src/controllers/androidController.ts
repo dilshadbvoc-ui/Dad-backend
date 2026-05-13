@@ -14,7 +14,7 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized. Organisation ID missing.' });
         }
 
-        const { getVisibleUserIds, isAdmin } = await import('../utils/hierarchyUtils');
+        const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
         const visibleUserIds = await getVisibleUserIds(user.id);
 
         const leads = await prisma.lead.findMany({
