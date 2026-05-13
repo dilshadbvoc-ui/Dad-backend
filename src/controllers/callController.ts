@@ -646,6 +646,7 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
             };
         });
 
+        interactions.forEach(i => {
             if (i.createdById && userStatsMap[i.createdById]) {
                 const stats = userStatsMap[i.createdById];
                 
