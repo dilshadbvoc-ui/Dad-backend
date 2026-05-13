@@ -14,11 +14,15 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized. Organisation ID missing.' });
         }
 
+        const { getVisibleUserIds, isAdmin } = await import('../utils/hierarchyUtils');
+        const visibleUserIds = await getVisibleUserIds(user.id);
+
         const leads = await prisma.lead.findMany({
             where: {
                 organisationId: user.organisationId,
                 isDeleted: false,
-                phone: { not: '' }
+                phone: { not: '' },
+                assignedToId: { in: visibleUserIds }
             },
             select: {
                 id: true,
@@ -37,7 +41,8 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
         const contacts = await prisma.contact.findMany({
             where: {
                 organisationId: user.organisationId,
-                isDeleted: false
+                isDeleted: false,
+                ownerId: { in: visibleUserIds }
             },
             select: {
                 id: true,
@@ -278,20 +283,25 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             // SYSTEM LOG RULE: If the new duration is > 0, we ALWAYS trust it over a 2s estimate
             const shouldUpdate = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
 
+            const updateData: any = {
+                duration: shouldUpdate ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                recordingDuration: shouldUpdate ? durationSecs : undefined,
+                recordingUrl: recording.fileUrl || undefined,
+                callStatus: durationSecs > 0 ? 'completed' : 'failed',
+                lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
+                phoneNumber: phoneNumber || undefined,
+                hardwareId: hardwareId || undefined,
+                callSessionId: callSessionId || undefined,
+                date: callDate // Ensure the date field matches the official timestamp
+            };
+
+            if (shouldUpdate && carrierDurationSecs !== null) {
+                updateData.hardwareDuration = carrierDurationSecs;
+            }
+
             await prisma.interaction.update({
                 where: { id: existingInteraction.id },
-                data: {
-                    duration: shouldUpdate ? (Math.round(durationMinutes * 100) / 100) : undefined,
-                    recordingDuration: shouldUpdate ? durationSecs : undefined,
-                    hardwareDuration: shouldUpdate ? carrierDurationSecs : undefined,
-                    recordingUrl: recording.fileUrl || undefined,
-                    callStatus: durationSecs > 0 ? 'completed' : 'failed',
-                    lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
-                    phoneNumber: phoneNumber || undefined,
-                    hardwareId: hardwareId || undefined,
-                    callSessionId: callSessionId || undefined,
-                    date: callDate // Ensure the date field matches the official timestamp
-                }
+                data: updateData
             });
         } else {
             // No existing interaction: Create a new record for lead or standalone
