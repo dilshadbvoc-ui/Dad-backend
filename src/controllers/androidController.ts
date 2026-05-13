@@ -453,16 +453,16 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         });
 
         // Build a lookup map: last 10 digits of phone -> entity
-        const phoneToEntity = new Map<string, { id: string; type: 'lead' | 'contact'; firstName: string | null; lastName: string | null }>();
+        const phoneToEntity = new Map<string, { id: string; type: 'lead' | 'contact'; firstName: string | null; lastName: string | null; status?: string }>();
         
         for (const lead of crmLeads) {
             if (lead.phone) {
                 const clean = lead.phone.replace(/[^0-9]/g, '').slice(-10);
-                if (clean.length > 0) phoneToEntity.set(clean, { id: lead.id, type: 'lead', firstName: lead.firstName, lastName: lead.lastName });
+                if (clean.length > 0) phoneToEntity.set(clean, { id: lead.id, type: 'lead', firstName: lead.firstName, lastName: lead.lastName, status: lead.status });
             }
             if (lead.secondaryPhone) {
                 const clean = lead.secondaryPhone.replace(/[^0-9]/g, '').slice(-10);
-                if (clean.length > 0 && !phoneToEntity.has(clean)) phoneToEntity.set(clean, { id: lead.id, type: 'lead', firstName: lead.firstName, lastName: lead.lastName });
+                if (clean.length > 0 && !phoneToEntity.has(clean)) phoneToEntity.set(clean, { id: lead.id, type: 'lead', firstName: lead.firstName, lastName: lead.lastName, status: lead.status });
             }
         }
 
@@ -597,7 +597,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                         // 4b. Update Lead/Contact stats for healed interaction
                         if (targetLeadId) {
-                            const newStatus = (entity?.type === 'lead' && (entity as any).status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : null;
+                            const newStatus = (entity?.type === 'lead' && entity.status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : null;
                             
                             await prisma.lead.update({
                                 where: { id: targetLeadId },
@@ -756,7 +756,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 // 6b. Update Lead/Contact stats for new interaction
                 if (targetLeadId) {
-                    const newStatus = (entity?.type === 'lead' && (entity as any).status === 'new' && finalizedNewDurationSecs > 0) ? 'contacted' : null;
+                    const newStatus = (entity?.type === 'lead' && entity.status === 'new' && finalizedNewDurationSecs > 0) ? 'contacted' : null;
                     
                     await prisma.lead.update({
                         where: { id: targetLeadId },
