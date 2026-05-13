@@ -175,7 +175,7 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
             if (contact) {
                 await prisma.contact.update({
                     where: { id: contact },
-                    data: { lastContactDate: interaction.date }
+                    data: { lastActivity: interaction.date }
                 }).catch(() => {});
             }
         }
