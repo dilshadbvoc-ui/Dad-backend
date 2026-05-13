@@ -93,6 +93,20 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             where.assignedToId = req.query.assignedTo as string;
         }
 
+        // Filter: Date Range (createdAt)
+        if (req.query.startDate || req.query.endDate) {
+            const dateFilter: any = {};
+            if (req.query.startDate) {
+                dateFilter.gte = new Date(req.query.startDate as string);
+            }
+            if (req.query.endDate) {
+                const end = new Date(req.query.endDate as string);
+                end.setHours(23, 59, 59, 999);
+                dateFilter.lte = end;
+            }
+            where.createdAt = dateFilter;
+        }
+
         // Combine all conditions
         if (andConditions.length > 0) {
             where.AND = andConditions;
