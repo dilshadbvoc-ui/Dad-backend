@@ -752,7 +752,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         isDeleted: false,
                         interactions: {
                             some: {
-                                createdAt: dateFilter
+                                date: dateFilter
                             }
                         }
                     }
@@ -1001,6 +1001,7 @@ export const getDailyReport = async (req: Request, res: Response) => {
         const summaryWhere: any = {
             organisationId: orgId,
             type: 'call',
+            callStatus: { not: 'initiated' },
             date: { gte: startOfDay, lte: endOfDay },
             isDeleted: false
         };

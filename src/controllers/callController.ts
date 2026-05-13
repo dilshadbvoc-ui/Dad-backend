@@ -397,6 +397,7 @@ export const getCallStats = async (req: Request, res: Response) => {
         const baseWhere: any = {
             organisationId: orgId,
             type: 'call' as const,
+            callStatus: { not: 'initiated' },
             isDeleted: false,
             date: { gte: startDate }
         };
@@ -645,10 +646,13 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
             };
         });
 
-        interactions.forEach(i => {
             if (i.createdById && userStatsMap[i.createdById]) {
                 const stats = userStatsMap[i.createdById];
-                stats.totalCalls++;
+                
+                // Only count as a "Call" if it got past the 'initiated' stage
+                if (i.callStatus !== 'initiated') {
+                    stats.totalCalls++;
+                }
 
                 if (i.callStatus === 'completed') {
                     stats.connectedCalls++;
