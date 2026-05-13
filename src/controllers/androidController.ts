@@ -34,10 +34,48 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
             }
         });
 
-        res.status(200).json({ leads });
+        const contacts = await prisma.contact.findMany({
+            where: {
+                organisationId: user.organisationId,
+                isDeleted: false
+            },
+            select: {
+                id: true,
+                phones: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                updatedAt: true
+            }
+        });
+
+        // Normalize contacts to match lead structure for the app
+        const normalizedContacts = contacts.map(c => {
+            let phone = '';
+            if (c.phones && Array.isArray(c.phones) && (c.phones as any[]).length > 0) {
+                phone = String((c.phones as any[])[0]);
+            } else if (typeof c.phones === 'string') {
+                phone = c.phones;
+            }
+
+            return {
+                id: c.id,
+                phone: phone,
+                firstName: c.firstName,
+                lastName: c.lastName,
+                email: c.email,
+                type: 'contact',
+                updatedAt: c.updatedAt
+            };
+        });
+
+        res.status(200).json({ 
+            leads: leads.map(l => ({ ...l, type: 'lead' })), 
+            contacts: normalizedContacts 
+        });
     } catch (error) {
-        console.error('Error fetching android leads:', error);
-        res.status(500).json({ error: 'Failed to fetch leads' });
+        console.error('Error fetching android data:', error);
+        res.status(500).json({ error: 'Failed to fetch data' });
     }
 };
 
@@ -77,9 +115,32 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                             { phone: { contains: last10 } },
                             { secondaryPhone: { contains: last10 } }
                         ]
-                    },
                     select: { id: true, phone: true, firstName: true }
                 });
+            }
+
+            if (!leadByPhone && last10.length > 0) {
+                // Try finding by Contact if no lead
+                const contactByPhone = await prisma.contact.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        isDeleted: false,
+                        OR: [
+                            { phones: { path: ['$[*]'], string_contains: last10 } },
+                            { phones: { string_contains: last10 } }
+                        ]
+                    },
+                    select: { id: true, firstName: true }
+                });
+
+                if (contactByPhone) {
+                    // Map Contact as "Lead" placeholder for the legacy logic
+                    leadByPhone = { 
+                        id: contactByPhone.id, 
+                        phone: phoneNumber, 
+                        firstName: contactByPhone.firstName 
+                    };
+                }
             }
         }
 
@@ -381,20 +442,46 @@ export const syncCallLogs = async (req: Request, res: Response) => {
             select: { id: true, phone: true, secondaryPhone: true, firstName: true, lastName: true, status: true }
         });
 
-        // Build a lookup map: last 10 digits of phone -> lead
-        const phoneToLead = new Map<string, { id: string; phone: string; firstName: string | null; lastName: string | null; status: string }>();
+        // 1.1 Fetch all CRM contacts
+        const crmContacts = await prisma.contact.findMany({
+            where: {
+                organisationId: user.organisationId,
+                isDeleted: false
+            },
+            select: { id: true, phones: true, firstName: true, lastName: true }
+        });
+
+        // Build a lookup map: last 10 digits of phone -> entity
+        const phoneToEntity = new Map<string, { id: string; type: 'lead' | 'contact'; firstName: string | null; lastName: string | null }>();
+        
         for (const lead of crmLeads) {
             if (lead.phone) {
                 const clean = lead.phone.replace(/[^0-9]/g, '').slice(-10);
-                if (clean.length > 0) phoneToLead.set(clean, lead);
+                if (clean.length > 0) phoneToEntity.set(clean, { id: lead.id, type: 'lead', firstName: lead.firstName, lastName: lead.lastName });
             }
             if (lead.secondaryPhone) {
                 const clean = lead.secondaryPhone.replace(/[^0-9]/g, '').slice(-10);
-                if (clean.length > 0 && !phoneToLead.has(clean)) phoneToLead.set(clean, lead);
+                if (clean.length > 0 && !phoneToEntity.has(clean)) phoneToEntity.set(clean, { id: lead.id, type: 'lead', firstName: lead.firstName, lastName: lead.lastName });
             }
         }
 
-        console.log(`[BulkSync] Built lookup map with ${phoneToLead.size} phone entries from ${crmLeads.length} leads`);
+        for (const contact of crmContacts) {
+            let phoneList: string[] = [];
+            if (Array.isArray(contact.phones)) {
+                phoneList = contact.phones.map(p => String(p));
+            } else if (typeof contact.phones === 'string') {
+                phoneList = [contact.phones];
+            }
+
+            for (const p of phoneList) {
+                const clean = p.replace(/[^0-9]/g, '').slice(-10);
+                if (clean.length > 0 && !phoneToEntity.has(clean)) {
+                    phoneToEntity.set(clean, { id: contact.id, type: 'contact', firstName: contact.firstName, lastName: contact.lastName });
+                }
+            }
+        }
+
+        console.log(`[BulkSync] Built lookup map with ${phoneToEntity.size} phone entries from ${crmLeads.length} leads and ${crmContacts.length} contacts`);
 
         // 2. Process each call entry
         const results: { synced: string[]; skipped: number; errors: number } = {
@@ -420,12 +507,15 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     continue;
                 }
 
-                const matchedLead = phoneToLead.get(last10);
+                const entity = phoneToEntity.get(last10);
+                const targetLeadId = (entity && entity.type === 'lead') ? entity.id : null;
+                const targetContactId = (entity && entity.type === 'contact') ? entity.id : null;
+                
                 const rawType = String(callType || 'UNKNOWN').toUpperCase();
                 const isMissed = ['3', 'MISSED', 'MISS'].includes(rawType);
                 
-                // If not matched to a lead, only proceed if Contact Sync is enabled OR it is a MISSED CALL
-                if (!matchedLead && !canSyncUnknown && !isMissed) {
+                // If not matched to any CRM entity, only proceed if Contact Sync is enabled OR it is a MISSED CALL
+                if (!entity && !canSyncUnknown && !isMissed) {
                     // Not a CRM number and sync disabled — skip silently
                     results.skipped++;
                     continue;
@@ -504,12 +594,12 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                             }
                         });
 
-                        // 4b. Update Lead stats for healed interaction
-                        if (matchedLead) {
-                            const newStatus = (matchedLead.status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : null;
+                        // 4b. Update Lead/Contact stats for healed interaction
+                        if (targetLeadId) {
+                            const newStatus = (entity?.type === 'lead' && (entity as any).status === 'new' && finalizedSyncDurationSecs > 0) ? 'contacted' : null;
                             
                             await prisma.lead.update({
-                                where: { id: matchedLead.id },
+                                where: { id: targetLeadId },
                                 data: {
                                     lastContactDate: callDate,
                                     ...(newStatus ? { status: newStatus } : {})
@@ -519,15 +609,21 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                             if (newStatus) {
                                 await prisma.leadHistory.create({
                                     data: {
-                                        leadId: matchedLead.id,
+                                        leadId: targetLeadId,
                                         fieldName: 'status',
-                                        oldValue: matchedLead.status,
+                                        oldValue: 'new',
                                         newValue: newStatus,
                                         changedById: user.id,
                                         reason: 'Auto-updated via Android Sync (Heal)'
                                     }
                                 });
                             }
+                        }
+                        if (targetContactId) {
+                            await prisma.contact.update({
+                                where: { id: targetContactId },
+                                data: { lastActivity: callDate }
+                            }).catch(() => {});
                         }
 
                         results.synced.push(phoneNumber);
@@ -578,11 +674,11 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     }
                 } else if (missedIdentifiers.includes(rawType)) {
                     direction = 'inbound';
-                    subject = matchedLead ? 'Missed Call from Lead' : `Missed Call from ${phoneNumber}`;
+                    subject = entity ? `Missed Call from ${entity.firstName || 'CRM Contact'}` : `Missed Call from ${phoneNumber}`;
                     status = 'missed';
                 } else if (rejectedIdentifiers.includes(rawType)) {
                     direction = 'inbound';
-                    subject = matchedLead ? 'Rejected Call from Lead' : `Rejected Call from ${phoneNumber}`;
+                    subject = entity ? `Rejected Call from ${entity.firstName || 'CRM Contact'}` : `Rejected Call from ${phoneNumber}`;
                     status = 'rejected';
                 } else {
                     direction = 'inbound';
@@ -599,7 +695,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 // 5. Create the CallRecording record (no audio file for bulk sync)
                 await prisma.callRecording.create({
                     data: {
-                        lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
+                        leadId: targetLeadId,
                         duration: durationSecs,
                         hardwareDuration: carrierDurationSecs,
                         fileUrl: '',
@@ -648,20 +744,21 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         hardwareDuration: carrierDurationSecs,
                         recordingUrl: null,
                         callStatus: status,
-                        lead: matchedLead ? { connect: { id: matchedLead.id } } : undefined,
-                        organisation: { connect: { id: user.organisationId } },
-                        createdBy: { connect: { id: user.id } },
-                        phoneNumber: matchedLead ? matchedLead.phone : (phoneNumber ? (phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber.replace(/[^0-9]/g, '').slice(-10)}`) : undefined),
+                        leadId: targetLeadId,
+                        contactId: targetContactId,
+                        organisationId: user.organisationId,
+                        createdById: user.id,
+                        phoneNumber: phoneNumber,
                         hardwareId: hardwareId || undefined
                     }
                 });
 
-                // 6b. Update Lead stats for new interaction
-                if (matchedLead) {
-                    const newStatus = (matchedLead.status === 'new' && finalizedNewDurationSecs > 0) ? 'contacted' : null;
-
+                // 6b. Update Lead/Contact stats for new interaction
+                if (targetLeadId) {
+                    const newStatus = (entity?.type === 'lead' && (entity as any).status === 'new' && finalizedNewDurationSecs > 0) ? 'contacted' : null;
+                    
                     await prisma.lead.update({
-                        where: { id: matchedLead.id },
+                        where: { id: targetLeadId },
                         data: {
                             lastContactDate: callDate,
                             ...(newStatus ? { status: newStatus } : {})
@@ -671,15 +768,21 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     if (newStatus) {
                         await prisma.leadHistory.create({
                             data: {
-                                leadId: matchedLead.id,
+                                leadId: targetLeadId,
                                 fieldName: 'status',
-                                oldValue: matchedLead.status,
+                                oldValue: 'new',
                                 newValue: newStatus,
                                 changedById: user.id,
                                 reason: 'Auto-updated via Android Sync (New)'
                             }
                         });
                     }
+                }
+                if (targetContactId) {
+                    await prisma.contact.update({
+                        where: { id: targetContactId },
+                        data: { lastActivity: callDate }
+                    }).catch(() => {});
                 }
 
                 results.synced.push(phoneNumber);
