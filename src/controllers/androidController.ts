@@ -115,6 +115,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                             { phone: { contains: last10 } },
                             { secondaryPhone: { contains: last10 } }
                         ]
+                    },
                     select: { id: true, phone: true, firstName: true }
                 });
             }
