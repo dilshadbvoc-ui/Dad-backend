@@ -1038,3 +1038,105 @@ export const getDailyReport = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Failed to fetch daily report' });
     }
 };
+
+/**
+ * Lead Distribution Report
+ * Returns leads distributed to each user in a date range, with summaries.
+ */
+export const getLeadDistributionReport = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(401).json({ message: 'Unauthorized' });
+
+        const { startDate, endDate, userId, branchId } = req.query;
+
+        const where: any = {
+            organisationId: orgId,
+            isDeleted: false,
+            assignedToId: { not: null }
+        };
+
+        if (branchId) where.branchId = branchId as string;
+        if (userId) where.assignedToId = userId as string;
+
+        // Date filter - default to last 30 days if not provided
+        const dateFilter: any = {};
+        if (startDate || endDate) {
+            if (startDate) dateFilter.gte = new Date(startDate as string);
+            if (endDate) {
+                const end = new Date(endDate as string);
+                end.setHours(23, 59, 59, 999);
+                dateFilter.lte = end;
+            }
+            where.createdAt = dateFilter;
+        }
+
+        // If not admin, restrict visibility
+        if (!isOrgAdmin(user) && user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            where.assignedToId = { in: visibleUserIds };
+        }
+
+        const leads = await prisma.lead.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                status: true,
+                source: true,
+                createdAt: true,
+                branch: { select: { name: true } },
+                assignedTo: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Generate Summary by User
+        const byUser: Record<string, any> = {};
+        leads.forEach(lead => {
+            const u = lead.assignedTo;
+            if (!u) return;
+            const userName = `${u.firstName} ${u.lastName || ''}`.trim();
+            if (!byUser[u.id]) {
+                byUser[u.id] = {
+                    userId: u.id,
+                    userName,
+                    branch: lead.branch?.name || 'N/A',
+                    count: 0,
+                    leads: []
+                };
+            }
+            byUser[u.id].count++;
+            byUser[u.id].leads.push(lead);
+        });
+
+        // Generate Summary by Date
+        const byDate: Record<string, number> = {};
+        leads.forEach(lead => {
+            const dateStr = lead.createdAt.toISOString().split('T')[0];
+            byDate[dateStr] = (byDate[dateStr] || 0) + 1;
+        });
+
+        res.json({
+            leads,
+            summary: {
+                total: leads.length,
+                byUser: Object.values(byUser).sort((a, b) => b.count - a.count),
+                byDate: Object.entries(byDate).map(([date, count]) => ({ date, count })).sort((a, b) => b.date.localeCompare(a.date))
+            }
+        });
+    } catch (error) {
+        console.error('[ReportController] getLeadDistributionReport error:', error);
+        res.status(500).json({ message: 'Failed to fetch lead distribution report' });
+    }
+};

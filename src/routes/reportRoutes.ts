@@ -6,7 +6,8 @@ import {
     exportToExcel, 
     getTeamPerformanceReport,
     getUserPerformanceDetails,
-    getDailyReport 
+    getDailyReport,
+    getLeadDistributionReport
 } from '../controllers/reportController';
 import { protect as authMiddleware } from '../middleware/authMiddleware';
 
@@ -17,6 +18,9 @@ router.use(authMiddleware);
 
 // Leads report with filtering
 router.get('/leads', getLeadsReport);
+
+// Lead Distribution Report
+router.get('/lead-distribution', getLeadDistributionReport);
 
 // User performance metrics (Existing)
 router.get('/user-performance', getUserPerformance);
