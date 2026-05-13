@@ -132,6 +132,7 @@ export const getUserPerformance = async (req: Request, res: Response) => {
                     where: {
                         createdById: user.id,
                         type: 'call',
+                        callStatus: { not: 'initiated' },
                         isDeleted: false,
                         ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     }
@@ -730,6 +731,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                     where: { 
                         createdById: u.id, 
                         type: 'call', 
+                        callStatus: { not: 'initiated' },
                         organisationId: orgId as string,
                         ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     }
@@ -947,6 +949,7 @@ export const getDailyReport = async (req: Request, res: Response) => {
                     where: {
                         createdById: u.id,
                         type: 'call',
+                        callStatus: { not: 'initiated' },
                         date: { gte: startOfDay, lte: endOfDay },
                         isDeleted: false
                     }
@@ -1023,9 +1026,18 @@ export const getDailyReport = async (req: Request, res: Response) => {
             neverAttended: totalStats.filter(c => c.direction === 'inbound' && ['missed', 'rejected'].includes(c.callStatus || '')).length,
             notPickedUp: totalStats.filter(c => c.direction === 'outbound' && (c.duration === 0 || c.callStatus === 'failed')).length,
             unique: new Set(totalStats.map(c => c.phoneNumber).filter(Boolean)).size,
-            totalDuration: totalStats.reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
-            incomingDuration: totalStats.filter(c => c.direction === 'inbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
-            outgoingDuration: totalStats.filter(c => c.direction === 'outbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            totalDuration: totalStats.reduce((sum, c) => {
+                const d = c.hardwareDuration || c.recordingDuration || Math.round((c.duration || 0) * 60);
+                return sum + d;
+            }, 0),
+            incomingDuration: totalStats.filter(c => c.direction === 'inbound').reduce((sum, c) => {
+                const d = c.hardwareDuration || c.recordingDuration || Math.round((c.duration || 0) * 60);
+                return sum + d;
+            }, 0),
+            outgoingDuration: totalStats.filter(c => c.direction === 'outbound').reduce((sum, c) => {
+                const d = c.hardwareDuration || c.recordingDuration || Math.round((c.duration || 0) * 60);
+                return sum + d;
+            }, 0),
         };
 
         // Sort by total calls descending as a default
