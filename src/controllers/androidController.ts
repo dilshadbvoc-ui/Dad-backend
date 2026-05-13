@@ -166,8 +166,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         // PRIORITY 2: Match by hardwareId (Android Record ID - 100% Accuracy)
         // PRIORITY 3: Fuzzy Match (Phone + User + Time window for 'initiated' calls)
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-        const searchWindowStart = new Date(callDate.getTime() - 120 * 1000); // 2 mins before
-        const searchWindowEnd = new Date(callDate.getTime() + 120 * 1000);   // 2 mins after
+        const searchWindowStart = new Date(callDate.getTime() - 60 * 60 * 1000); // 1 hour before (covers long calls)
+        const searchWindowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);    // 5 mins after (covers clock skew)
         
         console.log(`[AndroidUpload] Searching for interaction to merge (Phone: ${phoneNumber}, HardwareId: ${hardwareId || 'none'}, Date: ${callDate.toISOString().split('.')[0]})...`);
         
@@ -198,7 +198,6 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: user.organisationId,
-                    createdById: user.id, // Only match interactions created by the SAME user
                     type: 'call',
                     callStatus: { in: ['initiated', 'completed'] },
                     phoneNumber: { contains: phoneSuffix },
@@ -249,10 +248,12 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 direction = 'outbound';
                 subject = 'Mobile Outbound Call';
                 
-                // IRON VEIL (v3.1): Suppress 0-sec outbound ONLY if it's a "ghost" (no file AND no matching initiated record)
+                // IRON VEIL RELAXED (v4.0): We no longer discard 0-sec outbound attempts. 
+                // We keep them but mark them as 'failed' to ensure hardware log parity.
                 if (finalizedDurationSecs === 0 && !file && !existingInteraction) {
-                    console.log(`[AndroidUpload] Iron Veil v3.1: Discarding 0-sec ghost outbound (${phoneNumber})`);
-                    return res.status(200).json({ message: 'Iron Veil: Discarded 0-sec ghost outbound call.' });
+                    console.log(`[AndroidUpload] Iron Veil v4.0: Preserving 0-sec outbound attempt for (${phoneNumber})`);
+                    status = 'failed';
+                    subject = 'Outbound Call Attempt (No Answer)';
                 }
                 
                 if (finalizedDurationSecs === 0) {
@@ -432,8 +433,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 // 3. Link to existing interaction (Deduplication / Reconciliation)
                 const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
-                const searchWindowStart = new Date(callDate.getTime() - 120 * 1000); // 2 mins before
-                const searchWindowEnd = new Date(callDate.getTime() + 120 * 1000);   // 2 mins after
+                const searchWindowStart = new Date(callDate.getTime() - 60 * 60 * 1000); // 1 hour before
+                const searchWindowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);    // 5 mins after
                 
                 const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
                 const phoneSuffix = phoneDigits.slice(-10);
@@ -461,7 +462,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
-                            createdById: user.id, // Match owner
                             type: 'call',
                             callStatus: { in: ['initiated', 'completed'] },
                             phoneNumber: { contains: phoneSuffix },
@@ -566,11 +566,11 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     direction = 'outbound';
                     subject = 'Mobile Outbound Call';
 
-                    // IRON VEIL (v3.1): Suppress 0-sec ghosts during bulk sync
+                    // IRON VEIL RELAXED (v4.0): Preserve 0-sec ghosts during bulk sync
                     if (finalizedNewDurationSecs === 0 && !existingInteraction) {
-                        console.log(`[BulkSync] Iron Veil v3.1: Skipping 0-sec ghost outbound (${phoneNumber})`);
-                        results.skipped++;
-                        continue;
+                        console.log(`[BulkSync] Iron Veil v4.0: Recording 0-sec ghost outbound (${phoneNumber}) as failed attempt`);
+                        status = 'failed';
+                        subject = 'Outbound Call Attempt (No Answer)';
                     }
                     if (finalizedNewDurationSecs === 0) {
                         status = 'failed';

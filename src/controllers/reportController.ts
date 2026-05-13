@@ -133,7 +133,7 @@ export const getUserPerformance = async (req: Request, res: Response) => {
                         createdById: user.id,
                         type: 'call',
                         isDeleted: false,
-                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                        ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     }
                 }),
                 prisma.calendarEvent.count({
@@ -731,7 +731,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         createdById: u.id, 
                         type: 'call', 
                         organisationId: orgId as string,
-                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                        ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     }
                 }),
                 // 4. Status Changes (History)
@@ -790,7 +790,7 @@ export const getUserPerformanceDetails = async (req: Request, res: Response) => 
                         type: 'call',
                         callStatus: 'completed',
                         organisationId: orgId as string,
-                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                        ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     },
                     select: { duration: true, recordingDuration: true, hardwareDuration: true }
                 }),
@@ -886,13 +886,15 @@ export const getDailyReport = async (req: Request, res: Response) => {
             logger.warn(`getDailyReport: Organisation ID missing for user ${user.email}`, 'ReportController');
             return res.status(400).json({ message: 'Organisation ID is required' });
         }
-        const { branchId } = req.query;
+        const { branchId, date } = req.query;
 
-        // Calculate IST "today" boundaries
+        // Calculate IST boundaries for the target date
         // IST is UTC + 5:30
-        const now = new Date();
+        const targetDate = date ? new Date(date as string) : new Date();
         const istOffset = 5.5 * 60 * 60 * 1000;
-        const istNow = new Date(now.getTime() + istOffset);
+        
+        // Adjust target date to IST context
+        const istNow = new Date(targetDate.getTime() + (date ? 0 : istOffset));
         
         const istStartOfDay = new Date(istNow);
         istStartOfDay.setUTCHours(0, 0, 0, 0);
