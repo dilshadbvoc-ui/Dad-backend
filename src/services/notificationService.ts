@@ -2,6 +2,7 @@
 import prisma from '../config/prisma';
 import { getIO } from '../socket';
 import { EmailService } from './emailService';
+import { WhatsAppService } from './whatsAppService';
 
 // Singleton helper to get IO instance if not exported globally
 // Assuming socket.ts exports initSocket and returns io instance, 
@@ -38,10 +39,12 @@ export class NotificationService {
             if (type === 'high_priority' || type === 'alert' || type === 'reminder') {
                 const user = await prisma.user.findUnique({
                     where: { id: recipientId },
-                    select: { email: true, notificationPreferences: true, firstName: true }
+                    select: { email: true, phone: true, organisationId: true, notificationPreferences: true, firstName: true }
                 });
 
                 const prefs = user?.notificationPreferences as any;
+                
+                // Email Fallback
                 if (user?.email && prefs?.emailNotifications !== false) {
                     const emailHtml = `
                         <div style="font-family: sans-serif; padding: 20px;">
@@ -53,6 +56,21 @@ export class NotificationService {
                         </div>
                     `;
                     await EmailService.sendEmail(user.email, `Notification: ${title}`, emailHtml);
+                }
+
+                // WhatsApp Integration
+                if (user?.phone && user?.organisationId && prefs?.whatsAppNotifications === true) {
+                    try {
+                        const waClient = await WhatsAppService.getClientForOrg(user.organisationId);
+                        if (waClient) {
+                            // Format number (remove + if exists for the API call, though waClient might handle it)
+                            const cleanPhone = user.phone.replace(/\D/g, '');
+                            await waClient.sendTextMessage(cleanPhone, `*${title}*\n\n${message}`);
+                            console.log(`[NotificationService] WhatsApp sent to ${cleanPhone}`);
+                        }
+                    } catch (waError) {
+                        console.error('[NotificationService] WhatsApp send failed:', waError);
+                    }
                 }
             }
 

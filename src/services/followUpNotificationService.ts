@@ -12,6 +12,7 @@ interface ReminderItem {
         firstName: string;
         lastName: string | null;
         reportsToId: string | null;
+        timezone: string;
     } | null;
     lead?: {
         id: string;
@@ -77,8 +78,8 @@ export class FollowUpNotificationService {
                     status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false,
                     OR: [
-                        { notifiedAt: null },
-                        { notifiedAt: { lt: oneHourAgo } } // Allow re-notifying if it was a long time ago (sanity)
+                        { notified30MinAt: null },
+                        { notified30MinAt: { lt: oneHourAgo } }
                     ]
                 },
                 include: {
@@ -87,7 +88,8 @@ export class FollowUpNotificationService {
                             id: true,
                             firstName: true,
                             lastName: true,
-                            reportsToId: true
+                            reportsToId: true,
+                            timezone: true
                         }
                     },
                     lead: {
@@ -131,8 +133,8 @@ export class FollowUpNotificationService {
                     status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false,
                     OR: [
-                        { notifiedAt: null },
-                        { notifiedAt: { lt: oneHourAgo } }
+                        { notified30MinAt: null },
+                        { notified30MinAt: { lt: oneHourAgo } }
                     ]
                 },
                 include: {
@@ -141,7 +143,8 @@ export class FollowUpNotificationService {
                             id: true,
                             firstName: true,
                             lastName: true,
-                            reportsToId: true
+                            reportsToId: true,
+                            timezone: true
                         }
                     },
                     lead: {
@@ -198,7 +201,9 @@ export class FollowUpNotificationService {
                     relatedName = item.opportunity.name;
                 }
 
+                const userTimezone = item.assignedTo?.timezone || 'UTC';
                 const timeStr = item.dueDate ? new Date(item.dueDate).toLocaleTimeString('en-US', {
+                    timeZone: userTimezone,
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: true
@@ -226,16 +231,16 @@ export class FollowUpNotificationService {
                     console.log(`[FollowUpNotificationService] Sent 30-min reminder to manager ${item.assignedTo.reportsToId} for ${item.type} ${item.id}`);
                 }
 
-                // Update notifiedAt to prevent duplicates
+                // Update notified30MinAt to prevent duplicates
                 if (item.type === 'task') {
                     await prisma.task.update({
                         where: { id: item.id },
-                        data: { notifiedAt: now }
+                        data: { notified30MinAt: now, notifiedAt: now }
                     });
                 } else {
                     await prisma.followUp.update({
                         where: { id: item.id },
-                        data: { notifiedAt: now }
+                        data: { notified30MinAt: now, notifiedAt: now }
                     });
                 }
             }
@@ -267,8 +272,8 @@ export class FollowUpNotificationService {
                     status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false,
                     OR: [
-                        { notifiedAt: null },
-                        { notifiedAt: { lt: twoHoursAgo } }
+                        { notifiedDueAt: null },
+                        { notifiedDueAt: { lt: twoHoursAgo } }
                     ]
                 },
                 include: {
@@ -277,7 +282,8 @@ export class FollowUpNotificationService {
                             id: true,
                             firstName: true,
                             lastName: true,
-                            reportsToId: true
+                            reportsToId: true,
+                            timezone: true
                         }
                     },
                     lead: {
@@ -321,8 +327,8 @@ export class FollowUpNotificationService {
                     status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false,
                     OR: [
-                        { notifiedAt: null },
-                        { notifiedAt: { lt: twoHoursAgo } }
+                        { notifiedDueAt: null },
+                        { notifiedDueAt: { lt: twoHoursAgo } }
                     ]
                 },
                 include: {
@@ -331,7 +337,8 @@ export class FollowUpNotificationService {
                             id: true,
                             firstName: true,
                             lastName: true,
-                            reportsToId: true
+                            reportsToId: true,
+                            timezone: true
                         }
                     },
                     lead: {
@@ -390,7 +397,9 @@ export class FollowUpNotificationService {
                     relatedName = item.opportunity.name;
                 }
 
+                const userTimezone = item.assignedTo?.timezone || 'UTC';
                 const timeStr = taskDueTime.toLocaleTimeString('en-US', {
+                    timeZone: userTimezone,
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: true
@@ -418,16 +427,16 @@ export class FollowUpNotificationService {
                     console.log(`[FollowUpNotificationService] Sent day-of reminder to manager ${item.assignedTo.reportsToId} for ${item.type} ${item.id}`);
                 }
 
-                // Update notifiedAt to prevent duplicates
+                // Update notifiedDueAt to prevent duplicates
                 if (item.type === 'task') {
                     await prisma.task.update({
                         where: { id: item.id },
-                        data: { notifiedAt: now }
+                        data: { notifiedDueAt: now, notifiedAt: now }
                     });
                 } else {
                     await prisma.followUp.update({
                         where: { id: item.id },
-                        data: { notifiedAt: now }
+                        data: { notifiedDueAt: now, notifiedAt: now }
                     });
                 }
             }

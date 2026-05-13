@@ -28882,6 +28882,8 @@ export namespace Prisma {
     organisationId: string | null
     isDeleted: boolean | null
     notifiedAt: Date | null
+    notified30MinAt: Date | null
+    notifiedDueAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -28905,6 +28907,8 @@ export namespace Prisma {
     organisationId: string | null
     isDeleted: boolean | null
     notifiedAt: Date | null
+    notified30MinAt: Date | null
+    notifiedDueAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -28928,6 +28932,8 @@ export namespace Prisma {
     organisationId: number
     isDeleted: number
     notifiedAt: number
+    notified30MinAt: number
+    notifiedDueAt: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -28953,6 +28959,8 @@ export namespace Prisma {
     organisationId?: true
     isDeleted?: true
     notifiedAt?: true
+    notified30MinAt?: true
+    notifiedDueAt?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -28976,6 +28984,8 @@ export namespace Prisma {
     organisationId?: true
     isDeleted?: true
     notifiedAt?: true
+    notified30MinAt?: true
+    notifiedDueAt?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -28999,6 +29009,8 @@ export namespace Prisma {
     organisationId?: true
     isDeleted?: true
     notifiedAt?: true
+    notified30MinAt?: true
+    notifiedDueAt?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -29095,6 +29107,8 @@ export namespace Prisma {
     organisationId: string | null
     isDeleted: boolean
     notifiedAt: Date | null
+    notified30MinAt: Date | null
+    notifiedDueAt: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -29135,6 +29149,8 @@ export namespace Prisma {
     organisationId?: boolean
     isDeleted?: boolean
     notifiedAt?: boolean
+    notified30MinAt?: boolean
+    notifiedDueAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -29167,6 +29183,8 @@ export namespace Prisma {
     organisationId?: boolean
     isDeleted?: boolean
     notifiedAt?: boolean
+    notified30MinAt?: boolean
+    notifiedDueAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -29199,6 +29217,8 @@ export namespace Prisma {
     organisationId?: boolean
     isDeleted?: boolean
     notifiedAt?: boolean
+    notified30MinAt?: boolean
+    notifiedDueAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -29258,6 +29278,8 @@ export namespace Prisma {
       organisationId: string | null
       isDeleted: boolean
       notifiedAt: Date | null
+      notified30MinAt: Date | null
+      notifiedDueAt: Date | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -29680,6 +29702,8 @@ export namespace Prisma {
     readonly organisationId: FieldRef<"Task", 'String'>
     readonly isDeleted: FieldRef<"Task", 'Boolean'>
     readonly notifiedAt: FieldRef<"Task", 'DateTime'>
+    readonly notified30MinAt: FieldRef<"Task", 'DateTime'>
+    readonly notifiedDueAt: FieldRef<"Task", 'DateTime'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
     readonly deletedAt: FieldRef<"Task", 'DateTime'>
@@ -30179,6 +30203,8 @@ export namespace Prisma {
     branchId: string | null
     isDeleted: boolean | null
     notifiedAt: Date | null
+    notified30MinAt: Date | null
+    notifiedDueAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -30201,6 +30227,8 @@ export namespace Prisma {
     branchId: string | null
     isDeleted: boolean | null
     notifiedAt: Date | null
+    notified30MinAt: Date | null
+    notifiedDueAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -30223,6 +30251,8 @@ export namespace Prisma {
     branchId: number
     isDeleted: number
     notifiedAt: number
+    notified30MinAt: number
+    notifiedDueAt: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -30247,6 +30277,8 @@ export namespace Prisma {
     branchId?: true
     isDeleted?: true
     notifiedAt?: true
+    notified30MinAt?: true
+    notifiedDueAt?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -30269,6 +30301,8 @@ export namespace Prisma {
     branchId?: true
     isDeleted?: true
     notifiedAt?: true
+    notified30MinAt?: true
+    notifiedDueAt?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -30291,6 +30325,8 @@ export namespace Prisma {
     branchId?: true
     isDeleted?: true
     notifiedAt?: true
+    notified30MinAt?: true
+    notifiedDueAt?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -30386,6 +30422,8 @@ export namespace Prisma {
     branchId: string | null
     isDeleted: boolean
     notifiedAt: Date | null
+    notified30MinAt: Date | null
+    notifiedDueAt: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -30425,6 +30463,8 @@ export namespace Prisma {
     branchId?: boolean
     isDeleted?: boolean
     notifiedAt?: boolean
+    notified30MinAt?: boolean
+    notifiedDueAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -30455,6 +30495,8 @@ export namespace Prisma {
     branchId?: boolean
     isDeleted?: boolean
     notifiedAt?: boolean
+    notified30MinAt?: boolean
+    notifiedDueAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -30485,6 +30527,8 @@ export namespace Prisma {
     branchId?: boolean
     isDeleted?: boolean
     notifiedAt?: boolean
+    notified30MinAt?: boolean
+    notifiedDueAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
@@ -30540,6 +30584,8 @@ export namespace Prisma {
       branchId: string | null
       isDeleted: boolean
       notifiedAt: Date | null
+      notified30MinAt: Date | null
+      notifiedDueAt: Date | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -30960,6 +31006,8 @@ export namespace Prisma {
     readonly branchId: FieldRef<"FollowUp", 'String'>
     readonly isDeleted: FieldRef<"FollowUp", 'Boolean'>
     readonly notifiedAt: FieldRef<"FollowUp", 'DateTime'>
+    readonly notified30MinAt: FieldRef<"FollowUp", 'DateTime'>
+    readonly notifiedDueAt: FieldRef<"FollowUp", 'DateTime'>
     readonly createdAt: FieldRef<"FollowUp", 'DateTime'>
     readonly updatedAt: FieldRef<"FollowUp", 'DateTime'>
     readonly deletedAt: FieldRef<"FollowUp", 'DateTime'>
@@ -78340,6 +78388,8 @@ export namespace Prisma {
     organisationId: 'organisationId',
     isDeleted: 'isDeleted',
     notifiedAt: 'notifiedAt',
+    notified30MinAt: 'notified30MinAt',
+    notifiedDueAt: 'notifiedDueAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt',
@@ -78367,6 +78417,8 @@ export namespace Prisma {
     branchId: 'branchId',
     isDeleted: 'isDeleted',
     notifiedAt: 'notifiedAt',
+    notified30MinAt: 'notified30MinAt',
+    notifiedDueAt: 'notifiedDueAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt'
@@ -82087,6 +82139,8 @@ export namespace Prisma {
     organisationId?: StringNullableFilter<"Task"> | string | null
     isDeleted?: BoolFilter<"Task"> | boolean
     notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    notified30MinAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
@@ -82119,6 +82173,8 @@ export namespace Prisma {
     organisationId?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrderInput | SortOrder
+    notified30MinAt?: SortOrderInput | SortOrder
+    notifiedDueAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -82154,6 +82210,8 @@ export namespace Prisma {
     organisationId?: StringNullableFilter<"Task"> | string | null
     isDeleted?: BoolFilter<"Task"> | boolean
     notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    notified30MinAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
@@ -82186,6 +82244,8 @@ export namespace Prisma {
     organisationId?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrderInput | SortOrder
+    notified30MinAt?: SortOrderInput | SortOrder
+    notifiedDueAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -82215,6 +82275,8 @@ export namespace Prisma {
     organisationId?: StringNullableWithAggregatesFilter<"Task"> | string | null
     isDeleted?: BoolWithAggregatesFilter<"Task"> | boolean
     notifiedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
+    notified30MinAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
@@ -82242,6 +82304,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"FollowUp"> | string | null
     isDeleted?: BoolFilter<"FollowUp"> | boolean
     notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    notified30MinAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
     deletedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
@@ -82272,6 +82336,8 @@ export namespace Prisma {
     branchId?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrderInput | SortOrder
+    notified30MinAt?: SortOrderInput | SortOrder
+    notifiedDueAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -82305,6 +82371,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"FollowUp"> | string | null
     isDeleted?: BoolFilter<"FollowUp"> | boolean
     notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    notified30MinAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
     deletedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
@@ -82335,6 +82403,8 @@ export namespace Prisma {
     branchId?: SortOrderInput | SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrderInput | SortOrder
+    notified30MinAt?: SortOrderInput | SortOrder
+    notifiedDueAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -82363,6 +82433,8 @@ export namespace Prisma {
     branchId?: StringNullableWithAggregatesFilter<"FollowUp"> | string | null
     isDeleted?: BoolWithAggregatesFilter<"FollowUp"> | boolean
     notifiedAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
+    notified30MinAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FollowUp"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"FollowUp"> | Date | string | null
@@ -89954,6 +90026,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -89984,6 +90058,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -90000,6 +90076,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90030,6 +90108,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90053,6 +90133,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -90069,6 +90151,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90090,6 +90174,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90106,6 +90192,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -90136,6 +90224,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -90150,6 +90240,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90180,6 +90272,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90202,6 +90296,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -90216,6 +90312,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -90238,6 +90336,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -97390,6 +97490,8 @@ export namespace Prisma {
     organisationId?: SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrder
+    notified30MinAt?: SortOrder
+    notifiedDueAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -97413,6 +97515,8 @@ export namespace Prisma {
     organisationId?: SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrder
+    notified30MinAt?: SortOrder
+    notifiedDueAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -97436,6 +97540,8 @@ export namespace Prisma {
     organisationId?: SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrder
+    notified30MinAt?: SortOrder
+    notifiedDueAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -97494,6 +97600,8 @@ export namespace Prisma {
     branchId?: SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrder
+    notified30MinAt?: SortOrder
+    notifiedDueAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -97516,6 +97624,8 @@ export namespace Prisma {
     branchId?: SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrder
+    notified30MinAt?: SortOrder
+    notifiedDueAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -97538,6 +97648,8 @@ export namespace Prisma {
     branchId?: SortOrder
     isDeleted?: SortOrder
     notifiedAt?: SortOrder
+    notified30MinAt?: SortOrder
+    notifiedDueAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -112765,6 +112877,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -112793,6 +112907,8 @@ export namespace Prisma {
     createdById?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -112819,6 +112935,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -112847,6 +112965,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -114883,6 +115003,8 @@ export namespace Prisma {
     organisationId?: StringNullableFilter<"Task"> | string | null
     isDeleted?: BoolFilter<"Task"> | boolean
     notifiedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    notified30MinAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableFilter<"Task"> | Date | string | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
@@ -114926,6 +115048,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"FollowUp"> | string | null
     isDeleted?: BoolFilter<"FollowUp"> | boolean
     notifiedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    notified30MinAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
+    notifiedDueAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
     createdAt?: DateTimeFilter<"FollowUp"> | Date | string
     updatedAt?: DateTimeFilter<"FollowUp"> | Date | string
     deletedAt?: DateTimeNullableFilter<"FollowUp"> | Date | string | null
@@ -117856,6 +117980,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -117884,6 +118010,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -117910,6 +118038,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -117938,6 +118068,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -117964,6 +118096,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -117992,6 +118126,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -118016,6 +118152,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -118044,6 +118182,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -118358,6 +118498,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -118387,6 +118529,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -124709,6 +124853,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -124737,6 +124883,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -124763,6 +124911,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -124791,6 +124941,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -127961,6 +128113,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -127989,6 +128143,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -128015,6 +128171,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -128043,6 +128201,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -130343,6 +130503,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -130371,6 +130533,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -130397,6 +130561,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -130425,6 +130591,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -132741,6 +132909,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -132769,6 +132939,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -132795,6 +132967,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -132823,6 +132997,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -177903,6 +178079,8 @@ export namespace Prisma {
     dueDate?: Date | string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -177932,6 +178110,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -177957,6 +178137,8 @@ export namespace Prisma {
     dueDate: Date | string
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -177985,6 +178167,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -181143,6 +181327,8 @@ export namespace Prisma {
     createdById?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -181166,6 +181352,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -182975,6 +183163,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -183003,6 +183193,8 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -183025,6 +183217,8 @@ export namespace Prisma {
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -183041,6 +183235,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -183069,6 +183265,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -183090,6 +183288,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -185189,6 +185389,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -185211,6 +185413,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -185234,6 +185438,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -185255,6 +185461,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -185369,6 +185577,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -188378,6 +188588,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188406,6 +188618,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188428,6 +188642,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188444,6 +188660,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188472,6 +188690,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188494,6 +188714,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188510,6 +188732,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188538,6 +188762,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188559,6 +188785,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188573,6 +188801,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188601,6 +188831,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188622,6 +188854,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -188979,6 +189213,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -189008,6 +189244,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -189030,6 +189268,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -191025,6 +191265,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -191048,6 +191290,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -191453,6 +191697,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -191481,6 +191727,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -191503,6 +191751,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -191519,6 +191769,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -191547,6 +191799,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -191568,6 +191822,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -192318,6 +192574,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -192341,6 +192599,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -193061,6 +193321,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193089,6 +193351,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193111,6 +193375,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193127,6 +193393,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193155,6 +193423,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193176,6 +193446,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193433,6 +193705,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -193456,6 +193730,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -193890,6 +194166,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193918,6 +194196,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193940,6 +194220,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193956,6 +194238,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -193984,6 +194268,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194005,6 +194291,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194389,6 +194677,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -194412,6 +194702,8 @@ export namespace Prisma {
     branchId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -194724,6 +195016,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194752,6 +195046,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194774,6 +195070,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194790,6 +195088,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194818,6 +195118,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -194839,6 +195141,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -196708,6 +197012,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -196730,6 +197036,8 @@ export namespace Prisma {
     organisationId?: string | null
     isDeleted?: boolean
     notifiedAt?: Date | string | null
+    notified30MinAt?: Date | string | null
+    notifiedDueAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -197534,6 +197842,8 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -197563,6 +197873,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -197585,6 +197897,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -197600,6 +197914,8 @@ export namespace Prisma {
     dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -197628,6 +197944,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -197649,6 +197967,8 @@ export namespace Prisma {
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     notifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notified30MinAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifiedDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

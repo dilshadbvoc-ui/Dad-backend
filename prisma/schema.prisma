@@ -634,7 +634,9 @@ model Task {
   createdById    String?
   organisationId String?
   isDeleted      Boolean      @default(false)
-  notifiedAt     DateTime?    // Tracks when the last reminder notification was sent
+  notifiedAt     DateTime?    // Legacy: Tracks when any reminder notification was sent
+  notified30MinAt DateTime?   // Specific: 30-minute reminder
+  notifiedDueAt   DateTime?   // Specific: Due-now reminder
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   deletedAt      DateTime?
@@ -671,7 +673,9 @@ model FollowUp {
   branchId       String?
   
   isDeleted      Boolean      @default(false)
-  notifiedAt     DateTime?    // Tracks when the last reminder notification was sent
+  notifiedAt     DateTime?    // Legacy: Tracks when any reminder notification was sent
+  notified30MinAt DateTime?   // Specific: 30-minute reminder
+  notifiedDueAt   DateTime?   // Specific: Due-now reminder
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   deletedAt      DateTime?
