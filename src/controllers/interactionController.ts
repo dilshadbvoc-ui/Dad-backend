@@ -164,6 +164,22 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
             });
         }
 
+        // Update Lead/Contact lastContactDate if applicable
+        if (type === 'call' || type === 'meeting' || type === 'other') {
+            if (lead) {
+                await prisma.lead.update({
+                    where: { id: lead },
+                    data: { lastContactDate: interaction.date }
+                }).catch(() => {}); // Ignore if lead not found or other error
+            }
+            if (contact) {
+                await prisma.contact.update({
+                    where: { id: contact },
+                    data: { lastContactDate: interaction.date }
+                }).catch(() => {});
+            }
+        }
+
         res.status(201).json(interaction);
     } catch (error) {
         console.error('createInteractionGeneric Error:', error);
@@ -211,11 +227,18 @@ export const createInteraction = async (req: Request, res: Response) => {
                 recordingDuration,
                 callStatus,
                 phoneNumber: phoneNumber || lead.phone,
+                date: req.body.date ? new Date(req.body.date) : new Date(),
                 lead: { connect: { id: leadId } },
                 createdBy: { connect: { id: user.id } },
                 organisation: { connect: { id: orgId } },
                 branch: lead.branchId ? { connect: { id: lead.branchId } } : (user.branchId ? { connect: { id: user.branchId } } : undefined)
             }
+        });
+
+        // Update lead's lastContactDate
+        await prisma.lead.update({
+            where: { id: leadId },
+            data: { lastContactDate: interaction.date }
         });
 
         await logAudit({
@@ -245,7 +268,15 @@ export const getLeadInteractions = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Organisation context required' });
         }
 
-        const where: any = { leadId, isDeleted: false };
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const where: any = { 
+            leadId, 
+            isDeleted: false,
+            OR: [
+                { callStatus: { not: 'initiated' } },
+                { createdAt: { gte: oneHourAgo } }
+            ]
+        };
         if (orgId) where.organisationId = orgId;
 
         // Hierarchy filtering:
@@ -289,9 +320,14 @@ export const getAllInteractions = async (req: Request, res: Response) => {
 
         if (!orgId) return res.status(400).json({ message: 'Organisation context required' });
 
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
         const where: any = {
             organisationId: orgId,
-            isDeleted: false
+            isDeleted: false,
+            OR: [
+                { callStatus: { not: 'initiated' } },
+                { createdAt: { gte: oneHourAgo } }
+            ]
         };
 
         if (user.branchId) {
@@ -442,6 +478,12 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
                 organisation: { connect: { id: orgId } },
                 branch: lead.branchId ? { connect: { id: lead.branchId } } : (user.branchId ? { connect: { id: user.branchId } } : undefined)
             }
+        });
+
+        // Update lead's lastContactDate
+        await prisma.lead.update({
+            where: { id: leadId },
+            data: { lastContactDate: interaction.date }
         });
 
         await logAudit({
