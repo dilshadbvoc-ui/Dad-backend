@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
+import { isOrgAdmin } from '../utils/roleUtils';
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
@@ -63,6 +64,11 @@ export const createProduct = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
         const orgId = getOrgId(user);
+
+        if (!isOrgAdmin(user)) {
+            return res.status(403).json({ message: 'Only admins can create products' });
+        }
+
         if (!orgId) return res.status(403).json({ message: 'No org' });
 
         // Check for existing SKU
@@ -139,6 +145,10 @@ export const updateProduct = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         const { id } = req.params;
 
+        if (!isOrgAdmin(user)) {
+            return res.status(403).json({ message: 'Only admins can update products' });
+        }
+
         // First, verify the product exists and belongs to the organization
         const existingProduct = await prisma.product.findUnique({
             where: { id }
@@ -183,6 +193,11 @@ export const deleteProduct = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
         const orgId = getOrgId(user);
+
+        if (!isOrgAdmin(user)) {
+            return res.status(403).json({ message: 'Only admins can delete products' });
+        }
+
         const where: any = { id: req.params.id };
 
         if (user.role !== 'super_admin') {
