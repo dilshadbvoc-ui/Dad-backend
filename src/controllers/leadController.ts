@@ -584,6 +584,18 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                     newStatus: updates.status 
                 }
             });
+
+            // CRITICAL for Reporting: Create LeadHistory record
+            await prisma.leadHistory.create({
+                data: {
+                    leadId,
+                    fieldName: 'status',
+                    oldValue: currentLead.status,
+                    newValue: updates.status,
+                    changedById: requester.id,
+                    reason: req.body.reason || 'Manual Status Update'
+                }
+            }).catch(() => {});
         }
 
         // Track Follow-up Change and Create Task
@@ -1296,6 +1308,18 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 where: { id: leadId },
                 data: {
                     status: 'converted'
+                }
+            });
+
+            // 6. Log History for Reporting
+            await tx.leadHistory.create({
+                data: {
+                    leadId: leadId,
+                    fieldName: 'status',
+                    oldValue: lead.status,
+                    newValue: 'converted',
+                    changedById: user.id,
+                    reason: 'Lead Converted to Opportunity'
                 }
             });
 

@@ -480,8 +480,8 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
             return res.status(200).json(existingInteraction);
         }
 
-        // Map 'whatsapp' to 'other' since it's not in InteractionType enum
-        const interactionType = type === 'whatsapp' ? 'other' : type;
+        // Map 'whatsapp' - Ensure it uses the correct InteractionType enum value
+        const interactionType = type;
 
         const interaction = await prisma.interaction.create({
             data: {
