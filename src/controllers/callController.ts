@@ -76,6 +76,7 @@ export const completeCall = async (req: Request, res: Response) => {
         const file = req.file;
         const { duration, status, notes, scheduleFollowUp } = req.body;
         const callId = req.params.id;
+        const user = (req as any).user;
 
         const updateData: any = {
             callStatus: status || 'completed',

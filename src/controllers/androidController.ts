@@ -394,7 +394,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     }
                 });
 
-                if (targetLeadId && (newInteraction.type === 'call' || newInteraction.type === 'meeting' || newInteraction.type === 'whatsapp')) {
+                if (targetLeadId && (interaction.type === 'call' || interaction.type === 'meeting' || interaction.type === 'whatsapp')) {
                     const leadRecord = await prisma.lead.findUnique({ where: { id: targetLeadId }, select: { status: true } });
                     const newStatus = (leadRecord?.status === 'new') ? 'contacted' : undefined;
                     if (newStatus) {
