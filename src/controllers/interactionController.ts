@@ -167,10 +167,29 @@ export const createInteractionGeneric = async (req: Request, res: Response) => {
         // Update Lead/Contact lastContactDate if applicable
         if (type === 'call' || type === 'meeting' || type === 'other') {
             if (lead) {
+                const leadRecord = await prisma.lead.findUnique({ where: { id: lead }, select: { status: true } });
+                const newStatus = (leadRecord?.status === 'new' && (type === 'call' || type === 'meeting')) ? 'contacted' : undefined;
+
                 await prisma.lead.update({
                     where: { id: lead },
-                    data: { lastContactDate: interaction.date }
-                }).catch(() => {}); // Ignore if lead not found or other error
+                    data: { 
+                        lastContactDate: interaction.date,
+                        ...(newStatus ? { status: newStatus } : {})
+                    }
+                }).catch(() => {});
+
+                if (newStatus) {
+                    await prisma.leadHistory.create({
+                        data: {
+                            leadId: lead,
+                            fieldName: 'status',
+                            oldValue: 'new',
+                            newValue: newStatus,
+                            changedById: user.id,
+                            reason: 'Auto-updated via Manual Interaction Logging'
+                        }
+                    }).catch(() => {});
+                }
             }
             if (contact) {
                 await prisma.contact.update({
