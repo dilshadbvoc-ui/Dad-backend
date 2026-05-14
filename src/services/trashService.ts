@@ -198,7 +198,7 @@ export class TrashService {
             await prisma.calendarEvent.deleteMany({ where });
             await prisma.document.deleteMany({ where: { [field]: id, organisationId } });
         } catch (error) {
-            logger.warn(`PurgeRelatedData partially failed for ${type} ${id}:`, error);
+            logger.error(`PurgeRelatedData partially failed for ${type} ${id}:`, error);
         }
     }
 
