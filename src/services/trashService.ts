@@ -11,15 +11,24 @@ export class TrashService {
             let result;
             switch (type) {
                 case 'Lead':
+                    await this.purgeRelatedData('Lead', id, organisationId);
+                    await prisma.leadProduct.deleteMany({ where: { leadId: id } });
                     result = await prisma.lead.delete({ where: { id, organisationId } });
                     break;
                 case 'Contact':
+                    await this.purgeRelatedData('Contact', id, organisationId);
                     result = await prisma.contact.delete({ where: { id, organisationId } });
                     break;
                 case 'Account':
+                    await this.purgeRelatedData('Account', id, organisationId);
                     result = await prisma.account.delete({ where: { id, organisationId } });
                     break;
                 case 'Opportunity':
+                    await this.purgeRelatedData('Opportunity', id, organisationId);
+                    // Additional Opportunity-specific cleanup
+                    await prisma.paymentRecord.deleteMany({ where: { opportunityId: id } });
+                    await prisma.eMISchedule.deleteMany({ where: { opportunityId: id } });
+                    await prisma.quote.deleteMany({ where: { opportunityId: id, organisationId } });
                     result = await prisma.opportunity.delete({ where: { id, organisationId } });
                     break;
                 case 'Task':
@@ -29,6 +38,8 @@ export class TrashService {
                     result = await prisma.document.delete({ where: { id, organisationId } });
                     break;
                 case 'Product':
+                    await prisma.accountProduct.deleteMany({ where: { productId: id, organisationId } });
+                    await prisma.leadProduct.deleteMany({ where: { productId: id } });
                     result = await prisma.product.delete({ where: { id, organisationId } });
                     break;
                 case 'User': {
@@ -160,6 +171,34 @@ export class TrashService {
         } catch (error) {
             logger.error(`TrashService.permanentDelete Error [${type}:${id}]:`, error);
             throw error;
+        }
+    }
+
+    /**
+     * Purges related data that doesn't have Cascade delete in schema
+     */
+    private static async purgeRelatedData(type: string, id: string, organisationId: string) {
+        const fieldMap: Record<string, string> = {
+            'Lead': 'leadId',
+            'Contact': 'contactId',
+            'Account': 'accountId',
+            'Opportunity': 'opportunityId'
+        };
+
+        const field = fieldMap[type];
+        if (!field) return;
+
+        const where = { [field]: id, organisationId };
+
+        try {
+            // Delete common related entities
+            await prisma.task.deleteMany({ where });
+            await prisma.followUp.deleteMany({ where });
+            await prisma.interaction.deleteMany({ where });
+            await prisma.calendarEvent.deleteMany({ where });
+            await prisma.document.deleteMany({ where: { [field]: id, organisationId } });
+        } catch (error) {
+            logger.warn(`PurgeRelatedData partially failed for ${type} ${id}:`, error);
         }
     }
 
