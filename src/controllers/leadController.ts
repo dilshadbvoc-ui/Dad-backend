@@ -210,9 +210,19 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                 orgId
             );
 
+            // Hierarchy Check: Only return full lead details if requester has permission
+            const visibleUserIds = await getVisibleUserIds(currentUser.id);
+            const hasPermission = 
+                currentUser.isSuperAdmin || 
+                isSuperAdmin(currentUser) || 
+                updatedLead.assignedToId === currentUser.id || 
+                visibleUserIds.includes(updatedLead.assignedToId || '') || 
+                updatedLead.createdById === currentUser.id ||
+                (updatedLead.createdById && visibleUserIds.includes(updatedLead.createdById) && !updatedLead.assignedToId);
+
             return res.status(200).json({
                 message: 'Lead already exists. Marked as re-enquiry and notifications sent.',
-                lead: updatedLead,
+                lead: hasPermission ? updatedLead : { id: updatedLead.id, firstName: 'Private', lastName: 'Lead', isPrivate: true },
                 isReEnquiry: true,
                 matchedBy: duplicateCheck.matchedBy,
                 reEnquiryCount: updatedLead.reEnquiryCount
@@ -433,16 +443,19 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
         const user = (req as any).user;
         const orgId = getOrgId(user);
 
+        // 1. Organization & Existence scoping (Check if it even exists in their world)
+        const existingLead = await prisma.lead.findUnique({
+            where: { id: req.params.id },
+            select: { organisationId: true, isDeleted: true }
+        });
+
+        if (!existingLead || existingLead.isDeleted || (orgId && existingLead.organisationId !== orgId)) {
+            return res.status(404).json({ message: 'Lead not found' });
+        }
+
         const where: any = { id: req.params.id, isDeleted: false };
 
-        // Organization scoping
-        if (user.isSuperAdmin || isSuperAdmin(user)) {
-            // Super admins can see any lead
-        } else {
-            if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
-            where.organisationId = orgId;
-
-        // 2. Hierarchy Visibility
+        // 2. Hierarchy Visibility scoping
         if (!user.isSuperAdmin && !isSuperAdmin(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             
@@ -457,7 +470,6 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
                 }
             ];
         }
-        }
 
         const lead = await prisma.lead.findFirst({
             where,
@@ -466,7 +478,14 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
                 products: { include: { product: true } }
             }
         });
-        if (!lead) return res.status(404).json({ message: 'Lead not found' });
+
+        if (!lead) {
+            return res.status(403).json({ 
+                message: 'Access Denied: This lead is outside of your visibility hierarchy.',
+                error: 'HIERARCHY_FORBIDDEN'
+            });
+        }
+
         res.json(lead);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
