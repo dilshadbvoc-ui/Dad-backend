@@ -4,6 +4,26 @@ import fs from 'fs';
 import path from 'path';
 import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration } from '../utils/callUtils';
 
+// In-memory locks to serialize concurrent call uploads and prevent parallel race condition duplicates
+const activeSyncLocks = new Set<string>();
+
+const acquireLock = async (key: string, maxWaitMs = 5000): Promise<boolean> => {
+    const start = Date.now();
+    while (activeSyncLocks.has(key)) {
+        if (Date.now() - start > maxWaitMs) {
+            console.warn(`[AndroidLock] Timeout waiting for lock key: ${key}`);
+            return false; // Timeout
+        }
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    activeSyncLocks.add(key);
+    return true;
+};
+
+const releaseLock = (key: string) => {
+    activeSyncLocks.delete(key);
+};
+
 // GET /api/android/leads
 // Returns minimal lead data (phone, id, name) for the Android app to cache locally.
 // Requires organization context from auth middleware.
@@ -101,9 +121,18 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
              console.warn('[AndroidUpload] WARNING: Found audio in body but NOT as req.file. Possible field name mismatch? Expected "audio".');
         }
 
-        // Robust leadId handling (convert "null" string to null)
-        let targetLeadId = (leadId === 'null' || !leadId) ? null : leadId;
-        let finalPhone = phoneNumber;
+        const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
+        const phoneSuffix = phoneDigits.slice(-10);
+        const lockKey = (phoneSuffix && timestamp) ? `${user.id}-${phoneSuffix}-${timestamp}` : null;
+
+        if (lockKey) {
+            await acquireLock(lockKey);
+        }
+
+        try {
+            // Robust leadId handling (convert "null" string to null)
+            let targetLeadId = (leadId === 'null' || !leadId) ? null : leadId;
+            let finalPhone = phoneNumber;
 
         // Fallback: If no leadId OR if the provided leadId has no phone (ghost lead), try to find lead by phone number
         let leadByPhone = null;
@@ -425,6 +454,11 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         }
 
         res.status(201).json({ message: 'Recording and Interaction uploaded successfully', recording });
+        } finally {
+            if (lockKey) {
+                releaseLock(lockKey);
+            }
+        }
     } catch (error) {
         console.error('[AndroidUpload] CRITICAL ERROR during upload:', error);
         res.status(500).json({ error: 'Failed to upload recording' });
@@ -539,13 +573,21 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         };
 
         for (const call of uniqueCalls) {
-            try {
-                const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId, hardwareDuration } = call;
-                if (!phoneNumber) {
-                    results.skipped++;
-                    continue;
-                }
+            const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId, hardwareDuration } = call;
+            if (!phoneNumber) {
+                results.skipped++;
+                continue;
+            }
 
+            const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
+            const phoneSuffix = phoneDigits.slice(-10);
+            const lockKey = (phoneSuffix && timestamp) ? `${user.id}-${phoneSuffix}-${timestamp}` : null;
+
+            if (lockKey) {
+                await acquireLock(lockKey);
+            }
+
+            try {
                 // Normalize and check against CRM leads
                 const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
                 const last10 = cleanPhone.slice(-10);
@@ -843,6 +885,10 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 } else {
                     console.error(`[BulkSync] Error processing entry:`, entryError);
                     results.errors++;
+                }
+            } finally {
+                if (lockKey) {
+                    releaseLock(lockKey);
                 }
             }
         }
