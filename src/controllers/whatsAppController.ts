@@ -307,7 +307,14 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
                 status: 'logged',
                 phoneNumber: i.phoneNumber,
                 date: i.date,
-                actor: i.createdBy ? `${i.createdBy.firstName} ${i.createdBy.lastName || ''}`.trim() : null
+                actor: i.createdBy ? `${i.createdBy.firstName} ${i.createdBy.lastName || ''}`.trim() : null,
+                subject: i.subject,
+                description: i.description,
+                duration: i.duration,
+                recordingDuration: i.recordingDuration,
+                hardwareDuration: i.hardwareDuration,
+                callStatus: i.callStatus,
+                recordingUrl: i.recordingUrl
             }))
         ];
 

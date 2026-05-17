@@ -455,6 +455,9 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
 
         if (!lead) return res.status(404).json({ message: 'Lead not found' });
 
+        // Map incoming type to standard enum
+        const interactionType = (type === 'whatsapp' || type === 'whatsapp-call') ? 'whatsapp' : (type === 'call' ? 'call' : 'other');
+
         // DEDUPLICATION: Check if an 'initiated' interaction already exists for this lead/user/phone in last 60s
         const recentWindow = new Date(Date.now() - 60 * 1000);
         const existingInteraction = await prisma.interaction.findFirst({
@@ -462,7 +465,7 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
                 leadId,
                 createdById: user.id,
                 phoneNumber: phoneNumber || lead.phone,
-                type: type === 'call' ? 'call' : 'other',
+                type: interactionType as InteractionType,
                 callStatus: 'initiated',
                 createdAt: { gte: recentWindow }
             }
@@ -480,15 +483,15 @@ export const logQuickInteraction = async (req: Request, res: Response) => {
             return res.status(200).json(existingInteraction);
         }
 
-        // Map 'whatsapp' - Ensure it uses the correct InteractionType enum value
-        const interactionType = type;
+        const subjectValue = type === 'whatsapp-call' ? 'WhatsApp Call' : (type === 'whatsapp' ? 'WhatsApp Message' : 'Phone Call');
+        const descriptionValue = type === 'whatsapp-call' ? `Initiated WhatsApp voice call to ${phoneNumber || lead.phone}` : `Initiated ${type} to ${phoneNumber || lead.phone}`;
 
         const interaction = await prisma.interaction.create({
             data: {
                 type: interactionType as InteractionType,
                 direction: 'outbound',
-                subject: type === 'whatsapp' ? 'WhatsApp Message' : 'Phone Call',
-                description: `Initiated ${type} to ${phoneNumber || lead.phone}`,
+                subject: subjectValue,
+                description: descriptionValue,
                 phoneNumber: phoneNumber || lead.phone,
                 callStatus: 'initiated',
                 callSessionId: callSessionId || undefined,
