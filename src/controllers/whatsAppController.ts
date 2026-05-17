@@ -330,6 +330,30 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
             );
         };
 
+        // Determine record priority: ended calls with durations > raw "ongoing" notifications
+        const getPriority = (item: any) => {
+            const content = (item.content || '').toLowerCase();
+            const callStatus = (item.callStatus || '').toLowerCase();
+            
+            if (content.includes('ongoing') || content.includes('ringing')) {
+                return 0;
+            }
+            
+            if (item.source === 'interaction' && (item.duration > 0 || ['completed', 'missed', 'failed', 'rejected'].includes(callStatus))) {
+                return 2;
+            }
+            
+            return 1;
+        };
+
+        // Sort normalized array by priority descending, then date descending
+        normalized.sort((a, b) => {
+            const pA = getPriority(a);
+            const pB = getPriority(b);
+            if (pA !== pB) return pB - pA;
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
         // Deduplicate by timestamp proximity (60s for calls, 5s for messages)
         const seenCallKeys = new Set<string>();
         const seenMessageKeys = new Set<string>();
@@ -351,10 +375,31 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
             }
         });
 
-        // Sort by date descending
-        deduped.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        // Sanitize call descriptions (e.g. if the call has ended or date is in the past, it's not "ongoing" anymore!)
+        const sanitized = deduped.map(item => {
+            if (isWhatsAppCall(item)) {
+                let content = item.content || '';
+                const lowerContent = content.toLowerCase();
+                const timeDiffMins = (Date.now() - new Date(item.date).getTime()) / 60000;
+                
+                if (lowerContent.includes('ongoing voice call') || lowerContent.includes('ongoing video call')) {
+                    if (timeDiffMins > 2 || ((item as any).duration && (item as any).duration > 0)) {
+                        content = lowerContent.includes('video') ? 'Video call' : 'Voice call';
+                    }
+                }
+                
+                return {
+                    ...item,
+                    content
+                };
+            }
+            return item;
+        });
 
-        res.json(deduped);
+        // Sort by date descending strictly for final output
+        sanitized.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        res.json(sanitized);
     } catch (error: any) {
         console.error('Error in getLeadWhatsAppMessages:', error);
         res.status(500).json({ message: error.message });
