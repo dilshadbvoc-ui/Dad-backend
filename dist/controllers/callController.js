@@ -74,6 +74,7 @@ const completeCall = async (req, res) => {
         const file = req.file;
         const { duration, status, notes, scheduleFollowUp } = req.body;
         const callId = req.params.id;
+        const user = req.user;
         const updateData = {
             callStatus: status || 'completed',
             duration: duration ? Number(duration) : undefined,
@@ -92,6 +93,26 @@ const completeCall = async (req, res) => {
             data: updateData,
             include: { createdBy: true }
         });
+        // Auto-update lead status to 'contacted' if it was 'new'
+        if (interaction.leadId && interaction.callStatus === 'completed' && (interaction.duration || 0) > 0) {
+            const lead = await prisma_1.default.lead.findUnique({ where: { id: interaction.leadId }, select: { status: true } });
+            if (lead?.status === 'new') {
+                await prisma_1.default.lead.update({
+                    where: { id: interaction.leadId },
+                    data: { status: 'contacted' }
+                }).catch(() => { });
+                await prisma_1.default.leadHistory.create({
+                    data: {
+                        leadId: interaction.leadId,
+                        fieldName: 'status',
+                        oldValue: 'new',
+                        newValue: 'contacted',
+                        changedById: interaction.createdById || user.id,
+                        reason: 'Auto-updated via Browser Call Completion'
+                    }
+                }).catch(() => { });
+            }
+        }
         // Emit socket event for real-time update
         const io = req.app.get('io');
         if (io && interaction.createdBy?.id) {
@@ -203,7 +224,7 @@ const getAllCalls = async (req, res) => {
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         if (!orgId)
             return res.status(400).json({ message: 'No org' });
-        const { page = '1', limit = '20', direction, status, userId, startDate, endDate, search, hasRecording } = req.query;
+        const { page = '1', limit = '20', direction, status, userId, startDate, endDate, search, hasRecording, branchId } = req.query;
         const pageNum = parseInt(page, 10);
         const limitNum = parseInt(limit, 10);
         const skip = (pageNum - 1) * limitNum;
@@ -221,6 +242,9 @@ const getAllCalls = async (req, res) => {
         }
         if (hasRecording === 'true') {
             where.recordingUrl = { not: null };
+        }
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
         }
         if (user.role !== 'admin' && user.role !== 'super_admin') {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
@@ -350,6 +374,7 @@ const getCallStats = async (req, res) => {
         const baseWhere = {
             organisationId: orgId,
             type: 'call',
+            callStatus: { not: 'initiated' },
             isDeleted: false,
             date: { gte: startDate }
         };
@@ -531,9 +556,12 @@ const getUserCallAnalytics = async (req, res) => {
             baseWhere.direction = direction;
         }
         // Hierarchy filtering
-        const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-        // Filter users by branch if provided
-        const userWhere = { id: { in: visibleUserIds } };
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin' || user.role === 'organisation_admin';
+        let userWhere = {};
+        if (!isAdmin) {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            userWhere.id = { in: visibleUserIds };
+        }
         if (branchId)
             userWhere.branchId = branchId;
         const users = await prisma_1.default.user.findMany({
@@ -575,7 +603,10 @@ const getUserCallAnalytics = async (req, res) => {
         interactions.forEach(i => {
             if (i.createdById && userStatsMap[i.createdById]) {
                 const stats = userStatsMap[i.createdById];
-                stats.totalCalls++;
+                // Only count as a "Call" if it got past the 'initiated' stage
+                if (i.callStatus !== 'initiated') {
+                    stats.totalCalls++;
+                }
                 if (i.callStatus === 'completed') {
                     stats.connectedCalls++;
                     stats.totalDurationSeconds += (0, callUtils_1.resolveBestDurationSeconds)(i);

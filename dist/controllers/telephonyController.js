@@ -88,10 +88,15 @@ const handleVoiceWebhook = async (req, res) => {
                     console.log(`[Telephony] Inbound call matched to Lead: ${foundLead.id} (${foundLead.firstName})`);
                 }
                 else {
+                    // MISSING CALL FIX: If it's an inbound call, we might want to log it even if not a lead
+                    // Especially if the status will later become 'no-answer' or 'missed'
                     const canSync = org.callSettings ? org.callSettings.syncNonCrmContacts : true;
                     if (!canSync) {
-                        console.log(`[Telephony] Inbound call from unknown number ${From} ignored (Sync Settings)`);
-                        return handleVoiceResponse(twiml, twilioConfig, shouldRecord, res, orgId);
+                        // We still allow it to continue IF we want to capture missed calls
+                        // But for now, we follow the sync setting UNLESS we can detect 'missed' early
+                        // Since missed calls are often detected at the END (status webhook), we log it 
+                        // as 'initiated' and only discard later if needed.
+                        console.log(`[Telephony] Unknown number ${From} - proceeding to capture potential missed call`);
                     }
                 }
             }

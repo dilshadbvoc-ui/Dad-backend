@@ -62,10 +62,12 @@ const getAdAccounts = async (req, res) => {
         });
     }
     catch (error) {
+        const status = error.status || 500;
         console.error('[MarketingController] Get Ad Accounts Error:', error.message);
-        res.status(500).json({
+        res.status(status).json({
             success: false,
-            message: error.message
+            message: error.message,
+            code: status === 401 ? 'META_TOKEN_EXPIRED' : 'META_API_ERROR'
         });
     }
 };
@@ -90,8 +92,13 @@ const getCampaigns = async (req, res) => {
         });
     }
     catch (error) {
-        console.error('Get Campaigns Error:', error);
-        res.status(500).json({ message: error.message });
+        const status = error.status || 500;
+        console.error('[MarketingController] Get Campaigns Error:', error.message);
+        res.status(status).json({
+            success: false,
+            message: error.message,
+            code: status === 401 ? 'META_TOKEN_EXPIRED' : 'META_API_ERROR'
+        });
     }
 };
 exports.getCampaigns = getCampaigns;
@@ -120,8 +127,13 @@ const createCampaign = async (req, res) => {
         });
     }
     catch (error) {
-        console.error('Create Campaign Error:', error);
-        res.status(500).json({ message: error.message });
+        const status = error.status || 500;
+        console.error('[MarketingController] Create Campaign Error:', error.message);
+        res.status(status).json({
+            success: false,
+            message: error.message,
+            code: status === 401 ? 'META_TOKEN_EXPIRED' : 'META_API_ERROR'
+        });
     }
 };
 exports.createCampaign = createCampaign;

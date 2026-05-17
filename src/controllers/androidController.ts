@@ -259,12 +259,13 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             });
         }
 
-        // FUZZY RECONCILIATION: Look for 'initiated' calls if no exact match
+        // FUZZY RECONCILIATION: Look for 'initiated' calls if no exact match (User-restricted)
         if (!existingInteraction && phoneSuffix.length > 0) {
             console.log(`[AndroidUpload] Exact match failed. Attempting fuzzy reconciliation for phone suffix ${phoneSuffix} (User: ${user.id})...`);
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: user.organisationId,
+                    createdById: user.id,
                     type: 'call',
                     callStatus: { in: ['initiated', 'completed'] },
                     phoneNumber: { contains: phoneSuffix },
@@ -513,14 +514,31 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
         console.log(`[BulkSync] Built lookup map with ${phoneToEntity.size} phone entries from ${crmLeads.length} leads and ${crmContacts.length} contacts`);
 
-        // 2. Process each call entry
+        // 2. Process each call entry (Deduplicated in-memory to prevent duplicates within payload)
+        const seenCalls = new Set<string>();
+        const uniqueCalls = [];
+        for (const call of calls) {
+            if (!call.phoneNumber) continue;
+            // Generate a unique deduplication key
+            const key = call.callSessionId 
+                ? `session-${call.callSessionId}` 
+                : (call.hardwareId && call.hardwareId !== 'none' 
+                    ? `hw-${call.hardwareId}` 
+                    : `time-${call.phoneNumber.replace(/[^0-9]/g, '')}-${call.timestamp}`);
+            if (!seenCalls.has(key)) {
+                seenCalls.add(key);
+                uniqueCalls.push(call);
+            }
+        }
+        console.log(`[BulkSync] In-memory deduplicated incoming calls list from ${calls.length} entries to ${uniqueCalls.length} unique entries`);
+
         const results: { synced: string[]; skipped: number; errors: number } = {
             synced: [],
-            skipped: 0,
+            skipped: calls.length - uniqueCalls.length, // Pre-increment skipped counts for duplicate calls
             errors: 0
         };
 
-        for (const call of calls) {
+        for (const call of uniqueCalls) {
             try {
                 const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId, hardwareDuration } = call;
                 if (!phoneNumber) {
@@ -577,11 +595,12 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     });
                 }
 
-                // Priority 3: Fuzzy Match (Phone + User + Time window for existing entries)
+                // Priority 3: Fuzzy Match (Phone + User + Time window for existing entries - User-restricted)
                 if (!existingInteraction && phoneSuffix.length > 0) {
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
+                            createdById: user.id,
                             type: 'call',
                             callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
                             phoneNumber: { contains: phoneSuffix },
@@ -779,7 +798,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         organisationId: user.organisationId,
                         createdById: user.id,
                         phoneNumber: phoneNumber,
-                        hardwareId: hardwareId || undefined
+                        hardwareId: hardwareId || undefined,
+                        callSessionId: callSessionId || undefined
                     }
                 });
 
@@ -816,9 +836,14 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 }
 
                 results.synced.push(phoneNumber);
-            } catch (entryError) {
-                console.error(`[BulkSync] Error processing entry:`, entryError);
-                results.errors++;
+            } catch (entryError: any) {
+                if (entryError.code === 'P2002') {
+                    console.log(`[BulkSync] Duplicate call log suppressed via database unique constraint (HwId: ${call.hardwareId || 'none'}, SessId: ${call.callSessionId || 'none'})`);
+                    results.skipped++;
+                } else {
+                    console.error(`[BulkSync] Error processing entry:`, entryError);
+                    results.errors++;
+                }
             }
         }
 

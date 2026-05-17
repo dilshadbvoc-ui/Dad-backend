@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSharedProduct = exports.generateProductShareLink = exports.getProductShareConfig = exports.deleteProduct = exports.updateProduct = exports.getProductById = exports.createProduct = exports.getProducts = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
+const roleUtils_1 = require("../utils/roleUtils");
 const getProducts = async (req, res) => {
     try {
         const page = parseInt(req.query.page || '1');
@@ -96,6 +97,9 @@ const createProduct = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!(0, roleUtils_1.isOrgAdmin)(user)) {
+            return res.status(403).json({ message: 'Only admins can create products' });
+        }
         if (!orgId)
             return res.status(403).json({ message: 'No org' });
         // Check for existing SKU
@@ -171,6 +175,9 @@ const updateProduct = async (req, res) => {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const { id } = req.params;
+        if (!(0, roleUtils_1.isOrgAdmin)(user)) {
+            return res.status(403).json({ message: 'Only admins can update products' });
+        }
         // First, verify the product exists and belongs to the organization
         const existingProduct = await prisma_1.default.product.findUnique({
             where: { id }
@@ -212,6 +219,9 @@ const deleteProduct = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!(0, roleUtils_1.isOrgAdmin)(user)) {
+            return res.status(403).json({ message: 'Only admins can delete products' });
+        }
         const where = { id: req.params.id };
         if (user.role !== 'super_admin') {
             if (!orgId)

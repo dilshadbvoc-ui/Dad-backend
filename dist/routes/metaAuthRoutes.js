@@ -172,6 +172,8 @@ router.get('/callback', async (req, res) => {
             }
         });
         const longLivedToken = longLivedTokenResponse.data.access_token;
+        const expiresIn = longLivedTokenResponse.data.expires_in;
+        const tokenExpiresAt = expiresIn ? new Date(Date.now() + (expiresIn * 1000)).toISOString() : null;
         // Get user's ad accounts
         const adAccountsResponse = await axios_1.default.get(`${META_GRAPH_URL}/me/adaccounts`, {
             params: {
@@ -239,6 +241,7 @@ router.get('/callback', async (req, res) => {
             connected: true,
             accessToken: page.access_token,
             userAccessToken: longLivedToken,
+            tokenExpiresAt: tokenExpiresAt,
             adAccountId: primaryAdAccount?.id || null, // Best effort link to primary ad account
             adAccountName: primaryAdAccount?.name || null,
             pageId: page.id,
@@ -260,6 +263,7 @@ router.get('/callback', async (req, res) => {
             connected: true,
             accessToken: longLivedToken,
             userAccessToken: longLivedToken,
+            tokenExpiresAt: tokenExpiresAt,
             adAccountId: primaryAdAccount?.id || null,
             adAccountName: primaryAdAccount?.name || null,
             appId: appId,

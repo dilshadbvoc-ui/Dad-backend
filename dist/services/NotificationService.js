@@ -7,6 +7,7 @@ exports.NotificationService = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const socket_1 = require("../socket");
 const emailService_1 = require("./emailService");
+const whatsAppService_1 = require("./whatsAppService");
 // Singleton helper to get IO instance if not exported globally
 // Assuming socket.ts exports initSocket and returns io instance, 
 // but we might need a way to access it here. 
@@ -39,9 +40,10 @@ class NotificationService {
             if (type === 'high_priority' || type === 'alert' || type === 'reminder') {
                 const user = await prisma_1.default.user.findUnique({
                     where: { id: recipientId },
-                    select: { email: true, notificationPreferences: true, firstName: true }
+                    select: { email: true, phone: true, organisationId: true, notificationPreferences: true, firstName: true }
                 });
                 const prefs = user?.notificationPreferences;
+                // Email Fallback
                 if (user?.email && prefs?.emailNotifications !== false) {
                     const emailHtml = `
                         <div style="font-family: sans-serif; padding: 20px;">
@@ -53,6 +55,21 @@ class NotificationService {
                         </div>
                     `;
                     await emailService_1.EmailService.sendEmail(user.email, `Notification: ${title}`, emailHtml);
+                }
+                // WhatsApp Integration
+                if (user?.phone && user?.organisationId && prefs?.whatsAppNotifications === true) {
+                    try {
+                        const waClient = await whatsAppService_1.WhatsAppService.getClientForOrg(user.organisationId);
+                        if (waClient) {
+                            // Format number (remove + if exists for the API call, though waClient might handle it)
+                            const cleanPhone = user.phone.replace(/\D/g, '');
+                            await waClient.sendTextMessage(cleanPhone, `*${title}*\n\n${message}`);
+                            console.log(`[NotificationService] WhatsApp sent to ${cleanPhone}`);
+                        }
+                    }
+                    catch (waError) {
+                        console.error('[NotificationService] WhatsApp send failed:', waError);
+                    }
                 }
             }
             return notification;

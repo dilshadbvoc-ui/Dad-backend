@@ -250,8 +250,11 @@ const updateOrganisation = async (req, res) => {
                 const currentToken = data.integrations.meta.accessToken;
                 const isEncrypted = currentToken.split(':').length === 3;
                 if (!isEncrypted) {
-                    const longLivedToken = await metaService_1.metaService.exchangeForLongLivedToken(currentToken, data.integrations.meta);
-                    data.integrations.meta.accessToken = (0, encryption_1.encrypt)(longLivedToken);
+                    const exchangeResult = await metaService_1.metaService.exchangeForLongLivedToken(currentToken, data.integrations.meta);
+                    data.integrations.meta.accessToken = (0, encryption_1.encrypt)(exchangeResult.accessToken);
+                    if (exchangeResult.expiresAt) {
+                        data.integrations.meta.tokenExpiresAt = exchangeResult.expiresAt;
+                    }
                 }
             }
             catch (error) {
@@ -464,11 +467,16 @@ const sendTestReport = async (req, res) => {
             return res.status(400).json({ message: 'No phone number configured for report' });
         }
         const waClient = await WhatsAppService.getClientForOrg(orgId);
-        if (!waClient) {
-            return res.status(400).json({ message: 'WhatsApp not connected for this organisation' });
+        if (waClient && targetPhone) {
+            await waClient.sendTextMessage(targetPhone, report);
         }
-        await waClient.sendTextMessage(targetPhone, report);
-        res.json({ message: `Test report sent to ${targetPhone}`, stats });
+        // Send Email if enabled
+        if (org.dailyReportEmailEnabled && user.email) {
+            const { EmailService } = await Promise.resolve().then(() => __importStar(require('../services/emailService')));
+            const emailHtml = ReportingService.formatEmailReport(stats, org.name);
+            await EmailService.sendEmail(user.email, `Test Daily Business Report - ${org.name}`, emailHtml, orgId);
+        }
+        res.json({ message: `Test report sent`, stats });
     }
     catch (error) {
         console.error('sendTestReport Error:', error);

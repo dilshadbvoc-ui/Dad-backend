@@ -43,77 +43,198 @@ const distributionService_1 = require("./distributionService");
 const notificationService_1 = require("./notificationService");
 const client_1 = require("../generated/client");
 const encryption_1 = require("../utils/encryption");
+let leadQueue = [];
+let isProcessingQueue = false;
 exports.MetaLeadService = {
     /**
      * Processes an incoming lead from Meta Webhook
      */
     async processIncomingLead(leadgenId, pageId, adId, formId) {
         try {
-            const META_API_VERSION = 'v18.0'; // Stay consistent with other routes
+            const META_API_VERSION = 'v18.0';
             console.log(`[MetaLeadService] Processing lead ${leadgenId} from Page ${pageId}...`);
-            // 1. Find the organisation connected to this Page ID
-            let org = await prisma_1.default.organisation.findFirst({
+            // 1. Find ALL organisations connected to this Page ID
+            const candidates = await prisma_1.default.organisation.findMany({
                 where: {
                     isDeleted: false,
                     OR: [
                         { integrations: { path: ['meta', 'pageId'], equals: pageId } },
                         { integrations: { path: ['facebook_payload', 'pageId'], equals: pageId } },
+                        { integrations: { path: ['metaAccounts'], array_contains: [{ pageId: pageId }] } }
                     ]
                 }
             });
-            if (!org) {
-                const candidates = await prisma_1.default.organisation.findMany({
+            const allCandidates = [...candidates];
+            if (allCandidates.length === 0) {
+                const potentialOrgs = await prisma_1.default.organisation.findMany({
                     where: { isDeleted: false, integrations: { path: ['metaAccounts'], not: client_1.Prisma.JsonNull } }
                 });
-                org = candidates.find(o => {
+                const dynamicMatches = potentialOrgs.filter(o => {
                     const accounts = o.integrations?.metaAccounts;
                     return Array.isArray(accounts) && accounts.some((acc) => acc.pageId === pageId);
-                }) || null;
+                });
+                dynamicMatches.forEach(dm => {
+                    if (!allCandidates.find(c => c.id === dm.id))
+                        allCandidates.push(dm);
+                });
             }
-            if (!org) {
+            if (allCandidates.length === 0) {
                 console.error(`[MetaLeadService] No organisation found with Meta Page ID: ${pageId}.`);
                 return;
             }
-            // 2. Check if lead already exists by Meta Lead ID (Deduplication P1)
-            const allMetaLeads = await prisma_1.default.lead.findMany({
-                where: { organisationId: org.id, source: 'meta_leadgen' },
-                select: { id: true, sourceDetails: true }
-            });
-            const existingByMetaId = allMetaLeads.find(l => l.sourceDetails?.metaLeadgenId === leadgenId);
-            if (existingByMetaId) {
-                console.log(`[MetaLeadService] Lead ${leadgenId} already exists (ID: ${existingByMetaId.id}). Skipping.`);
-                return;
-            }
-            // 3. Fetch Access Token and Lead Details
-            const integrations = org.integrations || {};
-            const accounts = [...(integrations.metaAccounts || [])];
-            if (integrations.meta)
-                accounts.push(integrations.meta);
-            const matchedAccount = accounts.find((acc) => acc.pageId === pageId);
-            if (!matchedAccount || !matchedAccount.accessToken) {
-                console.error(`[MetaLeadService] No token for Page ${pageId}`);
-                return;
-            }
-            const accessToken = (0, encryption_1.decrypt)(matchedAccount.accessToken);
-            const response = await axios_1.default.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
-                params: {
-                    access_token: accessToken,
-                    fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id'
-                }
-            });
-            const metaLeadData = response.data;
-            // 4. Check if this Ad Account is enabled for sync
-            const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
-            const enabledAccounts = matchedAccount.enabledLeadSyncAccounts || [];
-            if (enabledAccounts.length > 0 && adAccountId) {
-                const normalizedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
-                const isEnabled = enabledAccounts.some(id => id === normalizedId || id === adAccountId);
-                if (!isEnabled) {
-                    console.log(`[MetaLeadService] Lead ${leadgenId} ignored. Ad Account ${adAccountId} is not enabled.`);
-                    return;
+            // 2. Fetch Lead Details
+            let metaLeadData = null;
+            let fetchedSuccess = false;
+            let lastError = null;
+            for (const candidate of allCandidates) {
+                const integrations = candidate.integrations || {};
+                const accounts = [...(integrations.metaAccounts || [])];
+                if (integrations.meta)
+                    accounts.push(integrations.meta);
+                const matchedAccount = accounts.find((acc) => acc.pageId === pageId);
+                if (matchedAccount?.accessToken) {
+                    try {
+                        const accessToken = (0, encryption_1.decrypt)(matchedAccount.accessToken);
+                        const response = await axios_1.default.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
+                            params: {
+                                access_token: accessToken,
+                                fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id,ad_account_id'
+                            }
+                        });
+                        metaLeadData = response.data;
+                        fetchedSuccess = true;
+                        break;
+                    }
+                    catch (e) {
+                        lastError = e;
+                        console.warn(`[MetaLeadService] Token for org ${candidate.id} failed, trying next...`);
+                    }
                 }
             }
-            // 5. Map Field Data
+            // 3. RETRY QUEUE LOGIC
+            if (!fetchedSuccess || !metaLeadData) {
+                const errorMsg = lastError?.response?.data?.error?.message || lastError?.message;
+                const isRateLimit = errorMsg?.includes('rate') || lastError?.response?.status === 400;
+                if (isRateLimit) {
+                    console.warn(`[MetaLeadService] Rate limited by Meta. Adding lead ${leadgenId} to retry queue.`);
+                    this.addToQueue(leadgenId, pageId, adId, formId);
+                }
+                else {
+                    console.error(`[MetaLeadService] Failed to fetch lead data from Meta for lead ${leadgenId}: ${errorMsg}`);
+                }
+                return;
+            }
+            // 4. Process the lead for EACH matching organisation
+            for (const org of allCandidates) {
+                try {
+                    const integrations = org.integrations || {};
+                    const accounts = [...(integrations.metaAccounts || [])];
+                    if (integrations.meta)
+                        accounts.push(integrations.meta);
+                    const matchedAccount = accounts.find((acc) => acc.pageId === pageId);
+                    if (!matchedAccount)
+                        continue;
+                    // --- STRICT AD ACCOUNT VALIDATION ---
+                    const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
+                    if (adAccountId) {
+                        const normalizedLeadAdId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
+                        // 1. Check in Whitelist (enabledLeadSyncAccounts)
+                        const enabledAccounts = matchedAccount.enabledLeadSyncAccounts || [];
+                        const isWhitelisted = enabledAccounts.some(id => {
+                            const normalizedId = id.startsWith('act_') ? id : `act_${id}`;
+                            return normalizedId === normalizedLeadAdId;
+                        });
+                        // 2. Check in Main Ad Account Field (adAccountId)
+                        const mainAdAccountId = matchedAccount.adAccountId;
+                        const isMainMatch = mainAdAccountId && ((mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId);
+                        // 3. If it matches NEITHER, block it.
+                        // This prevents cross-org contamination if two orgs share a Page ID
+                        if (!isWhitelisted && !isMainMatch) {
+                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}`);
+                            continue;
+                        }
+                    }
+                    await this.saveAndDistributeLead(org.id, pageId, metaLeadData, formId, adId);
+                }
+                catch (orgErr) {
+                    console.error(`[MetaLeadService] Error processing for Org ${org.id}:`, orgErr.message);
+                }
+            }
+        }
+        catch (error) {
+            console.error('[MetaLeadService] Error:', error.response?.data || error.message);
+            throw error;
+        }
+    },
+    /**
+     * Add lead to retry queue with backoff
+     */
+    addToQueue(leadgenId, pageId, adId, formId, attempts = 0) {
+        if (attempts >= 5) {
+            console.error(`[MetaLeadService] Max retries reached for lead ${leadgenId}. Giving up.`);
+            return;
+        }
+        // Exponential backoff: 1m, 2m, 4m, 8m, 16m
+        const delay = Math.pow(2, attempts) * 60 * 1000;
+        const alreadyInQueue = leadQueue.some(l => l.leadgenId === leadgenId);
+        if (alreadyInQueue && attempts === 0)
+            return; // Don't add fresh if already retrying
+        leadQueue.push({
+            leadgenId,
+            pageId,
+            adId,
+            formId,
+            attempts: attempts + 1,
+            nextRetry: Date.now() + delay
+        });
+        console.log(`[MetaLeadService] Lead ${leadgenId} scheduled for retry #${attempts + 1} in ${delay / 1000}s`);
+        this.startQueueProcessor();
+    },
+    /**
+     * Periodically check and process the queue
+     */
+    startQueueProcessor() {
+        if (isProcessingQueue)
+            return;
+        isProcessingQueue = true;
+        const timer = setInterval(async () => {
+            if (leadQueue.length === 0) {
+                clearInterval(timer);
+                isProcessingQueue = false;
+                return;
+            }
+            const now = Date.now();
+            const readyToProcess = leadQueue.filter(l => l.nextRetry <= now);
+            leadQueue = leadQueue.filter(l => l.nextRetry > now);
+            for (const item of readyToProcess) {
+                console.log(`[MetaLeadService] Retrying lead ${item.leadgenId} (Attempt ${item.attempts})...`);
+                try {
+                    // Try to process again
+                    await this.processIncomingLead(item.leadgenId, item.pageId, item.adId, item.formId);
+                }
+                catch (err) {
+                    // processIncomingLead will re-add to queue if it fails with rate limit
+                }
+            }
+        }, 30000); // Check every 30s
+    },
+    /**
+     * Internal helper to save and distribute a lead
+     */
+    async saveAndDistributeLead(orgId, pageId, metaLeadData, formId, adId) {
+        try {
+            const leadgenId = metaLeadData.id;
+            // 1. Check if lead already exists in THIS organisation
+            const existing = await prisma_1.default.lead.findFirst({
+                where: {
+                    organisationId: orgId,
+                    sourceDetails: { path: ['metaLeadgenId'], equals: leadgenId }
+                }
+            });
+            if (existing) {
+                return;
+            }
+            // 2. Map Field Data
             const fieldMap = {};
             metaLeadData.field_data.forEach((field) => {
                 if (field.values && field.values.length > 0) {
@@ -135,59 +256,48 @@ exports.MetaLeadService = {
                 company: getField(['company', 'organization', 'company name']),
                 campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || `Form: ${metaLeadData.form_id}` || 'Meta Lead'
             };
-            // 6. Distribution & Deduplication (P2: Phone/Email)
-            const targetBranchId = await distributionService_1.DistributionService.resolveBranchForMetaPage(org.id, pageId);
+            const targetBranchId = await distributionService_1.DistributionService.resolveBranchForMetaPage(orgId, pageId);
             const crmData = {
                 firstName: leadData.full_name || 'Meta Lead',
-                lastName: '', // ReEnquiryData requires this
+                lastName: '',
                 phone: leadData.phone || '',
                 email: leadData.email || undefined,
-                organisationId: org.id,
+                organisationId: orgId,
                 source: client_1.LeadSource.meta_leadgen,
                 sourceDetails: {
                     metaLeadgenId: leadgenId,
                     metaFormId: formId || metaLeadData.form_id,
                     metaPageId: pageId,
                     metaAdId: adId || metaLeadData.ad_id,
-                    metaAdName: metaLeadData.ad_name,
-                    metaCampaignId: metaLeadData.campaign_id,
-                    metaCampaignName: leadData.campaign_name,
+                    adName: metaLeadData.ad_name,
+                    campaignId: metaLeadData.campaign_id,
+                    campaignName: leadData.campaign_name,
                     metaCreatedTime: metaLeadData.created_time
                 }
             };
             const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
-            const duplicateCheck = await DuplicateLeadService.checkDuplicate(crmData.phone, crmData.email, org.id, targetBranchId || undefined);
+            const duplicateCheck = await DuplicateLeadService.checkDuplicate(crmData.phone, crmData.email, orgId, targetBranchId || undefined);
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                console.log(`[MetaLeadService] Duplicate found (${duplicateCheck.existingLead.id}). Re-enquiry.`);
-                await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, crmData, org.id);
+                await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, crmData, orgId);
                 return;
             }
-            // 7. Create Lead (Unassigned initially, then assign via rules)
             const lead = await prisma_1.default.lead.create({
                 data: {
                     ...crmData,
                     branchId: targetBranchId
                 }
             });
-            console.log(`[MetaLeadService] Created lead ${lead.id} from Meta. Running strict distribution...`);
-            // 8. Run Distribution Service (Strict Campaign Rules)
-            await distributionService_1.DistributionService.assignLead(lead, org.id);
-            // 8. Notify
-            try {
-                const admins = await prisma_1.default.user.findMany({
-                    where: { organisationId: org.id, role: { in: ['admin', 'super_admin'] }, isActive: true },
-                    select: { id: true }
-                });
-                for (const admin of admins) {
-                    await notificationService_1.NotificationService.send(admin.id, 'New Meta Lead', `New lead: ${crmData.firstName}`, 'info');
-                }
-            }
-            catch (notifyErr) {
-                console.warn('[MetaLeadService] Notification failed');
+            await distributionService_1.DistributionService.assignLead(lead, orgId);
+            const admins = await prisma_1.default.user.findMany({
+                where: { organisationId: orgId, role: { in: ['admin', 'super_admin'] }, isActive: true },
+                select: { id: true }
+            });
+            for (const admin of admins) {
+                await notificationService_1.NotificationService.send(admin.id, 'New Meta Lead', `New lead: ${crmData.firstName}`, 'info');
             }
         }
         catch (error) {
-            console.error('[MetaLeadService] Error:', error.response?.data || error.message);
+            console.error(`[MetaLeadService] Error saving lead ${metaLeadData.id} for Org ${orgId}:`, error.message);
             throw error;
         }
     }

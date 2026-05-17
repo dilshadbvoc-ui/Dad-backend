@@ -82,7 +82,7 @@ class MetaService {
             const appSecret = config?.appSecret || process.env.META_APP_SECRET;
             if (!appId || !appSecret) {
                 console.warn('Meta App ID or Secret not configured (neither in DB nor ENV), skipping token exchange');
-                return shortLivedToken;
+                return { accessToken: shortLivedToken };
             }
             const response = await axios_1.default.get(`${this.baseUrl}/oauth/access_token`, {
                 params: {
@@ -94,14 +94,20 @@ class MetaService {
             });
             if (response.data && response.data.access_token) {
                 console.log('Successfully exchanged for long-lived Meta token');
-                return response.data.access_token;
+                const result = {
+                    accessToken: response.data.access_token
+                };
+                if (response.data.expires_in) {
+                    result.expiresAt = new Date(Date.now() + (response.data.expires_in * 1000));
+                }
+                return result;
             }
-            return shortLivedToken;
+            return { accessToken: shortLivedToken };
         }
         catch (error) {
             console.error('Failed to exchange Meta token:', error.response?.data || error.message);
             // Return original token on failure to avoid breaking the flow completely
-            return shortLivedToken;
+            return { accessToken: shortLivedToken };
         }
     }
     async getCampaigns(config) {

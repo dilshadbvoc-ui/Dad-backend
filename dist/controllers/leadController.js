@@ -119,6 +119,19 @@ const getLeads = async (req, res) => {
         if (req.query.assignedTo) {
             where.assignedToId = req.query.assignedTo;
         }
+        // Filter: Date Range (createdAt)
+        if (req.query.startDate || req.query.endDate) {
+            const dateFilter = {};
+            if (req.query.startDate) {
+                dateFilter.gte = new Date(req.query.startDate);
+            }
+            if (req.query.endDate) {
+                const end = new Date(req.query.endDate);
+                end.setHours(23, 59, 59, 999);
+                dateFilter.lte = end;
+            }
+            where.createdAt = dateFilter;
+        }
         // Combine all conditions
         if (andConditions.length > 0) {
             where.AND = andConditions;
@@ -206,9 +219,17 @@ const createLead = async (req, res) => {
                 sourceDetails: sourceDetails
             };
             const updatedLead = await duplicateLeadService_1.default.handleReEnquiry(duplicateCheck.existingLead, reEnquiryData, orgId);
+            // Hierarchy Check: Only return full lead details if requester has permission
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(currentUser.id);
+            const hasPermission = currentUser.isSuperAdmin ||
+                (0, roleUtils_1.isSuperAdmin)(currentUser) ||
+                updatedLead.assignedToId === currentUser.id ||
+                visibleUserIds.includes(updatedLead.assignedToId || '') ||
+                updatedLead.createdById === currentUser.id ||
+                (updatedLead.createdById && visibleUserIds.includes(updatedLead.createdById) && !updatedLead.assignedToId);
             return res.status(200).json({
                 message: 'Lead already exists. Marked as re-enquiry and notifications sent.',
-                lead: updatedLead,
+                lead: hasPermission ? updatedLead : { id: updatedLead.id, firstName: 'Private', lastName: 'Lead', isPrivate: true },
                 isReEnquiry: true,
                 matchedBy: duplicateCheck.matchedBy,
                 reEnquiryCount: updatedLead.reEnquiryCount
@@ -411,29 +432,28 @@ const getLeadById = async (req, res) => {
     try {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
-        const where = { id: req.params.id, isDeleted: false };
-        // Organization scoping
-        if (user.isSuperAdmin || (0, roleUtils_1.isSuperAdmin)(user)) {
-            // Super admins can see any lead
+        // 1. Organization & Existence scoping (Check if it even exists in their world)
+        const existingLead = await prisma_1.default.lead.findUnique({
+            where: { id: req.params.id },
+            select: { organisationId: true, isDeleted: true }
+        });
+        if (!existingLead || existingLead.isDeleted || (orgId && existingLead.organisationId !== orgId)) {
+            return res.status(404).json({ message: 'Lead not found' });
         }
-        else {
-            if (!orgId)
-                return res.status(403).json({ message: 'User has no organisation' });
-            where.organisationId = orgId;
-            // 2. Hierarchy Visibility
-            if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user)) {
-                const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
-                where.OR = [
-                    { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
-                    { createdById: user.id }, // Created by the user (always visible)
-                    {
-                        AND: [
-                            { createdById: { in: visibleUserIds } }, // Created by subordinate
-                            { assignedToId: null } // But not reassigned to someone else
-                        ]
-                    }
-                ];
-            }
+        const where = { id: req.params.id, isDeleted: false };
+        // 2. Hierarchy Visibility scoping
+        if (!user.isSuperAdmin && !(0, roleUtils_1.isSuperAdmin)(user)) {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.OR = [
+                { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                { createdById: user.id }, // Created by the user (always visible)
+                {
+                    AND: [
+                        { createdById: { in: visibleUserIds } }, // Created by subordinate
+                        { assignedToId: null } // But not reassigned to someone else
+                    ]
+                }
+            ];
         }
         const lead = await prisma_1.default.lead.findFirst({
             where,
@@ -442,8 +462,12 @@ const getLeadById = async (req, res) => {
                 products: { include: { product: true } }
             }
         });
-        if (!lead)
-            return res.status(404).json({ message: 'Lead not found' });
+        if (!lead) {
+            return res.status(403).json({
+                message: 'Access Denied: This lead is outside of your visibility hierarchy.',
+                error: 'HIERARCHY_FORBIDDEN'
+            });
+        }
         res.json(lead);
     }
     catch (error) {
@@ -544,6 +568,17 @@ const updateLead = async (req, res) => {
                     newStatus: updates.status
                 }
             });
+            // CRITICAL for Reporting: Create LeadHistory record
+            await prisma_1.default.leadHistory.create({
+                data: {
+                    leadId,
+                    fieldName: 'status',
+                    oldValue: currentLead.status,
+                    newValue: updates.status,
+                    changedById: requester.id,
+                    reason: req.body.reason || 'Manual Status Update'
+                }
+            }).catch(() => { });
         }
         // Track Follow-up Change and Create Task
         if (updates.nextFollowUp) {
@@ -1003,7 +1038,7 @@ const convertLead = async (req, res) => {
     try {
         const { id } = req.params;
         const leadId = id;
-        const { dealName, amount, accountId, accountName, contactName } = req.body;
+        const { dealName, amount, accountId, accountName, contactName, stage, paymentType, paidAmount, installments, lostReason } = req.body;
         const user = req.user;
         // Initial org check for the converting user
         const userOrgId = (0, hierarchyUtils_1.getOrgId)(user);
@@ -1121,7 +1156,7 @@ const convertLead = async (req, res) => {
                 data: {
                     name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
-                    stage: 'prospecting',
+                    stage: stage || 'prospecting',
                     closeDate: new Date(), // Set to today by default instead of +30 days
                     organisationId: orgId,
                     ownerId: finalOwnerId,
@@ -1129,7 +1164,8 @@ const convertLead = async (req, res) => {
                     leadId: lead.id,
                     branchId: lead.branchId || undefined,
                     pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
-                    contacts: { connect: { id: contact.id } }
+                    contacts: { connect: { id: contact.id } },
+                    lostReason: stage === 'closed_lost' ? lostReason : undefined
                 }
             });
             // 4. Migrate Products from Lead to Account
@@ -1160,6 +1196,17 @@ const convertLead = async (req, res) => {
                 where: { id: leadId },
                 data: {
                     status: 'converted'
+                }
+            });
+            // 6. Log History for Reporting
+            await tx.leadHistory.create({
+                data: {
+                    leadId: leadId,
+                    fieldName: 'status',
+                    oldValue: lead.status,
+                    newValue: 'converted',
+                    changedById: user.id,
+                    reason: 'Lead Converted to Opportunity'
                 }
             });
             // 6. Migrate Interactions
@@ -1216,6 +1263,71 @@ const convertLead = async (req, res) => {
             const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/notificationService')));
             const leadName = `${lead.firstName} ${lead.lastName || ''}`.trim();
             NotificationService.send(lead.assignedToId, 'Lead Moved to Pipeline', `Your lead "${leadName}" has been moved to the pipeline by ${user.firstName}.`, 'info').catch(console.error);
+        }
+        // --- NEW: Handle Immediate Closure Logic ---
+        if (stage === 'closed_won' && result.opportunity) {
+            const oppId = result.opportunity.id;
+            if (paymentType === 'paid') {
+                Promise.resolve().then(() => __importStar(require('../services/paymentService'))).then(m => m.default.recordFullPayment(oppId, user.id, orgId));
+            }
+            else if (paymentType === 'partial') {
+                Promise.resolve().then(() => __importStar(require('../services/paymentService'))).then(async (m) => {
+                    if (paidAmount > 0) {
+                        await m.default.recordPartialPayment(oppId, paidAmount, user.id, orgId);
+                    }
+                    if (installments && installments.length > 0) {
+                        const { default: EMIService } = await Promise.resolve().then(() => __importStar(require('../services/emiService')));
+                        await EMIService.convertToEMI(oppId, installments, orgId);
+                    }
+                });
+            }
+            else if (paymentType === 'emi') {
+                (async () => {
+                    try {
+                        await prisma_1.default.opportunity.update({
+                            where: { id: oppId },
+                            data: { paymentStatus: 'partial' }
+                        });
+                        if (installments && installments.length > 0) {
+                            const { default: EMIService } = await Promise.resolve().then(() => __importStar(require('../services/emiService')));
+                            await EMIService.convertToEMI(oppId, installments, orgId);
+                        }
+                    }
+                    catch (error) {
+                        console.error('Error in EMI conversion:', error);
+                    }
+                })();
+            }
+            // Target/Goal Updates
+            Promise.resolve().then(() => __importStar(require('../services/salesTargetService'))).then(({ SalesTargetService }) => {
+                SalesTargetService.updateProgressForUser(result.opportunity.ownerId).catch(console.error);
+            });
+            Promise.resolve().then(() => __importStar(require('../services/goalService'))).then(({ GoalService }) => {
+                GoalService.updateProgressForUser(result.opportunity.ownerId, 'revenue').catch(console.error);
+            });
+            // Hierarchy Notification
+            try {
+                if (paymentType && (paymentType === 'paid' || paymentType === 'partial' || paymentType === 'emi')) {
+                    const { NotificationService } = await Promise.resolve().then(() => __importStar(require('../services/notificationService')));
+                    const owner = await prisma_1.default.user.findUnique({
+                        where: { id: result.opportunity.ownerId },
+                        select: { reportsToId: true, firstName: true, lastName: true }
+                    });
+                    if (owner && owner.reportsToId) {
+                        let paymentMessage = '';
+                        if (paymentType === 'paid')
+                            paymentMessage = `Full payment of ₹${result.opportunity.amount.toLocaleString('en-IN')} received.`;
+                        else if (paymentType === 'partial')
+                            paymentMessage = `Partial payment of ₹${paidAmount?.toLocaleString('en-IN')} received (Total: ₹${result.opportunity.amount.toLocaleString('en-IN')}).`;
+                        else if (paymentType === 'emi')
+                            paymentMessage = `EMI payment plan initiated for ₹${result.opportunity.amount.toLocaleString('en-IN')}.`;
+                        await NotificationService.sendToHierarchy(result.opportunity.ownerId, 'Sale Closed with Payment! 🎉💰', `${owner.firstName} ${owner.lastName} closed a deal "${result.opportunity.name}". ${paymentMessage}`, 'success');
+                    }
+                }
+            }
+            catch (notifyErr) {
+                console.error('Hierarchy notification error:', notifyErr);
+            }
         }
         res.json({
             message: 'Lead converted successfully',

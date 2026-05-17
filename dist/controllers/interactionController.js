@@ -139,6 +139,38 @@ const createInteractionGeneric = async (req, res) => {
                 details: { type: interaction.type, subject: interaction.subject }
             });
         }
+        // Update Lead/Contact lastContactDate if applicable
+        if (type === 'call' || type === 'meeting' || type === 'other') {
+            if (lead) {
+                const leadRecord = await prisma_1.default.lead.findUnique({ where: { id: lead }, select: { status: true } });
+                const newStatus = (leadRecord?.status === 'new' && (type === 'call' || type === 'meeting' || type === 'whatsapp')) ? 'contacted' : undefined;
+                await prisma_1.default.lead.update({
+                    where: { id: lead },
+                    data: {
+                        lastContactDate: interaction.date,
+                        ...(newStatus ? { status: newStatus } : {})
+                    }
+                }).catch(() => { });
+                if (newStatus) {
+                    await prisma_1.default.leadHistory.create({
+                        data: {
+                            leadId: lead,
+                            fieldName: 'status',
+                            oldValue: 'new',
+                            newValue: newStatus,
+                            changedById: user.id,
+                            reason: 'Auto-updated via Manual Interaction Logging'
+                        }
+                    }).catch(() => { });
+                }
+            }
+            if (contact) {
+                await prisma_1.default.contact.update({
+                    where: { id: contact },
+                    data: { lastActivity: interaction.date }
+                }).catch(() => { });
+            }
+        }
         res.status(201).json(interaction);
     }
     catch (error) {
@@ -174,11 +206,17 @@ const createInteraction = async (req, res) => {
                 recordingDuration,
                 callStatus,
                 phoneNumber: phoneNumber || lead.phone,
+                date: req.body.date ? new Date(req.body.date) : new Date(),
                 lead: { connect: { id: leadId } },
                 createdBy: { connect: { id: user.id } },
                 organisation: { connect: { id: orgId } },
                 branch: lead.branchId ? { connect: { id: lead.branchId } } : (user.branchId ? { connect: { id: user.branchId } } : undefined)
             }
+        });
+        // Update lead's lastContactDate
+        await prisma_1.default.lead.update({
+            where: { id: leadId },
+            data: { lastContactDate: interaction.date }
         });
         await (0, auditLogger_1.logAudit)({
             organisationId: orgId,
@@ -205,7 +243,15 @@ const getLeadInteractions = async (req, res) => {
         if (!orgId && user.role !== 'super_admin') {
             return res.status(400).json({ message: 'Organisation context required' });
         }
-        const where = { leadId, isDeleted: false };
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const where = {
+            leadId,
+            isDeleted: false,
+            OR: [
+                { callStatus: { not: 'initiated' } },
+                { createdAt: { gte: oneHourAgo } }
+            ]
+        };
         if (orgId)
             where.organisationId = orgId;
         // Hierarchy filtering:
@@ -246,9 +292,14 @@ const getAllInteractions = async (req, res) => {
         console.log('getAllInteractions called with:', req.query); // Debug
         if (!orgId)
             return res.status(400).json({ message: 'Organisation context required' });
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
         const where = {
             organisationId: orgId,
-            isDeleted: false
+            isDeleted: false,
+            OR: [
+                { callStatus: { not: 'initiated' } },
+                { createdAt: { gte: oneHourAgo } }
+            ]
         };
         if (user.branchId) {
             where.branchId = user.branchId;
@@ -373,8 +424,8 @@ const logQuickInteraction = async (req, res) => {
             }
             return res.status(200).json(existingInteraction);
         }
-        // Map 'whatsapp' to 'other' since it's not in InteractionType enum
-        const interactionType = type === 'whatsapp' ? 'other' : type;
+        // Map 'whatsapp' - Ensure it uses the correct InteractionType enum value
+        const interactionType = type;
         const interaction = await prisma_1.default.interaction.create({
             data: {
                 type: interactionType,
@@ -389,6 +440,11 @@ const logQuickInteraction = async (req, res) => {
                 organisation: { connect: { id: orgId } },
                 branch: lead.branchId ? { connect: { id: lead.branchId } } : (user.branchId ? { connect: { id: user.branchId } } : undefined)
             }
+        });
+        // Update lead's lastContactDate
+        await prisma_1.default.lead.update({
+            where: { id: leadId },
+            data: { lastContactDate: interaction.date }
         });
         await (0, auditLogger_1.logAudit)({
             organisationId: orgId,

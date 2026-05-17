@@ -79,7 +79,12 @@ const getOpportunities = async (req, res) => {
         }
         // 3. Dynamic Filters
         if (req.query.stage && req.query.stage !== 'all') {
-            where.stage = String(req.query.stage);
+            if (req.query.stage === 'expected') {
+                where.stage = { in: ['prospecting', 'qualification', 'proposal', 'negotiation'] };
+            }
+            else {
+                where.stage = String(req.query.stage);
+            }
         }
         if (req.query.type && req.query.type !== 'all') {
             where.type = String(req.query.type);

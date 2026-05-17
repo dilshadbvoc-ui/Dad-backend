@@ -1,9 +1,42 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDailyReport = exports.getUserPerformanceDetails = exports.getTeamPerformanceReport = exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
+exports.getLeadDistributionReport = exports.getDailyReport = exports.getUserPerformanceDetails = exports.getTeamPerformanceReport = exports.exportToExcel = exports.getSalesBook = exports.getUserPerformance = exports.getLeadsReport = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 const hierarchyUtils_1 = require("../utils/hierarchyUtils");
 const roleUtils_1 = require("../utils/roleUtils");
@@ -132,8 +165,9 @@ const getUserPerformance = async (req, res) => {
                     where: {
                         createdById: user.id,
                         type: 'call',
+                        callStatus: { not: 'initiated' },
                         isDeleted: false,
-                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                        ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     }
                 }),
                 prisma_1.default.calendarEvent.count({
@@ -533,6 +567,18 @@ const exportToExcel = async (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename=${type}_report_${Date.now()}.xlsx`);
         await workbook.xlsx.write(res);
         res.end();
+        // Audit Log for Export
+        try {
+            const { logExportAudit } = await Promise.resolve().then(() => __importStar(require('../utils/auditLogger')));
+            await logExportAudit(req, `${type.toUpperCase()} Excel Export`, {
+                branchId,
+                startDate,
+                endDate
+            });
+        }
+        catch (auditErr) {
+            console.error('Failed to log export audit:', auditErr);
+        }
     }
     catch (error) {
         console.error('[ReportController] exportToExcel error:', error);
@@ -673,8 +719,9 @@ const getUserPerformanceDetails = async (req, res) => {
                     where: {
                         createdById: u.id,
                         type: 'call',
+                        callStatus: { not: 'initiated' },
                         organisationId: orgId,
-                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                        ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     }
                 }),
                 // 4. Status Changes (History)
@@ -693,7 +740,7 @@ const getUserPerformanceDetails = async (req, res) => {
                         isDeleted: false,
                         interactions: {
                             some: {
-                                createdAt: dateFilter
+                                date: dateFilter
                             }
                         }
                     }
@@ -733,7 +780,7 @@ const getUserPerformanceDetails = async (req, res) => {
                         type: 'call',
                         callStatus: 'completed',
                         organisationId: orgId,
-                        ...(Object.keys(dateFilter).length ? { createdAt: dateFilter } : {})
+                        ...(Object.keys(dateFilter).length ? { date: dateFilter } : {})
                     },
                     select: { duration: true, recordingDuration: true, hardwareDuration: true }
                 }),
@@ -820,12 +867,13 @@ const getDailyReport = async (req, res) => {
             logger_1.default.warn(`getDailyReport: Organisation ID missing for user ${user.email}`, 'ReportController');
             return res.status(400).json({ message: 'Organisation ID is required' });
         }
-        const { branchId } = req.query;
-        // Calculate IST "today" boundaries
+        const { branchId, date } = req.query;
+        // Calculate IST boundaries for the target date
         // IST is UTC + 5:30
-        const now = new Date();
+        const targetDate = date ? new Date(date) : new Date();
         const istOffset = 5.5 * 60 * 60 * 1000;
-        const istNow = new Date(now.getTime() + istOffset);
+        // Adjust target date to IST context
+        const istNow = new Date(targetDate.getTime() + (date ? 0 : istOffset));
         const istStartOfDay = new Date(istNow);
         istStartOfDay.setUTCHours(0, 0, 0, 0);
         const istEndOfDay = new Date(istNow);
@@ -864,6 +912,7 @@ const getDailyReport = async (req, res) => {
                     where: {
                         createdById: u.id,
                         type: 'call',
+                        callStatus: { not: 'initiated' },
                         date: { gte: startOfDay, lte: endOfDay },
                         isDeleted: false
                     }
@@ -913,6 +962,7 @@ const getDailyReport = async (req, res) => {
         const summaryWhere = {
             organisationId: orgId,
             type: 'call',
+            callStatus: { not: 'initiated' },
             date: { gte: startOfDay, lte: endOfDay },
             isDeleted: false
         };
@@ -934,9 +984,18 @@ const getDailyReport = async (req, res) => {
             neverAttended: totalStats.filter(c => c.direction === 'inbound' && ['missed', 'rejected'].includes(c.callStatus || '')).length,
             notPickedUp: totalStats.filter(c => c.direction === 'outbound' && (c.duration === 0 || c.callStatus === 'failed')).length,
             unique: new Set(totalStats.map(c => c.phoneNumber).filter(Boolean)).size,
-            totalDuration: totalStats.reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
-            incomingDuration: totalStats.filter(c => c.direction === 'inbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
-            outgoingDuration: totalStats.filter(c => c.direction === 'outbound').reduce((sum, c) => sum + (c.recordingDuration || 0), 0),
+            totalDuration: totalStats.reduce((sum, c) => {
+                const d = c.hardwareDuration || c.recordingDuration || Math.round((c.duration || 0) * 60);
+                return sum + d;
+            }, 0),
+            incomingDuration: totalStats.filter(c => c.direction === 'inbound').reduce((sum, c) => {
+                const d = c.hardwareDuration || c.recordingDuration || Math.round((c.duration || 0) * 60);
+                return sum + d;
+            }, 0),
+            outgoingDuration: totalStats.filter(c => c.direction === 'outbound').reduce((sum, c) => {
+                const d = c.hardwareDuration || c.recordingDuration || Math.round((c.duration || 0) * 60);
+                return sum + d;
+            }, 0),
         };
         // Sort by total calls descending as a default
         report.sort((a, b) => b.totalCalls - a.totalCalls);
@@ -951,3 +1010,102 @@ const getDailyReport = async (req, res) => {
     }
 };
 exports.getDailyReport = getDailyReport;
+/**
+ * Lead Distribution Report
+ * Returns leads distributed to each user in a date range, with summaries.
+ */
+const getLeadDistributionReport = async (req, res) => {
+    try {
+        const user = req.user;
+        const orgId = (0, hierarchyUtils_1.getOrgId)(user);
+        if (!orgId)
+            return res.status(401).json({ message: 'Unauthorized' });
+        const { startDate, endDate, userId, branchId } = req.query;
+        const where = {
+            organisationId: orgId,
+            isDeleted: false,
+            assignedToId: { not: null }
+        };
+        if (branchId)
+            where.branchId = branchId;
+        if (userId)
+            where.assignedToId = userId;
+        // Date filter - default to last 30 days if not provided
+        const dateFilter = {};
+        if (startDate || endDate) {
+            if (startDate)
+                dateFilter.gte = new Date(startDate);
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+                dateFilter.lte = end;
+            }
+            where.createdAt = dateFilter;
+        }
+        // If not admin, restrict visibility
+        if (!(0, roleUtils_1.isOrgAdmin)(user) && user.role !== 'admin' && user.role !== 'super_admin') {
+            const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
+            where.assignedToId = { in: visibleUserIds };
+        }
+        const leads = await prisma_1.default.lead.findMany({
+            where,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                status: true,
+                source: true,
+                createdAt: true,
+                branch: { select: { name: true } },
+                assignedTo: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        // Generate Summary by User
+        const byUser = {};
+        leads.forEach(lead => {
+            const u = lead.assignedTo;
+            if (!u)
+                return;
+            const userName = `${u.firstName} ${u.lastName || ''}`.trim();
+            if (!byUser[u.id]) {
+                byUser[u.id] = {
+                    userId: u.id,
+                    userName,
+                    branch: lead.branch?.name || 'N/A',
+                    count: 0,
+                    leads: []
+                };
+            }
+            byUser[u.id].count++;
+            byUser[u.id].leads.push(lead);
+        });
+        // Generate Summary by Date
+        const byDate = {};
+        leads.forEach(lead => {
+            const dateStr = lead.createdAt.toISOString().split('T')[0];
+            byDate[dateStr] = (byDate[dateStr] || 0) + 1;
+        });
+        res.json({
+            leads,
+            summary: {
+                total: leads.length,
+                byUser: Object.values(byUser).sort((a, b) => b.count - a.count),
+                byDate: Object.entries(byDate).map(([date, count]) => ({ date, count })).sort((a, b) => b.date.localeCompare(a.date))
+            }
+        });
+    }
+    catch (error) {
+        console.error('[ReportController] getLeadDistributionReport error:', error);
+        res.status(500).json({ message: 'Failed to fetch lead distribution report' });
+    }
+};
+exports.getLeadDistributionReport = getLeadDistributionReport;

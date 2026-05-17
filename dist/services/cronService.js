@@ -156,6 +156,7 @@ const initCronJobs = () => {
             console.log(`[Cron] Found ${organisations.length} organisations with report time ${currentTime}`);
             const { ReportingService } = await Promise.resolve().then(() => __importStar(require('./reportingService')));
             const { WhatsAppService } = await Promise.resolve().then(() => __importStar(require('./whatsAppService')));
+            const { EmailService } = await Promise.resolve().then(() => __importStar(require('./emailService')));
             for (const org of organisations) {
                 try {
                     // 1. General Admin Report (Legacy logic)
@@ -176,9 +177,16 @@ const initCronJobs = () => {
                     // Send to Admins
                     for (const admin of admins) {
                         const targetPhone = admin.phone || org.contactPhone;
+                        // WhatsApp
                         if (targetPhone && waClient) {
-                            console.log(`[Cron] Sending general report to ${org.name} admin: ${admin.firstName} (${targetPhone})`);
+                            console.log(`[Cron] Sending general WhatsApp report to ${org.name} admin: ${admin.firstName} (${targetPhone})`);
                             await waClient.sendTextMessage(targetPhone, adminReport);
+                        }
+                        // Email
+                        if (org.dailyReportEmailEnabled && admin.email) {
+                            console.log(`[Cron] Sending daily Email report to ${org.name} admin: ${admin.email}`);
+                            const emailHtml = ReportingService.formatEmailReport(stats, org.name);
+                            await EmailService.sendEmail(admin.email, `Daily Business Report - ${org.name}`, emailHtml, org.id);
                         }
                     }
                     // Send to Managers (Specific reports)
@@ -271,8 +279,8 @@ const initCronJobs = () => {
         }
     });
     console.log('[Cron] Daily trash purge job scheduled.');
-    // Run every minute for Meta Lead Polling (Real-time fallback)
-    node_cron_1.default.schedule('* * * * *', async () => {
+    // Run every 10 minutes for Meta Lead Polling (Real-time fallback)
+    node_cron_1.default.schedule('*/10 * * * *', async () => {
         try {
             const { MetaPollingService } = await Promise.resolve().then(() => __importStar(require('./metaPollingService')));
             await MetaPollingService.pollAllOrganisations();
@@ -281,6 +289,47 @@ const initCronJobs = () => {
             console.error('[Cron] Error during Meta lead polling:', error);
         }
     });
-    console.log('[Cron] Meta Lead Polling job scheduled.');
+    // Run every day at 03:00 AM (Meta Token Expiry Check)
+    node_cron_1.default.schedule('0 3 * * *', async () => {
+        console.log('[Cron] Checking for expiring Meta tokens...');
+        try {
+            const sevenDaysFromNow = new Date();
+            sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+            const organisations = await prisma_1.prisma.organisation.findMany({
+                where: {
+                    isDeleted: false,
+                    status: 'active'
+                }
+            });
+            for (const org of organisations) {
+                const integrations = org.integrations;
+                if (integrations?.meta?.connected && integrations?.meta?.tokenExpiresAt) {
+                    const expiresAt = new Date(integrations.meta.tokenExpiresAt);
+                    if (expiresAt < sevenDaysFromNow) {
+                        // Notify admins
+                        const admins = await prisma_1.prisma.user.findMany({
+                            where: { organisationId: org.id, role: 'admin', isActive: true }
+                        });
+                        for (const admin of admins) {
+                            // Check if a warning was already sent in the last 24h to avoid spam
+                            await prisma_1.prisma.notification.create({
+                                data: {
+                                    title: 'Meta Connection Expiring Soon',
+                                    message: `Your Meta access token for ${org.name} will expire on ${expiresAt.toLocaleDateString()}. Please reconnect in Settings -> Integrations to avoid service interruption.`,
+                                    type: 'warning',
+                                    recipientId: admin.id,
+                                    organisationId: org.id
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        catch (error) {
+            console.error('[Cron] Error checking Meta token expiry:', error);
+        }
+    });
+    console.log('[Cron] Meta Lead Polling and Expiry Check jobs scheduled.');
 };
 exports.initCronJobs = initCronJobs;
