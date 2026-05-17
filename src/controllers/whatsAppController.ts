@@ -318,13 +318,37 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
             }))
         ];
 
-        // Deduplicate by timestamp proximity (within 5s) and same direction
-        const seen = new Set<string>();
+        const isWhatsAppCall = (msg: any) => {
+            const desc = (msg.description || msg.content || '').toLowerCase();
+            const subj = (msg.subject || '').toLowerCase();
+            return (
+                subj.includes('call') ||
+                desc.includes('voice call') ||
+                desc.includes('video call') ||
+                desc.includes('call not connected') ||
+                desc.includes('initiated whatsapp call')
+            );
+        };
+
+        // Deduplicate by timestamp proximity (60s for calls, 5s for messages)
+        const seenCallKeys = new Set<string>();
+        const seenMessageKeys = new Set<string>();
+
         const deduped = normalized.filter(item => {
-            const key = `${item.direction}_${Math.floor(new Date(item.date).getTime() / 5000)}`;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
+            const time = new Date(item.date).getTime();
+            if (isWhatsAppCall(item)) {
+                // Deduplicate calls within the same 60-second window by direction
+                const key = `${item.direction}_${Math.floor(time / 60000)}`;
+                if (seenCallKeys.has(key)) return false;
+                seenCallKeys.add(key);
+                return true;
+            } else {
+                // Deduplicate messages within the same 5-second window by direction and content
+                const key = `${item.direction}_${Math.floor(time / 5000)}_${item.content}`;
+                if (seenMessageKeys.has(key)) return false;
+                seenMessageKeys.add(key);
+                return true;
+            }
         });
 
         // Sort by date descending
