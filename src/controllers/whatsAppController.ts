@@ -1039,6 +1039,12 @@ export const logExternalMessage = async (req: Request, res: Response) => {
         const windowStart = new Date(callDate.getTime() - 5 * 60 * 1000);
         const windowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);
 
+        // Normalize direction: accept inbound/incoming as 'inbound' and outbound/outgoing as 'outbound'
+        const rawDirection = String(direction || '').toLowerCase().trim();
+        const isInbound = ['inbound', 'incoming', 'in', '1'].includes(rawDirection);
+        const normalizedDirection: 'inbound' | 'outbound' = isInbound ? 'inbound' : 'outbound';
+        const msgDirection: 'incoming' | 'outgoing' = isInbound ? 'incoming' : 'outgoing';
+
         const existingInteraction = await prisma.interaction.findFirst({
             where: {
                 organisationId: user.organisationId,
@@ -1046,7 +1052,7 @@ export const logExternalMessage = async (req: Request, res: Response) => {
                 leadId: targetLeadId || undefined,
                 phoneNumber: targetLeadId ? undefined : phoneNumber,
                 date: { gte: windowStart, lte: windowEnd },
-                direction: direction === 'inbound' ? 'inbound' : 'outbound'
+                direction: normalizedDirection
             },
             orderBy: { date: 'desc' }
         });
@@ -1066,8 +1072,8 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             interaction = await prisma.interaction.create({
                 data: {
                     type: 'whatsapp' as any,
-                    direction: direction === 'inbound' ? 'inbound' : 'outbound',
-                    subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
+                    direction: normalizedDirection,
+                    subject: normalizedDirection === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
                     description: messageText,
                     date: callDate,
                     phoneNumber: phoneNumber,
@@ -1081,7 +1087,6 @@ export const logExternalMessage = async (req: Request, res: Response) => {
         console.log(`[WhatsAppSync] Logged interaction for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
 
         // 3. Create a WhatsAppMessage record so it shows up in the WhatsApp Inbox
-        const msgDirection = direction === 'outbound' ? 'outgoing' : 'incoming';
         
         // Deduplicate WhatsAppMessage within same 5-minute window
         const existingMessage = await prisma.whatsAppMessage.findFirst({
