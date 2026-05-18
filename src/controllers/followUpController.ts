@@ -33,14 +33,26 @@ export const getFollowUps = async (req: Request, res: Response) => {
             where.organisationId = orgId;
         }
 
-        // 2. Hierarchy Visibility - Show follow-ups for user and subordinates
+        // 2. Hierarchy Visibility - Show follow-ups if:
+        // - Assigned to user or subordinates
+        // - Created by user or subordinates
+        // - Related to leads/contacts/accounts/opportunities owned by user or subordinates
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
 
             where.OR = [
-                { createdById: { in: visibleUserIds } },
+                // Follow-ups assigned to user or subordinates
                 { assignedToId: { in: visibleUserIds } },
-                { AND: [{ assignedToId: null }, { createdById: { in: visibleUserIds } }] }
+                // Follow-ups created by user or subordinates
+                { createdById: { in: visibleUserIds } },
+                // Follow-ups related to leads assigned to user or subordinates
+                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                // Follow-ups related to contacts owned by user or subordinates
+                { contact: { ownerId: { in: visibleUserIds } } },
+                // Follow-ups related to accounts owned by user or subordinates
+                { account: { ownerId: { in: visibleUserIds } } },
+                // Follow-ups related to opportunities owned by user or subordinates
+                { opportunity: { ownerId: { in: visibleUserIds } } }
             ];
         }
 
