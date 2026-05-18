@@ -8,7 +8,12 @@ export const getHierarchy = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
 
         const where: any = { isActive: true };
-        if (orgId) {
+        if (user.role !== 'super_admin') {
+            if (!orgId) {
+                return res.status(403).json({ message: 'User has no organisation' });
+            }
+            where.organisationId = orgId;
+        } else if (orgId) {
             where.organisationId = orgId;
         }
 

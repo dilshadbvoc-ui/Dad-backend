@@ -337,6 +337,24 @@ export const updateUser = async (req: Request, res: Response) => {
             }
         }
 
+        // Strict super_admin scoping and limit checks
+        if (dataToUpdate.role === 'super_admin') {
+            const targetUser = await prisma.user.findUnique({ where: { id: userId } });
+            if (!targetUser) return res.status(404).json({ message: 'User not found' });
+
+            const orgIdToCheck = dataToUpdate.organisationId !== undefined ? dataToUpdate.organisationId : targetUser.organisationId;
+            if (orgIdToCheck) {
+                return res.status(400).json({ message: 'Organisation users cannot be super_admin' });
+            }
+
+            const superAdminExists = await prisma.user.findFirst({
+                where: { role: 'super_admin', id: { not: userId } }
+            });
+            if (superAdminExists) {
+                return res.status(400).json({ message: 'Only one superadmin is allowed in the system' });
+            }
+        }
+
         // Handle reportsTo mapping
         if (updateData.reportsTo) {
             if (updateData.reportsTo === userId) {
@@ -412,6 +430,19 @@ export const createUser = async (req: Request, res: Response) => {
         let targetOrgId = organisationId;
         if (currentUser.role !== 'super_admin') {
             targetOrgId = getOrgId(currentUser);
+        }
+
+        // Strict super_admin scoping and limit checks
+        if (role === 'super_admin') {
+            if (targetOrgId || organisationId) {
+                return res.status(400).json({ message: 'Organisation users cannot be super_admin' });
+            }
+            const superAdminExists = await prisma.user.findFirst({
+                where: { role: 'super_admin' }
+            });
+            if (superAdminExists) {
+                return res.status(400).json({ message: 'Only one superadmin is allowed in the system' });
+            }
         }
 
         if (!targetOrgId) {
@@ -559,6 +590,19 @@ export const inviteUser = async (req: Request, res: Response) => {
         let targetOrgId = getOrgId(currentUser);
         if (currentUser.role === 'super_admin' && organisationId) {
             targetOrgId = organisationId;
+        }
+
+        // Strict super_admin scoping and limit checks
+        if (role === 'super_admin') {
+            if (targetOrgId || organisationId) {
+                return res.status(400).json({ message: 'Organisation users cannot be super_admin' });
+            }
+            const superAdminExists = await prisma.user.findFirst({
+                where: { role: 'super_admin' }
+            });
+            if (superAdminExists) {
+                return res.status(400).json({ message: 'Only one superadmin is allowed in the system' });
+            }
         }
 
         if (!targetOrgId) {

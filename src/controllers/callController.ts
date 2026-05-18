@@ -625,6 +625,10 @@ export const getUserCallAnalytics = async (req: Request, res: Response) => {
         const isAdmin = user.role === 'admin' || user.role === 'super_admin' || user.role === 'organisation_admin';
         let userWhere: any = {};
 
+        if (user.role !== 'super_admin') {
+            userWhere.organisationId = orgId;
+        }
+
         if (!isAdmin) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             userWhere.id = { in: visibleUserIds };
