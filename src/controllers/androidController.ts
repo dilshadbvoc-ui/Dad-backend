@@ -296,7 +296,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     organisationId: user.organisationId,
                     createdById: user.id,
                     type: 'call',
-                    callStatus: { in: ['initiated', 'completed'] },
+                    callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
                     phoneNumber: { contains: phoneSuffix },
                     date: {
                         gte: searchWindowStart,
@@ -317,7 +317,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 duration: shouldUpdate ? (Math.round(durationMinutes * 100) / 100) : undefined,
                 recordingDuration: shouldUpdate ? durationSecs : undefined,
                 recordingUrl: recording.fileUrl || undefined,
-                callStatus: durationSecs > 0 ? 'completed' : 'failed',
+                callStatus: finalizedDurationSecs > 0 ? 'completed' : 'failed',
                 lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                 phoneNumber: phoneNumber || undefined,
                 hardwareId: hardwareId || undefined,
@@ -676,7 +676,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         const updatePayload: any = {
                             duration: Math.round((finalizedSyncDurationSecs / 60) * 100) / 100,
                             recordingDuration: durationSecs,
-                            callStatus: durationSecs > 0 ? 'completed' : 'failed',
+                            callStatus: finalizedSyncDurationSecs > 0 ? 'completed' : 'failed',
                         };
 
                         if (hardwareId) updatePayload.hardwareId = hardwareId;
