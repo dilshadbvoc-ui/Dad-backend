@@ -199,7 +199,14 @@ export const updateFollowUp = async (req: Request, res: Response) => {
 
         const followUp = await prisma.followUp.findUnique({
             where: { id },
-            include: { createdBy: true, assignedTo: true }
+            include: { 
+                createdBy: true, 
+                assignedTo: true,
+                lead: true,
+                contact: true,
+                account: true,
+                opportunity: true
+            }
         });
 
         if (!followUp) {
@@ -210,7 +217,26 @@ export const updateFollowUp = async (req: Request, res: Response) => {
         const isAssignee = followUp.assignedToId === user.id;
         const isAdmin = user.role === 'admin' || user.role === 'super_admin';
 
-        if (!isCreator && !isAssignee && !isAdmin) {
+        let isAuthorized = isCreator || isAssignee || isAdmin;
+
+        if (!isAuthorized) {
+            // Check hierarchy and related entity ownership
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            
+            const isCreatedBySubordinate = followUp.createdById ? visibleUserIds.includes(followUp.createdById) : false;
+            const isAssignedToSubordinate = followUp.assignedToId ? visibleUserIds.includes(followUp.assignedToId) : false;
+            
+            const isLeadOwner = followUp.lead?.assignedToId ? visibleUserIds.includes(followUp.lead.assignedToId) : false;
+            const isContactOwner = (followUp.contact as any)?.ownerId ? visibleUserIds.includes((followUp.contact as any).ownerId) : false;
+            const isAccountOwner = (followUp.account as any)?.ownerId ? visibleUserIds.includes((followUp.account as any).ownerId) : false;
+            const isOpportunityOwner = (followUp.opportunity as any)?.ownerId ? visibleUserIds.includes((followUp.opportunity as any).ownerId) : false;
+
+            if (isCreatedBySubordinate || isAssignedToSubordinate || isLeadOwner || isContactOwner || isAccountOwner || isOpportunityOwner) {
+                isAuthorized = true;
+            }
+        }
+
+        if (!isAuthorized) {
             return res.status(403).json({ message: 'Not authorized to update this follow-up' });
         }
 
