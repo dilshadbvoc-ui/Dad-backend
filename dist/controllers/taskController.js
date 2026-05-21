@@ -60,8 +60,6 @@ const getTasks = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId)
-                where.branchId = user.branchId;
         }
         // 2. Hierarchy Visibility - Show tasks if:
         // - Assigned to user or subordinates
@@ -223,8 +221,6 @@ const getTaskById = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId)
-                where.branchId = user.branchId;
         }
         const task = await prisma_1.default.task.findFirst({
             where,
@@ -288,8 +284,6 @@ const updateTask = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
-            if (requester.branchId)
-                whereObj.branchId = requester.branchId;
         }
         const task = await prisma_1.default.task.update({
             where: whereObj,
@@ -326,8 +320,6 @@ const deleteTask = async (req, res) => {
             if (!orgId)
                 return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
-            if (user.branchId)
-                where.branchId = user.branchId;
         }
         await prisma_1.default.task.update({
             where,

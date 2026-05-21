@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '../generated/client';
-const prisma = new PrismaClient();
+import prisma from '../config/prisma';
 
 const SYSTEM_ROLES = [
     {

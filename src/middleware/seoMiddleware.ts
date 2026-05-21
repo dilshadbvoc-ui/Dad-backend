@@ -1,10 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '../generated/client';
+import prisma from '../config/prisma';
 
 const SITE_URL = 'https://pypecrm.com';
-const prisma = new PrismaClient();
 
 interface RouteSEO {
   title: string;

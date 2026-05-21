@@ -11,7 +11,13 @@ const getHierarchy = async (req, res) => {
         const user = req.user;
         const orgId = (0, hierarchyUtils_1.getOrgId)(user);
         const where = { isActive: true };
-        if (orgId) {
+        if (user.role !== 'super_admin') {
+            if (!orgId) {
+                return res.status(403).json({ message: 'User has no organisation' });
+            }
+            where.organisationId = orgId;
+        }
+        else if (orgId) {
             where.organisationId = orgId;
         }
         const users = await prisma_1.default.user.findMany({

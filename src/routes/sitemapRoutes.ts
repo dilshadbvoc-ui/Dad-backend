@@ -1,8 +1,7 @@
 import express from 'express';
-import { PrismaClient } from '../generated/client';
+import prisma from '../config/prisma';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 const SITE_URL = 'https://pypecrm.com';
 
 const staticRoutes = [

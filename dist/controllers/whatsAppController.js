@@ -278,21 +278,88 @@ const getLeadWhatsAppMessages = async (req, res) => {
                 status: 'logged',
                 phoneNumber: i.phoneNumber,
                 date: i.date,
-                actor: i.createdBy ? `${i.createdBy.firstName} ${i.createdBy.lastName || ''}`.trim() : null
+                actor: i.createdBy ? `${i.createdBy.firstName} ${i.createdBy.lastName || ''}`.trim() : null,
+                subject: i.subject,
+                description: i.description,
+                duration: i.duration,
+                recordingDuration: i.recordingDuration,
+                hardwareDuration: i.hardwareDuration,
+                callStatus: i.callStatus,
+                recordingUrl: i.recordingUrl
             }))
         ];
-        // Deduplicate by timestamp proximity (within 5s) and same direction
-        const seen = new Set();
-        const deduped = normalized.filter(item => {
-            const key = `${item.direction}_${Math.floor(new Date(item.date).getTime() / 5000)}`;
-            if (seen.has(key))
-                return false;
-            seen.add(key);
-            return true;
+        const isWhatsAppCall = (msg) => {
+            const desc = (msg.description || msg.content || '').toLowerCase();
+            const subj = (msg.subject || '').toLowerCase();
+            return (subj.includes('call') ||
+                desc.includes('voice call') ||
+                desc.includes('video call') ||
+                desc.includes('call not connected') ||
+                desc.includes('initiated whatsapp call'));
+        };
+        // Determine record priority: ended calls with durations > raw "ongoing" notifications
+        const getPriority = (item) => {
+            const content = (item.content || '').toLowerCase();
+            const callStatus = (item.callStatus || '').toLowerCase();
+            if (content.includes('ongoing') || content.includes('ringing')) {
+                return 0;
+            }
+            if (item.source === 'interaction' && (item.duration > 0 || ['completed', 'missed', 'failed', 'rejected'].includes(callStatus))) {
+                return 2;
+            }
+            return 1;
+        };
+        // Sort normalized array by priority descending, then date descending
+        normalized.sort((a, b) => {
+            const pA = getPriority(a);
+            const pB = getPriority(b);
+            if (pA !== pB)
+                return pB - pA;
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
-        // Sort by date descending
-        deduped.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        res.json(deduped);
+        // Deduplicate by timestamp proximity (60s for calls, 5s for messages)
+        const seenCallKeys = new Set();
+        const seenMessageKeys = new Set();
+        const deduped = normalized.filter(item => {
+            const time = new Date(item.date).getTime();
+            if (isWhatsAppCall(item)) {
+                // Deduplicate calls within the same 60-second window by direction
+                const key = `${item.direction}_${Math.floor(time / 60000)}`;
+                if (seenCallKeys.has(key))
+                    return false;
+                seenCallKeys.add(key);
+                return true;
+            }
+            else {
+                // Deduplicate messages within the same 5-second window by direction and content
+                const key = `${item.direction}_${Math.floor(time / 5000)}_${item.content}`;
+                if (seenMessageKeys.has(key))
+                    return false;
+                seenMessageKeys.add(key);
+                return true;
+            }
+        });
+        // Sanitize call descriptions (e.g. if the call has ended or date is in the past, it's not "ongoing" anymore!)
+        const sanitized = deduped.map(item => {
+            if (isWhatsAppCall(item)) {
+                let content = item.content || '';
+                const lowerContent = content.toLowerCase();
+                const timeDiffMins = (Date.now() - new Date(item.date).getTime()) / 60000;
+                if (lowerContent.includes('ongoing voice call') || lowerContent.includes('ongoing video call')) {
+                    if (timeDiffMins > 2 || (item.duration && item.duration > 0)) {
+                        content = lowerContent.includes('video') ? 'Video call' : 'Voice call';
+                    }
+                }
+                return {
+                    ...item,
+                    content
+                };
+            }
+            return item;
+        });
+        // Sort by date descending strictly for final output
+        sanitized.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        res.json(sanitized);
     }
     catch (error) {
         console.error('Error in getLeadWhatsAppMessages:', error);
@@ -861,6 +928,11 @@ const logExternalMessage = async (req, res) => {
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
         const windowStart = new Date(callDate.getTime() - 5 * 60 * 1000);
         const windowEnd = new Date(callDate.getTime() + 5 * 60 * 1000);
+        // Normalize direction: accept inbound/incoming as 'inbound' and outbound/outgoing as 'outbound'
+        const rawDirection = String(direction || '').toLowerCase().trim();
+        const isInbound = ['inbound', 'incoming', 'in', '1'].includes(rawDirection);
+        const normalizedDirection = isInbound ? 'inbound' : 'outbound';
+        const msgDirection = isInbound ? 'incoming' : 'outgoing';
         const existingInteraction = await prisma_1.default.interaction.findFirst({
             where: {
                 organisationId: user.organisationId,
@@ -868,7 +940,7 @@ const logExternalMessage = async (req, res) => {
                 leadId: targetLeadId || undefined,
                 phoneNumber: targetLeadId ? undefined : phoneNumber,
                 date: { gte: windowStart, lte: windowEnd },
-                direction: direction === 'inbound' ? 'inbound' : 'outbound'
+                direction: normalizedDirection
             },
             orderBy: { date: 'desc' }
         });
@@ -888,8 +960,8 @@ const logExternalMessage = async (req, res) => {
             interaction = await prisma_1.default.interaction.create({
                 data: {
                     type: 'whatsapp',
-                    direction: direction === 'inbound' ? 'inbound' : 'outbound',
-                    subject: direction === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
+                    direction: normalizedDirection,
+                    subject: normalizedDirection === 'inbound' ? 'Incoming WhatsApp' : 'Outgoing WhatsApp',
                     description: messageText,
                     date: callDate,
                     phoneNumber: phoneNumber,
@@ -901,7 +973,6 @@ const logExternalMessage = async (req, res) => {
         }
         console.log(`[WhatsAppSync] Logged interaction for ${phoneNumber} (Lead: ${targetLeadId || 'Unknown'})`);
         // 3. Create a WhatsAppMessage record so it shows up in the WhatsApp Inbox
-        const msgDirection = direction === 'outbound' ? 'outgoing' : 'incoming';
         // Deduplicate WhatsAppMessage within same 5-minute window
         const existingMessage = await prisma_1.default.whatsAppMessage.findFirst({
             where: {

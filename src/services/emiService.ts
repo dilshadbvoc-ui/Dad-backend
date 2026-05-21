@@ -1,7 +1,5 @@
-import { PrismaClient } from '../generated/client';
+import prisma from '../config/prisma';
 import PaymentService from './paymentService';
-
-const prisma = new PrismaClient();
 
 export interface InstallmentInput {
   dueDate: Date;

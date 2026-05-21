@@ -1,6 +1,4 @@
-import { PrismaClient } from '../generated/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma';
 
 export interface PaymentResult {
   success: boolean;

@@ -1,8 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upsertGlobalRole = exports.getGlobalRoles = exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoles = exports.initializeGlobalRoles = void 0;
-const client_1 = require("../generated/client");
-const prisma = new client_1.PrismaClient();
+const prisma_1 = __importDefault(require("../config/prisma"));
 const SYSTEM_ROLES = [
     {
         roleKey: 'super_admin',
@@ -53,11 +55,11 @@ const SYSTEM_ROLES = [
 const initializeGlobalRoles = async () => {
     try {
         for (const sr of SYSTEM_ROLES) {
-            const existing = await prisma.role.findFirst({
+            const existing = await prisma_1.default.role.findFirst({
                 where: { roleKey: sr.roleKey, organisationId: null }
             });
             if (!existing) {
-                await prisma.role.create({
+                await prisma_1.default.role.create({
                     data: {
                         ...sr,
                         organisationId: null
@@ -77,14 +79,14 @@ const getRoles = async (req, res) => {
         const currentUser = req.user;
         const organisationId = currentUser.organisationId;
         // Fetch custom roles for the organisation
-        const customRoles = await prisma.role.findMany({
+        const customRoles = await prisma_1.default.role.findMany({
             where: {
                 organisationId,
                 isSystemRole: false
             }
         });
         // Fetch overrides for system roles
-        const systemRoleOverrides = await prisma.role.findMany({
+        const systemRoleOverrides = await prisma_1.default.role.findMany({
             where: {
                 organisationId,
                 isSystemRole: true
@@ -95,7 +97,7 @@ const getRoles = async (req, res) => {
             return acc;
         }, {});
         // Fetch user count per role
-        const userCounts = await prisma.user.groupBy({
+        const userCounts = await prisma_1.default.user.groupBy({
             by: ['role'],
             where: {
                 organisationId,
@@ -110,7 +112,7 @@ const getRoles = async (req, res) => {
             return acc;
         }, {});
         // Fetch Global System Roles (Templates)
-        const globalRoles = await prisma.role.findMany({
+        const globalRoles = await prisma_1.default.role.findMany({
             where: {
                 organisationId: null,
                 isSystemRole: true
@@ -153,7 +155,7 @@ const createRole = async (req, res) => {
         if (!name) {
             return res.status(400).json({ message: 'Role name is required' });
         }
-        const role = await prisma.role.create({
+        const role = await prisma_1.default.role.create({
             data: {
                 roleKey: `custom_${Date.now()}`,
                 name,
@@ -177,7 +179,7 @@ const updateRole = async (req, res) => {
         const currentUser = req.user;
         const organisationId = currentUser.organisationId;
         // Find existing role in DB or check if it's a known system role
-        const dbRole = await prisma.role.findFirst({
+        const dbRole = await prisma_1.default.role.findFirst({
             where: {
                 OR: [
                     { id: id },
@@ -187,7 +189,7 @@ const updateRole = async (req, res) => {
         });
         if (dbRole) {
             // Update existing record
-            const updated = await prisma.role.update({
+            const updated = await prisma_1.default.role.update({
                 where: { id: dbRole.id },
                 data: {
                     name,
@@ -199,13 +201,13 @@ const updateRole = async (req, res) => {
         }
         else {
             // If it's a system role without a DB record yet, creating override
-            const globalRole = await prisma.role.findFirst({
+            const globalRole = await prisma_1.default.role.findFirst({
                 where: { roleKey: id, organisationId: null }
             });
             if (!globalRole) {
                 return res.status(404).json({ message: 'Role not found' });
             }
-            const override = await prisma.role.create({
+            const override = await prisma_1.default.role.create({
                 data: {
                     roleKey: globalRole.roleKey,
                     name: name || globalRole.name,
@@ -228,7 +230,7 @@ const deleteRole = async (req, res) => {
         const id = req.params.id;
         const currentUser = req.user;
         const organisationId = currentUser.organisationId;
-        const role = await prisma.role.findFirst({
+        const role = await prisma_1.default.role.findFirst({
             where: { id, organisationId }
         });
         if (!role) {
@@ -238,13 +240,13 @@ const deleteRole = async (req, res) => {
             return res.status(400).json({ message: 'System roles cannot be deleted' });
         }
         // Check if users are assigned to this role
-        const userCount = await prisma.user.count({
+        const userCount = await prisma_1.default.user.count({
             where: { role: role.roleKey, organisationId }
         });
         if (userCount > 0) {
             return res.status(400).json({ message: 'Cannot delete role that is assigned to users' });
         }
-        await prisma.role.delete({
+        await prisma_1.default.role.delete({
             where: { id }
         });
         res.json({ message: 'Role deleted successfully' });
@@ -260,7 +262,7 @@ exports.deleteRole = deleteRole;
  */
 const getGlobalRoles = async (req, res) => {
     try {
-        const roles = await prisma.role.findMany({
+        const roles = await prisma_1.default.role.findMany({
             where: { organisationId: null }
         });
         res.json({ roles });
@@ -279,7 +281,7 @@ const upsertGlobalRole = async (req, res) => {
     try {
         const { roleKey, name, description, permissions, isSystemRole } = req.body;
         // Find existing global role (organisationId IS NULL)
-        const existingRole = await prisma.role.findFirst({
+        const existingRole = await prisma_1.default.role.findFirst({
             where: {
                 roleKey,
                 organisationId: null
@@ -287,7 +289,7 @@ const upsertGlobalRole = async (req, res) => {
         });
         let role;
         if (existingRole) {
-            role = await prisma.role.update({
+            role = await prisma_1.default.role.update({
                 where: { id: existingRole.id },
                 data: {
                     name,
@@ -298,7 +300,7 @@ const upsertGlobalRole = async (req, res) => {
             });
         }
         else {
-            role = await prisma.role.create({
+            role = await prisma_1.default.role.create({
                 data: {
                     roleKey,
                     name,

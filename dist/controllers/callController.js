@@ -558,6 +558,9 @@ const getUserCallAnalytics = async (req, res) => {
         // Hierarchy filtering
         const isAdmin = user.role === 'admin' || user.role === 'super_admin' || user.role === 'organisation_admin';
         let userWhere = {};
+        if (user.role !== 'super_admin') {
+            userWhere.organisationId = orgId;
+        }
         if (!isAdmin) {
             const visibleUserIds = await (0, hierarchyUtils_1.getVisibleUserIds)(user.id);
             userWhere.id = { in: visibleUserIds };
