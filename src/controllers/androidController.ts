@@ -141,13 +141,22 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             const last10 = cleanPhone.slice(-10);
             
             if (last10.length > 0) { // Relaxed from >= 10
+                const variations = Array.from(new Set([
+                    last10,
+                    `+91${last10}`,
+                    `91${last10}`,
+                    `0${last10}`,
+                    cleanPhone,
+                    phoneNumber
+                ].filter(Boolean)));
+
                 leadByPhone = await prisma.lead.findFirst({
                     where: {
                         organisationId: user.organisationId,
                         isDeleted: false,
                         OR: [
-                            { phone: { contains: last10 } },
-                            { secondaryPhone: { contains: last10 } }
+                            { phone: { in: variations } },
+                            { secondaryPhone: { in: variations } }
                         ]
                     },
                     select: { id: true, phone: true, firstName: true }
@@ -291,13 +300,23 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         // FUZZY RECONCILIATION: Look for 'initiated' calls if no exact match (User-restricted)
         if (!existingInteraction && phoneSuffix.length > 0) {
             console.log(`[AndroidUpload] Exact match failed. Attempting fuzzy reconciliation for phone suffix ${phoneSuffix} (User: ${user.id})...`);
+            
+            const variations = Array.from(new Set([
+                phoneSuffix,
+                `+91${phoneSuffix}`,
+                `91${phoneSuffix}`,
+                `0${phoneSuffix}`,
+                phoneDigits,
+                phoneNumber
+            ].filter(Boolean)));
+
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: user.organisationId,
                     createdById: user.id,
                     type: 'call',
                     callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
-                    phoneNumber: { contains: phoneSuffix },
+                    phoneNumber: { in: variations },
                     date: {
                         gte: searchWindowStart,
                         lte: searchWindowEnd
@@ -387,11 +406,20 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             try {
                 // LAST-SECOND ATOMIC DEDUPLICATION: Check one more time just before create
                 // to prevent race conditions from simultaneous requests.
+                const variations = Array.from(new Set([
+                    phoneSuffix,
+                    `+91${phoneSuffix}`,
+                    `91${phoneSuffix}`,
+                    `0${phoneSuffix}`,
+                    phoneDigits,
+                    phoneNumber
+                ].filter(Boolean)));
+
                 const raceCheck = await prisma.interaction.findFirst({
                     where: {
                         organisationId: user.organisationId,
                         createdById: user.id,
-                        phoneNumber: { contains: phoneSuffix },
+                        phoneNumber: { in: variations },
                         date: {
                             gte: new Date(callDate.getTime() - 10000), // 10s tight window
                             lte: new Date(callDate.getTime() + 10000)
@@ -639,13 +667,22 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 // Priority 3: Fuzzy Match (Phone + User + Time window for existing entries - User-restricted)
                 if (!existingInteraction && phoneSuffix.length > 0) {
+                    const variations = Array.from(new Set([
+                        phoneSuffix,
+                        `+91${phoneSuffix}`,
+                        `91${phoneSuffix}`,
+                        `0${phoneSuffix}`,
+                        phoneDigits,
+                        phoneNumber
+                    ].filter(Boolean)));
+
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
                             createdById: user.id,
                             type: 'call',
                             callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
-                            phoneNumber: { contains: phoneSuffix },
+                            phoneNumber: { in: variations },
                             date: {
                                 gte: searchWindowStart,
                                 lte: searchWindowEnd
@@ -797,11 +834,20 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 // 6. Create the Interaction record (makes it visible in Call Logs + Timeline)
                 // LAST-SECOND ATOMIC DEDUPLICATION:
+                const variations = Array.from(new Set([
+                    phoneSuffix,
+                    `+91${phoneSuffix}`,
+                    `91${phoneSuffix}`,
+                    `0${phoneSuffix}`,
+                    phoneDigits,
+                    phoneNumber
+                ].filter(Boolean)));
+
                 const raceCheck = await prisma.interaction.findFirst({
                     where: {
                         organisationId: user.organisationId,
                         createdById: user.id,
-                        phoneNumber: { contains: phoneSuffix },
+                        phoneNumber: { in: variations },
                         date: {
                             gte: new Date(callDate.getTime() - 10000),
                             lte: new Date(callDate.getTime() + 10000)
