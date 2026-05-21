@@ -10,4 +10,5 @@ const router = express_1.default.Router();
 router.get('/', authMiddleware_1.protect, notificationController_1.getNotifications);
 router.put('/:id/read', authMiddleware_1.protect, notificationController_1.markAsRead);
 router.put('/read-all', authMiddleware_1.protect, notificationController_1.markAllAsRead);
+router.post('/broadcast', authMiddleware_1.protect, notificationController_1.broadcastNotification);
 exports.default = router;

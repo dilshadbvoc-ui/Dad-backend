@@ -78,3 +78,70 @@ export const markAllAsRead = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
+
+// Broadcast notification to all users in the organisation (Organisation Admin Only)
+export const broadcastNotification = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        if (!user || user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied. Organisation admin only.' });
+        }
+
+        const { title, message } = req.body;
+        if (!title || !message) {
+            return res.status(400).json({ message: 'Title and message are required' });
+        }
+
+        const organisationId = user.organisationId;
+        if (!organisationId) {
+            return res.status(400).json({ message: 'User is not associated with an organisation' });
+        }
+
+        // Fetch all active, non-deleted users in the admin's organisation
+        const orgUsers = await prisma.user.findMany({
+            where: {
+                organisationId,
+                isActive: true,
+                isDeleted: false
+            },
+            select: { id: true }
+        });
+
+        if (orgUsers.length === 0) {
+            return res.json({ success: true, count: 0, message: 'No users found in this organisation' });
+        }
+
+        const crypto = await import('crypto');
+
+        // Prepare notifications data with pre-generated UUIDs
+        const notificationsData = orgUsers.map(orgUser => ({
+            id: crypto.randomUUID(),
+            recipientId: orgUser.id,
+            title,
+            message,
+            type: 'popup',
+            isRead: false,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }));
+
+        // Batch insert
+        await prisma.notification.createMany({
+            data: notificationsData
+        });
+
+        // Real-time emission via Socket.io
+        const { getIO } = await import('../socket');
+        const io = getIO();
+        if (io) {
+            notificationsData.forEach(notif => {
+                io.to(notif.recipientId).emit('notification', notif);
+            });
+        }
+
+        res.json({ success: true, count: orgUsers.length, message: `Broadcast successfully sent to ${orgUsers.length} users` });
+    } catch (error) {
+        console.error('broadcastNotification Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};

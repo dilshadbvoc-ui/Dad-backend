@@ -5,7 +5,8 @@ import {
     updateOrganisationAdmin,
     suspendOrganisation,
     getOrganisationStats,
-    resetUserPassword
+    resetUserPassword,
+    broadcastToOrgAdmins
 } from '../controllers/superAdminController';
 import { deleteOrganisation, restoreOrganisation, permanentlyDeleteOrganisation } from '../controllers/organisationController';
 import {
@@ -64,5 +65,8 @@ router.delete('/faqs/:id', protect, deleteFAQ);
 
 // User Management (Cross-Organisation)
 router.post('/users/reset-password', protect, resetUserPassword);
+
+// Broadcast Notification to all Org Admins
+router.post('/broadcast-notification', protect, broadcastToOrgAdmins);
 
 export default router;

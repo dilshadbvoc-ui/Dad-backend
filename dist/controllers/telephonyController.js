@@ -69,16 +69,25 @@ const handleVoiceWebhook = async (req, res) => {
         }
         else if (From) {
             // Fix: Automatic lead lookup for inbound calls
-            const last10 = From.replace(/[^0-9]/g, '').slice(-10);
+            const cleanFrom = From.replace(/[^0-9]/g, '');
+            const last10 = cleanFrom.slice(-10);
             if (last10.length >= 10) {
+                const variations = Array.from(new Set([
+                    last10,
+                    `+91${last10}`,
+                    `91${last10}`,
+                    `0${last10}`,
+                    cleanFrom,
+                    From
+                ].filter(Boolean)));
                 const foundLead = await prisma_1.default.lead.findFirst({
                     where: {
                         organisationId: orgId,
+                        isDeleted: false,
                         OR: [
-                            { phone: { contains: last10 } },
-                            { secondaryPhone: { contains: last10 } }
-                        ],
-                        isDeleted: false
+                            { phone: { in: variations } },
+                            { secondaryPhone: { in: variations } }
+                        ]
                     },
                     select: { id: true, firstName: true, lastName: true }
                 });

@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetUserPassword = exports.getOrganisationStats = exports.suspendOrganisation = exports.updateOrganisationAdmin = exports.createOrganisation = exports.getAllOrganisations = void 0;
+exports.broadcastToOrgAdmins = exports.resetUserPassword = exports.getOrganisationStats = exports.suspendOrganisation = exports.updateOrganisationAdmin = exports.createOrganisation = exports.getAllOrganisations = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
 // Get all organisations (Super Admin only)
 const getAllOrganisations = async (req, res) => {
@@ -398,3 +398,57 @@ const resetUserPassword = async (req, res) => {
     }
 };
 exports.resetUserPassword = resetUserPassword;
+// Broadcast notification to all Org Admins (Super Admin Only)
+const broadcastToOrgAdmins = async (req, res) => {
+    try {
+        if (!req.user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Access denied. Super admin only.' });
+        }
+        const { title, message } = req.body;
+        if (!title || !message) {
+            return res.status(400).json({ message: 'Title and message are required' });
+        }
+        // Fetch all active organisation administrators
+        const orgAdmins = await prisma_1.default.user.findMany({
+            where: {
+                role: { in: ['admin', 'org_admin', 'organisation_admin'] },
+                isActive: true,
+                isDeleted: false
+            },
+            select: { id: true }
+        });
+        if (orgAdmins.length === 0) {
+            return res.json({ success: true, count: 0, message: 'No organisation administrators found' });
+        }
+        const crypto = await Promise.resolve().then(() => __importStar(require('crypto')));
+        // Prepare notifications data with pre-generated UUIDs
+        const notificationsData = orgAdmins.map(adminUser => ({
+            id: crypto.randomUUID(),
+            recipientId: adminUser.id,
+            title,
+            message,
+            type: 'popup',
+            isRead: false,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }));
+        // Batch insert
+        await prisma_1.default.notification.createMany({
+            data: notificationsData
+        });
+        // Real-time emission via Socket.io
+        const { getIO } = await Promise.resolve().then(() => __importStar(require('../socket')));
+        const io = getIO();
+        if (io) {
+            notificationsData.forEach(notif => {
+                io.to(notif.recipientId).emit('notification', notif);
+            });
+        }
+        res.json({ success: true, count: orgAdmins.length, message: `Broadcast successfully sent to ${orgAdmins.length} admins` });
+    }
+    catch (error) {
+        console.error('broadcastToOrgAdmins Error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.broadcastToOrgAdmins = broadcastToOrgAdmins;

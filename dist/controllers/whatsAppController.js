@@ -890,13 +890,21 @@ const logExternalMessage = async (req, res) => {
         const last10 = cleanPhone.length >= 10 ? cleanPhone.slice(-10) : null;
         // 1. Lead Lookup (if not provided or to verify)
         if (!targetLeadId && last10) {
+            const variations = Array.from(new Set([
+                last10,
+                `+91${last10}`,
+                `91${last10}`,
+                `0${last10}`,
+                cleanPhone,
+                phoneNumber
+            ].filter(Boolean)));
             const lead = await prisma_1.default.lead.findFirst({
                 where: {
                     organisationId: user.organisationId,
                     isDeleted: false,
                     OR: [
-                        { phone: { contains: last10 } },
-                        { secondaryPhone: { contains: last10 } }
+                        { phone: { in: variations } },
+                        { secondaryPhone: { in: variations } }
                     ]
                 },
                 select: { id: true, firstName: true }

@@ -78,13 +78,21 @@ const createInteractionGeneric = async (req, res) => {
             const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
             const last10 = cleanPhone.slice(-10);
             if (last10.length >= 10) {
+                const variations = Array.from(new Set([
+                    last10,
+                    `+91${last10}`,
+                    `91${last10}`,
+                    `0${last10}`,
+                    cleanPhone,
+                    phoneNumber
+                ].filter(Boolean)));
                 const matchedLead = await prisma_1.default.lead.findFirst({
                     where: {
                         organisationId: orgId,
                         isDeleted: false,
                         OR: [
-                            { phone: { contains: last10 } },
-                            { secondaryPhone: { contains: last10 } }
+                            { phone: { in: variations } },
+                            { secondaryPhone: { in: variations } }
                         ]
                     },
                     select: { id: true }

@@ -15,8 +15,11 @@ exports.generalLimiter = (0, express_rate_limit_1.default)({
     },
     standardHeaders: true,
     legacyHeaders: false,
-    // Skip rate limiting for health checks
-    skip: (req) => req.path === '/api/health',
+    // Skip rate limiting for health checks and login endpoints to prevent lockouts
+    skip: (req) => {
+        const path = req.originalUrl || req.path || '';
+        return path.includes('/health') || path.includes('/login');
+    },
 });
 // Strict rate limiting for authentication endpoints
 exports.authLimiter = (0, express_rate_limit_1.default)({
@@ -29,6 +32,10 @@ exports.authLimiter = (0, express_rate_limit_1.default)({
     standardHeaders: true,
     legacyHeaders: false,
     skipSuccessfulRequests: true, // Don't count successful requests
+    skip: (req) => {
+        const path = req.originalUrl || req.path || '';
+        return path.includes('/login');
+    },
 });
 // WhatsApp API rate limiting (more restrictive)
 exports.whatsappLimiter = (0, express_rate_limit_1.default)({
