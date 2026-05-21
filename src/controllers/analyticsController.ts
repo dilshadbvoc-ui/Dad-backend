@@ -192,12 +192,13 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 _sum: { amount: true }
             }),
 
-            // Pending Follow-ups
+            // Pending Follow-ups (due today or overdue only — not all-time)
             prisma.followUp.count({
                 where: {
                     ...combinedFilter,
                     isDeleted: false,
                     status: { in: ['not_started', 'in_progress'] },
+                    dueDate: { lte: new Date(new Date().setHours(23, 59, 59, 999)) },
                     ...(!isSuperAdmin && user.role !== 'admin' ? { assignedToId: { in: visibleUserIds } } : {})
                 }
             })
