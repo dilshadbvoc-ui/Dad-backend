@@ -52,11 +52,25 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         let entityId = null;
         let entityType = null;
 
-        // Try Lead
+        // Try Lead — use index-friendly exact match variations instead of LIKE wildcard
+        const last10Upload = cleanPhone.length >= 10 ? cleanPhone.slice(-10) : cleanPhone;
+        const uploadVariations = Array.from(new Set([
+            last10Upload,
+            `+91${last10Upload}`,
+            `91${last10Upload}`,
+            `0${last10Upload}`,
+            cleanPhone,
+            phoneNumber
+        ].filter(Boolean)));
+
         const lead = await prisma.lead.findFirst({
             where: {
                 organisationId: orgId || undefined,
-                phone: { contains: cleanPhone } // Loose match
+                isDeleted: false,
+                OR: [
+                    { phone: { in: uploadVariations } },
+                    { secondaryPhone: { in: uploadVariations } }
+                ]
             }
         });
 
@@ -95,13 +109,22 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
 
         let existingInteraction = null;
         if (last10.length >= 10) {
+            const dedupeVariations = Array.from(new Set([
+                last10,
+                `+91${last10}`,
+                `91${last10}`,
+                `0${last10}`,
+                cleanPhone,
+                phoneNumber
+            ].filter(Boolean)));
+
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: orgId || user.organisationId,
                     createdById: user.id,
                     type: 'call',
                     callStatus: 'initiated',
-                    phoneNumber: { contains: last10 },
+                    phoneNumber: { in: dedupeVariations },
                     date: { gte: searchWindowStart, lte: searchWindowEnd }
                 },
                 orderBy: { date: 'desc' }
@@ -201,13 +224,27 @@ export const logCallWithoutRecording = async (req: Request, res: Response) => {
         }
 
         // Clean phone number
-        const cleanPhone = phoneNumber.replace(/[^0-9]/g, '').slice(-10);
+        const cleanPhoneLog = phoneNumber.replace(/[^0-9]/g, '');
+        const cleanPhone = cleanPhoneLog.length >= 10 ? cleanPhoneLog.slice(-10) : cleanPhoneLog;
 
-        // Find Lead by phone
+        // Find Lead by phone — use index-friendly exact match variations
+        const logVariations = Array.from(new Set([
+            cleanPhone,
+            `+91${cleanPhone}`,
+            `91${cleanPhone}`,
+            `0${cleanPhone}`,
+            cleanPhoneLog,
+            phoneNumber
+        ].filter(Boolean)));
+
         const lead = await prisma.lead.findFirst({
             where: {
                 organisationId: orgId || undefined,
-                phone: { contains: cleanPhone }
+                isDeleted: false,
+                OR: [
+                    { phone: { in: logVariations } },
+                    { secondaryPhone: { in: logVariations } }
+                ]
             }
         });
 
@@ -222,13 +259,22 @@ export const logCallWithoutRecording = async (req: Request, res: Response) => {
         
         let existingInteraction = null;
         if (cleanPhone.length >= 10) {
+            const logDedupeVariations = Array.from(new Set([
+                cleanPhone,
+                `+91${cleanPhone}`,
+                `91${cleanPhone}`,
+                `0${cleanPhone}`,
+                cleanPhoneLog,
+                phoneNumber
+            ].filter(Boolean)));
+
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: orgId || user.organisationId,
                     createdById: user.id,
                     type: 'call',
                     callStatus: 'initiated',
-                    phoneNumber: { contains: cleanPhone },
+                    phoneNumber: { in: logDedupeVariations },
                     date: { gte: searchWindowStart, lte: searchWindowEnd }
                 },
                 orderBy: { date: 'desc' }
