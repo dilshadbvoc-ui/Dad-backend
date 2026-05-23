@@ -319,6 +319,7 @@ model Lead {
   @@index([isReEnquiry])
   @@index([email])
   @@index([branchId])
+  @@index([rotationViolation])
 }
 
 model CallRecording {
@@ -381,6 +382,7 @@ model Account {
   @@index([organisationId])
   @@index([name])
   @@index([branchId])
+  @@index([ownerId])
 }
 
 model Contact {
@@ -431,6 +433,7 @@ model Contact {
   @@index([email])
   @@index([firstName, lastName])
   @@index([branchId])
+  @@index([ownerId])
 }
 
 model Opportunity {
@@ -481,6 +484,7 @@ model Opportunity {
   @@index([accountId])
   @@index([pipelineId])
   @@index([branchId])
+  @@index([ownerId])
 }
 
 enum OpportunityType {

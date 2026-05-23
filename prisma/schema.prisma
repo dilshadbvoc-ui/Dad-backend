@@ -317,6 +317,7 @@ model Lead {
   @@index([isReEnquiry])
   @@index([email])
   @@index([branchId])
+  @@index([rotationViolation])
   branchId       String?
   branch         Branch?         @relation(fields: [branchId], references: [id])
 }
@@ -381,6 +382,7 @@ model Account {
   branchId        String?
   branch          Branch?         @relation(fields: [branchId], references: [id])
   @@index([branchId])
+  @@index([ownerId])
 }
 
 model Contact {
@@ -431,6 +433,7 @@ model Contact {
   branchId       String?
   branch         Branch?         @relation(fields: [branchId], references: [id])
   @@index([branchId])
+  @@index([ownerId])
 }
 
 model Opportunity {
@@ -481,6 +484,7 @@ model Opportunity {
   branchId       String?
   branch         Branch?         @relation(fields: [branchId], references: [id])
   @@index([branchId])
+  @@index([ownerId])
 }
 
 enum OpportunityType {
