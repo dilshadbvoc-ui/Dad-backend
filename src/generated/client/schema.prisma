@@ -231,6 +231,9 @@ model Notification {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   recipient       User     @relation("NotificationRecipient", fields: [recipientId], references: [id])
+
+  @@index([recipientId])
+  @@index([recipientId, isRead])
 }
 
 model Lead {
