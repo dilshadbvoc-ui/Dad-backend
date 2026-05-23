@@ -237,8 +237,8 @@ router.get('/callback', async (req, res) => {
         const currentIntegrations = org.integrations || {};
         let metaAccounts = Array.isArray(currentIntegrations.metaAccounts) ? [...currentIntegrations.metaAccounts] : [];
         // 5. Prepare all account objects
-        const newAccounts = pages.map((page) => ({
-            connected: true,
+        const newAccounts = pages.map((page, index) => ({
+            connected: index === 0, // Only connected by default for the primary page
             accessToken: page.access_token,
             userAccessToken: longLivedToken,
             tokenExpiresAt: tokenExpiresAt,
@@ -368,8 +368,23 @@ router.post('/disconnect', authMiddleware_1.protect, async (req, res) => {
         }
         const currentIntegrations = org.integrations || {};
         if (type === 'meta' || type === 'both') {
+            const pageIdToRemove = req.body.pageId;
             const accountIdToRemove = req.body.adAccountId;
-            if (accountIdToRemove) {
+            if (pageIdToRemove) {
+                // Remove specific page
+                if (currentIntegrations.metaAccounts) {
+                    currentIntegrations.metaAccounts = currentIntegrations.metaAccounts.filter((acc) => acc.pageId !== pageIdToRemove);
+                }
+                // Check if primary is the one being removed
+                if (currentIntegrations.meta?.pageId === pageIdToRemove) {
+                    // Promote another one or clear
+                    currentIntegrations.meta = currentIntegrations.metaAccounts[0] || {
+                        connected: false,
+                        disconnectedAt: new Date().toISOString()
+                    };
+                }
+            }
+            else if (accountIdToRemove) {
                 // Remove specific account
                 if (currentIntegrations.metaAccounts) {
                     currentIntegrations.metaAccounts = currentIntegrations.metaAccounts.filter((acc) => acc.adAccountId !== accountIdToRemove);

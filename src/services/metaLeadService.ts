@@ -110,7 +110,10 @@ export const MetaLeadService = {
                     if (integrations.meta) accounts.push(integrations.meta);
                     const matchedAccount = accounts.find((acc: any) => acc.pageId === pageId);
 
-                    if (!matchedAccount) continue;
+                    if (!matchedAccount || !matchedAccount.connected) {
+                        console.log(`[MetaLeadService] Skipping Org ${org.id}: Page ${pageId} is not connected/enabled for lead sync.`);
+                        continue;
+                    }
 
                     // --- STRICT AD ACCOUNT VALIDATION ---
                     const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
