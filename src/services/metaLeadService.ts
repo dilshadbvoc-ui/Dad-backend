@@ -277,7 +277,7 @@ export const MetaLeadService = {
                 email: getField(['email', 'email address', 'email_address']),
                 city: getField(['city', 'location']),
                 company: getField(['company', 'organization', 'company name']),
-                campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || `Form: ${metaLeadData.form_id}` || 'Meta Lead'
+                campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || metaLeadData.form_name || `Form: ${metaLeadData.form_id || formId}` || 'Meta Lead'
             };
 
             const targetBranchId = await DistributionService.resolveBranchForMetaPage(orgId, pageId);

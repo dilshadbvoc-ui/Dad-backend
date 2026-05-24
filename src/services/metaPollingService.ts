@@ -113,6 +113,9 @@ export const MetaPollingService = {
                                     
                                     for (const leadData of leads) {
                                         try {
+                                            // Attach form name so the lead service can use it as campaign name fallback
+                                            leadData.form_name = form.name;
+
                                             // ✅ Route through MetaLeadGuard to prevent duplicates
                                             const { MetaLeadGuard } = await import('./metaLeadGuard');
                                             const lockAcquired = await MetaLeadGuard.acquireLock(leadData.id, org.id);
