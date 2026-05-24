@@ -44,6 +44,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const metaLeadService_1 = require("../services/metaLeadService"); // Service for handling Meta leads
 const metaIntegrationService_1 = require("../services/metaIntegrationService");
 const encryption_1 = require("../utils/encryption");
+const metaLeadGuard_1 = require("../services/metaLeadGuard");
 const router = (0, express_1.Router)();
 // Meta OAuth Configuration
 const META_API_VERSION = 'v18.0';
@@ -529,6 +530,112 @@ router.post('/webhook', async (req, res) => {
         console.error('[MetaWebhook] Unexpected error:', error);
     }
 });
-// Cleanup deprecated or redundant routes
-router.post('/callback', (req, res) => res.sendStatus(404));
+/**
+ * GET /api/meta/health-check
+ * Diagnostic endpoint: verifies the entire Meta lead pipeline is healthy.
+ * Use this to instantly see what's working and what's broken.
+ */
+router.get('/health-check', authMiddleware_1.protect, async (req, res) => {
+    const checks = {};
+    // 1. Check environment variables
+    const requiredEnvVars = ['META_APP_ID', 'META_APP_SECRET', 'META_VERIFY_TOKEN', 'META_WEBHOOK_SECRET'];
+    for (const envVar of requiredEnvVars) {
+        if (process.env[envVar]) {
+            checks[envVar] = { status: 'ok', message: 'Set ✓' };
+        }
+        else {
+            checks[envVar] = { status: 'error', message: '❌ NOT SET — This will break webhooks!' };
+        }
+    }
+    // 2. Check webhook URL (what Meta should be configured with)
+    const serverUrl = process.env.SERVER_URL || `${req.protocol}://${req.get('host')}`;
+    const webhookUrl = `${serverUrl}/api/meta/webhook`;
+    const callbackUrl = `${serverUrl}/api/meta/callback`;
+    const verifyToken = process.env.META_VERIFY_TOKEN || '(not set)';
+    // 3. Check organisation's Meta connection
+    const orgId = req.user.organisationId;
+    try {
+        const org = await prisma_1.default.organisation.findUnique({
+            where: { id: orgId },
+            select: { integrations: true }
+        });
+        const integrations = org?.integrations || {};
+        const metaAccounts = integrations.metaAccounts || [];
+        const connectedAccounts = metaAccounts.filter((acc) => acc.connected && acc.pageId);
+        if (connectedAccounts.length === 0 && !integrations.meta?.connected) {
+            checks['meta_connection'] = { status: 'error', message: 'No Meta account connected. Go to Settings → Integrations.' };
+        }
+        else {
+            checks['meta_connection'] = {
+                status: 'ok',
+                message: `${connectedAccounts.length} page(s) connected: ${connectedAccounts.map((a) => a.pageName || a.pageId).join(', ')}`
+            };
+        }
+        // 4. Check token expiry
+        for (const acc of connectedAccounts) {
+            if (acc.tokenExpiresAt) {
+                const expiresAt = new Date(acc.tokenExpiresAt);
+                const daysLeft = Math.floor((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                if (daysLeft < 7) {
+                    checks[`token_${acc.pageName || acc.pageId}`] = {
+                        status: 'error',
+                        message: `⚠️ Token expires in ${daysLeft} days! Reconnect immediately.`
+                    };
+                }
+                else {
+                    checks[`token_${acc.pageName || acc.pageId}`] = {
+                        status: 'ok',
+                        message: `Token valid for ${daysLeft} more days`
+                    };
+                }
+            }
+        }
+    }
+    catch (dbErr) {
+        checks['meta_connection'] = { status: 'error', message: `DB error: ${dbErr.message}` };
+    }
+    // 5. Guard stats
+    const guardStats = metaLeadGuard_1.MetaLeadGuard.getStats();
+    const hasErrors = Object.values(checks).some(c => c.status === 'error');
+    res.status(hasErrors ? 200 : 200).json({
+        healthy: !hasErrors,
+        summary: hasErrors ? '⚠️ Issues detected — see checks below' : '✅ All systems operational',
+        checks,
+        webhookConfig: {
+            primaryWebhookUrl: webhookUrl,
+            fallbackCallbackUrl: callbackUrl,
+            verifyToken,
+            instructions: 'In Meta Developer Console → Your App → Webhooks: Set Callback URL to primaryWebhookUrl above, Verify Token to verifyToken above, subscribe to "leadgen" field.'
+        },
+        guardStats,
+        timestamp: new Date().toISOString()
+    });
+});
+/**
+ * POST /api/meta/test-lead
+ * Manually trigger a test lead fetch & save for debugging.
+ * Useful when you want to test the pipeline end-to-end without waiting for Meta.
+ */
+router.post('/test-lead', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const { leadgenId, pageId } = req.body;
+        if (!leadgenId || !pageId) {
+            return res.status(400).json({
+                error: 'Missing required fields: leadgenId, pageId',
+                example: { leadgenId: '123456789', pageId: '987654321' }
+            });
+        }
+        console.log(`[MetaTest] Manual test lead trigger: leadgenId=${leadgenId}, pageId=${pageId}`);
+        // Run the full pipeline
+        await metaLeadService_1.MetaLeadService.processIncomingLead(leadgenId, pageId);
+        res.json({
+            success: true,
+            message: `Lead processing triggered for ${leadgenId}. Check server logs for details.`,
+            guardStats: metaLeadGuard_1.MetaLeadGuard.getStats()
+        });
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 exports.default = router;

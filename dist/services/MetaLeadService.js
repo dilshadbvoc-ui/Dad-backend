@@ -43,6 +43,7 @@ const distributionService_1 = require("./distributionService");
 const notificationService_1 = require("./notificationService");
 const client_1 = require("../generated/client");
 const encryption_1 = require("../utils/encryption");
+const metaLeadGuard_1 = require("./metaLeadGuard");
 let leadQueue = [];
 let isProcessingQueue = false;
 exports.MetaLeadService = {
@@ -126,6 +127,11 @@ exports.MetaLeadService = {
             }
             // 4. Process the lead for EACH matching organisation
             for (const org of allCandidates) {
+                // ✅ GUARD: Acquire idempotency lock before processing
+                // This prevents duplicate creation if webhook + polling both fire for the same lead
+                const lockAcquired = await metaLeadGuard_1.MetaLeadGuard.acquireLock(leadgenId, org.id);
+                if (!lockAcquired)
+                    continue; // Already being processed or already saved
                 try {
                     const integrations = org.integrations || {};
                     const accounts = [...(integrations.metaAccounts || [])];
@@ -134,6 +140,7 @@ exports.MetaLeadService = {
                     const matchedAccount = accounts.find((acc) => acc.pageId === pageId);
                     if (!matchedAccount || !matchedAccount.connected) {
                         console.log(`[MetaLeadService] Skipping Org ${org.id}: Page ${pageId} is not connected/enabled for lead sync.`);
+                        metaLeadGuard_1.MetaLeadGuard.releaseLock(leadgenId, org.id);
                         continue;
                     }
                     // --- STRICT AD ACCOUNT VALIDATION ---
@@ -142,23 +149,34 @@ exports.MetaLeadService = {
                         const normalizedLeadAdId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
                         // 1. Check in Whitelist (enabledLeadSyncAccounts)
                         const enabledAccounts = matchedAccount.enabledLeadSyncAccounts || [];
-                        const isWhitelisted = enabledAccounts.some(id => {
+                        const isWhitelisted = enabledAccounts.some((id) => {
                             const normalizedId = id.startsWith('act_') ? id : `act_${id}`;
                             return normalizedId === normalizedLeadAdId;
                         });
                         // 2. Check in Main Ad Account Field (adAccountId)
                         const mainAdAccountId = matchedAccount.adAccountId;
                         const isMainMatch = mainAdAccountId && ((mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId);
-                        // 3. If it matches NEITHER, block it.
-                        // This prevents cross-org contamination if two orgs share a Page ID
-                        if (!isWhitelisted && !isMainMatch) {
-                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}`);
+                        // 3. If no whitelist is configured AND no adAccountId set,
+                        //    allow the lead (user hasn't configured filtering yet)
+                        const hasAnyFilter = enabledAccounts.length > 0 || !!mainAdAccountId;
+                        // 4. If it matches NEITHER, block it.
+                        if (hasAnyFilter && !isWhitelisted && !isMainMatch) {
+                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}. MainAcc: ${mainAdAccountId}, Whitelist: [${enabledAccounts.join(',')}]`);
+                            metaLeadGuard_1.MetaLeadGuard.releaseLock(leadgenId, org.id);
                             continue;
                         }
+                        if (!hasAnyFilter) {
+                            console.log(`[MetaLeadService] No ad account filter configured for Org ${org.id}. Allowing lead ${metaLeadData.id}.`);
+                        }
+                    }
+                    else {
+                        console.log(`[MetaLeadService] Lead ${metaLeadData.id} has no ad_account_id from Meta. Proceeding without account filtering.`);
                     }
                     await this.saveAndDistributeLead(org.id, pageId, metaLeadData, formId, adId);
+                    metaLeadGuard_1.MetaLeadGuard.markSuccess(leadgenId, org.id);
                 }
                 catch (orgErr) {
+                    metaLeadGuard_1.MetaLeadGuard.markFailure(leadgenId, org.id, orgErr);
                     console.error(`[MetaLeadService] Error processing for Org ${org.id}:`, orgErr.message);
                 }
             }
@@ -226,7 +244,13 @@ exports.MetaLeadService = {
     async saveAndDistributeLead(orgId, pageId, metaLeadData, formId, adId) {
         try {
             const leadgenId = metaLeadData.id;
-            // 1. Check if lead already exists in THIS organisation
+            // Validate lead data structure before processing
+            const validationError = metaLeadGuard_1.MetaLeadGuard.validateLeadData(metaLeadData);
+            if (validationError) {
+                console.error(`[MetaLeadService] Invalid lead data for Org ${orgId}: ${validationError}`);
+                return;
+            }
+            // 1. Final DB dedup check (last line of defence)
             const existing = await prisma_1.default.lead.findFirst({
                 where: {
                     organisationId: orgId,
@@ -234,6 +258,7 @@ exports.MetaLeadService = {
                 }
             });
             if (existing) {
+                console.log(`[MetaLeadService] Lead ${leadgenId} already exists in DB for Org ${orgId} (Lead ID: ${existing.id}). Skipping save.`);
                 return;
             }
             // 2. Map Field Data

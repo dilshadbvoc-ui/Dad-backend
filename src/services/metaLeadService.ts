@@ -42,7 +42,7 @@ export const MetaLeadService = {
             const allCandidates = [...candidates];
             if (allCandidates.length === 0) {
                 const potentialOrgs = await prisma.organisation.findMany({
-                    where: { isDeleted: false, integrations: { path: ['metaAccounts'], not: Prisma.JsonNull } }
+                    where: { isDeleted: false, integrations: { not: Prisma.JsonNull } }
                 });
                 const dynamicMatches = potentialOrgs.filter(o => {
                     const accounts = (o.integrations as any)?.metaAccounts;
@@ -124,17 +124,19 @@ export const MetaLeadService = {
                     // --- STRICT AD ACCOUNT VALIDATION ---
                     const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
                     if (adAccountId) {
-                        const normalizedLeadAdId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
+                        const strAdAccountId = String(adAccountId);
+                        const normalizedLeadAdId = strAdAccountId.startsWith('act_') ? strAdAccountId : `act_${strAdAccountId}`;
                         
                         // 1. Check in Whitelist (enabledLeadSyncAccounts)
                         const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
                         const isWhitelisted = enabledAccounts.some((id: string) => {
-                            const normalizedId = id.startsWith('act_') ? id : `act_${id}`;
+                            const strId = String(id);
+                            const normalizedId = strId.startsWith('act_') ? strId : `act_${strId}`;
                             return normalizedId === normalizedLeadAdId;
                         });
 
                         // 2. Check in Main Ad Account Field (adAccountId)
-                        const mainAdAccountId = matchedAccount.adAccountId;
+                        const mainAdAccountId = matchedAccount.adAccountId ? String(matchedAccount.adAccountId) : null;
                         const isMainMatch = mainAdAccountId && (
                             (mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId
                         );
