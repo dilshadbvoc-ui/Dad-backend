@@ -721,6 +721,10 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         phoneNumber
                     ].filter(Boolean)));
 
+                    // Tightened from 1-hour to 30-minute window to reduce ghost mismatches
+                    const fuzzyWindowStart = new Date(callDate.getTime() - 30 * 60 * 1000);
+                    const fuzzyWindowEnd   = new Date(callDate.getTime() + 5 * 60 * 1000);
+
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
@@ -729,8 +733,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                             callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
                             phoneNumber: { in: variations },
                             date: {
-                                gte: searchWindowStart,
-                                lte: searchWindowEnd
+                                gte: fuzzyWindowStart,
+                                lte: fuzzyWindowEnd
                             }
                         },
                         orderBy: { date: 'desc' }
@@ -932,6 +936,19 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     phoneDigits,
                     phoneNumber
                 ].filter(Boolean)));
+
+                // Extra guard: if hardwareId was provided, do a final global check
+                // (catches cases where /recordings already created this entry)
+                if (hardwareId && hardwareId.length > 0 && hardwareId !== 'none') {
+                    const hwGuard = await prisma.interaction.findFirst({
+                        where: { organisationId: user.organisationId, hardwareId }
+                    });
+                    if (hwGuard) {
+                        console.log(`[BulkSync] HardwareId guard: interaction ${hwGuard.id} already exists for hwId=${hardwareId}. Skipping create.`);
+                        results.synced.push(phoneNumber);
+                        continue;
+                    }
+                }
 
                 const raceCheck = await prisma.interaction.findFirst({
                     where: {

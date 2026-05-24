@@ -68,7 +68,7 @@ exports.MetaLeadService = {
             const allCandidates = [...candidates];
             if (allCandidates.length === 0) {
                 const potentialOrgs = await prisma_1.default.organisation.findMany({
-                    where: { isDeleted: false, integrations: { path: ['metaAccounts'], not: client_1.Prisma.JsonNull } }
+                    where: { isDeleted: false, integrations: { not: client_1.Prisma.JsonNull } }
                 });
                 const dynamicMatches = potentialOrgs.filter(o => {
                     const accounts = o.integrations?.metaAccounts;
@@ -146,15 +146,17 @@ exports.MetaLeadService = {
                     // --- STRICT AD ACCOUNT VALIDATION ---
                     const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
                     if (adAccountId) {
-                        const normalizedLeadAdId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
+                        const strAdAccountId = String(adAccountId);
+                        const normalizedLeadAdId = strAdAccountId.startsWith('act_') ? strAdAccountId : `act_${strAdAccountId}`;
                         // 1. Check in Whitelist (enabledLeadSyncAccounts)
                         const enabledAccounts = matchedAccount.enabledLeadSyncAccounts || [];
                         const isWhitelisted = enabledAccounts.some((id) => {
-                            const normalizedId = id.startsWith('act_') ? id : `act_${id}`;
+                            const strId = String(id);
+                            const normalizedId = strId.startsWith('act_') ? strId : `act_${strId}`;
                             return normalizedId === normalizedLeadAdId;
                         });
                         // 2. Check in Main Ad Account Field (adAccountId)
-                        const mainAdAccountId = matchedAccount.adAccountId;
+                        const mainAdAccountId = matchedAccount.adAccountId ? String(matchedAccount.adAccountId) : null;
                         const isMainMatch = mainAdAccountId && ((mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId);
                         // 3. If no whitelist is configured AND no adAccountId set,
                         //    allow the lead (user hasn't configured filtering yet)
@@ -281,7 +283,7 @@ exports.MetaLeadService = {
                 email: getField(['email', 'email address', 'email_address']),
                 city: getField(['city', 'location']),
                 company: getField(['company', 'organization', 'company name']),
-                campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || `Form: ${metaLeadData.form_id}` || 'Meta Lead'
+                campaign_name: metaLeadData.campaign_name || metaLeadData.ad_name || metaLeadData.form_name || `Form: ${metaLeadData.form_id || formId}` || 'Meta Lead'
             };
             const targetBranchId = await distributionService_1.DistributionService.resolveBranchForMetaPage(orgId, pageId);
             const crmData = {
