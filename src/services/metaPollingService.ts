@@ -54,14 +54,16 @@ export const MetaPollingService = {
                         const formsResponse = await axios.get(`https://graph.facebook.com/v18.0/${account.pageId}/leadgen_forms`, {
                             params: {
                                 access_token: accessToken,
-                                fields: 'id,name',
+                                fields: 'id,name,status',
                                 limit: 50
                             }
                         });
 
-                        const forms = formsResponse.data.data || [];
-                        // Use 12 min buffer (cron runs every 10 min + 2 min safety overlap)
-                        const sinceTime = Math.floor(Date.now() / 1000) - (12 * 60);
+                        const allForms = formsResponse.data.data || [];
+                        const forms = allForms.filter((f: any) => f.status === 'ACTIVE');
+
+                        // Use 32 min buffer (cron runs every 30 min + 2 min safety overlap)
+                        const sinceTime = Math.floor(Date.now() / 1000) - (32 * 60);
                         logger.info(`Checking ${forms.length} forms for page ${account.pageName || account.pageId} since ${new Date(sinceTime * 1000).toISOString()}`, 'MetaPolling', undefined, org.id);
 
                         for (const form of forms) {
