@@ -60,8 +60,8 @@ export const MetaPollingService = {
                         });
 
                         const forms = formsResponse.data.data || [];
-                        // Use 15 min buffer (cron runs every 10 min + 5 min safety overlap)
-                        const sinceTime = Math.floor(Date.now() / 1000) - (15 * 60);
+                        // Use 12 min buffer (cron runs every 10 min + 2 min safety overlap)
+                        const sinceTime = Math.floor(Date.now() / 1000) - (12 * 60);
                         logger.info(`Checking ${forms.length} forms for page ${account.pageName || account.pageId} since ${new Date(sinceTime * 1000).toISOString()}`, 'MetaPolling', undefined, org.id);
 
                         for (const form of forms) {
@@ -86,8 +86,21 @@ export const MetaPollingService = {
                                     
                                     for (const leadData of leads) {
                                         try {
-                                            // 3. Process the lead directly with the data we already have
-                                            await MetaLeadService.saveAndDistributeLead(org.id, account.pageId, leadData, form.id);
+                                            // ✅ Route through MetaLeadGuard to prevent duplicates
+                                            // if the same lead was already processed by the webhook
+                                            const { MetaLeadGuard } = await import('./metaLeadGuard');
+                                            const lockAcquired = await MetaLeadGuard.acquireLock(leadData.id, org.id);
+                                            if (!lockAcquired) {
+                                                logger.info(`[MetaPolling] Lead ${leadData.id} already processed (webhook/dedup). Skipping.`, 'MetaPolling', undefined, org.id);
+                                                continue;
+                                            }
+                                            try {
+                                                await MetaLeadService.saveAndDistributeLead(org.id, account.pageId, leadData, form.id);
+                                                MetaLeadGuard.markSuccess(leadData.id, org.id);
+                                            } catch (saveErr: any) {
+                                                MetaLeadGuard.markFailure(leadData.id, org.id, saveErr);
+                                                throw saveErr;
+                                            }
                                         } catch (leadErr: any) {
                                             if (!leadErr.message?.includes('already exists')) {
                                                 logger.error(`Error processing lead ${leadData.id}: ${leadErr.message}`, leadErr, 'MetaPolling', undefined, org.id);
