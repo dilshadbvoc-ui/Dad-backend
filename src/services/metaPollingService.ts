@@ -6,6 +6,24 @@ import logger from '../utils/logger';
 
 let isPolling = false;
 
+// Rate-limit cooldown map: pageId -> timestamp when cooldown expires
+const rateLimitCooldown = new Map<string, number>();
+const RATE_LIMIT_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+function isRateLimited(pageId: string): boolean {
+    const expiresAt = rateLimitCooldown.get(pageId);
+    if (!expiresAt) return false;
+    if (Date.now() < expiresAt) return true;
+    rateLimitCooldown.delete(pageId); // expired, clear it
+    return false;
+}
+
+function markRateLimited(pageId: string) {
+    const expiresAt = Date.now() + RATE_LIMIT_COOLDOWN_MS;
+    rateLimitCooldown.set(pageId, expiresAt);
+    logger.info(`[MetaPolling] Page ${pageId} is rate-limited. Skipping for 2 hours until ${new Date(expiresAt).toISOString()}.`, 'MetaPolling');
+}
+
 export const MetaPollingService = {
     /**
      * Polls Meta for new leads across all connected organisations
@@ -46,6 +64,13 @@ export const MetaPollingService = {
 
                 for (const account of accounts) {
                     if (!account.connected || !account.accessToken || !account.pageId) continue;
+
+                    // Skip pages that are currently rate-limited
+                    if (isRateLimited(account.pageId)) {
+                        const expiresAt = new Date(rateLimitCooldown.get(account.pageId)!).toISOString();
+                        logger.info(`[MetaPolling] Skipping page ${account.pageName || account.pageId} — rate-limited until ${expiresAt}`, 'MetaPolling', undefined, org.id);
+                        continue;
+                    }
 
                     try {
                         const accessToken = decrypt(account.accessToken);
@@ -89,11 +114,10 @@ export const MetaPollingService = {
                                     for (const leadData of leads) {
                                         try {
                                             // ✅ Route through MetaLeadGuard to prevent duplicates
-                                            // if the same lead was already processed by the webhook
                                             const { MetaLeadGuard } = await import('./metaLeadGuard');
                                             const lockAcquired = await MetaLeadGuard.acquireLock(leadData.id, org.id);
                                             if (!lockAcquired) {
-                                                logger.info(`[MetaPolling] Lead ${leadData.id} already processed (webhook/dedup). Skipping.`, 'MetaPolling', undefined, org.id);
+                                                logger.info(`Lead ${leadData.id} already processed (webhook/dedup). Skipping.`, 'MetaPolling', undefined, org.id);
                                                 continue;
                                             }
                                             try {
@@ -112,23 +136,37 @@ export const MetaPollingService = {
                                 }
                             } catch (formErr: any) {
                                 const errorData = formErr.response?.data || formErr.message;
+                                const errorCode = formErr.response?.data?.error?.code;
                                 const errorString = JSON.stringify(errorData);
+
+                                // If rate limited on a form, mark the whole page as rate-limited and bail out
+                                if (errorCode === 80005 || errorString.includes('80005') || errorString.includes('too many leadgen api calls')) {
+                                    markRateLimited(account.pageId);
+                                    logger.error(`Page ${account.pageName || account.pageId} hit rate limit — stopping form loop for this page.`, formErr, 'MetaPolling', undefined, org.id);
+                                    break; // stop processing more forms for this page
+                                }
+
                                 logger.error(`Failed to fetch leads for form ${form.id} (${org.name}): ${errorString}`, formErr, 'MetaPolling', undefined, org.id);
                                 
-                                // Send alert for critical API errors (e.g. expired tokens)
-                                if (errorString.includes('Error validating access token') || errorString.includes('OAuthException')) {
+                                // Send alert for critical auth errors
+                                if (errorString.includes('Error validating access token') || (errorString.includes('OAuthException') && errorCode !== 80005)) {
                                     await this.sendAlertEmail(errorString, org.name, org.id);
                                 }
                             }
                         }
                     } catch (accountErr: any) {
                         const errorData = accountErr.response?.data || accountErr.message;
+                        const errorCode = accountErr.response?.data?.error?.code;
                         const errorString = JSON.stringify(errorData);
-                        logger.error(`Failed to poll Meta account ${account.pageId} (${org.name}): ${errorString}`, accountErr, 'MetaPolling', undefined, org.id);
-                        
-                        // Send alert for authentication failures
-                        if (errorString.includes('access token') || errorString.includes('permission')) {
-                            await this.sendAlertEmail(errorString, org.name, org.id);
+
+                        // Rate limit on the forms-list call itself
+                        if (errorCode === 80005 || errorString.includes('80005') || errorString.includes('too many leadgen api calls')) {
+                            markRateLimited(account.pageId);
+                        } else {
+                            logger.error(`Failed to poll Meta account ${account.pageId} (${org.name}): ${errorString}`, accountErr, 'MetaPolling', undefined, org.id);
+                            if (errorString.includes('access token') || errorString.includes('permission')) {
+                                await this.sendAlertEmail(errorString, org.name, org.id);
+                            }
                         }
                     }
                 }
