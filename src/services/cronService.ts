@@ -287,8 +287,9 @@ export const initCronJobs = () => {
 
     // Run every day at 03:00 AM (Meta Token Expiry Check)
     cron.schedule('0 3 * * *', async () => {
-        console.log('[Cron] Checking for expiring Meta tokens...');
+        console.log('[Cron] Checking for expiring or expired Meta tokens...');
         try {
+            const now = new Date();
             const sevenDaysFromNow = new Date();
             sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
@@ -301,25 +302,60 @@ export const initCronJobs = () => {
 
             for (const org of organisations) {
                 const integrations = org.integrations as any;
-                if (integrations?.meta?.connected && integrations?.meta?.tokenExpiresAt) {
-                    const expiresAt = new Date(integrations.meta.tokenExpiresAt);
-                    if (expiresAt < sevenDaysFromNow) {
-                        // Notify admins
-                        const admins = await prisma.user.findMany({
-                            where: { organisationId: org.id, role: 'admin', isActive: true }
+                
+                // Gather ALL connected accounts (metaAccounts array + primary meta field)
+                const allAccounts: any[] = [...(integrations?.metaAccounts || [])];
+                if (integrations?.meta?.connected) {
+                    const alreadyIncluded = allAccounts.some((a: any) => a.pageId === integrations.meta.pageId);
+                    if (!alreadyIncluded) allAccounts.push(integrations.meta);
+                }
+
+                for (const acc of allAccounts) {
+                    if (!acc.connected || !acc.tokenExpiresAt) continue;
+
+                    const expiresAt = new Date(acc.tokenExpiresAt);
+                    const daysLeft = Math.floor((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                    const pageName = acc.pageName || acc.pageId || 'Unknown Page';
+
+                    let alertTitle: string | null = null;
+                    let alertMsg: string | null = null;
+
+                    if (expiresAt < now) {
+                        // ALREADY EXPIRED
+                        alertTitle = `❌ Meta Token EXPIRED — ${pageName}`;
+                        alertMsg = `Your Meta access token for page "${pageName}" has EXPIRED. Leads are no longer being received! Go to Settings → Integrations and reconnect immediately.`;
+                    } else if (expiresAt < sevenDaysFromNow) {
+                        // EXPIRING SOON
+                        alertTitle = `⚠️ Meta Token Expiring in ${daysLeft} days — ${pageName}`;
+                        alertMsg = `Your Meta access token for page "${pageName}" will expire on ${expiresAt.toLocaleDateString()}. Please reconnect in Settings → Integrations to avoid losing leads.`;
+                    }
+
+                    if (alertTitle && alertMsg) {
+                        // Check if we already sent a notification in the last 24 hours for this page
+                        const recentNotif = await prisma.notification.findFirst({
+                            where: {
+                                organisationId: org.id,
+                                title: alertTitle,
+                                createdAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) }
+                            }
                         });
 
-                        for (const admin of admins) {
-                            // Check if a warning was already sent in the last 24h to avoid spam
-                            await prisma.notification.create({
-                                data: {
-                                    title: 'Meta Connection Expiring Soon',
-                                    message: `Your Meta access token for ${org.name} will expire on ${expiresAt.toLocaleDateString()}. Please reconnect in Settings -> Integrations to avoid service interruption.`,
-                                    type: 'warning',
-                                    recipientId: admin.id,
-                                    organisationId: org.id
-                                }
+                        if (!recentNotif) {
+                            const admins = await prisma.user.findMany({
+                                where: { organisationId: org.id, role: { in: ['admin', 'super_admin'] }, isActive: true }
                             });
+                            for (const admin of admins) {
+                                await prisma.notification.create({
+                                    data: {
+                                        title: alertTitle,
+                                        message: alertMsg,
+                                        type: expiresAt < now ? 'error' : 'warning',
+                                        recipientId: admin.id,
+                                        organisationId: org.id
+                                    }
+                                });
+                            }
+                            console.log(`[Cron] Sent Meta token alert for Org ${org.name} (${pageName}): ${daysLeft} days left`);
                         }
                     }
                 }

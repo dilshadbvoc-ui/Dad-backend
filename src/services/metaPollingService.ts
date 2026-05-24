@@ -60,7 +60,9 @@ export const MetaPollingService = {
                         });
 
                         const forms = formsResponse.data.data || [];
-                        const sinceTime = Math.floor(Date.now() / 1000) - (10 * 60); // 10 min buffer
+                        // Use 15 min buffer (cron runs every 10 min + 5 min safety overlap)
+                        const sinceTime = Math.floor(Date.now() / 1000) - (15 * 60);
+                        logger.info(`Checking ${forms.length} forms for page ${account.pageName || account.pageId} since ${new Date(sinceTime * 1000).toISOString()}`, 'MetaPolling', undefined, org.id);
 
                         for (const form of forms) {
                             try {
