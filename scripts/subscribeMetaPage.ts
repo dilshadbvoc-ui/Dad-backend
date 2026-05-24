@@ -1,12 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../src/config/prisma';
 import axios from 'axios';
 import { decrypt } from '../src/utils/encryption';
 import dotenv from 'dotenv';
 import path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
-
-const prisma = new PrismaClient();
 
 async function subscribePage() {
     const orgId = '85cc3715-7f8d-4f22-b0b0-a40a502bc6fa'; // Edufolio
