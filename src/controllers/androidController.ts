@@ -332,16 +332,61 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             // SYSTEM LOG RULE: If the new duration is > 0, we ALWAYS trust it over a 2s estimate
             const shouldUpdate = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
 
+            let direction: 'inbound' | 'outbound' = existingInteraction.direction as any || 'outbound';
+            let subject = existingInteraction.subject;
+            let status = finalizedDurationSecs > 0 ? 'completed' : 'failed';
+
+            const incomingIdentifiers = ['1', 'INCOMING', 'IN', 'INB'];
+            const outgoingIdentifiers = ['2', 'OUTGOING', 'OUT', 'OUTB'];
+            const missedIdentifiers = ['3', 'MISSED', 'MISS'];
+            const rejectedIdentifiers = ['5', 'REJECTED', 'REJ'];
+
+            if (outgoingIdentifiers.includes(rawType)) {
+                direction = 'outbound';
+                subject = finalizedDurationSecs > 0 ? 'Mobile Outbound Call' : 'Outbound Call Attempt (No Answer)';
+                status = finalizedDurationSecs > 0 ? 'completed' : 'failed';
+            } else if (missedIdentifiers.includes(rawType)) {
+                direction = 'inbound';
+                subject = targetLeadId ? 'Missed Call from Lead' : `Missed Call from ${phoneNumber}`;
+                status = 'missed';
+            } else if (rejectedIdentifiers.includes(rawType)) {
+                direction = 'inbound';
+                subject = targetLeadId ? 'Rejected Call from Lead' : `Rejected Call from ${phoneNumber}`;
+                status = 'rejected';
+            } else if (incomingIdentifiers.includes(rawType)) {
+                direction = 'inbound';
+                subject = 'Mobile Inbound Call';
+                status = finalizedDurationSecs > 0 ? 'completed' : 'failed';
+            } else {
+                if (direction === 'outbound') {
+                    subject = finalizedDurationSecs > 0 ? 'Mobile Outbound Call' : 'Outbound Call Attempt (No Answer)';
+                } else {
+                    subject = finalizedDurationSecs > 0 ? 'Mobile Inbound Call' : 'Mobile Call';
+                }
+            }
+
+            if (finalizedDurationSecs > 0) {
+                status = 'completed';
+            }
+
+            const formattedDescription = formatCallDurationDescription(finalizedDurationSecs, { 
+                hasRecording: !!file,
+                isCarrierVerified: carrierDurationSecs !== null
+            });
+
             const updateData: any = {
                 duration: shouldUpdate ? (Math.round(durationMinutes * 100) / 100) : undefined,
                 recordingDuration: shouldUpdate ? durationSecs : undefined,
                 recordingUrl: recording.fileUrl || undefined,
-                callStatus: finalizedDurationSecs > 0 ? 'completed' : 'failed',
+                callStatus: status,
+                subject: subject,
+                description: formattedDescription,
+                direction: direction,
                 lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
                 phoneNumber: phoneNumber || undefined,
                 hardwareId: hardwareId || undefined,
                 callSessionId: callSessionId || undefined,
-                date: callDate // Ensure the date field matches the official timestamp
+                // Omit date: callDate to prevent phone clock skew from altering CRM initiate date
             };
 
             if (shouldUpdate && carrierDurationSecs !== null) {
@@ -710,10 +755,55 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         const finalizedSyncDurationSecs = resolveBestDurationSeconds(tempSyncData);
 
                         console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${finalizedSyncDurationSecs}s (from ${existingInteraction.callStatus})`);
+                        
+                        let direction: 'inbound' | 'outbound' = existingInteraction.direction as any || 'outbound';
+                        let subject = existingInteraction.subject;
+                        let status = finalizedSyncDurationSecs > 0 ? 'completed' : 'failed';
+
+                        const incomingIdentifiers = ['1', 'INCOMING', 'IN', 'INB'];
+                        const outgoingIdentifiers = ['2', 'OUTGOING', 'OUT', 'OUTB'];
+                        const missedIdentifiers = ['3', 'MISSED', 'MISS'];
+                        const rejectedIdentifiers = ['5', 'REJECTED', 'REJ'];
+
+                        if (outgoingIdentifiers.includes(rawType)) {
+                            direction = 'outbound';
+                            subject = finalizedSyncDurationSecs > 0 ? 'Mobile Outbound Call' : 'Outbound Call Attempt (No Answer)';
+                            status = finalizedSyncDurationSecs > 0 ? 'completed' : 'failed';
+                        } else if (missedIdentifiers.includes(rawType)) {
+                            direction = 'inbound';
+                            subject = entity ? `Missed Call from ${entity.firstName || 'CRM Contact'}` : `Missed Call from ${phoneNumber}`;
+                            status = 'missed';
+                        } else if (rejectedIdentifiers.includes(rawType)) {
+                            direction = 'inbound';
+                            subject = entity ? `Rejected Call from ${entity.firstName || 'CRM Contact'}` : `Rejected Call from ${phoneNumber}`;
+                            status = 'rejected';
+                        } else if (incomingIdentifiers.includes(rawType)) {
+                            direction = 'inbound';
+                            subject = 'Mobile Inbound Call';
+                            status = finalizedSyncDurationSecs > 0 ? 'completed' : 'failed';
+                        } else {
+                            if (direction === 'outbound') {
+                                subject = finalizedSyncDurationSecs > 0 ? 'Mobile Outbound Call' : 'Outbound Call Attempt (No Answer)';
+                            } else {
+                                subject = finalizedSyncDurationSecs > 0 ? 'Mobile Inbound Call' : 'Mobile Call';
+                            }
+                        }
+
+                        if (finalizedSyncDurationSecs > 0) {
+                            status = 'completed';
+                        }
+
+                        const formattedDescription = formatCallDurationDescription(finalizedSyncDurationSecs, {
+                            isCarrierVerified: carrierDurationSecs !== null
+                        });
+
                         const updatePayload: any = {
                             duration: Math.round((finalizedSyncDurationSecs / 60) * 100) / 100,
                             recordingDuration: durationSecs,
-                            callStatus: finalizedSyncDurationSecs > 0 ? 'completed' : 'failed',
+                            callStatus: status,
+                            subject: subject,
+                            description: formattedDescription,
+                            direction: direction,
                         };
 
                         if (hardwareId) updatePayload.hardwareId = hardwareId;
