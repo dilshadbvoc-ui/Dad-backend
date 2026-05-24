@@ -84,7 +84,7 @@ echo "🧹 Removing node_modules to save space before reinstall..."
 rm -rf node_modules || find node_modules -type f -delete 2>/dev/null || true
 rm -rf node_modules || true
 
-git clean -fdx -e .env -e dist
+git clean -fdx -e .env -e dist -e uploads
 
 # Restore .env if it was deleted
 if [ ! -f .env ] && [ -f /tmp/.env.backup ]; then

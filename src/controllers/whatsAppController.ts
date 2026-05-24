@@ -962,6 +962,66 @@ export const handleGallaboxWebhook = async (req: Request, res: Response) => {
     }
 };
 
+export function parseWhatsAppCallDuration(text: string): number | null {
+    if (!text) return null;
+    const lower = text.toLowerCase();
+    
+    // Check if it's a call-related notification
+    const isCall = lower.includes('call') || lower.includes('voice') || lower.includes('video');
+    if (!isCall) {
+        return null;
+    }
+    
+    // Match format: 00:00:00 or 00:00 or 0:00
+    const timeMatch = lower.match(/\b(\d{1,2}):(\d{2})(?::(\d{2}))?\b/);
+    if (timeMatch) {
+        const parts = timeMatch.filter(Boolean);
+        if (parts.length === 3) {
+            // MM:SS
+            const mins = parseInt(timeMatch[1], 10);
+            const secs = parseInt(timeMatch[2], 10);
+            return mins * 60 + secs;
+        } else if (parts.length === 4) {
+            // HH:MM:SS
+            const hrs = parseInt(timeMatch[1], 10);
+            const mins = parseInt(timeMatch[2], 10);
+            const secs = parseInt(timeMatch[3], 10);
+            return hrs * 3600 + mins * 60 + secs;
+        }
+    }
+    
+    // Match text representation: e.g. "5 mins, 20 secs", "45 secs", "1 hr, 2 mins"
+    let seconds = 0;
+    let matched = false;
+    
+    // Hrs
+    const hrMatch = lower.match(/(\d+)\s*(?:hr|hour|h)s?/);
+    if (hrMatch) {
+        seconds += parseInt(hrMatch[1], 10) * 3600;
+        matched = true;
+    }
+    
+    // Mins
+    const minMatch = lower.match(/(\d+)\s*(?:min|minute|m)s?/);
+    if (minMatch) {
+        seconds += parseInt(minMatch[1], 10) * 60;
+        matched = true;
+    }
+    
+    // Secs
+    const secMatch = lower.match(/(\d+)\s*(?:sec|second|s)s?/);
+    if (secMatch) {
+        seconds += parseInt(secMatch[1], 10);
+        matched = true;
+    }
+    
+    if (matched) {
+        return seconds;
+    }
+    
+    return null;
+}
+
 export const logExternalMessage = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
@@ -969,7 +1029,7 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
-        const { phoneNumber, messageText, direction, timestamp, leadId } = req.body;
+        const { phoneNumber, messageText, direction, timestamp, leadId, duration, callDuration } = req.body;
 
         if (!phoneNumber || !messageText) {
             return res.status(400).json({ error: 'phoneNumber and messageText are required.' });
@@ -1043,6 +1103,18 @@ export const logExternalMessage = async (req: Request, res: Response) => {
             }
         
 
+        // 1.5 Parse WhatsApp call duration from body or message text
+        let durationSecs = 0;
+        if (duration !== undefined && duration !== null) {
+            durationSecs = parseInt(String(duration), 10) || 0;
+        } else if (callDuration !== undefined && callDuration !== null) {
+            durationSecs = parseInt(String(callDuration), 10) || 0;
+        } else {
+            durationSecs = parseWhatsAppCallDuration(messageText) || 0;
+        }
+        
+        const durationMinutes = durationSecs / 60;
+
         // 2. Deduplicate: Check if a WhatsApp interaction already exists within a 5-min window
         const callDate = timestamp ? new Date(parseInt(timestamp, 10)) : new Date();
         const windowStart = new Date(callDate.getTime() - 5 * 60 * 1000);
@@ -1069,15 +1141,41 @@ export const logExternalMessage = async (req: Request, res: Response) => {
         let interaction;
         if (existingInteraction) {
             console.log(`[WhatsAppSync] Healing existing interaction ${existingInteraction.id}`);
+            
+            const shouldUpdateDuration = durationSecs > 0 || (existingInteraction.duration || 0) === 0;
+            
             interaction = await prisma.interaction.update({
                 where: { id: existingInteraction.id },
                 data: {
                     description: messageText,
-                    date: callDate // Keep it fresh
+                    date: callDate, // Keep it fresh
+                    duration: shouldUpdateDuration ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                    recordingDuration: shouldUpdateDuration ? durationSecs : undefined,
+                    callStatus: durationSecs > 0 ? 'completed' : existingInteraction.callStatus
                 }
             });
         } else {
             console.log(`[WhatsAppSync] Creating NEW interaction for ${phoneNumber}`);
+            
+            // Map status based on duration if it is a call
+            let status = 'completed';
+            const lowerMessage = messageText.toLowerCase();
+            const isCall = lowerMessage.includes('call') || lowerMessage.includes('voice') || lowerMessage.includes('video');
+            
+            if (isCall) {
+                if (lowerMessage.includes('missed') || lowerMessage.includes('unanswered')) {
+                    status = 'missed';
+                } else if (lowerMessage.includes('declined') || lowerMessage.includes('rejected')) {
+                    status = 'rejected';
+                } else if (lowerMessage.includes('ongoing') || lowerMessage.includes('ringing')) {
+                    status = 'initiated';
+                } else if (durationSecs === 0) {
+                    status = 'failed';
+                }
+            } else {
+                status = 'completed'; // Default for messages
+            }
+
             interaction = await prisma.interaction.create({
                 data: {
                     type: 'whatsapp' as any,
@@ -1088,7 +1186,10 @@ export const logExternalMessage = async (req: Request, res: Response) => {
                     phoneNumber: phoneNumber,
                     leadId: targetLeadId || undefined,
                     organisationId: user.organisationId,
-                    createdById: user.id
+                    createdById: user.id,
+                    duration: durationSecs > 0 ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                    recordingDuration: durationSecs > 0 ? durationSecs : undefined,
+                    callStatus: status
                 }
             });
         }
