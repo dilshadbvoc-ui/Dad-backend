@@ -3,6 +3,15 @@ import { TrashService } from './trashService';
 import { prisma } from '../config/prisma';
 
 export const initCronJobs = () => {
+    // Database Keep-Alive / Ping (Run every minute to prevent connection pool sleep/timeout)
+    cron.schedule('*/1 * * * *', async () => {
+        try {
+            await prisma.$executeRawUnsafe('SELECT 1');
+        } catch (error) {
+            console.error('[Cron] Database keep-alive ping failed:', error);
+        }
+    });
+
     // Run every day at midnight (00:00)
     cron.schedule('0 0 * * *', async () => {
         console.log('[Cron] Running daily lead rollover...');
