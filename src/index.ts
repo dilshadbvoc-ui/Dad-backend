@@ -148,8 +148,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Start Cron Jobs
-initCronJobs();
+// Start Cron Jobs (Only on the primary PM2 instance to avoid duplicate/starved connection pools in cluster mode)
+if (!process.env.NODE_APP_INSTANCE || process.env.NODE_APP_INSTANCE === '0') {
+    initCronJobs();
+} else {
+    console.log(`[Cron] Skipping cron scheduling on clustered instance ${process.env.NODE_APP_INSTANCE}`);
+}
 
 const PORT = process.env.PORT || 5001;
 
@@ -525,12 +529,6 @@ httpServer.listen(PORT, async () => {
         console.error('[Startup] Meeting reminder error:', err);
     });
 
-    // Run every hour
-    setInterval(() => {
-        generateMeetingReminders().catch(err => {
-            console.error('[Interval] Meeting reminder error:', err);
-        });
-    }, 60 * 60 * 1000); // 1 hour
 });
 // Forced restart v2
 // restart 

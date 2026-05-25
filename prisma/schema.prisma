@@ -236,6 +236,7 @@ model Notification {
   @@index([recipientId, isRead])
   @@index([recipientId, createdAt])
   @@index([recipientId, isRead, createdAt])
+  @@index([recipientId, isRead, organisationId])
 }
 
 model Lead {
@@ -1518,6 +1519,7 @@ model WhatsAppMessage {
   @@index([leadId])
   @@index([phoneNumber])
   @@index([organisationId])
+  @@index([organisationId, isDeleted, createdAt])
 }
 
 model Commission {
@@ -1587,6 +1589,8 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
   @@index([actorId])
+  @@index([organisationId, createdAt])
+  @@index([organisationId, actorId, createdAt])
 }
 model Document {
   id             String       @id @default(uuid())

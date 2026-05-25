@@ -242,34 +242,49 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
 
         if (!lead) return res.status(404).json({ message: 'Lead not found' });
 
-        // Build phone match conditions
-        const phoneConds: any[] = [{ leadId }];
-        if (lead.phone) {
-            const last10 = lead.phone.replace(/[^0-9]/g, '').slice(-10);
-            if (last10.length >= 10) {
-                phoneConds.push({ phoneNumber: { contains: last10 } });
-            }
-        }
-        if (lead.secondaryPhone) {
-            const last10s = lead.secondaryPhone.replace(/[^0-9]/g, '').slice(-10);
-            if (last10s.length >= 10) {
-                phoneConds.push({ phoneNumber: { contains: last10s } });
-            }
-        }
+        // Build exact phone number variants to match using the B-Tree index.
+        // Avoids a full-table LIKE scan by querying exact formats stored in the DB.
+        const buildPhoneVariants = (phone: string): string[] => {
+            const digits = phone.replace(/[^0-9]/g, '');
+            const last10 = digits.slice(-10);
+            if (last10.length < 10) return [];
+            return [...new Set([last10, `+91${last10}`, `91${last10}`, `0${last10}`, phone.trim()])];
+        };
 
-        // 1. Fetch WhatsAppMessage records
-        const waMessages = await prisma.whatsAppMessage.findMany({
-            where: {
-                organisationId: orgId,
-                isDeleted: false,
-                OR: phoneConds
-            },
+        const phoneVariantSet = new Set<string>();
+        if (lead.phone) buildPhoneVariants(lead.phone).forEach(v => phoneVariantSet.add(v));
+        if (lead.secondaryPhone) buildPhoneVariants(lead.secondaryPhone).forEach(v => phoneVariantSet.add(v));
+
+        const agentSelect = { select: { id: true, firstName: true, lastName: true } } as const;
+
+        // 1a. Fetch by leadId — uses WhatsAppMessage_leadId_idx (fast B-Tree scan)
+        const byLeadId = await prisma.whatsAppMessage.findMany({
+            where: { organisationId: orgId, isDeleted: false, leadId },
             orderBy: { createdAt: 'desc' },
             take: 100,
-            include: {
-                agent: { select: { id: true, firstName: true, lastName: true } }
-            }
+            include: { agent: agentSelect }
         });
+
+        // 1b. Fetch by exact phone variants — uses WhatsAppMessage_phoneNumber_idx (fast B-Tree scan)
+        const byPhone = phoneVariantSet.size > 0
+            ? await prisma.whatsAppMessage.findMany({
+                where: {
+                    organisationId: orgId,
+                    isDeleted: false,
+                    phoneNumber: { in: Array.from(phoneVariantSet) }
+                },
+                orderBy: { createdAt: 'desc' },
+                take: 100,
+                include: { agent: agentSelect }
+            })
+            : [];
+
+        // Merge, deduplicate by id, re-sort, cap at 100
+        const seen = new Set<string>();
+        const waMessages = [...byLeadId, ...byPhone]
+            .filter(m => { if (seen.has(m.id)) return false; seen.add(m.id); return true; })
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            .slice(0, 100);
 
         // 2. Fetch Interaction records with type='whatsapp' 
         const waInteractions = await prisma.interaction.findMany({
