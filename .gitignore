@@ -25,5 +25,14 @@ dist-ssr
 *.sw?
 lint_results.txt
 .env
+.env.*
+*.pem
+*.key
+GITHUB_SSH_KEY.txt
+*.tar.gz
+*.zip
+*_output.txt
+*lint*.txt
+uploads/
 node_modules/
 full-backup-*.json

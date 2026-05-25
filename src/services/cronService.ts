@@ -244,13 +244,12 @@ export const initCronJobs = () => {
                 console.log(`[Cron] Cleaned up ${deletedLogs.count} old audit logs.`);
             }
 
-            // 2. Read Notification Retention (30 Days)
-            const thirtyDaysAgo = new Date(now);
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            // 2. Notification Retention (Keep only last 14 days, read or unread)
+            const fourteenDaysAgo = new Date(now);
+            fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
             const deletedNotifications = await prisma.notification.deleteMany({
                 where: {
-                    isRead: true,
-                    updatedAt: { lt: thirtyDaysAgo }
+                    createdAt: { lt: fourteenDaysAgo }
                 }
             });
             if (deletedNotifications.count > 0) {
