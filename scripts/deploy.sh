@@ -140,6 +140,15 @@ npm install --legacy-peer-deps
 npm install cookie@1.1.0 --save-exact 
 
 echo "🏗️ Building Frontend..."
+# Extract SERVER_URL from backend's .env file to configure VITE_API_URL for production
+if [ -f "$BACKEND_DIR/.env" ]; then
+    VITE_API_URL=$(grep "^SERVER_URL=" "$BACKEND_DIR/.env" | cut -d'=' -f2- | tr -d '\r' | tr -d '"' | tr -d "'")
+    if [ -n "$VITE_API_URL" ]; then
+        echo "🌐 Configured VITE_API_URL=$VITE_API_URL from backend .env"
+        export VITE_API_URL
+    fi
+fi
+
 # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
 NODE_OPTIONS=--max-old-space-size=800 npm run build
 
