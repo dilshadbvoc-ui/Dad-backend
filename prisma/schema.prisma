@@ -234,6 +234,8 @@ model Notification {
 
   @@index([recipientId])
   @@index([recipientId, isRead])
+  @@index([recipientId, createdAt])
+  @@index([recipientId, isRead, createdAt])
 }
 
 model Lead {
@@ -743,6 +745,8 @@ model Interaction {
   @@unique([organisationId, callSessionId])
   @@unique([organisationId, hardwareId])
   @@index([branchId])
+  @@index([organisationId])
+  @@index([organisationId, createdAt])
 }
 
 model CalendarEvent {

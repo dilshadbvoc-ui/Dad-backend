@@ -41,6 +41,17 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const trashService_1 = require("./trashService");
 const prisma_1 = require("../config/prisma");
 const initCronJobs = () => {
+    // Database Keep-Alive: a lightweight SELECT 1 every 5 minutes to prevent
+    // idle connection reaping. Using cronPrisma (3-connection pool) so this
+    // never competes with API traffic.
+    node_cron_1.default.schedule('*/5 * * * *', async () => {
+        try {
+            await prisma_1.cronPrisma.$executeRawUnsafe('SELECT 1');
+        }
+        catch (error) {
+            console.error('[Cron] Database keep-alive ping failed:', error);
+        }
+    });
     // Run every day at midnight (00:00)
     node_cron_1.default.schedule('0 0 * * *', async () => {
         console.log('[Cron] Running daily lead rollover...');
@@ -50,7 +61,7 @@ const initCronJobs = () => {
             const yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
             // Find leads with nextFollowUp < Today AND status != converted
-            const overdueLeads = await prisma_1.prisma.lead.findMany({
+            const overdueLeads = await prisma_1.cronPrisma.lead.findMany({
                 where: {
                     status: { not: 'converted' },
                     nextFollowUp: {
@@ -66,7 +77,7 @@ const initCronJobs = () => {
                 rolloverTime.setUTCHours(4, 30, 0, 0);
                 // Update each lead and its earliest task
                 for (const lead of overdueLeads) {
-                    await prisma_1.prisma.lead.update({
+                    await prisma_1.cronPrisma.lead.update({
                         where: { id: lead.id },
                         data: { nextFollowUp: rolloverTime }
                     });
@@ -144,7 +155,7 @@ const initCronJobs = () => {
         try {
             const now = new Date();
             const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            const organisations = await prisma_1.prisma.organisation.findMany({
+            const organisations = await prisma_1.cronPrisma.organisation.findMany({
                 where: {
                     status: 'active',
                     dailyReportTime: currentTime,
@@ -160,13 +171,13 @@ const initCronJobs = () => {
             for (const org of organisations) {
                 try {
                     // 1. General Admin Report (Legacy logic)
-                    const admins = await prisma_1.prisma.user.findMany({
+                    const admins = await prisma_1.cronPrisma.user.findMany({
                         where: { organisationId: org.id, role: 'admin', isActive: true }
                     });
                     const stats = await ReportingService.getDailyStats(org.id);
                     const adminReport = ReportingService.formatWhatsAppReport(stats, org.name);
                     // 2. Manager & Sales Manager Reports
-                    const managers = await prisma_1.prisma.user.findMany({
+                    const managers = await prisma_1.cronPrisma.user.findMany({
                         where: {
                             organisationId: org.id,
                             role: { in: ['manager', 'sales_manager'] },
@@ -214,7 +225,7 @@ const initCronJobs = () => {
     node_cron_1.default.schedule('* * * * *', async () => {
         try {
             const now = new Date();
-            const pendingItems = await prisma_1.prisma.workflowQueue.findMany({
+            const pendingItems = await prisma_1.cronPrisma.workflowQueue.findMany({
                 where: {
                     status: 'pending',
                     executeAt: { lte: now }
@@ -245,7 +256,7 @@ const initCronJobs = () => {
             // 1. Audit Log Retention (90 Days)
             const ninetyDaysAgo = new Date(now);
             ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-            const deletedLogs = await prisma_1.prisma.auditLog.deleteMany({
+            const deletedLogs = await prisma_1.cronPrisma.auditLog.deleteMany({
                 where: { createdAt: { lt: ninetyDaysAgo } }
             });
             if (deletedLogs.count > 0) {
@@ -254,7 +265,7 @@ const initCronJobs = () => {
             // 2. Notification Retention (Keep only last 14 days, read or unread)
             const fourteenDaysAgo = new Date(now);
             fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-            const deletedNotifications = await prisma_1.prisma.notification.deleteMany({
+            const deletedNotifications = await prisma_1.cronPrisma.notification.deleteMany({
                 where: {
                     createdAt: { lt: fourteenDaysAgo }
                 }
@@ -295,7 +306,7 @@ const initCronJobs = () => {
             const now = new Date();
             const sevenDaysFromNow = new Date();
             sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-            const organisations = await prisma_1.prisma.organisation.findMany({
+            const organisations = await prisma_1.cronPrisma.organisation.findMany({
                 where: {
                     isDeleted: false,
                     status: 'active'
@@ -330,7 +341,7 @@ const initCronJobs = () => {
                     }
                     if (alertTitle && alertMsg) {
                         // Check if we already sent a notification in the last 24 hours for this page
-                        const recentNotif = await prisma_1.prisma.notification.findFirst({
+                        const recentNotif = await prisma_1.cronPrisma.notification.findFirst({
                             where: {
                                 organisationId: org.id,
                                 title: alertTitle,
@@ -338,11 +349,11 @@ const initCronJobs = () => {
                             }
                         });
                         if (!recentNotif) {
-                            const admins = await prisma_1.prisma.user.findMany({
+                            const admins = await prisma_1.cronPrisma.user.findMany({
                                 where: { organisationId: org.id, role: { in: ['admin', 'super_admin'] }, isActive: true }
                             });
                             for (const admin of admins) {
-                                await prisma_1.prisma.notification.create({
+                                await prisma_1.cronPrisma.notification.create({
                                     data: {
                                         title: alertTitle,
                                         message: alertMsg,
