@@ -150,7 +150,7 @@ if [ -f "$BACKEND_DIR/.env" ]; then
 fi
 
 # 800MB is enough for Vite but leaves ~200MB free on 1GB EC2
-NODE_OPTIONS=--max-old-space-size=800 npm run build
+NODE_OPTIONS=--max-old-space-size=2048 npm run build
 
 # Nuclear Deployment: Force sync frontend to multiple standardized locations
 echo "📂 Synchronizing Frontend assets to Backend and Nginx..."
