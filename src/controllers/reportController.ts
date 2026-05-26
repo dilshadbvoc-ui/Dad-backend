@@ -551,6 +551,67 @@ export const exportToExcel = async (req: Request, res: Response) => {
             });
             sheet.getRow(1).font = { bold: true };
             sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+        } else if (type === 'lead-distribution') {
+            const where: any = {
+                organisationId: orgId as string,
+                isDeleted: false,
+                assignedToId: { not: null }
+            };
+
+            if (branchId) where.branchId = branchId as string;
+            if (userId) where.assignedToId = userId as string;
+
+            if (startDate || endDate) {
+                where.createdAt = {};
+                if (startDate) where.createdAt.gte = new Date(startDate as string);
+                if (endDate) {
+                    const end = new Date(endDate as string);
+                    end.setHours(23, 59, 59, 999);
+                    where.createdAt.lte = end;
+                }
+            }
+
+            // Hierarchy restrictions
+            if (!isOrgAdmin(user) && user.role !== 'admin' && user.role !== 'super_admin') {
+                where.assignedToId = { in: visibleUserIds };
+            }
+
+            const leads = await prisma.lead.findMany({
+                where,
+                include: {
+                    assignedTo: { select: { firstName: true, lastName: true } },
+                    branch: { select: { name: true } }
+                },
+                orderBy: { createdAt: 'desc' }
+            });
+
+            const sheet = workbook.addWorksheet('Lead Distribution');
+            sheet.columns = [
+                { header: 'Lead Name', key: 'name', width: 25 },
+                { header: 'Email', key: 'email', width: 30 },
+                { header: 'Phone', key: 'phone', width: 15 },
+                { header: 'Status', key: 'status', width: 12 },
+                { header: 'Source', key: 'source', width: 15 },
+                { header: 'Assigned To', key: 'assignedTo', width: 20 },
+                { header: 'Branch', key: 'branch', width: 20 },
+                { header: 'Date Distributed', key: 'createdAt', width: 20 }
+            ];
+
+            leads.forEach(lead => {
+                sheet.addRow({
+                    name: `${lead.firstName} ${lead.lastName || ''}`.trim(),
+                    email: lead.email || '',
+                    phone: lead.phone,
+                    status: lead.status,
+                    source: lead.source,
+                    assignedTo: lead.assignedTo ? `${lead.assignedTo.firstName} ${lead.assignedTo.lastName || ''}`.trim() : 'Unassigned',
+                    branch: lead.branch?.name || 'N/A',
+                    createdAt: lead.createdAt.toLocaleString()
+                });
+            });
+
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
         }
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -888,25 +949,42 @@ export const getDailyReport = async (req: Request, res: Response) => {
             logger.warn(`getDailyReport: Organisation ID missing for user ${user.email}`, 'ReportController');
             return res.status(400).json({ message: 'Organisation ID is required' });
         }
-        const { branchId, date } = req.query;
+        const { branchId, date, startDate, endDate } = req.query;
 
-        // Calculate IST boundaries for the target date
-        // IST is UTC + 5:30
-        const targetDate = date ? new Date(date as string) : new Date();
+        let startOfDay: Date;
+        let endOfDay: Date;
         const istOffset = 5.5 * 60 * 60 * 1000;
-        
-        // Adjust target date to IST context
-        const istNow = new Date(targetDate.getTime() + (date ? 0 : istOffset));
-        
-        const istStartOfDay = new Date(istNow);
-        istStartOfDay.setUTCHours(0, 0, 0, 0);
-        
-        const istEndOfDay = new Date(istNow);
-        istEndOfDay.setUTCHours(23, 59, 59, 999);
-        
-        // Convert back to UTC for Prisma query
-        const startOfDay = new Date(istStartOfDay.getTime() - istOffset);
-        const endOfDay = new Date(istEndOfDay.getTime() - istOffset);
+
+        if (startDate || endDate) {
+            // Date range provided
+            const startTarget = startDate ? new Date(startDate as string) : new Date();
+            const endTarget = endDate ? new Date(endDate as string) : new Date();
+
+            const istStart = new Date(startTarget.getTime());
+            istStart.setUTCHours(0, 0, 0, 0);
+
+            const istEnd = new Date(endTarget.getTime());
+            istEnd.setUTCHours(23, 59, 59, 999);
+
+            startOfDay = new Date(istStart.getTime() - istOffset);
+            endOfDay = new Date(istEnd.getTime() - istOffset);
+        } else {
+            // Single date default fallback
+            const targetDate = date ? new Date(date as string) : new Date();
+            
+            // Adjust target date to IST context
+            const istNow = new Date(targetDate.getTime() + (date ? 0 : istOffset));
+            
+            const istStartOfDay = new Date(istNow);
+            istStartOfDay.setUTCHours(0, 0, 0, 0);
+            
+            const istEndOfDay = new Date(istNow);
+            istEndOfDay.setUTCHours(23, 59, 59, 999);
+            
+            // Convert back to UTC for Prisma query
+            startOfDay = new Date(istStartOfDay.getTime() - istOffset);
+            endOfDay = new Date(istEndOfDay.getTime() - istOffset);
+        }
 
         const isUserAdmin = isOrgAdmin(user);
         console.log(`[DEBUG] getDailyReport: user=${user.email}, isOrgAdmin=${isUserAdmin}, orgId=${orgId}`);

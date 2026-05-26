@@ -113,7 +113,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized.' });
         }
 
-        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId, callSessionId, hardwareDuration } = req.body;
+        const { leadId, duration, callType, timestamp, phoneNumber, hardwareId: rawHardwareId, callSessionId, hardwareDuration } = req.body;
+        const hardwareId = (rawHardwareId && rawHardwareId !== 'none' && !rawHardwareId.includes('_')) ? `${user.id}_${rawHardwareId}` : rawHardwareId;
         const file = req.file;
 
         console.log(`[AndroidUpload] Incoming request: phone=${phoneNumber}, leadId=${leadId}, duration=${duration}, type=${callType}, hasFile=${!!file}`);
@@ -646,7 +647,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         };
 
         for (const call of uniqueCalls) {
-            const { phoneNumber, duration, callType, timestamp, hardwareId, callSessionId, hardwareDuration } = call;
+            const { phoneNumber, duration, callType, timestamp, hardwareId: rawHardwareId, callSessionId, hardwareDuration } = call;
+            const hardwareId = (rawHardwareId && rawHardwareId !== 'none' && !rawHardwareId.includes('_')) ? `${user.id}_${rawHardwareId}` : rawHardwareId;
             if (!phoneNumber) {
                 results.skipped++;
                 continue;

@@ -38,6 +38,12 @@ ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" "DEPLOY_ARGS='$*' bash -s" << 'ENDSSH'
     git fetch origin main
     git reset --hard origin/main
     
+    # Auto-tune database connection pool for db.t3.small capacity
+    if [ -f .env ]; then
+        echo "🔧 Tuning database connection_limit to 25 in production .env..."
+        sed -i 's/connection_limit=[0-9]\+/connection_limit=25/g' .env
+    fi
+    
     echo "🔧 Running deployment script with args: $DEPLOY_ARGS"
     chmod +x scripts/deploy.sh
     ./scripts/deploy.sh $DEPLOY_ARGS
