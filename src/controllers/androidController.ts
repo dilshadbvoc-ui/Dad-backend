@@ -131,17 +131,18 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         }
 
         try {
-            // Robust leadId handling (convert "null" string to null)
+            // Robust leadId/contactId handling
             let targetLeadId = (leadId === 'null' || !leadId) ? null : leadId;
+            let targetContactId = null;
             let finalPhone = phoneNumber;
 
-        // Fallback: If no leadId OR if the provided leadId has no phone (ghost lead), try to find lead by phone number
-        let leadByPhone = null;
+        // Fallback: Try to find matched CRM entity (Lead or Contact) by phone number
+        let matchedEntity: { id: string; type: 'lead' | 'contact'; phone?: string } | null = null;
         if (phoneNumber) {
             const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
             const last10 = cleanPhone.slice(-10);
             
-            if (last10.length > 0) { // Relaxed from >= 10
+            if (last10.length > 0) {
                 const variations = Array.from(new Set([
                     last10,
                     `+91${last10}`,
@@ -151,7 +152,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                     phoneNumber
                 ].filter(Boolean)));
 
-                leadByPhone = await prisma.lead.findFirst({
+                const lead = await prisma.lead.findFirst({
                     where: {
                         organisationId: user.organisationId,
                         isDeleted: false,
@@ -160,46 +161,49 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                             { secondaryPhone: { in: variations } }
                         ]
                     },
-                    select: { id: true, phone: true, firstName: true }
-                });
-            }
-
-            if (!leadByPhone && last10.length > 0) {
-                // Try finding by Contact if no lead
-                const contactByPhone = await prisma.contact.findFirst({
-                    where: {
-                        organisationId: user.organisationId,
-                        isDeleted: false,
-                        OR: [
-                            { phones: { path: ['$[*]'], string_contains: last10 } },
-                            { phones: { string_contains: last10 } }
-                        ]
-                    },
-                    select: { id: true, firstName: true }
+                    select: { id: true, phone: true }
                 });
 
-                if (contactByPhone) {
-                    // Map Contact as "Lead" placeholder for the legacy logic
-                    leadByPhone = { 
-                        id: contactByPhone.id, 
-                        phone: phoneNumber, 
-                        firstName: contactByPhone.firstName 
-                    };
+                if (lead) {
+                    matchedEntity = { id: lead.id, type: 'lead', phone: lead.phone || undefined };
+                } else {
+                    const contact = await prisma.contact.findFirst({
+                        where: {
+                            organisationId: user.organisationId,
+                            isDeleted: false,
+                            OR: [
+                                { phones: { path: ['$[*]'], string_contains: last10 } },
+                                { phones: { string_contains: last10 } }
+                            ]
+                        },
+                        select: { id: true }
+                    });
+                    if (contact) {
+                        matchedEntity = { id: contact.id, type: 'contact' };
+                    }
                 }
             }
         }
 
-        if (!targetLeadId && leadByPhone) {
-            console.log(`[AndroidUpload] No leadId provided. Found lead matching phone: ${leadByPhone.id}`);
-            targetLeadId = leadByPhone.id;
-            finalPhone = leadByPhone.phone;
-        } else if (targetLeadId && leadByPhone && targetLeadId !== leadByPhone.id) {
-            // Mismatch detected: App sent a leadId, but DB finds a different lead for this phone
-            // This happens if the App's local cache has a "ghost" lead (empty phone) matched to this call
-            console.warn(`[AndroidUpload] Mismatch: App sent leadId=${targetLeadId}, but phone matches leadId=${leadByPhone.id} (${leadByPhone.firstName}). Overriding.`);
-            targetLeadId = leadByPhone.id;
-            finalPhone = leadByPhone.phone;
-        } else if (targetLeadId && !leadByPhone && phoneNumber) {
+        if (!targetLeadId && matchedEntity) {
+            if (matchedEntity.type === 'lead') {
+                targetLeadId = matchedEntity.id;
+                finalPhone = matchedEntity.phone || phoneNumber;
+                console.log(`[AndroidUpload] Found CRM Lead matching phone: ${targetLeadId}`);
+            } else {
+                targetContactId = matchedEntity.id;
+                console.log(`[AndroidUpload] Found CRM Contact matching phone: ${targetContactId}`);
+            }
+        } else if (targetLeadId && matchedEntity && matchedEntity.type === 'lead' && targetLeadId !== matchedEntity.id) {
+            console.warn(`[AndroidUpload] Mismatch: App sent leadId=${targetLeadId}, but phone matches leadId=${matchedEntity.id}. Overriding.`);
+            targetLeadId = matchedEntity.id;
+            finalPhone = matchedEntity.phone || phoneNumber;
+        } else if (targetLeadId && matchedEntity && matchedEntity.type === 'contact') {
+            // App sent leadId, but phone belongs to a Contact. Link Contact, unlink Lead.
+            console.warn(`[AndroidUpload] Mismatch: App sent leadId=${targetLeadId}, but phone matches Contact ID=${matchedEntity.id}. Overriding.`);
+            targetLeadId = null;
+            targetContactId = matchedEntity.id;
+        } else if (targetLeadId && !matchedEntity && phoneNumber) {
             // App sent a leadId, but no lead matches this phone in DB. 
             // Check if the provided leadId is a "ghost" (no phone number).
             const providedLead = await prisma.lead.findUnique({
@@ -211,13 +215,11 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 console.warn(`[AndroidUpload] Strict Unlink: App sent ghost leadId=${targetLeadId} (${providedLead.firstName}) for unknown phone ${phoneNumber}. Unlinking.`);
                 targetLeadId = null;
             }
-        } else if (!targetLeadId && !leadByPhone && phoneNumber) {
-            console.warn(`[AndroidUpload] No lead found in DB for phone: ${phoneNumber}`);
         }
 
-        if (!targetLeadId && !phoneNumber) {
-            console.error(`[AndroidUpload] Upload failed: No leadId and no phoneNumber`);
-            return res.status(400).json({ error: 'leadId or phoneNumber is required' });
+        if (!targetLeadId && !targetContactId && !phoneNumber) {
+            console.error(`[AndroidUpload] Upload failed: No leadId/contactId and no phoneNumber`);
+            return res.status(400).json({ error: 'leadId, contactId or phoneNumber is required' });
         }
 
         // 1. Fetch Call Settings to check if non-CRM sync is allowed
@@ -231,16 +233,16 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const rawType = String(callType || 'UNKNOWN').toUpperCase();
         const isMissed = ['3', 'MISSED', 'MISS'].includes(rawType);
 
-        if (!targetLeadId && !canSyncUnknown && !isMissed) {
-            console.warn(`[AndroidUpload] Upload skipped: Phone number ${phoneNumber} is not associated with any Lead and Contact Synchronization is OFF.`);
+        if (!targetLeadId && !targetContactId && !canSyncUnknown && !isMissed) {
+            console.warn(`[AndroidUpload] Upload skipped: Phone number ${phoneNumber} is not associated with any Lead/Contact and Contact Synchronization is OFF.`);
             return res.status(200).json({ message: 'Call dropped: Contact synchronization disabled for non-CRM numbers' });
         }
 
         // Create recording record (linked to lead if found)
-        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'}, isMissed=${isMissed})`);
+        console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'}, targetContactId=${targetContactId || 'null'}, isMissed=${isMissed})`);
         const recording = await prisma.callRecording.create({
             data: {
-                lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
+                leadId: targetLeadId,
                 duration: parseInt(duration, 10) || 0,
                 hardwareDuration: hardwareDuration ? parseInt(hardwareDuration, 10) : null,
                 fileUrl: file ? `/uploads/recordings/${file.filename}` : '',
@@ -383,7 +385,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 subject: subject,
                 description: formattedDescription,
                 direction: direction,
-                lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
+                leadId: targetLeadId,
+                contactId: targetContactId,
                 phoneNumber: phoneNumber || undefined,
                 hardwareId: hardwareId || undefined,
                 callSessionId: callSessionId || undefined,
@@ -501,10 +504,11 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                         phoneNumber: phoneNumber || undefined,
                         hardwareId: hardwareId || undefined,
                         callSessionId: callSessionId || undefined,
-                        lead: targetLeadId ? { connect: { id: targetLeadId } } : undefined,
-                        organisation: { connect: { id: user.organisationId } },
-                        createdBy: { connect: { id: user.id } },
-                        branch: user.branchId ? { connect: { id: user.branchId } } : undefined
+                        leadId: targetLeadId,
+                        contactId: targetContactId,
+                        organisationId: user.organisationId,
+                        createdById: user.id,
+                        branchId: user.branchId || undefined
                     }
                 });
 
