@@ -170,6 +170,6 @@ echo "✨ Frontend standardly aligned in all target directories."
 echo "▶️ Starting Backend API..."
 cd "$BACKEND_DIR"
 pm2 delete crm-api || true
-pm2 start dist/index.js --name "crm-api"
+pm2 start dist/index.js -i max --name "crm-api"
 
 echo "✅ Deployment Complete!"
