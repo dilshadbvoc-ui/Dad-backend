@@ -504,6 +504,22 @@ const logRoutes = (stack: any[], parentPath: string = '') => {
     });
 };
 
+// Global Error Handler Middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+        console.error(`[JSON Parse Error] Malformed JSON body from IP ${req.ip} to ${req.originalUrl}:`, err.message);
+        return res.status(400).json({ error: 'Invalid JSON payload format' });
+    }
+    console.error(`[Unhandled Error] ${req.method} ${req.originalUrl}:`, err);
+    if (!res.headersSent) {
+        res.status(err.status || 500).json({
+            error: process.env.NODE_ENV === 'production' ? 'Internal server error occurred' : err.message
+        });
+    }
+});
+
+
+
 httpServer.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
 
