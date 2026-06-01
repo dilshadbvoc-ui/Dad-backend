@@ -89,7 +89,13 @@ export class TrashService {
                         { model: 'quote', ownerField: 'createdById' },
                         { model: 'goal', ownerField: 'createdById' },
                         { model: 'team', ownerField: 'createdById' },
-                        { model: 'checkIn', ownerField: 'userId' }
+                        { model: 'checkIn', ownerField: 'userId' },
+                        { model: 'document', ownerField: 'createdById' },
+                        { model: 'paymentRecord', ownerField: 'createdById' },
+                        { model: 'commission', ownerField: 'userId' },
+                        { model: 'commission', ownerField: 'createdById' },
+                        { model: 'importJob', ownerField: 'createdById' },
+                        { model: 'apiKey', ownerField: 'createdById' }
                     ];
 
                     for (const entity of entitiesToTransfer) {
