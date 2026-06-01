@@ -75,7 +75,7 @@ export const getUsers = async (req: Request, res: Response) => {
     try {
         logger.info('getUsers called', 'UserController', undefined, (req as any).user?.organisationId);
         const currentUser = (req as any).user;
-        const where: any = {}; // Show all users by default so admins can reactivate them
+        const where: any = { isDeleted: false };
         // Wait, Mongoose schema had isDeleted check?
         // Original: const query: any = { isDeleted: { $ne: true } };
         // Prisma schema: isPlaceholder (default false). 
