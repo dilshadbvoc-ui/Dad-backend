@@ -95,7 +95,8 @@ export class TrashService {
                         { model: 'commission', ownerField: 'userId' },
                         { model: 'commission', ownerField: 'createdById' },
                         { model: 'importJob', ownerField: 'createdById' },
-                        { model: 'apiKey', ownerField: 'createdById' }
+                        { model: 'apiKey', ownerField: 'createdById' },
+                        { model: 'productShare', ownerField: 'createdById' }
                     ];
 
                     for (const entity of entitiesToTransfer) {
