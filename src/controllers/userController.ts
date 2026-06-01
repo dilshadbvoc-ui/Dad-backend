@@ -335,6 +335,10 @@ export const updateUser = async (req: Request, res: Response) => {
             if (dataToUpdate.role === 'super_admin') {
                 delete dataToUpdate.role;
             }
+            // Only allow permissions configuration if current user is admin
+            if (!isAdmin(currentUser)) {
+                delete dataToUpdate.permissions;
+            }
         }
 
         // Strict super_admin scoping and limit checks
@@ -449,6 +453,27 @@ export const createUser = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Organisation ID is required' });
         }
 
+        // Check permissions: admins, super_admins, or anyone with 'users:create:subordinates'
+        const { hasUserPermission } = await import('../utils/roleUtils');
+        const hasCreationPermission = await hasUserPermission(currentUser.id, 'users:create:subordinates');
+
+        if (currentUser.role !== 'super_admin' && currentUser.role !== 'admin') {
+            if (!hasCreationPermission) {
+                return res.status(403).json({ message: 'You do not have permission to create users.' });
+            }
+
+            const targetReportsTo = req.body.reportsTo;
+            if (!targetReportsTo) {
+                return res.status(400).json({ message: 'You must assign a manager for the new user.' });
+            }
+
+            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
+            const subordinateIds = await getSubordinateIds(currentUser.id);
+            if (!subordinateIds.includes(targetReportsTo)) {
+                return res.status(403).json({ message: 'You can only assign a manager who is under your reporting hierarchy.' });
+            }
+        }
+
         // 1. License Check (User Limit)
         if (currentUser.role !== 'super_admin') {
             const { LicenseEnforcementService } = await import('../services/licenseEnforcementService');
@@ -521,7 +546,8 @@ export const createUser = async (req: Request, res: Response) => {
                 dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined,
                 // If currentUser is non-admin creating a user, maybe set reportsTo?
                 reportsToId: req.body.reportsTo || (currentUser.role !== 'super_admin' ? currentUser.id : undefined),
-                branchId: branchId || undefined
+                branchId: branchId || undefined,
+                permissions: req.body.permissions || []
             }
         });
 
@@ -559,9 +585,25 @@ export const inviteUser = async (req: Request, res: Response) => {
         const { LicenseEnforcementService } = await import('../services/licenseEnforcementService');
         await LicenseEnforcementService.checkLimits(orgId, 'users');
 
-        // Check if user exists
+        // Check permissions: admins, super_admins, or anyone with 'users:create:subordinates'
+        const { hasUserPermission } = await import('../utils/roleUtils');
+        const hasCreationPermission = await hasUserPermission(currentUser.id, 'users:create:subordinates');
+
         if (currentUser.role !== 'super_admin' && currentUser.role !== 'admin') {
-            return res.status(403).json({ message: 'Only administrators can invite users' });
+            if (!hasCreationPermission) {
+                return res.status(403).json({ message: 'You do not have permission to invite users.' });
+            }
+
+            // Non-admins with users:create:subordinates must specify reportsTo manager, which must report to them
+            if (!reportsTo) {
+                return res.status(400).json({ message: 'You must assign a manager for the new user.' });
+            }
+
+            const { getSubordinateIds } = await import('../utils/hierarchyUtils');
+            const subordinateIds = await getSubordinateIds(currentUser.id);
+            if (!subordinateIds.includes(reportsTo)) {
+                return res.status(403).json({ message: 'You can only assign a manager who is under your reporting hierarchy.' });
+            }
         }
 
         if (!email) {
@@ -671,7 +713,8 @@ export const inviteUser = async (req: Request, res: Response) => {
                     reportsTo: reportsTo ? { connect: { id: reportsTo } } : undefined,
                     branch: branchId ? { connect: { id: branchId } } : undefined,
                     isActive: true,
-                    dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined
+                    dailyLeadQuota: dailyLeadQuota ? parseInt(dailyLeadQuota) : undefined,
+                    permissions: req.body.permissions || []
                 }
             });
         });
