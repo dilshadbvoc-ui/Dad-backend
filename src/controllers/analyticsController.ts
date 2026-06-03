@@ -766,22 +766,49 @@ export const getSalesBook = async (req: Request, res: Response) => {
                 name: true,
                 amount: true,
                 closeDate: true,
+                paymentStatus: true,
                 account: { select: { name: true } },
                 owner: { select: { firstName: true, lastName: true } },
-                branch: { select: { name: true } }
+                branch: { select: { name: true } },
+                emiSchedule: {
+                    select: {
+                        id: true,
+                        totalAmount: true,
+                        paidAmount: true,
+                        remainingAmount: true,
+                        status: true
+                    }
+                },
+                paymentRecords: {
+                    select: {
+                        amount: true
+                    }
+                }
             },
             orderBy: { closeDate: 'desc' }
         });
 
-        const formattedSales = sales.map(s => ({
-            id: s.id,
-            opportunityName: s.name,
-            customerName: s.account?.name || 'N/A',
-            amount: s.amount,
-            closeDate: s.closeDate,
-            ownerName: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unknown',
-            branchName: (s as any).branch?.name || 'N/A'
-        }));
+        const formattedSales = sales.map(s => {
+            const totalPaid = s.paymentRecords?.reduce((sum, record) => sum + record.amount, 0) || 0;
+            return {
+                id: s.id,
+                opportunityName: s.name,
+                customerName: s.account?.name || 'N/A',
+                amount: s.amount,
+                closeDate: s.closeDate,
+                paymentStatus: s.paymentStatus || 'pending',
+                totalPaid,
+                ownerName: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unknown',
+                branchName: (s as any).branch?.name || 'N/A',
+                hasEmi: !!s.emiSchedule,
+                emiDetails: s.emiSchedule ? {
+                    totalAmount: s.emiSchedule.totalAmount,
+                    paidAmount: s.emiSchedule.paidAmount,
+                    remainingAmount: s.emiSchedule.remainingAmount,
+                    status: s.emiSchedule.status
+                } : null
+            };
+        });
 
         res.json(formattedSales);
     } catch (error) {
