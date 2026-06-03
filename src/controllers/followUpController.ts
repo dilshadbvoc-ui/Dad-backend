@@ -59,7 +59,16 @@ export const getFollowUps = async (req: Request, res: Response) => {
         if (search) {
             const searchConditions = [
                 { subject: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } }
+                { description: { contains: search, mode: 'insensitive' } },
+                { lead: { firstName: { contains: search, mode: 'insensitive' } } },
+                { lead: { lastName: { contains: search, mode: 'insensitive' } } },
+                { lead: { company: { contains: search, mode: 'insensitive' } } },
+                { contact: { firstName: { contains: search, mode: 'insensitive' } } },
+                { contact: { lastName: { contains: search, mode: 'insensitive' } } },
+                { account: { name: { contains: search, mode: 'insensitive' } } },
+                { opportunity: { name: { contains: search, mode: 'insensitive' } } },
+                { assignedTo: { firstName: { contains: search, mode: 'insensitive' } } },
+                { assignedTo: { lastName: { contains: search, mode: 'insensitive' } } }
             ];
 
             if (!where.AND) where.AND = [];

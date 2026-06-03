@@ -192,13 +192,21 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 _sum: { amount: true }
             }),
 
-            // Pending Follow-ups (due today or overdue only — not all-time)
+            // Pending Follow-ups (due today or overdue only — not all-time, aligned to IST timezone)
             prisma.followUp.count({
                 where: {
                     ...combinedFilter,
                     isDeleted: false,
                     status: { in: ['not_started', 'in_progress'] },
-                    dueDate: { lte: new Date(new Date().setHours(23, 59, 59, 999)) },
+                    dueDate: {
+                        lte: (() => {
+                            const d = new Date();
+                            d.setMinutes(d.getMinutes() + 330); // Shift to IST
+                            d.setHours(23, 59, 59, 999);
+                            d.setMinutes(d.getMinutes() - 330); // Shift back to UTC
+                            return d;
+                        })()
+                    },
                     ...(!isSuperAdmin && user.role !== 'admin' ? { assignedToId: { in: visibleUserIds } } : {})
                 }
             })
@@ -731,11 +739,18 @@ export const getSalesBook = async (req: Request, res: Response) => {
 
         // Date Filter
         const dateFilter: any = {};
-        if (startDate && endDate) {
-            dateFilter.closeDate = {
-                gte: new Date(String(startDate)),
-                lte: new Date(String(endDate))
-            };
+        if (startDate || endDate) {
+            dateFilter.closeDate = {};
+            if (startDate) {
+                const sDate = new Date(String(startDate));
+                sDate.setUTCHours(0, 0, 0, 0);
+                dateFilter.closeDate.gte = sDate;
+            }
+            if (endDate) {
+                const eDate = new Date(String(endDate));
+                eDate.setUTCHours(23, 59, 59, 999);
+                dateFilter.closeDate.lte = eDate;
+            }
         }
 
         const sales = await prisma.opportunity.findMany({

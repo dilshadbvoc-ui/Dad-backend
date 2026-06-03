@@ -164,8 +164,13 @@ app.use((0, express_session_1.default)({
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
-// Start Cron Jobs
-(0, cronService_1.initCronJobs)();
+// Start Cron Jobs (Only on the primary PM2 instance to avoid duplicate/starved connection pools in cluster mode)
+if (!process.env.NODE_APP_INSTANCE || process.env.NODE_APP_INSTANCE === '0') {
+    (0, cronService_1.initCronJobs)();
+}
+else {
+    console.log(`[Cron] Skipping cron scheduling on clustered instance ${process.env.NODE_APP_INSTANCE}`);
+}
 const PORT = process.env.PORT || 5001;
 // VERY EARLY Health Check for 502 Debugging
 app.get('/api/health', (req, res) => {
@@ -466,6 +471,19 @@ const logRoutes = (stack, parentPath = '') => {
         }
     });
 };
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && 'status' in err && err.status === 400 && 'body' in err) {
+        console.error(`[JSON Parse Error] Malformed JSON body from IP ${req.ip} to ${req.originalUrl}:`, err.message);
+        return res.status(400).json({ error: 'Invalid JSON payload format' });
+    }
+    console.error(`[Unhandled Error] ${req.method} ${req.originalUrl}:`, err);
+    if (!res.headersSent) {
+        res.status(err.status || 500).json({
+            error: process.env.NODE_ENV === 'production' ? 'Internal server error occurred' : err.message
+        });
+    }
+});
 httpServer.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
     // CRITICAL: Verify super admin integrity on startup
@@ -486,12 +504,6 @@ httpServer.listen(PORT, async () => {
     }).catch(err => {
         console.error('[Startup] Meeting reminder error:', err);
     });
-    // Run every hour
-    setInterval(() => {
-        (0, meetingReminderService_1.generateMeetingReminders)().catch(err => {
-            console.error('[Interval] Meeting reminder error:', err);
-        });
-    }, 60 * 60 * 1000); // 1 hour
 });
 // Forced restart v2
 // restart 

@@ -21,6 +21,10 @@ export class TrashService {
                     break;
                 case 'Account':
                     await this.purgeRelatedData('Account', id, organisationId);
+                    // Opportunities have a required accountId FK with no cascade — must delete them first
+                    await this.purgeAccountOpportunities(id, organisationId);
+                    // AccountProduct has onDelete: Cascade but delete explicitly to be safe
+                    await prisma.accountProduct.deleteMany({ where: { accountId: id } });
                     result = await prisma.account.delete({ where: { id, organisationId } });
                     break;
                 case 'Opportunity':
@@ -206,6 +210,34 @@ export class TrashService {
             await prisma.document.deleteMany({ where: { [field]: id, organisationId } });
         } catch (error) {
             logger.error(`PurgeRelatedData partially failed for ${type} ${id}:`, error);
+        }
+    }
+
+    /**
+     * Deletes all Opportunities linked to an Account, along with their nested data.
+     * Required because Opportunity.accountId is a required FK with no onDelete: Cascade.
+     */
+    private static async purgeAccountOpportunities(accountId: string, organisationId: string) {
+        const opportunities = await prisma.opportunity.findMany({
+            where: { accountId, organisationId },
+            select: { id: true }
+        });
+
+        for (const opp of opportunities) {
+            try {
+                // Delete nested opportunity data first
+                await prisma.paymentRecord.deleteMany({ where: { opportunityId: opp.id } });
+                await prisma.eMISchedule.deleteMany({ where: { opportunityId: opp.id } });
+                await prisma.quote.deleteMany({ where: { opportunityId: opp.id, organisationId } });
+                await prisma.task.deleteMany({ where: { opportunityId: opp.id, organisationId } });
+                await prisma.followUp.deleteMany({ where: { opportunityId: opp.id, organisationId } });
+                await prisma.interaction.deleteMany({ where: { opportunityId: opp.id, organisationId } });
+                await prisma.calendarEvent.deleteMany({ where: { opportunityId: opp.id, organisationId } });
+                await prisma.document.deleteMany({ where: { opportunityId: opp.id, organisationId } });
+                await prisma.opportunity.delete({ where: { id: opp.id } });
+            } catch (err) {
+                logger.error(`purgeAccountOpportunities: failed to delete opportunity ${opp.id}:`, err);
+            }
         }
     }
 

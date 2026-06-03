@@ -45,7 +45,14 @@ const protect = async (req, res, next) => {
         }
         catch (error) {
             console.error('[AuthMiddleware] Error:', error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            // Real token verification failures get 401 (forces logout)
+            if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError' || error.message?.includes('jwt')) {
+                res.status(401).json({ message: 'Not authorized, token failed' });
+            }
+            else {
+                // Database or internal connection errors get 500 (keeps users logged in, doesn't wipe localStorage)
+                res.status(503).json({ message: 'Database service temporarily unavailable, please try again' });
+            }
         }
     }
     // Check for API Key if no Bearer token
