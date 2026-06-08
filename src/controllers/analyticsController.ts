@@ -20,6 +20,44 @@ const getBranchFilter = (req: Request) => {
     return branchId ? { branchId } : {};
 };
 
+// Helper to get date filter
+const getDateFilter = (req: Request, dateField: string) => {
+    const month = req.query.month as string; // Expect "YYYY-MM" or "all"
+    const startDate = req.query.startDate as string;
+    const endDate = req.query.endDate as string;
+
+    if (month && month !== 'all') {
+        const [yearStr, monthStr] = month.split('-');
+        const year = parseInt(yearStr, 10);
+        const monthIndex = parseInt(monthStr, 10) - 1;
+
+        const start = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0, 0));
+        start.setMinutes(start.getMinutes() - 330); // Shift to match IST start
+
+        const end = new Date(Date.UTC(year, monthIndex + 1, 1, 0, 0, 0, 0));
+        end.setMinutes(end.getMinutes() - 330); // Shift to match IST end
+
+        return { [dateField]: { gte: start, lt: end } };
+    }
+
+    if (startDate || endDate) {
+        const filter: any = {};
+        if (startDate) {
+            const sDate = new Date(String(startDate));
+            sDate.setUTCHours(0, 0, 0, 0);
+            filter.gte = sDate;
+        }
+        if (endDate) {
+            const eDate = new Date(String(endDate));
+            eDate.setUTCHours(23, 59, 59, 999);
+            filter.lte = eDate;
+        }
+        return { [dateField]: filter };
+    }
+
+    return null;
+};
+
 export const getDashboardStats = async (req: Request, res: Response) => {
     logDebug('Entered getDashboardStats');
     try {
@@ -82,6 +120,9 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             };
         }
 
+        const oppDateFilter = getDateFilter(req, 'closeDate');
+        const paymentDateFilter = getDateFilter(req, 'paymentDate');
+
         // Group independent queries to run concurrently
         const [
             totalLeads,
@@ -111,14 +152,19 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             prisma.paymentRecord.aggregate({
                 where: {
                     ...paymentFilter,
-                    paymentDate: { lte: new Date() }
+                    ...(paymentDateFilter ? paymentDateFilter : { paymentDate: { lte: new Date() } })
                 },
                 _sum: { amount: true }
             }),
 
             // Pipeline Value
             prisma.opportunity.aggregate({
-                where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter },
+                where: { 
+                    ...combinedFilter, 
+                    isDeleted: false, 
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                },
                 _sum: { amount: true }
             }),
 
@@ -173,21 +219,48 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
             // Won/Lost for nested object
             prisma.opportunity.count({
-                where: { ...combinedFilter, isDeleted: false, stage: 'closed_won', ...oppVisibilityFilter }
+                where: { 
+                    ...combinedFilter, 
+                    isDeleted: false, 
+                    stage: 'closed_won', 
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                }
             }),
             prisma.opportunity.count({
-                where: { ...combinedFilter, isDeleted: false, stage: 'closed_lost', ...oppVisibilityFilter }
+                where: { 
+                    ...combinedFilter, 
+                    isDeleted: false, 
+                    stage: 'closed_lost', 
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                }
             }),
 
             // Active and Total Opportunities
-            prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] }, ...oppVisibilityFilter } }),
-            prisma.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } }),
+            prisma.opportunity.count({ 
+                where: { 
+                    ...combinedFilter, 
+                    isDeleted: false, 
+                    stage: { notIn: ['closed_won', 'closed_lost'] }, 
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                } 
+            }),
+            prisma.opportunity.count({ 
+                where: { 
+                    ...combinedFilter, 
+                    isDeleted: false, 
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                } 
+            }),
 
             // Revenue this month (Payments in current month)
             prisma.paymentRecord.aggregate({
                 where: {
                     ...paymentFilter,
-                    paymentDate: { gte: startOfMonth }
+                    ...(paymentDateFilter ? paymentDateFilter : { paymentDate: { gte: startOfMonth } })
                 },
                 _sum: { amount: true }
             }),
@@ -438,13 +511,16 @@ export const getSalesForecast = async (req: Request, res: Response) => {
             visibilityFilter.ownerId = { in: visibleUserIds };
         }
 
+        const oppDateFilter = getDateFilter(req, 'closeDate');
+
         // Get open opportunities (not closed_won or closed_lost)
         const openOpportunities = await prisma.opportunity.findMany({
             where: {
                 ...combinedFilter,
                 stage: { notIn: ['closed_won', 'closed_lost'] },
                 isDeleted: false,
-                ...visibilityFilter
+                ...visibilityFilter,
+                ...(oppDateFilter ? oppDateFilter : {})
             },
             select: {
                 amount: true,
