@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { normalizeRole, isSuperAdmin as checkSuperAdmin, isOrgAdmin as checkIsOrgAdmin } from '../utils/roleUtils';
+import { normalizeRole, isSuperAdmin as checkSuperAdmin, isOrgAdmin as checkIsOrgAdmin, isManager as checkIsManager } from '../utils/roleUtils';
 
 export const getAuditLogs = async (req: Request, res: Response) => {
     try {
@@ -9,6 +9,11 @@ export const getAuditLogs = async (req: Request, res: Response) => {
 
         const userIsSuperAdmin = checkSuperAdmin(user);
         const isOrgAdmin = checkIsOrgAdmin(user);
+        const isManager = checkIsManager(user);
+
+        if (!userIsSuperAdmin && !isOrgAdmin && !isManager) {
+            return res.status(403).json({ message: 'Access denied: Audit logs are only available to admins and managers.' });
+        }
 
         const where: any = {};
 

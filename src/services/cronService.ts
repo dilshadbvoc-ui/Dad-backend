@@ -16,49 +16,7 @@ export const initCronJobs = () => {
 
     // Run every day at midnight (00:00)
     cron.schedule('0 0 * * *', async () => {
-        console.log('[Cron] Running daily lead rollover...');
-        try {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            // Find leads with nextFollowUp < Today AND status != converted
-            const overdueLeads = await cronPrisma.lead.findMany({
-                where: {
-                    status: { not: 'converted' },
-                    nextFollowUp: {
-                        lt: today
-                    }
-                }
-            });
-
-            console.log(`[Cron] Found ${overdueLeads.length} leads with overdue follow-ups.`);
-
-            if (overdueLeads.length > 0) {
-                const { FollowUpService } = await import('./followUpService');
-                
-                // Set nextFollowUp to Today at 10 AM IST (04:30 AM UTC)
-                const rolloverTime = new Date(today);
-                rolloverTime.setUTCHours(4, 30, 0, 0);
-
-                // Update each lead and its earliest task
-                for (const lead of overdueLeads) {
-                    await cronPrisma.lead.update({
-                        where: { id: lead.id },
-                        data: { nextFollowUp: rolloverTime }
-                    });
-                    
-                    // Also rollover the associated follow-up
-                    await FollowUpService.rolloverFollowUpForLead(lead.id, rolloverTime);
-                }
-
-                console.log(`[Cron] Rolled over ${overdueLeads.length} leads and their tasks to today.`);
-            }
-        } catch (error) {
-            console.error('[Cron] Error running daily lead rollover:', error);
-        }
+        console.log('[Cron] Daily lead rollover is disabled (keeping original follow-up dates unchanged).');
 
         console.log('[Cron] Running daily license expiry check...');
         try {

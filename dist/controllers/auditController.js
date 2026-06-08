@@ -45,6 +45,10 @@ const getAuditLogs = async (req, res) => {
         const { entity, action, userId, startDate, endDate, page = 1, limit = 20, branchId } = req.query;
         const userIsSuperAdmin = (0, roleUtils_1.isSuperAdmin)(user);
         const isOrgAdmin = (0, roleUtils_1.isOrgAdmin)(user);
+        const isManager = (0, roleUtils_1.isManager)(user);
+        if (!userIsSuperAdmin && !isOrgAdmin && !isManager) {
+            return res.status(403).json({ message: 'Access denied: Audit logs are only available to admins and managers.' });
+        }
         const where = {};
         // 1. ORGANISATION ISOLATION
         if (!userIsSuperAdmin) {
