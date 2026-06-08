@@ -509,7 +509,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
                 entityId: oppId,
                 actorId: requester.id,
                 organisationId: currentOpp.organisationId,
-                details: { oldStage: currentOpp.stage, newStage: updates.stage }
+                details: { name: currentOpp.name, oldStage: currentOpp.stage, newStage: updates.stage }
             });
         }
 

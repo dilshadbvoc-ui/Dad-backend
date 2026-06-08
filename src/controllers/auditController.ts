@@ -57,7 +57,22 @@ export const getAuditLogs = async (req: Request, res: Response) => {
 
         // 4. EXPLICIT FILTERS
         if (entity) where.entity = String(entity);
-        if (action) where.action = String(action);
+        if (action) {
+            const actionStr = String(action).toUpperCase();
+            if (actionStr === 'CREATED' || actionStr === 'CREATE') {
+                where.action = { startsWith: 'CREATE' };
+            } else if (actionStr === 'UPDATED' || actionStr === 'UPDATE') {
+                where.action = { startsWith: 'UPDATE' };
+            } else if (actionStr === 'DELETED' || actionStr === 'DELETE') {
+                where.action = { startsWith: 'DELETE' };
+            } else if (actionStr === 'LOGGED IN' || actionStr === 'LOGIN') {
+                where.action = 'LOGIN';
+            } else if (actionStr === 'LOGGED OUT' || actionStr === 'LOGOUT') {
+                where.action = 'LOGOUT';
+            } else {
+                where.action = String(action);
+            }
+        }
         if (userId) {
             const targetUserId = String(userId);
             // Security Check: If requesting a specific user, ensure they are in the allowed hierarchy
