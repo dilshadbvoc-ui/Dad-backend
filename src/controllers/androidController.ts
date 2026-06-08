@@ -27,6 +27,11 @@ const releaseLock = (key: string) => {
 // GET /api/android/leads
 // Returns minimal lead data (phone, id, name) for the Android app to cache locally.
 // Requires organization context from auth middleware.
+// Simple in-memory cache and request coalescing maps to prevent duplicate request storms and db pool starvation
+const leadsCache = new Map<string, { timestamp: number; data: any }>();
+const activeLeadsRequests = new Map<string, Promise<any>>();
+const CACHE_TTL_MS = 10000; // 10 seconds cache to prevent duplicate request storms
+
 export const getAndroidLeads = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
@@ -34,70 +39,114 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized. Organisation ID missing.' });
         }
 
-        const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
-        const visibleUserIds = await getVisibleUserIds(user.id);
+        const cacheKey = `${user.id}-${user.organisationId}`;
 
-        const leads = await prisma.lead.findMany({
-            where: {
-                organisationId: user.organisationId,
-                isDeleted: false,
-                phone: { not: '' },
-                assignedToId: { in: visibleUserIds }
-            },
-            select: {
-                id: true,
-                phone: true,
-                secondaryPhone: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                enquiryAbout: true,
-                status: true,
-                company: true,
-                updatedAt: true
-            }
-        });
+        // 1. Check if there's a cached response within the TTL
+        const cached = leadsCache.get(cacheKey);
+        if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+            console.log(`[AndroidLeads] Serving cached leads response for user ${user.id}`);
+            return res.status(200).json(cached.data);
+        }
 
-        const contacts = await prisma.contact.findMany({
-            where: {
-                organisationId: user.organisationId,
-                isDeleted: false,
-                ownerId: { in: visibleUserIds }
-            },
-            select: {
-                id: true,
-                phones: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                updatedAt: true
-            }
-        });
+        // 2. Check if there is an active database query already executing for this user
+        let promise = activeLeadsRequests.get(cacheKey);
+        if (!promise) {
+            console.log(`[AndroidLeads] Initiating database fetch for user ${user.id}`);
+            promise = (async () => {
+                const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+                const visibleUserIds = await getVisibleUserIds(user.id);
 
-        // Normalize contacts to match lead structure for the app
-        const normalizedContacts = contacts.map(c => {
-            let phone = '';
-            if (c.phones && Array.isArray(c.phones) && (c.phones as any[]).length > 0) {
-                phone = String((c.phones as any[])[0]);
-            } else if (typeof c.phones === 'string') {
-                phone = c.phones;
-            }
+                // Optional lastSync delta parameter support (e.g. timestamp as number)
+                const lastSyncTime = req.query.lastSync ? new Date(parseInt(String(req.query.lastSync), 10)) : null;
 
-            return {
-                id: c.id,
-                phone: phone,
-                firstName: c.firstName,
-                lastName: c.lastName,
-                email: c.email,
-                type: 'contact',
-                updatedAt: c.updatedAt
-            };
-        });
+                const leadsFilter: any = {
+                    organisationId: user.organisationId,
+                    isDeleted: false,
+                    phone: { not: '' },
+                    assignedToId: { in: visibleUserIds }
+                };
 
-        res.status(200).json({ 
-            leads: leads.map(l => ({ ...l, type: 'lead' })), 
-            contacts: normalizedContacts 
-        });
+                const contactsFilter: any = {
+                    organisationId: user.organisationId,
+                    isDeleted: false,
+                    ownerId: { in: visibleUserIds }
+                };
+
+                if (lastSyncTime && !isNaN(lastSyncTime.getTime())) {
+                    leadsFilter.updatedAt = { gte: lastSyncTime };
+                    contactsFilter.updatedAt = { gte: lastSyncTime };
+                }
+
+                const [leads, contacts] = await Promise.all([
+                    prisma.lead.findMany({
+                        where: leadsFilter,
+                        select: {
+                            id: true,
+                            phone: true,
+                            secondaryPhone: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            enquiryAbout: true,
+                            status: true,
+                            company: true,
+                            updatedAt: true
+                        }
+                    }),
+                    prisma.contact.findMany({
+                        where: contactsFilter,
+                        select: {
+                            id: true,
+                            phones: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            updatedAt: true
+                        }
+                    })
+                ]);
+
+                // Normalize contacts to match lead structure for the app
+                const normalizedContacts = contacts.map(c => {
+                    let phone = '';
+                    if (c.phones && Array.isArray(c.phones) && (c.phones as any[]).length > 0) {
+                        phone = String((c.phones as any[])[0]);
+                    } else if (typeof c.phones === 'string') {
+                        phone = c.phones;
+                    }
+
+                    return {
+                        id: c.id,
+                        phone: phone,
+                        firstName: c.firstName,
+                        lastName: c.lastName,
+                        email: c.email,
+                        type: 'contact',
+                        updatedAt: c.updatedAt
+                    };
+                });
+
+                const responseData = { 
+                    leads: leads.map(l => ({ ...l, type: 'lead' })), 
+                    contacts: normalizedContacts 
+                };
+
+                // Store in cache
+                leadsCache.set(cacheKey, { timestamp: Date.now(), data: responseData });
+                return responseData;
+            })();
+
+            activeLeadsRequests.set(cacheKey, promise);
+        } else {
+            console.log(`[AndroidLeads] Coalescing request: joining active database query for user ${user.id}`);
+        }
+
+        try {
+            const data = await promise;
+            return res.status(200).json(data);
+        } finally {
+            activeLeadsRequests.delete(cacheKey);
+        }
     } catch (error) {
         console.error('Error fetching android data:', error);
         res.status(500).json({ error: 'Failed to fetch data' });
