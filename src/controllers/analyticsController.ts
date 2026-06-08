@@ -463,7 +463,7 @@ export const getSalesForecast = async (req: Request, res: Response) => {
         }
 
         res.json({
-            weightedForecast: Math.round(weightedForecast),
+            weightedForecast: totalPipeline,
             totalPipeline
         });
     } catch (error) {
