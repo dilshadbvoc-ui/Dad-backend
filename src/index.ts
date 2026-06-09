@@ -300,11 +300,6 @@ app.use('/uploads', (req, res, next) => {
     next();
 }, express.static(staticPath));
 
-app.get('/', (req, res) => {
-    console.log('Health check ping received at /');
-    res.send('API is running...');
-});
-
 app.get('/health', (req, res) => {
     console.log('Health check ping received at /health');
     res.status(200).send('OK');
