@@ -616,29 +616,21 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         });
         const canSyncUnknown = settings ? settings.syncNonCrmContacts : true;
 
-        // 1. Fetch all CRM leads with phone numbers for this organisation (Restricted by hierarchy)
-        const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
-        const visibleUserIds = await getVisibleUserIds(user.id);
-
+        // 1. Fetch all CRM leads with phone numbers for this organisation
         const crmLeads = await prisma.lead.findMany({
             where: {
                 organisationId: user.organisationId,
                 isDeleted: false,
-                phone: { not: '' },
-                OR: [
-                    { assignedToId: { in: visibleUserIds } },
-                    { createdById: user.id }
-                ]
+                phone: { not: '' }
             },
             select: { id: true, phone: true, secondaryPhone: true, firstName: true, lastName: true, status: true }
         });
 
-        // 1.1 Fetch all CRM contacts (Restricted by hierarchy)
+        // 1.1 Fetch all CRM contacts
         const crmContacts = await prisma.contact.findMany({
             where: {
                 organisationId: user.organisationId,
-                isDeleted: false,
-                ownerId: { in: visibleUserIds }
+                isDeleted: false
             },
             select: { id: true, phones: true, firstName: true, lastName: true }
         });
