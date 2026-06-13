@@ -39,6 +39,7 @@ model Organisation {
   ssoConfig               Json?
   whatsAppScrapingEnabled Boolean            @default(false)
   leadStatuses            Json? // Custom lead status configuration: [{ id, label, color, isSystem, order }]
+  opportunityLeadStatuses Json? // Custom opportunity lead status configuration: [{ id, label, color, isSystem, order }]
   accounts                Account[]
   apiKeys                 ApiKey[]
   assignmentRules         AssignmentRule[]
@@ -98,6 +99,7 @@ model User {
   profileImage                String? // URL to profile image
   isPlaceholder               Boolean                @default(false)
   isActive                    Boolean                @default(true)
+  isOffDuty                   Boolean                @default(false)
   lastLogin                   DateTime?
   integrations                Json?
   metaAccessToken             String? // Facebook User Access Token
@@ -234,6 +236,9 @@ model Notification {
 
   @@index([recipientId])
   @@index([recipientId, isRead])
+  @@index([recipientId, createdAt])
+  @@index([recipientId, isRead, createdAt])
+  @@index([recipientId, isRead, organisationId])
 }
 
 model Lead {
@@ -475,6 +480,7 @@ model Opportunity {
   lostReason      String?
   emiSchedule     EMISchedule?
   paymentRecords  PaymentRecord[]
+  leadStatus      String?
   type            OpportunityType @default(NEW_BUSINESS)
   branchId        String?
   branch          Branch?         @relation(fields: [branchId], references: [id])
@@ -743,6 +749,8 @@ model Interaction {
   @@unique([organisationId, callSessionId])
   @@unique([organisationId, hardwareId])
   @@index([branchId])
+  @@index([organisationId])
+  @@index([organisationId, createdAt])
 }
 
 model CalendarEvent {
@@ -1512,6 +1520,7 @@ model WhatsAppMessage {
   @@index([leadId])
   @@index([phoneNumber])
   @@index([organisationId])
+  @@index([organisationId, isDeleted, createdAt])
 }
 
 model Commission {
@@ -1581,6 +1590,8 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
   @@index([actorId])
+  @@index([organisationId, createdAt])
+  @@index([organisationId, actorId, createdAt])
 }
 
 model Document {

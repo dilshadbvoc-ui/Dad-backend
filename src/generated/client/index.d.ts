@@ -8137,6 +8137,7 @@ export namespace Prisma {
     ssoConfig: number
     whatsAppScrapingEnabled: number
     leadStatuses: number
+    opportunityLeadStatuses: number
     _all: number
   }
 
@@ -8237,6 +8238,7 @@ export namespace Prisma {
     ssoConfig?: true
     whatsAppScrapingEnabled?: true
     leadStatuses?: true
+    opportunityLeadStatuses?: true
     _all?: true
   }
 
@@ -8356,6 +8358,7 @@ export namespace Prisma {
     ssoConfig: JsonValue | null
     whatsAppScrapingEnabled: boolean
     leadStatuses: JsonValue | null
+    opportunityLeadStatuses: JsonValue | null
     _count: OrganisationCountAggregateOutputType | null
     _avg: OrganisationAvgAggregateOutputType | null
     _sum: OrganisationSumAggregateOutputType | null
@@ -8407,6 +8410,7 @@ export namespace Prisma {
     ssoConfig?: boolean
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: boolean
+    opportunityLeadStatuses?: boolean
     accounts?: boolean | Organisation$accountsArgs<ExtArgs>
     apiKeys?: boolean | Organisation$apiKeysArgs<ExtArgs>
     assignmentRules?: boolean | Organisation$assignmentRulesArgs<ExtArgs>
@@ -8484,6 +8488,7 @@ export namespace Prisma {
     ssoConfig?: boolean
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: boolean
+    opportunityLeadStatuses?: boolean
   }, ExtArgs["result"]["organisation"]>
 
   export type OrganisationSelectScalar = {
@@ -8516,6 +8521,7 @@ export namespace Prisma {
     ssoConfig?: boolean
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: boolean
+    opportunityLeadStatuses?: boolean
   }
 
   export type OrganisationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8645,6 +8651,7 @@ export namespace Prisma {
       ssoConfig: Prisma.JsonValue | null
       whatsAppScrapingEnabled: boolean
       leadStatuses: Prisma.JsonValue | null
+      opportunityLeadStatuses: Prisma.JsonValue | null
     }, ExtArgs["result"]["organisation"]>
     composites: {}
   }
@@ -9111,6 +9118,7 @@ export namespace Prisma {
     readonly ssoConfig: FieldRef<"Organisation", 'Json'>
     readonly whatsAppScrapingEnabled: FieldRef<"Organisation", 'Boolean'>
     readonly leadStatuses: FieldRef<"Organisation", 'Json'>
+    readonly opportunityLeadStatuses: FieldRef<"Organisation", 'Json'>
   }
     
 
@@ -10347,6 +10355,7 @@ export namespace Prisma {
     profileImage: string | null
     isPlaceholder: boolean | null
     isActive: boolean | null
+    isOffDuty: boolean | null
     lastLogin: Date | null
     metaAccessToken: string | null
     metaUserId: string | null
@@ -10377,6 +10386,7 @@ export namespace Prisma {
     profileImage: string | null
     isPlaceholder: boolean | null
     isActive: boolean | null
+    isOffDuty: boolean | null
     lastLogin: Date | null
     metaAccessToken: string | null
     metaUserId: string | null
@@ -10407,6 +10417,7 @@ export namespace Prisma {
     profileImage: number
     isPlaceholder: number
     isActive: number
+    isOffDuty: number
     lastLogin: number
     integrations: number
     metaAccessToken: number
@@ -10451,6 +10462,7 @@ export namespace Prisma {
     profileImage?: true
     isPlaceholder?: true
     isActive?: true
+    isOffDuty?: true
     lastLogin?: true
     metaAccessToken?: true
     metaUserId?: true
@@ -10481,6 +10493,7 @@ export namespace Prisma {
     profileImage?: true
     isPlaceholder?: true
     isActive?: true
+    isOffDuty?: true
     lastLogin?: true
     metaAccessToken?: true
     metaUserId?: true
@@ -10511,6 +10524,7 @@ export namespace Prisma {
     profileImage?: true
     isPlaceholder?: true
     isActive?: true
+    isOffDuty?: true
     lastLogin?: true
     integrations?: true
     metaAccessToken?: true
@@ -10632,6 +10646,7 @@ export namespace Prisma {
     profileImage: string | null
     isPlaceholder: boolean
     isActive: boolean
+    isOffDuty: boolean
     lastLogin: Date | null
     integrations: JsonValue | null
     metaAccessToken: string | null
@@ -10685,6 +10700,7 @@ export namespace Prisma {
     profileImage?: boolean
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: boolean
     integrations?: boolean
     metaAccessToken?: boolean
@@ -10792,6 +10808,7 @@ export namespace Prisma {
     profileImage?: boolean
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: boolean
     integrations?: boolean
     metaAccessToken?: boolean
@@ -10830,6 +10847,7 @@ export namespace Prisma {
     profileImage?: boolean
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: boolean
     integrations?: boolean
     metaAccessToken?: boolean
@@ -11022,6 +11040,7 @@ export namespace Prisma {
       profileImage: string | null
       isPlaceholder: boolean
       isActive: boolean
+      isOffDuty: boolean
       lastLogin: Date | null
       integrations: Prisma.JsonValue | null
       metaAccessToken: string | null
@@ -11518,6 +11537,7 @@ export namespace Prisma {
     readonly profileImage: FieldRef<"User", 'String'>
     readonly isPlaceholder: FieldRef<"User", 'Boolean'>
     readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly isOffDuty: FieldRef<"User", 'Boolean'>
     readonly lastLogin: FieldRef<"User", 'DateTime'>
     readonly integrations: FieldRef<"User", 'Json'>
     readonly metaAccessToken: FieldRef<"User", 'String'>
@@ -21418,6 +21438,7 @@ export namespace Prisma {
     leadId: string | null
     pipelineId: string | null
     lostReason: string | null
+    leadStatus: string | null
     type: $Enums.OpportunityType | null
     branchId: string | null
   }
@@ -21444,6 +21465,7 @@ export namespace Prisma {
     leadId: string | null
     pipelineId: string | null
     lostReason: string | null
+    leadStatus: string | null
     type: $Enums.OpportunityType | null
     branchId: string | null
   }
@@ -21472,6 +21494,7 @@ export namespace Prisma {
     leadId: number
     pipelineId: number
     lostReason: number
+    leadStatus: number
     type: number
     branchId: number
     _all: number
@@ -21510,6 +21533,7 @@ export namespace Prisma {
     leadId?: true
     pipelineId?: true
     lostReason?: true
+    leadStatus?: true
     type?: true
     branchId?: true
   }
@@ -21536,6 +21560,7 @@ export namespace Prisma {
     leadId?: true
     pipelineId?: true
     lostReason?: true
+    leadStatus?: true
     type?: true
     branchId?: true
   }
@@ -21564,6 +21589,7 @@ export namespace Prisma {
     leadId?: true
     pipelineId?: true
     lostReason?: true
+    leadStatus?: true
     type?: true
     branchId?: true
     _all?: true
@@ -21679,6 +21705,7 @@ export namespace Prisma {
     leadId: string | null
     pipelineId: string | null
     lostReason: string | null
+    leadStatus: string | null
     type: $Enums.OpportunityType
     branchId: string | null
     _count: OpportunityCountAggregateOutputType | null
@@ -21726,6 +21753,7 @@ export namespace Prisma {
     leadId?: boolean
     pipelineId?: boolean
     lostReason?: boolean
+    leadStatus?: boolean
     type?: boolean
     branchId?: boolean
     events?: boolean | Opportunity$eventsArgs<ExtArgs>
@@ -21771,6 +21799,7 @@ export namespace Prisma {
     leadId?: boolean
     pipelineId?: boolean
     lostReason?: boolean
+    leadStatus?: boolean
     type?: boolean
     branchId?: boolean
     account?: boolean | AccountDefaultArgs<ExtArgs>
@@ -21806,6 +21835,7 @@ export namespace Prisma {
     leadId?: boolean
     pipelineId?: boolean
     lostReason?: boolean
+    leadStatus?: boolean
     type?: boolean
     branchId?: boolean
   }
@@ -21883,6 +21913,7 @@ export namespace Prisma {
       leadId: string | null
       pipelineId: string | null
       lostReason: string | null
+      leadStatus: string | null
       type: $Enums.OpportunityType
       branchId: string | null
     }, ExtArgs["result"]["opportunity"]>
@@ -22317,6 +22348,7 @@ export namespace Prisma {
     readonly leadId: FieldRef<"Opportunity", 'String'>
     readonly pipelineId: FieldRef<"Opportunity", 'String'>
     readonly lostReason: FieldRef<"Opportunity", 'String'>
+    readonly leadStatus: FieldRef<"Opportunity", 'String'>
     readonly type: FieldRef<"Opportunity", 'OpportunityType'>
     readonly branchId: FieldRef<"Opportunity", 'String'>
   }
@@ -78023,7 +78055,8 @@ export namespace Prisma {
     upsellConfig: 'upsellConfig',
     ssoConfig: 'ssoConfig',
     whatsAppScrapingEnabled: 'whatsAppScrapingEnabled',
-    leadStatuses: 'leadStatuses'
+    leadStatuses: 'leadStatuses',
+    opportunityLeadStatuses: 'opportunityLeadStatuses'
   };
 
   export type OrganisationScalarFieldEnum = (typeof OrganisationScalarFieldEnum)[keyof typeof OrganisationScalarFieldEnum]
@@ -78042,6 +78075,7 @@ export namespace Prisma {
     profileImage: 'profileImage',
     isPlaceholder: 'isPlaceholder',
     isActive: 'isActive',
+    isOffDuty: 'isOffDuty',
     lastLogin: 'lastLogin',
     integrations: 'integrations',
     metaAccessToken: 'metaAccessToken',
@@ -78249,6 +78283,7 @@ export namespace Prisma {
     leadId: 'leadId',
     pipelineId: 'pipelineId',
     lostReason: 'lostReason',
+    leadStatus: 'leadStatus',
     type: 'type',
     branchId: 'branchId'
   };
@@ -79630,6 +79665,7 @@ export namespace Prisma {
     ssoConfig?: JsonNullableFilter<"Organisation">
     whatsAppScrapingEnabled?: BoolFilter<"Organisation"> | boolean
     leadStatuses?: JsonNullableFilter<"Organisation">
+    opportunityLeadStatuses?: JsonNullableFilter<"Organisation">
     accounts?: AccountListRelationFilter
     apiKeys?: ApiKeyListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
@@ -79706,6 +79742,7 @@ export namespace Prisma {
     ssoConfig?: SortOrderInput | SortOrder
     whatsAppScrapingEnabled?: SortOrder
     leadStatuses?: SortOrderInput | SortOrder
+    opportunityLeadStatuses?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     apiKeys?: ApiKeyOrderByRelationAggregateInput
     assignmentRules?: AssignmentRuleOrderByRelationAggregateInput
@@ -79785,6 +79822,7 @@ export namespace Prisma {
     ssoConfig?: JsonNullableFilter<"Organisation">
     whatsAppScrapingEnabled?: BoolFilter<"Organisation"> | boolean
     leadStatuses?: JsonNullableFilter<"Organisation">
+    opportunityLeadStatuses?: JsonNullableFilter<"Organisation">
     accounts?: AccountListRelationFilter
     apiKeys?: ApiKeyListRelationFilter
     assignmentRules?: AssignmentRuleListRelationFilter
@@ -79861,6 +79899,7 @@ export namespace Prisma {
     ssoConfig?: SortOrderInput | SortOrder
     whatsAppScrapingEnabled?: SortOrder
     leadStatuses?: SortOrderInput | SortOrder
+    opportunityLeadStatuses?: SortOrderInput | SortOrder
     _count?: OrganisationCountOrderByAggregateInput
     _avg?: OrganisationAvgOrderByAggregateInput
     _max?: OrganisationMaxOrderByAggregateInput
@@ -79901,6 +79940,7 @@ export namespace Prisma {
     ssoConfig?: JsonNullableWithAggregatesFilter<"Organisation">
     whatsAppScrapingEnabled?: BoolWithAggregatesFilter<"Organisation"> | boolean
     leadStatuses?: JsonNullableWithAggregatesFilter<"Organisation">
+    opportunityLeadStatuses?: JsonNullableWithAggregatesFilter<"Organisation">
   }
 
   export type UserWhereInput = {
@@ -79919,6 +79959,7 @@ export namespace Prisma {
     profileImage?: StringNullableFilter<"User"> | string | null
     isPlaceholder?: BoolFilter<"User"> | boolean
     isActive?: BoolFilter<"User"> | boolean
+    isOffDuty?: BoolFilter<"User"> | boolean
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     integrations?: JsonNullableFilter<"User">
     metaAccessToken?: StringNullableFilter<"User"> | string | null
@@ -80025,6 +80066,7 @@ export namespace Prisma {
     profileImage?: SortOrderInput | SortOrder
     isPlaceholder?: SortOrder
     isActive?: SortOrder
+    isOffDuty?: SortOrder
     lastLogin?: SortOrderInput | SortOrder
     integrations?: SortOrderInput | SortOrder
     metaAccessToken?: SortOrderInput | SortOrder
@@ -80134,6 +80176,7 @@ export namespace Prisma {
     profileImage?: StringNullableFilter<"User"> | string | null
     isPlaceholder?: BoolFilter<"User"> | boolean
     isActive?: BoolFilter<"User"> | boolean
+    isOffDuty?: BoolFilter<"User"> | boolean
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     integrations?: JsonNullableFilter<"User">
     metaAccessToken?: StringNullableFilter<"User"> | string | null
@@ -80240,6 +80283,7 @@ export namespace Prisma {
     profileImage?: SortOrderInput | SortOrder
     isPlaceholder?: SortOrder
     isActive?: SortOrder
+    isOffDuty?: SortOrder
     lastLogin?: SortOrderInput | SortOrder
     integrations?: SortOrderInput | SortOrder
     metaAccessToken?: SortOrderInput | SortOrder
@@ -80282,6 +80326,7 @@ export namespace Prisma {
     profileImage?: StringNullableWithAggregatesFilter<"User"> | string | null
     isPlaceholder?: BoolWithAggregatesFilter<"User"> | boolean
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    isOffDuty?: BoolWithAggregatesFilter<"User"> | boolean
     lastLogin?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     integrations?: JsonNullableWithAggregatesFilter<"User">
     metaAccessToken?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -81300,6 +81345,7 @@ export namespace Prisma {
     leadId?: StringNullableFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableFilter<"Opportunity"> | string | null
     lostReason?: StringNullableFilter<"Opportunity"> | string | null
+    leadStatus?: StringNullableFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableFilter<"Opportunity"> | string | null
     events?: CalendarEventListRelationFilter
@@ -81344,6 +81390,7 @@ export namespace Prisma {
     leadId?: SortOrderInput | SortOrder
     pipelineId?: SortOrderInput | SortOrder
     lostReason?: SortOrderInput | SortOrder
+    leadStatus?: SortOrderInput | SortOrder
     type?: SortOrder
     branchId?: SortOrderInput | SortOrder
     events?: CalendarEventOrderByRelationAggregateInput
@@ -81391,6 +81438,7 @@ export namespace Prisma {
     leadId?: StringNullableFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableFilter<"Opportunity"> | string | null
     lostReason?: StringNullableFilter<"Opportunity"> | string | null
+    leadStatus?: StringNullableFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableFilter<"Opportunity"> | string | null
     events?: CalendarEventListRelationFilter
@@ -81435,6 +81483,7 @@ export namespace Prisma {
     leadId?: SortOrderInput | SortOrder
     pipelineId?: SortOrderInput | SortOrder
     lostReason?: SortOrderInput | SortOrder
+    leadStatus?: SortOrderInput | SortOrder
     type?: SortOrder
     branchId?: SortOrderInput | SortOrder
     _count?: OpportunityCountOrderByAggregateInput
@@ -81471,6 +81520,7 @@ export namespace Prisma {
     leadId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
     lostReason?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
+    leadStatus?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeWithAggregatesFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableWithAggregatesFilter<"Opportunity"> | string | null
   }
@@ -87082,6 +87132,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -87158,6 +87209,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -87234,6 +87286,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -87310,6 +87363,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -87386,6 +87440,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type OrganisationUpdateManyMutationInput = {
@@ -87418,6 +87473,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type OrganisationUncheckedUpdateManyInput = {
@@ -87450,6 +87506,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserCreateInput = {
@@ -87465,6 +87522,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -87567,6 +87625,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -87669,6 +87728,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -87771,6 +87831,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -87873,6 +87934,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -87907,6 +87969,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -87937,6 +88000,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -89096,6 +89160,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -89139,6 +89204,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -89170,6 +89236,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -89213,6 +89280,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -89250,6 +89318,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -89272,6 +89341,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
   }
 
@@ -89299,6 +89369,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -95980,6 +96051,7 @@ export namespace Prisma {
     ssoConfig?: SortOrder
     whatsAppScrapingEnabled?: SortOrder
     leadStatuses?: SortOrder
+    opportunityLeadStatuses?: SortOrder
   }
 
   export type OrganisationAvgOrderByAggregateInput = {
@@ -96273,6 +96345,7 @@ export namespace Prisma {
     profileImage?: SortOrder
     isPlaceholder?: SortOrder
     isActive?: SortOrder
+    isOffDuty?: SortOrder
     lastLogin?: SortOrder
     integrations?: SortOrder
     metaAccessToken?: SortOrder
@@ -96311,6 +96384,7 @@ export namespace Prisma {
     profileImage?: SortOrder
     isPlaceholder?: SortOrder
     isActive?: SortOrder
+    isOffDuty?: SortOrder
     lastLogin?: SortOrder
     metaAccessToken?: SortOrder
     metaUserId?: SortOrder
@@ -96341,6 +96415,7 @@ export namespace Prisma {
     profileImage?: SortOrder
     isPlaceholder?: SortOrder
     isActive?: SortOrder
+    isOffDuty?: SortOrder
     lastLogin?: SortOrder
     metaAccessToken?: SortOrder
     metaUserId?: SortOrder
@@ -96972,6 +97047,7 @@ export namespace Prisma {
     leadId?: SortOrder
     pipelineId?: SortOrder
     lostReason?: SortOrder
+    leadStatus?: SortOrder
     type?: SortOrder
     branchId?: SortOrder
   }
@@ -97003,6 +97079,7 @@ export namespace Prisma {
     leadId?: SortOrder
     pipelineId?: SortOrder
     lostReason?: SortOrder
+    leadStatus?: SortOrder
     type?: SortOrder
     branchId?: SortOrder
   }
@@ -97029,6 +97106,7 @@ export namespace Prisma {
     leadId?: SortOrder
     pipelineId?: SortOrder
     lostReason?: SortOrder
+    leadStatus?: SortOrder
     type?: SortOrder
     branchId?: SortOrder
   }
@@ -112592,6 +112670,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -112633,6 +112712,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -113037,6 +113117,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -113138,6 +113219,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -114820,6 +114902,7 @@ export namespace Prisma {
     leadId?: StringNullableFilter<"Opportunity"> | string | null
     pipelineId?: StringNullableFilter<"Opportunity"> | string | null
     lostReason?: StringNullableFilter<"Opportunity"> | string | null
+    leadStatus?: StringNullableFilter<"Opportunity"> | string | null
     type?: EnumOpportunityTypeFilter<"Opportunity"> | $Enums.OpportunityType
     branchId?: StringNullableFilter<"Opportunity"> | string | null
   }
@@ -115123,6 +115206,7 @@ export namespace Prisma {
     profileImage?: StringNullableFilter<"User"> | string | null
     isPlaceholder?: BoolFilter<"User"> | boolean
     isActive?: BoolFilter<"User"> | boolean
+    isOffDuty?: BoolFilter<"User"> | boolean
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     integrations?: JsonNullableFilter<"User">
     metaAccessToken?: StringNullableFilter<"User"> | string | null
@@ -117519,6 +117603,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -117560,6 +117645,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -118425,6 +118511,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -118466,6 +118553,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -118815,6 +118903,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -118890,6 +118979,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -118953,6 +119043,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -119054,6 +119145,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -119160,6 +119252,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -119261,6 +119354,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -121179,6 +121273,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -121254,6 +121349,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -121323,6 +121419,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -121424,6 +121521,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -121995,6 +122093,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -122096,6 +122195,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -122207,6 +122307,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -122308,6 +122409,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -122414,6 +122516,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -122515,6 +122618,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -122638,6 +122742,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -122713,6 +122818,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -122863,6 +122969,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -122964,6 +123071,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123076,6 +123184,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123177,6 +123286,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123306,6 +123416,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -123381,6 +123492,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -123455,6 +123567,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -123556,6 +123669,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -123673,6 +123787,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123774,6 +123889,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -124047,6 +124163,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -124148,6 +124265,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -124271,6 +124389,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -124346,6 +124465,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -124409,6 +124529,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -124510,6 +124631,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -124616,6 +124738,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -124717,6 +124840,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -125348,6 +125472,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -125389,6 +125514,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -125567,6 +125693,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125668,6 +125795,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125797,6 +125925,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -125872,6 +126001,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -125941,6 +126071,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126042,6 +126173,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126154,6 +126286,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126255,6 +126388,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126942,6 +127076,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventCreateNestedManyWithoutOrganisationInput
@@ -127017,6 +127152,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
@@ -127080,6 +127216,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -127181,6 +127318,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -127287,6 +127425,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -127388,6 +127527,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -127964,6 +128104,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -128005,6 +128146,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -128537,6 +128679,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
@@ -128612,6 +128755,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -128681,6 +128825,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128782,6 +128927,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128894,6 +129040,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128995,6 +129142,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -129813,6 +129961,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -129888,6 +130037,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -129951,6 +130101,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -130052,6 +130203,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -130158,6 +130310,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -130259,6 +130412,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -130657,6 +130811,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -130699,6 +130854,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -131182,6 +131338,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -131257,6 +131414,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -131326,6 +131484,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -131427,6 +131586,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -131539,6 +131699,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -131640,6 +131801,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -132285,6 +132447,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -132360,6 +132523,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -132423,6 +132587,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -132524,6 +132689,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -132630,6 +132796,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -132731,6 +132898,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -133587,6 +133755,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -133662,6 +133831,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -133731,6 +133901,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133832,6 +134003,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133944,6 +134116,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134045,6 +134218,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134512,6 +134686,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -134613,6 +134788,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -134736,6 +134912,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -134811,6 +134988,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -135136,6 +135314,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -135237,6 +135416,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -135366,6 +135546,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -135441,6 +135622,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -136232,6 +136414,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -136307,6 +136490,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -136556,6 +136740,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -136631,6 +136816,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -136764,6 +136950,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -136865,6 +137052,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -136971,6 +137159,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -137072,6 +137261,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -137259,6 +137449,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -137360,6 +137551,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -137471,6 +137663,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -137513,6 +137706,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -137560,6 +137754,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -137635,6 +137830,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -137826,6 +138022,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -137927,6 +138124,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -138039,6 +138237,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -138140,6 +138339,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -138339,6 +138539,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -138440,6 +138641,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -138557,6 +138759,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -138599,6 +138802,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -138652,6 +138856,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -138727,6 +138932,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -139172,6 +139378,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -139273,6 +139480,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -139379,6 +139587,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -139480,6 +139689,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -139667,6 +139877,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -139768,6 +139979,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -140010,6 +140222,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -140052,6 +140265,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -140099,6 +140313,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -140174,6 +140389,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -140380,6 +140596,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -140481,6 +140698,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -140593,6 +140811,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -140694,6 +140913,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -140893,6 +141113,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -140994,6 +141215,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -141248,6 +141470,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -141290,6 +141513,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -141343,6 +141567,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -141418,6 +141643,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -141608,6 +141834,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -141709,6 +141936,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -141896,6 +142124,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -141997,6 +142226,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -142239,6 +142469,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -142281,6 +142512,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -142328,6 +142560,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -142403,6 +142636,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -142609,6 +142843,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -142710,6 +142945,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -142909,6 +143145,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143010,6 +143247,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143264,6 +143502,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -143306,6 +143545,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -143359,6 +143599,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -143434,6 +143675,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -143756,6 +143998,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -143857,6 +144100,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -144099,6 +144343,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     account: AccountCreateNestedOneWithoutOpportunitiesInput
@@ -144141,6 +144386,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -144188,6 +144434,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -144263,6 +144510,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -144613,6 +144861,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144714,6 +144963,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144968,6 +145218,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
@@ -145010,6 +145261,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -145063,6 +145315,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -145138,6 +145391,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -145409,6 +145663,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -145510,6 +145765,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -145752,6 +146008,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
     account: AccountCreateNestedOneWithoutOpportunitiesInput
@@ -145794,6 +146051,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
@@ -145841,6 +146099,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -145916,6 +146175,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -146158,6 +146418,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -146259,6 +146520,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -146513,6 +146775,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
     account?: AccountUpdateOneRequiredWithoutOpportunitiesNestedInput
@@ -146555,6 +146818,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -146608,6 +146872,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -146683,6 +146948,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -146787,6 +147053,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -146888,6 +147155,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -147011,6 +147279,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -147086,6 +147355,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -147388,6 +147658,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -147489,6 +147760,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -147618,6 +147890,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -147693,6 +147966,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -147783,6 +148057,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -147884,6 +148159,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -148038,6 +148314,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -148113,6 +148390,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -148187,6 +148465,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -148288,6 +148567,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -148454,6 +148734,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -148529,6 +148810,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -148587,6 +148869,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -148688,6 +148971,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -148811,6 +149095,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -148886,6 +149171,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -148990,6 +149276,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149091,6 +149378,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149220,6 +149508,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -149295,6 +149584,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -149427,6 +149717,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -149502,6 +149793,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -149640,6 +149932,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -149715,6 +150008,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -149773,6 +150067,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -149874,6 +150169,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -149997,6 +150293,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -150072,6 +150369,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -150146,6 +150444,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150247,6 +150546,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150376,6 +150676,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -150451,6 +150752,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -150509,6 +150811,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -150610,6 +150913,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -150727,6 +151031,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150828,6 +151133,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150929,6 +151235,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -151030,6 +151337,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -151147,6 +151455,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151248,6 +151557,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151415,6 +151725,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -151516,6 +151827,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -151622,6 +151934,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -151723,6 +152036,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -151846,6 +152160,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -151921,6 +152236,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -152042,6 +152358,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -152143,6 +152460,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -152255,6 +152573,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -152356,6 +152675,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -152485,6 +152805,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -152560,6 +152881,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -152671,6 +152993,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -152772,6 +153095,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -152878,6 +153202,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -152979,6 +153304,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -153102,6 +153428,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventCreateNestedManyWithoutOrganisationInput
@@ -153177,6 +153504,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
@@ -153240,6 +153568,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -153341,6 +153670,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -153509,6 +153839,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -153610,6 +153941,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -153722,6 +154054,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -153823,6 +154156,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -153952,6 +154286,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
@@ -154027,6 +154362,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -154096,6 +154432,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -154197,6 +154534,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -154355,6 +154693,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -154456,6 +154795,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -154562,6 +154902,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -154663,6 +155004,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -154769,6 +155111,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -154870,6 +155213,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -155026,6 +155370,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -155101,6 +155446,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -155361,6 +155707,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -155462,6 +155809,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -155574,6 +155922,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -155675,6 +156024,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -155787,6 +156137,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -155888,6 +156239,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -156056,6 +156408,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -156131,6 +156484,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -156343,6 +156697,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -156444,6 +156799,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -156550,6 +156906,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -156651,6 +157008,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -156757,6 +157115,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -156858,6 +157217,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -156981,6 +157341,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -157056,6 +157417,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -157130,6 +157492,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157231,6 +157594,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157343,6 +157707,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157444,6 +157809,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157556,6 +157922,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157657,6 +158024,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -157786,6 +158154,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -157861,6 +158230,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -157994,6 +158364,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -158095,6 +158466,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -158201,6 +158573,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -158302,6 +158675,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -158489,6 +158863,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -158590,6 +158965,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -158713,6 +159089,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -158788,6 +159165,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -158943,6 +159321,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159044,6 +159423,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159156,6 +159536,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159257,6 +159638,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159456,6 +159838,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159557,6 +159940,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -159686,6 +160070,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -159761,6 +160146,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -160123,6 +160509,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -160198,6 +160585,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -160261,6 +160649,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -160362,6 +160751,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -160801,6 +161191,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -160876,6 +161267,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -160945,6 +161337,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -161046,6 +161439,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -161147,6 +161541,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -161248,6 +161643,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -161371,6 +161767,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventCreateNestedManyWithoutOrganisationInput
@@ -161446,6 +161843,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
     events?: CalendarEventUncheckedCreateNestedManyWithoutOrganisationInput
@@ -161520,6 +161918,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -161621,6 +162020,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -161750,6 +162150,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUpdateManyWithoutOrganisationNestedInput
@@ -161825,6 +162226,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
     events?: CalendarEventUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -161883,6 +162285,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -161984,6 +162387,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -162101,6 +162505,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -162202,6 +162607,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -162303,6 +162709,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -162404,6 +162811,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -162527,6 +162935,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -162602,6 +163011,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -162676,6 +163086,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -162777,6 +163188,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -162906,6 +163318,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -162981,6 +163394,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -163039,6 +163453,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -163140,6 +163555,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -163263,6 +163679,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -163338,6 +163755,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -163412,6 +163830,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -163513,6 +163932,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -163642,6 +164062,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -163717,6 +164138,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -163775,6 +164197,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -163876,6 +164299,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -163999,6 +164423,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -164074,6 +164499,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -164148,6 +164574,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164249,6 +164676,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164378,6 +164806,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -164453,6 +164882,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -164511,6 +164941,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -164612,6 +165043,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -164729,6 +165161,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164830,6 +165263,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164948,6 +165382,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -165023,6 +165458,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -165114,6 +165550,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -165189,6 +165626,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -165247,6 +165685,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -165348,6 +165787,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -165585,6 +166025,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -165686,6 +166127,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -165792,6 +166234,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -165893,6 +166336,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -166010,6 +166454,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166111,6 +166556,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166360,6 +166806,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166461,6 +166908,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166573,6 +167021,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166674,6 +167123,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166775,6 +167225,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -166876,6 +167327,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -166999,6 +167451,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -167074,6 +167527,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -167148,6 +167602,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167249,6 +167704,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167378,6 +167834,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -167453,6 +167910,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -167528,6 +167986,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -167603,6 +168062,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -167666,6 +168126,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -167767,6 +168228,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -168014,6 +168476,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -168055,6 +168518,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -168119,6 +168583,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -168194,6 +168659,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -168263,6 +168729,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -168364,6 +168831,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -168514,6 +168982,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -168589,6 +169058,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -168652,6 +169122,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -168753,6 +169224,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -168887,6 +169359,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -168962,6 +169435,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -169031,6 +169505,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169132,6 +169607,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169250,6 +169726,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -169325,6 +169802,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -169388,6 +169866,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -169489,6 +169968,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -169623,6 +170103,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -169698,6 +170179,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -169767,6 +170249,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169868,6 +170351,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169986,6 +170470,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -170061,6 +170546,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -170124,6 +170610,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -170225,6 +170712,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -170417,6 +170905,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -170492,6 +170981,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -170561,6 +171051,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170662,6 +171153,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170796,6 +171288,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -170871,6 +171364,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -171146,6 +171640,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -171247,6 +171742,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -171424,6 +171920,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -171499,6 +171996,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -171792,6 +172290,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -171893,6 +172392,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172043,6 +172543,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -172144,6 +172645,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -172267,6 +172769,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -172342,6 +172845,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -172405,6 +172909,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -172506,6 +173011,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -172623,6 +173129,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172724,6 +173231,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172853,6 +173361,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -172928,6 +173437,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -172997,6 +173507,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173098,6 +173609,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173216,6 +173728,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -173291,6 +173804,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -173354,6 +173868,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -173455,6 +173970,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -173589,6 +174105,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -173664,6 +174181,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -173733,6 +174251,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173834,6 +174353,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -173952,6 +174472,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -174027,6 +174548,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -174090,6 +174612,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -174191,6 +174714,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -174325,6 +174849,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -174400,6 +174925,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -174469,6 +174995,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174570,6 +175097,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -174688,6 +175216,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -174763,6 +175292,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -174826,6 +175356,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -174927,6 +175458,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -175325,6 +175857,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -175367,6 +175900,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -175491,6 +176025,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -175566,6 +176101,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -175635,6 +176171,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175736,6 +176273,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176158,6 +176696,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -176200,6 +176739,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -176312,6 +176852,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -176413,6 +176954,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -176536,6 +177078,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -176611,6 +177154,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -176762,6 +177306,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176863,6 +177408,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176992,6 +177538,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -177067,6 +177614,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -177142,6 +177690,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -177217,6 +177766,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -177280,6 +177830,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -177381,6 +177932,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -177487,6 +178039,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -177588,6 +178141,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -177926,6 +178480,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -177968,6 +178523,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionUncheckedCreateNestedManyWithoutOpportunityInput
@@ -178435,6 +178991,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -178510,6 +179067,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -178579,6 +179137,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178680,6 +179239,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178958,6 +179518,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -179033,6 +179594,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -179124,6 +179686,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -179199,6 +179762,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -179262,6 +179826,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -179304,6 +179869,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -179351,6 +179917,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -179426,6 +179993,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -179543,6 +180111,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -179585,6 +180154,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -179638,6 +180208,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -179713,6 +180284,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -179925,6 +180497,7 @@ export namespace Prisma {
     paymentStatus?: string
     paymentDate?: Date | string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     events?: CalendarEventCreateNestedManyWithoutOpportunityInput
     interactions?: InteractionCreateNestedManyWithoutOpportunityInput
@@ -179967,6 +180540,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
     events?: CalendarEventUncheckedCreateNestedManyWithoutOpportunityInput
@@ -180030,6 +180604,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -180131,6 +180706,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -180254,6 +180830,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleCreateNestedManyWithoutOrganisationInput
@@ -180329,6 +180906,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganisationInput
     apiKeys?: ApiKeyUncheckedCreateNestedManyWithoutOrganisationInput
     assignmentRules?: AssignmentRuleUncheckedCreateNestedManyWithoutOrganisationInput
@@ -180408,6 +180986,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -180450,6 +181029,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -180525,6 +181105,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180626,6 +181207,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180755,6 +181337,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUpdateManyWithoutOrganisationNestedInput
@@ -180830,6 +181413,7 @@ export namespace Prisma {
     ssoConfig?: NullableJsonNullValueInput | InputJsonValue
     whatsAppScrapingEnabled?: BoolFieldUpdateOperationsInput | boolean
     leadStatuses?: NullableJsonNullValueInput | InputJsonValue
+    opportunityLeadStatuses?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutOrganisationNestedInput
     apiKeys?: ApiKeyUncheckedUpdateManyWithoutOrganisationNestedInput
     assignmentRules?: AssignmentRuleUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -181224,6 +181808,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -181388,6 +181973,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -182807,6 +183393,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -182848,6 +183435,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -182884,6 +183472,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -183356,6 +183945,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183457,6 +184047,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183558,6 +184149,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185215,6 +185807,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -185557,6 +186150,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -185695,6 +186289,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -188015,6 +188610,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -188056,6 +188652,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -188092,6 +188689,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -189123,6 +189721,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -189164,6 +189763,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -189200,6 +189800,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -189584,6 +190185,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189685,6 +190287,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189786,6 +190389,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190814,6 +191418,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -190871,6 +191476,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -190972,6 +191578,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191073,6 +191680,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191424,6 +192032,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -192244,6 +192853,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -192285,6 +192895,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -192321,6 +192932,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -192523,6 +193135,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -193133,6 +193746,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -193174,6 +193788,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -193210,6 +193825,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -194353,6 +194969,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -194395,6 +195012,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -194431,6 +195049,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -196351,6 +196970,7 @@ export namespace Prisma {
     previousOwnerId?: string | null
     leadId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
     branchId?: string | null
   }
@@ -196548,6 +197168,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -196589,6 +197210,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -196625,6 +197247,7 @@ export namespace Prisma {
     previousOwnerId?: NullableStringFieldUpdateOperationsInput | string | null
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -196850,6 +197473,7 @@ export namespace Prisma {
     profileImage?: string | null
     isPlaceholder?: boolean
     isActive?: boolean
+    isOffDuty?: boolean
     lastLogin?: Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: string | null
@@ -196970,6 +197594,7 @@ export namespace Prisma {
     leadId?: string | null
     pipelineId?: string | null
     lostReason?: string | null
+    leadStatus?: string | null
     type?: $Enums.OpportunityType
   }
 
@@ -197141,6 +197766,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197242,6 +197868,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197343,6 +197970,7 @@ export namespace Prisma {
     profileImage?: NullableStringFieldUpdateOperationsInput | string | null
     isPlaceholder?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isOffDuty?: BoolFieldUpdateOperationsInput | boolean
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     integrations?: NullableJsonNullValueInput | InputJsonValue
     metaAccessToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197659,6 +198287,7 @@ export namespace Prisma {
     paymentStatus?: StringFieldUpdateOperationsInput | string
     paymentDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUpdateManyWithoutOpportunityNestedInput
@@ -197701,6 +198330,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
     events?: CalendarEventUncheckedUpdateManyWithoutOpportunityNestedInput
     interactions?: InteractionUncheckedUpdateManyWithoutOpportunityNestedInput
@@ -197737,6 +198367,7 @@ export namespace Prisma {
     leadId?: NullableStringFieldUpdateOperationsInput | string | null
     pipelineId?: NullableStringFieldUpdateOperationsInput | string | null
     lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    leadStatus?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumOpportunityTypeFieldUpdateOperationsInput | $Enums.OpportunityType
   }
 

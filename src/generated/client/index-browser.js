@@ -151,7 +151,8 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   upsellConfig: 'upsellConfig',
   ssoConfig: 'ssoConfig',
   whatsAppScrapingEnabled: 'whatsAppScrapingEnabled',
-  leadStatuses: 'leadStatuses'
+  leadStatuses: 'leadStatuses',
+  opportunityLeadStatuses: 'opportunityLeadStatuses'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -167,6 +168,7 @@ exports.Prisma.UserScalarFieldEnum = {
   profileImage: 'profileImage',
   isPlaceholder: 'isPlaceholder',
   isActive: 'isActive',
+  isOffDuty: 'isOffDuty',
   lastLogin: 'lastLogin',
   integrations: 'integrations',
   metaAccessToken: 'metaAccessToken',
@@ -353,6 +355,7 @@ exports.Prisma.OpportunityScalarFieldEnum = {
   leadId: 'leadId',
   pipelineId: 'pipelineId',
   lostReason: 'lostReason',
+  leadStatus: 'leadStatus',
   type: 'type',
   branchId: 'branchId'
 };
