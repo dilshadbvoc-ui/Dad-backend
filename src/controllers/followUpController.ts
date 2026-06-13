@@ -75,8 +75,11 @@ export const getFollowUps = async (req: Request, res: Response) => {
             (where.AND as any[]).push({ OR: searchConditions });
         }
 
-        if (status && status !== 'all') {
-            where.status = status as any;
+        if (status) {
+            if (status !== 'all') {
+                where.status = status as any;
+            }
+            // If status is 'all', we omit where.status to return all statuses (active, completed, deferred)
         } else {
             where.status = { in: ['not_started', 'in_progress'] };
         }
