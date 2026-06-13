@@ -141,11 +141,75 @@ export const getFollowUps = async (req: Request, res: Response) => {
             };
         });
 
+        const baseWhere = { ...where };
+        delete baseWhere.status;
+
+        const now = new Date();
+        const endOfToday = (() => {
+            const istTime = now.getTime() + (5.5 * 60 * 60 * 1000);
+            const istDate = new Date(istTime);
+            const endOfTodayIST = new Date(Date.UTC(
+                istDate.getUTCFullYear(),
+                istDate.getUTCMonth(),
+                istDate.getUTCDate(),
+                23, 59, 59, 999
+            ));
+            return new Date(endOfTodayIST.getTime() - (5.5 * 60 * 60 * 1000));
+        })();
+
+        const startOfToday = (() => {
+            const istTime = now.getTime() + (5.5 * 60 * 60 * 1000);
+            const istDate = new Date(istTime);
+            const startOfTodayIST = new Date(Date.UTC(
+                istDate.getUTCFullYear(),
+                istDate.getUTCMonth(),
+                istDate.getUTCDate(),
+                0, 0, 0, 0
+            ));
+            return new Date(startOfTodayIST.getTime() - (5.5 * 60 * 60 * 1000));
+        })();
+
+        const [activeCount, overdueCount, todayCount, upcomingCount] = await Promise.all([
+            prisma.followUp.count({
+                where: {
+                    ...baseWhere,
+                    status: { in: ['not_started', 'in_progress'] }
+                }
+            }),
+            prisma.followUp.count({
+                where: {
+                    ...baseWhere,
+                    status: { in: ['not_started', 'in_progress'] },
+                    dueDate: { lt: startOfToday }
+                }
+            }),
+            prisma.followUp.count({
+                where: {
+                    ...baseWhere,
+                    status: { in: ['not_started', 'in_progress'] },
+                    dueDate: { gte: startOfToday, lte: endOfToday }
+                }
+            }),
+            prisma.followUp.count({
+                where: {
+                    ...baseWhere,
+                    status: { in: ['not_started', 'in_progress'] },
+                    dueDate: { gt: endOfToday }
+                }
+            })
+        ]);
+
         res.json({
             tasks: transformedFollowUps, // Keep 'tasks' key for backward compat with frontend if needed, or change to 'followUps'
             page,
             totalPages: Math.ceil(count / limit),
-            totalTasks: count
+            totalTasks: count,
+            counts: {
+                active: activeCount,
+                overdue: overdueCount,
+                today: todayCount,
+                upcoming: upcomingCount
+            }
         });
     } catch (error) {
         console.error('[getFollowUps] Error:', error);

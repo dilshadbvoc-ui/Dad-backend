@@ -140,15 +140,14 @@ const getDashboardStats = async (req, res) => {
         }
         const oppDateFilter = getDateFilter(req, 'closeDate');
         const paymentDateFilter = getDateFilter(req, 'paymentDate');
-        // Follow-up Date Filter
-        const followUpDateFilter = getDateFilter(req, 'dueDate');
-        const followUpDueDate = followUpDateFilter ? followUpDateFilter.dueDate : {
+        // Follow-up Date Filter (always due today or overdue only, aligned timezone-independently to IST)
+        const followUpDueDate = {
             lte: (() => {
-                const d = new Date();
-                d.setMinutes(d.getMinutes() + 330); // Shift to IST
-                d.setHours(23, 59, 59, 999);
-                d.setMinutes(d.getMinutes() - 330); // Shift back to UTC
-                return d;
+                const now = new Date();
+                const istTime = now.getTime() + (5.5 * 60 * 60 * 1000);
+                const istDate = new Date(istTime);
+                const endOfTodayIST = new Date(Date.UTC(istDate.getUTCFullYear(), istDate.getUTCMonth(), istDate.getUTCDate(), 23, 59, 59, 999));
+                return new Date(endOfTodayIST.getTime() - (5.5 * 60 * 60 * 1000));
             })()
         };
         // Follow-up Branch Filter (checking related entities' branches)
