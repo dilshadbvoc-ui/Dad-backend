@@ -148,7 +148,7 @@ const createOpportunity = async (req, res) => {
             amount: Number(req.body.amount),
             stage: req.body.stage,
             probability: req.body.probability,
-            closeDate: req.body.closeDate,
+            closeDate: req.body.closeDate ? new Date(req.body.closeDate) : null,
             leadSource: req.body.leadSource,
             description: req.body.description,
             customFields: req.body.customFields,
@@ -359,6 +359,10 @@ const updateOpportunity = async (req, res) => {
         if (opportunityUpdates.owner && typeof opportunityUpdates.owner === 'string') {
             opportunityUpdates.owner = { connect: { id: opportunityUpdates.owner } };
         }
+        // Parse closeDate string to Date object
+        if (opportunityUpdates.closeDate !== undefined) {
+            opportunityUpdates.closeDate = opportunityUpdates.closeDate ? new Date(opportunityUpdates.closeDate) : null;
+        }
         // Fetch first for validation and existence
         const currentOpp = await prisma_1.default.opportunity.findUnique({ where: { id: oppId } });
         if (!currentOpp)
@@ -515,7 +519,7 @@ const updateOpportunity = async (req, res) => {
                 entityId: oppId,
                 actorId: requester.id,
                 organisationId: currentOpp.organisationId,
-                details: { oldStage: currentOpp.stage, newStage: updates.stage }
+                details: { name: currentOpp.name, oldStage: currentOpp.stage, newStage: updates.stage }
             });
         }
         res.json(opportunity);

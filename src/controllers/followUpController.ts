@@ -81,7 +81,16 @@ export const getFollowUps = async (req: Request, res: Response) => {
         
         const branchId = req.query.branchId as string;
         if (branchId && branchId !== 'all') {
-            where.branchId = branchId;
+            if (!where.AND) where.AND = [];
+            (where.AND as any[]).push({
+                OR: [
+                    { branchId: branchId },
+                    { lead: { branchId: branchId } },
+                    { opportunity: { branchId: branchId } },
+                    { contact: { branchId: branchId } },
+                    { account: { branchId: branchId } }
+                ]
+            });
         }
 
         const userId = req.query.userId as string;

@@ -300,10 +300,6 @@ app.use('/uploads', (req, res, next) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     next();
 }, express_1.default.static(staticPath));
-app.get('/', (req, res) => {
-    console.log('Health check ping received at /');
-    res.send('API is running...');
-});
 app.get('/health', (req, res) => {
     console.log('Health check ping received at /health');
     res.status(200).send('OK');

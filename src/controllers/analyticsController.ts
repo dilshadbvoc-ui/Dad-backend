@@ -123,6 +123,41 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         const oppDateFilter = getDateFilter(req, 'closeDate');
         const paymentDateFilter = getDateFilter(req, 'paymentDate');
 
+        // Follow-up Date Filter
+        const followUpDateFilter = getDateFilter(req, 'dueDate');
+        const followUpDueDate = followUpDateFilter ? followUpDateFilter.dueDate : {
+            lte: (() => {
+                const d = new Date();
+                d.setMinutes(d.getMinutes() + 330); // Shift to IST
+                d.setHours(23, 59, 59, 999);
+                d.setMinutes(d.getMinutes() - 330); // Shift back to UTC
+                return d;
+            })()
+        };
+
+        // Follow-up Branch Filter (checking related entities' branches)
+        const followUpBranchFilter = branchFilter.branchId ? {
+            OR: [
+                { branchId: branchFilter.branchId },
+                { lead: { branchId: branchFilter.branchId } },
+                { opportunity: { branchId: branchFilter.branchId } },
+                { contact: { branchId: branchFilter.branchId } },
+                { account: { branchId: branchFilter.branchId } }
+            ]
+        } : {};
+
+        // Follow-up Visibility Filter matching followUpController.ts
+        const followUpVisibilityFilter = !isSuperAdmin && user.role !== 'admin' ? {
+            OR: [
+                { assignedToId: { in: visibleUserIds } },
+                { createdById: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                { contact: { ownerId: { in: visibleUserIds } } },
+                { account: { ownerId: { in: visibleUserIds } } },
+                { opportunity: { ownerId: { in: visibleUserIds } } }
+            ]
+        } : {};
+
         // Group independent queries to run concurrently
         const [
             totalLeads,
@@ -265,22 +300,15 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 _sum: { amount: true }
             }),
 
-            // Pending Follow-ups (due today or overdue only — not all-time, aligned to IST timezone)
+            // Pending Follow-ups (due today/selected range, aligned to IST timezone, respecting visibility and branch)
             prisma.followUp.count({
                 where: {
-                    ...combinedFilter,
+                    ...orgFilter,
+                    ...followUpBranchFilter,
+                    ...followUpVisibilityFilter,
                     isDeleted: false,
                     status: { in: ['not_started', 'in_progress'] },
-                    dueDate: {
-                        lte: (() => {
-                            const d = new Date();
-                            d.setMinutes(d.getMinutes() + 330); // Shift to IST
-                            d.setHours(23, 59, 59, 999);
-                            d.setMinutes(d.getMinutes() - 330); // Shift back to UTC
-                            return d;
-                        })()
-                    },
-                    ...(!isSuperAdmin && user.role !== 'admin' ? { assignedToId: { in: visibleUserIds } } : {})
+                    dueDate: followUpDueDate
                 }
             })
         ]);

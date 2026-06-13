@@ -92,7 +92,8 @@ const markAsRead = async (req, res) => {
         });
         res.json({ success: true });
     }
-    catch {
+    catch (error) {
+        console.error('markAsRead Error:', error);
         res.status(500).json({ message: 'Server Error' });
     }
 };
@@ -106,7 +107,8 @@ const markAllAsRead = async (req, res) => {
         });
         res.json({ success: true });
     }
-    catch {
+    catch (error) {
+        console.error('markAllAsRead Error:', error);
         res.status(500).json({ message: 'Server Error' });
     }
 };

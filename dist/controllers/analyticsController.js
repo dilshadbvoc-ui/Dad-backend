@@ -56,6 +56,37 @@ const getBranchFilter = (req) => {
     const branchId = req.query.branchId;
     return branchId ? { branchId } : {};
 };
+// Helper to get date filter
+const getDateFilter = (req, dateField) => {
+    const month = req.query.month; // Expect "YYYY-MM" or "all"
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+    if (month && month !== 'all') {
+        const [yearStr, monthStr] = month.split('-');
+        const year = parseInt(yearStr, 10);
+        const monthIndex = parseInt(monthStr, 10) - 1;
+        const start = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0, 0));
+        start.setMinutes(start.getMinutes() - 330); // Shift to match IST start
+        const end = new Date(Date.UTC(year, monthIndex + 1, 1, 0, 0, 0, 0));
+        end.setMinutes(end.getMinutes() - 330); // Shift to match IST end
+        return { [dateField]: { gte: start, lt: end } };
+    }
+    if (startDate || endDate) {
+        const filter = {};
+        if (startDate) {
+            const sDate = new Date(String(startDate));
+            sDate.setUTCHours(0, 0, 0, 0);
+            filter.gte = sDate;
+        }
+        if (endDate) {
+            const eDate = new Date(String(endDate));
+            eDate.setUTCHours(23, 59, 59, 999);
+            filter.lte = eDate;
+        }
+        return { [dateField]: filter };
+    }
+    return null;
+};
 const getDashboardStats = async (req, res) => {
     logDebug('Entered getDashboardStats');
     try {
@@ -107,6 +138,40 @@ const getDashboardStats = async (req, res) => {
                 ownerId: oppVisibilityFilter.ownerId
             };
         }
+        const oppDateFilter = getDateFilter(req, 'closeDate');
+        const paymentDateFilter = getDateFilter(req, 'paymentDate');
+        // Follow-up Date Filter
+        const followUpDateFilter = getDateFilter(req, 'dueDate');
+        const followUpDueDate = followUpDateFilter ? followUpDateFilter.dueDate : {
+            lte: (() => {
+                const d = new Date();
+                d.setMinutes(d.getMinutes() + 330); // Shift to IST
+                d.setHours(23, 59, 59, 999);
+                d.setMinutes(d.getMinutes() - 330); // Shift back to UTC
+                return d;
+            })()
+        };
+        // Follow-up Branch Filter (checking related entities' branches)
+        const followUpBranchFilter = branchFilter.branchId ? {
+            OR: [
+                { branchId: branchFilter.branchId },
+                { lead: { branchId: branchFilter.branchId } },
+                { opportunity: { branchId: branchFilter.branchId } },
+                { contact: { branchId: branchFilter.branchId } },
+                { account: { branchId: branchFilter.branchId } }
+            ]
+        } : {};
+        // Follow-up Visibility Filter matching followUpController.ts
+        const followUpVisibilityFilter = !isSuperAdmin && user.role !== 'admin' ? {
+            OR: [
+                { assignedToId: { in: visibleUserIds } },
+                { createdById: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                { contact: { ownerId: { in: visibleUserIds } } },
+                { account: { ownerId: { in: visibleUserIds } } },
+                { opportunity: { ownerId: { in: visibleUserIds } } }
+            ]
+        } : {};
         // Group independent queries to run concurrently
         const [totalLeads, newLeads, convertedLeads, revenueResult, pipelineResult, totalContacts, totalAccounts, prevLeads, prevRevenueResult, totalClosedCurrent, wonCurrent, wonTotal, lostTotal, activeOpportunitiesCount, totalOpportunitiesCount, revenueThisMonthResult, pendingFollowUpsCount] = await Promise.all([
             // Leads
@@ -117,13 +182,18 @@ const getDashboardStats = async (req, res) => {
             prisma_1.default.paymentRecord.aggregate({
                 where: {
                     ...paymentFilter,
-                    paymentDate: { lte: new Date() }
+                    ...(paymentDateFilter ? paymentDateFilter : { paymentDate: { lte: new Date() } })
                 },
                 _sum: { amount: true }
             }),
             // Pipeline Value
             prisma_1.default.opportunity.aggregate({
-                where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter },
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                },
                 _sum: { amount: true }
             }),
             // Contacts/Accounts
@@ -172,38 +242,58 @@ const getDashboardStats = async (req, res) => {
             }),
             // Won/Lost for nested object
             prisma_1.default.opportunity.count({
-                where: { ...combinedFilter, isDeleted: false, stage: 'closed_won', ...oppVisibilityFilter }
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    stage: 'closed_won',
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                }
             }),
             prisma_1.default.opportunity.count({
-                where: { ...combinedFilter, isDeleted: false, stage: 'closed_lost', ...oppVisibilityFilter }
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    stage: 'closed_lost',
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                }
             }),
             // Active and Total Opportunities
-            prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] }, ...oppVisibilityFilter } }),
-            prisma_1.default.opportunity.count({ where: { ...combinedFilter, isDeleted: false, ...oppVisibilityFilter } }),
+            prisma_1.default.opportunity.count({
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    stage: { notIn: ['closed_won', 'closed_lost'] },
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                }
+            }),
+            prisma_1.default.opportunity.count({
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    ...oppVisibilityFilter,
+                    ...(oppDateFilter ? oppDateFilter : {})
+                }
+            }),
             // Revenue this month (Payments in current month)
             prisma_1.default.paymentRecord.aggregate({
                 where: {
                     ...paymentFilter,
-                    paymentDate: { gte: startOfMonth }
+                    ...(paymentDateFilter ? paymentDateFilter : { paymentDate: { gte: startOfMonth } })
                 },
                 _sum: { amount: true }
             }),
-            // Pending Follow-ups (due today or overdue only — not all-time, aligned to IST timezone)
+            // Pending Follow-ups (due today/selected range, aligned to IST timezone, respecting visibility and branch)
             prisma_1.default.followUp.count({
                 where: {
-                    ...combinedFilter,
+                    ...orgFilter,
+                    ...followUpBranchFilter,
+                    ...followUpVisibilityFilter,
                     isDeleted: false,
                     status: { in: ['not_started', 'in_progress'] },
-                    dueDate: {
-                        lte: (() => {
-                            const d = new Date();
-                            d.setMinutes(d.getMinutes() + 330); // Shift to IST
-                            d.setHours(23, 59, 59, 999);
-                            d.setMinutes(d.getMinutes() - 330); // Shift back to UTC
-                            return d;
-                        })()
-                    },
-                    ...(!isSuperAdmin && user.role !== 'admin' ? { assignedToId: { in: visibleUserIds } } : {})
+                    dueDate: followUpDueDate
                 }
             })
         ]);
@@ -415,13 +505,15 @@ const getSalesForecast = async (req, res) => {
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.ownerId = { in: visibleUserIds };
         }
+        const oppDateFilter = getDateFilter(req, 'closeDate');
         // Get open opportunities (not closed_won or closed_lost)
         const openOpportunities = await prisma_1.default.opportunity.findMany({
             where: {
                 ...combinedFilter,
                 stage: { notIn: ['closed_won', 'closed_lost'] },
                 isDeleted: false,
-                ...visibilityFilter
+                ...visibilityFilter,
+                ...(oppDateFilter ? oppDateFilter : {})
             },
             select: {
                 amount: true,
