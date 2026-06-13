@@ -77,6 +77,8 @@ export const getFollowUps = async (req: Request, res: Response) => {
 
         if (status && status !== 'all') {
             where.status = status as any;
+        } else {
+            where.status = { in: ['not_started', 'in_progress'] };
         }
         
         const branchId = req.query.branchId as string;
