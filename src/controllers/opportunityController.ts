@@ -113,7 +113,7 @@ export const createOpportunity = async (req: Request, res: Response) => {
             amount: Number(req.body.amount),
             stage: req.body.stage,
             probability: req.body.probability,
-            closeDate: req.body.closeDate,
+            closeDate: req.body.closeDate ? new Date(req.body.closeDate) : null,
             leadSource: req.body.leadSource,
             description: req.body.description,
             customFields: req.body.customFields,
@@ -338,6 +338,11 @@ export const updateOpportunity = async (req: Request, res: Response) => {
         }
         if (opportunityUpdates.owner && typeof opportunityUpdates.owner === 'string') {
             opportunityUpdates.owner = { connect: { id: opportunityUpdates.owner } };
+        }
+        
+        // Parse closeDate string to Date object
+        if (opportunityUpdates.closeDate !== undefined) {
+            opportunityUpdates.closeDate = opportunityUpdates.closeDate ? new Date(opportunityUpdates.closeDate) : null;
         }
 
         // Fetch first for validation and existence
