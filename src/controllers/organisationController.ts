@@ -15,6 +15,16 @@ const DEFAULT_LEAD_STATUSES = [
     { id: 'lost', label: 'Lost', color: '#ef4444', isSystem: true, order: 5 }
 ];
 
+const DEFAULT_OPPORTUNITY_LEAD_STATUSES = [
+    { id: 'new_opportunity', label: 'New Opportunity', color: '#3b82f6', isSystem: true, order: 0, isDefault: true },
+    { id: 'contacted', label: 'Contacted', color: '#f59e0b', isSystem: false, order: 1 },
+    { id: 'demo_scheduled', label: 'Demo Scheduled', color: '#10b981', isSystem: false, order: 2 },
+    { id: 'proposal_sent', label: 'Proposal Sent', color: '#6366f1', isSystem: false, order: 3 },
+    { id: 'negotiation', label: 'Negotiation', color: '#8b5cf6', isSystem: false, order: 4 },
+    { id: 'won', label: 'Won', color: '#10b981', isSystem: true, order: 5 },
+    { id: 'lost', label: 'Lost', color: '#ef4444', isSystem: true, order: 6 }
+];
+
 export const createOrganisation = async (req: Request, res: Response) => {
     try {
         if ((req as any).user.role !== 'super_admin') {
@@ -142,6 +152,11 @@ export const getOrganisation = async (req: Request, res: Response) => {
         // Fallback for Lead Statuses if not configured
         if (!org.leadStatuses || (Array.isArray(org.leadStatuses) && org.leadStatuses.length === 0)) {
             org.leadStatuses = DEFAULT_LEAD_STATUSES as any;
+        }
+
+        // Fallback for Opportunity Lead Statuses if not configured
+        if (!org.opportunityLeadStatuses || (Array.isArray(org.opportunityLeadStatuses) && org.opportunityLeadStatuses.length === 0)) {
+            org.opportunityLeadStatuses = DEFAULT_OPPORTUNITY_LEAD_STATUSES as any;
         }
 
         // Get active user count

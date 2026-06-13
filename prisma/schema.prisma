@@ -39,6 +39,7 @@ model Organisation {
   ssoConfig                 Json?
   whatsAppScrapingEnabled   Boolean          @default(false)
   leadStatuses              Json?            // Custom lead status configuration: [{ id, label, color, isSystem, order }]
+  opportunityLeadStatuses   Json?            // Custom opportunity lead status configuration: [{ id, label, color, isSystem, order }]
   accounts                  Account[]
   apiKeys           ApiKey[]
   assignmentRules   AssignmentRule[]
