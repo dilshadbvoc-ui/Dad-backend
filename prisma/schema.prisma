@@ -480,6 +480,7 @@ model Opportunity {
   lostReason     String?
   emiSchedule    EMISchedule?
   paymentRecords PaymentRecord[]
+  leadStatus     String?
 
   @@index([organisationId])
   @@index([stage])

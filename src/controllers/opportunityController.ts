@@ -78,7 +78,7 @@ export const getOpportunities = async (req: Request, res: Response) => {
                 owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } },
                 branch: { select: { name: true } },
                 emiSchedule: { select: { id: true, status: true } },
-                lead: { select: { id: true, firstName: true, lastName: true } }
+                lead: { select: { id: true, firstName: true, lastName: true, status: true } }
             },
             skip,
             take: limit,
@@ -108,6 +108,24 @@ export const createOpportunity = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Account is required to create an opportunity' });
         }
 
+        let leadStatus = req.body.leadStatus;
+        if (!leadStatus) {
+            const org = await prisma.organisation.findUnique({
+                where: { id: orgId },
+                select: { opportunityLeadStatuses: true }
+            });
+            if (org?.opportunityLeadStatuses && Array.isArray(org.opportunityLeadStatuses)) {
+                const statuses = org.opportunityLeadStatuses as any[];
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    leadStatus = configuredDefault.id;
+                } else if (statuses.length > 0) {
+                    leadStatus = statuses[0].id;
+                }
+            }
+            if (!leadStatus) leadStatus = 'new_opportunity';
+        }
+
         const opportunityData: Prisma.OpportunityCreateInput = {
             name: req.body.name,
             amount: Number(req.body.amount),
@@ -119,6 +137,7 @@ export const createOpportunity = async (req: Request, res: Response) => {
             customFields: req.body.customFields,
             tags: req.body.tags,
             type: req.body.type || 'NEW_BUSINESS', // Default
+            leadStatus,
 
             organisation: { connect: { id: orgId } },
             owner: { connect: { id: user.id } },
@@ -293,6 +312,7 @@ export const getOpportunityById = async (req: Request, res: Response) => {
                         id: true,
                         firstName: true,
                         lastName: true,
+                        status: true,
                         assignedTo: {
                             select: {
                                 id: true,

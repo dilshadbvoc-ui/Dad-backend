@@ -1279,6 +1279,18 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 }
             });
 
+            // Determine default opportunity lead status
+            let defaultOppStatus = 'new_opportunity';
+            if (org.opportunityLeadStatuses && Array.isArray(org.opportunityLeadStatuses)) {
+                const statuses = org.opportunityLeadStatuses as any[];
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    defaultOppStatus = configuredDefault.id;
+                } else if (statuses.length > 0) {
+                    defaultOppStatus = statuses[0].id;
+                }
+            }
+
             // 3. Create Opportunity
             const opportunity = await tx.opportunity.create({
                 data: {
@@ -1293,7 +1305,8 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                     branchId: lead.branchId || undefined,
                     pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
                     contacts: { connect: { id: contact.id } },
-                    lostReason: stage === 'closed_lost' ? lostReason : undefined
+                    lostReason: stage === 'closed_lost' ? lostReason : undefined,
+                    leadStatus: defaultOppStatus
                 }
             });
 
