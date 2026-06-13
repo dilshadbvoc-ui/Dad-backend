@@ -53,6 +53,7 @@ const importLeads = async (req, res) => {
         const branchId = req.body.branchId || user.branchId || null;
         const applyAssignmentRules = req.body.applyAssignmentRules === 'true';
         const splitUserIds = req.body.splitUserIds ? (typeof req.body.splitUserIds === 'string' ? JSON.parse(req.body.splitUserIds) : req.body.splitUserIds) : [];
+        const duplicateAction = req.body.duplicateAction || 'flag_as_reenquiry'; // 'flag_as_reenquiry' | 'skip'
         if (!orgId)
             return res.status(400).json({ message: 'User has no organisation' });
         // Create Import Job with options
@@ -63,7 +64,8 @@ const importLeads = async (req, res) => {
             defaultStage,
             branchId,
             applyAssignmentRules,
-            splitUserIds
+            splitUserIds,
+            duplicateAction
         });
         // Start Processing in Background
         ImportJobService.processJob(job.id).catch(console.error);

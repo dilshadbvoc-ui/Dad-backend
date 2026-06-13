@@ -12,6 +12,7 @@ export class ImportJobService {
         branchId?: string;
         applyAssignmentRules?: boolean;
         splitUserIds?: string[];
+        duplicateAction?: 'flag_as_reenquiry' | 'skip';
     }) {
         return await prisma.importJob.create({
             data: {
@@ -26,7 +27,8 @@ export class ImportJobService {
                     defaultStage: options.defaultStage,
                     branchId: options.branchId,
                     applyAssignmentRules: options.applyAssignmentRules || false,
-                    splitUserIds: options.splitUserIds || []
+                    splitUserIds: options.splitUserIds || [],
+                    duplicateAction: options.duplicateAction || 'flag_as_reenquiry'
                 } : undefined
             }
         });
@@ -111,6 +113,10 @@ export class ImportJobService {
             const branchId = metadata.branchId || null;
             const applyAssignmentRules = metadata.applyAssignmentRules || false;
             const splitUserIds = metadata.splitUserIds || [];
+            // 'flag_as_reenquiry' = existing behavior (log re-enquiry activity)
+            // 'skip' = silently skip duplicates without creating re-enquiry
+            const duplicateAction: 'flag_as_reenquiry' | 'skip' = metadata.duplicateAction || 'flag_as_reenquiry';
+            let skipCount = 0;
             let splitIndex = 0;
 
             for await (const row of processStream) {
@@ -311,7 +317,13 @@ export class ImportJobService {
                     );
 
                     if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                        // Handle as re-enquiry instead of creating duplicate
+                        if (duplicateAction === 'skip') {
+                            // Admin chose to skip duplicates — do not create re-enquiry
+                            skipCount++;
+                            continue;
+                        }
+
+                        // Default: Handle as re-enquiry instead of creating duplicate
                         await DuplicateLeadService.handleReEnquiry(
                             duplicateCheck.existingLead,
                             {
@@ -422,7 +434,11 @@ export class ImportJobService {
                     progress: totalLines,
                     successCount,
                     failureCount,
-                    errors: sanitizedErrors.length > 0 ? sanitizedErrors : undefined
+                    errors: sanitizedErrors.length > 0 ? sanitizedErrors : undefined,
+                    metadata: {
+                        ...metadata,
+                        skippedDuplicateCount: skipCount
+                    }
                 }
             });
 
@@ -443,7 +459,8 @@ export class ImportJobService {
             
             // Send Notification to User
             let notificationTitle = 'Lead Import Successful';
-            let notificationMessage = `Import finished successfully. All ${successCount} leads from your file have been created.`;
+            const skipSuffix = skipCount > 0 ? ` ${skipCount} duplicate${skipCount > 1 ? 's' : ''} were skipped.` : '';
+            let notificationMessage = `Import finished successfully. ${successCount} leads created.${skipSuffix}`;
             let notificationType = 'success';
 
             if (successCount === 0 && failureCount > 0) {
@@ -452,7 +469,7 @@ export class ImportJobService {
                 notificationType = 'error';
             } else if (failureCount > 0) {
                 notificationTitle = 'Lead Import Partial Success';
-                notificationMessage = `The import was partially successful: ${successCount} leads were created, but ${failureCount} rows failed due to data errors.`;
+                notificationMessage = `The import was partially successful: ${successCount} leads were created, but ${failureCount} rows failed due to data errors.${skipSuffix}`;
                 notificationType = 'warning';
             }
 

@@ -57,7 +57,8 @@ class ImportJobService {
                     defaultStage: options.defaultStage,
                     branchId: options.branchId,
                     applyAssignmentRules: options.applyAssignmentRules || false,
-                    splitUserIds: options.splitUserIds || []
+                    splitUserIds: options.splitUserIds || [],
+                    duplicateAction: options.duplicateAction || 'flag_as_reenquiry'
                 } : undefined
             }
         });
@@ -135,6 +136,10 @@ class ImportJobService {
             const branchId = metadata.branchId || null;
             const applyAssignmentRules = metadata.applyAssignmentRules || false;
             const splitUserIds = metadata.splitUserIds || [];
+            // 'flag_as_reenquiry' = existing behavior (log re-enquiry activity)
+            // 'skip' = silently skip duplicates without creating re-enquiry
+            const duplicateAction = metadata.duplicateAction || 'flag_as_reenquiry';
+            let skipCount = 0;
             let splitIndex = 0;
             for await (const row of processStream) {
                 try {
@@ -330,7 +335,12 @@ class ImportJobService {
                     const { DuplicateLeadService } = await Promise.resolve().then(() => __importStar(require('./duplicateLeadService')));
                     const duplicateCheck = await DuplicateLeadService.checkDuplicate(leadData.phone, leadData.email, job.organisationId, branchId || undefined);
                     if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
-                        // Handle as re-enquiry instead of creating duplicate
+                        if (duplicateAction === 'skip') {
+                            // Admin chose to skip duplicates — do not create re-enquiry
+                            skipCount++;
+                            continue;
+                        }
+                        // Default: Handle as re-enquiry instead of creating duplicate
                         await DuplicateLeadService.handleReEnquiry(duplicateCheck.existingLead, {
                             firstName: leadData.firstName,
                             lastName: leadData.lastName,
@@ -430,7 +440,11 @@ class ImportJobService {
                     progress: totalLines,
                     successCount,
                     failureCount,
-                    errors: sanitizedErrors.length > 0 ? sanitizedErrors : undefined
+                    errors: sanitizedErrors.length > 0 ? sanitizedErrors : undefined,
+                    metadata: {
+                        ...metadata,
+                        skippedDuplicateCount: skipCount
+                    }
                 }
             });
             // Audit the import completion
@@ -448,7 +462,8 @@ class ImportJobService {
             }
             // Send Notification to User
             let notificationTitle = 'Lead Import Successful';
-            let notificationMessage = `Import finished successfully. All ${successCount} leads from your file have been created.`;
+            const skipSuffix = skipCount > 0 ? ` ${skipCount} duplicate${skipCount > 1 ? 's' : ''} were skipped.` : '';
+            let notificationMessage = `Import finished successfully. ${successCount} leads created.${skipSuffix}`;
             let notificationType = 'success';
             if (successCount === 0 && failureCount > 0) {
                 notificationTitle = 'Lead Import Failed';
@@ -457,7 +472,7 @@ class ImportJobService {
             }
             else if (failureCount > 0) {
                 notificationTitle = 'Lead Import Partial Success';
-                notificationMessage = `The import was partially successful: ${successCount} leads were created, but ${failureCount} rows failed due to data errors.`;
+                notificationMessage = `The import was partially successful: ${successCount} leads were created, but ${failureCount} rows failed due to data errors.${skipSuffix}`;
                 notificationType = 'warning';
             }
             if (failureCount > 0) {
