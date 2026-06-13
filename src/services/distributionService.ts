@@ -151,11 +151,80 @@ export const DistributionService = {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
 
-                        // Fetch new user's branch
+                        // Fetch new user's branch, off-duty status, and name
                         const assignedUser = await prisma.user.findUnique({
                             where: { id: assignedUserId },
-                            select: { branchId: true }
+                            select: { id: true, branchId: true, isOffDuty: true, firstName: true, lastName: true }
                         });
+
+                        if (assignedUser?.isOffDuty) {
+                            console.log(`[DistributionService] User ${assignedUserId} (${assignedUser.firstName || ''} ${assignedUser.lastName || ''}) is off-duty. Routing lead to organisation admin...`);
+                            
+                            // Find an active administrator in this specific organisation
+                            const orgAdmin = await prisma.user.findFirst({
+                                where: {
+                                    organisationId: organisationId,
+                                    role: 'admin',
+                                    isActive: true,
+                                    isOffDuty: false
+                                },
+                                select: { id: true, branchId: true }
+                            }) || await prisma.user.findFirst({
+                                where: {
+                                    organisationId: organisationId,
+                                    role: 'admin',
+                                    isActive: true
+                                },
+                                select: { id: true, branchId: true }
+                            });
+
+                            let finalFallbackId = orgAdmin?.id;
+                            if (!finalFallbackId) {
+                                // Extreme fallback to organisation creator
+                                const org = await prisma.organisation.findUnique({
+                                    where: { id: organisationId },
+                                    select: { createdBy: true }
+                                });
+                                if (org?.createdBy) {
+                                    const creator = await prisma.user.findUnique({
+                                        where: { id: org.createdBy },
+                                        select: { organisationId: true }
+                                    });
+                                    if (creator?.organisationId === organisationId) {
+                                        finalFallbackId = org.createdBy;
+                                    }
+                                }
+                            }
+
+                            if (finalFallbackId) {
+                                const fallbackUser = await prisma.user.findUnique({
+                                    where: { id: finalFallbackId },
+                                    select: { branchId: true }
+                                });
+
+                                await prisma.lead.update({
+                                    where: { id: lead.id },
+                                    data: {
+                                        assignedToId: finalFallbackId,
+                                        branchId: fallbackUser?.branchId || lead.branchId
+                                    }
+                                });
+
+                                await prisma.leadHistory.create({
+                                    data: {
+                                        leadId: lead.id,
+                                        oldOwnerId: oldOwnerId,
+                                        newOwnerId: finalFallbackId,
+                                        changedById: finalFallbackId,
+                                        reason: `Re-routed to admin because assigned user ${assignedUser.firstName || ''} ${assignedUser.lastName || ''} is off-duty`
+                                    }
+                                });
+
+                                this.notifyUser(finalFallbackId, lead, organisationId);
+                                console.log(`[DistributionService] Assigned lead to fallback admin/owner ${finalFallbackId} because primary assignee was off-duty`);
+                                return finalFallbackId;
+                            }
+                        }
 
                         await prisma.lead.update({
                             where: { id: lead.id },
@@ -623,6 +692,9 @@ export const DistributionService = {
      * Check if user is currently within their working hours
      */
     isUserAvailable(user: any): boolean {
+        // If user is off duty, they are not available
+        if (user.isOffDuty) return false;
+
         // If no working hours defined, assume available 24/7
         if (!user.workingHours) return true;
 

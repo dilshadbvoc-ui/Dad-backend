@@ -98,6 +98,7 @@ model User {
   profileImage                String?                // URL to profile image
   isPlaceholder               Boolean                @default(false)
   isActive                    Boolean                @default(true)
+  isOffDuty                   Boolean                @default(false)
   lastLogin                   DateTime?
   integrations                Json?
   metaAccessToken             String?                // Facebook User Access Token
