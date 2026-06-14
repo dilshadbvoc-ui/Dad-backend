@@ -53,13 +53,13 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
             // console.log(`[AuthMiddleware] Authenticated user: ${ user.email } `); 
             return next();
         } catch (error: any) {
-            console.error('[AuthMiddleware] Error:', error);
-            
             // Real token verification failures get 401 (forces logout)
             if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError' || error.message?.includes('jwt')) {
+                console.warn(`[AuthMiddleware] JWT verification failed: ${error.message || error.name}`);
                 res.status(401).json({ message: 'Not authorized, token failed' });
             } else {
-                // Database or internal connection errors get 500 (keeps users logged in, doesn't wipe localStorage)
+                console.error('[AuthMiddleware] Database or Internal Error:', error);
+                // Database or internal connection errors get 503 (keeps users logged in, doesn't wipe localStorage)
                 res.status(503).json({ message: 'Database service temporarily unavailable, please try again' });
             }
         }
