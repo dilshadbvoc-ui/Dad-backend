@@ -128,7 +128,8 @@ export const assignTarget = async (req: Request, res: Response) => {
                             startDate,
                             endDate,
                             isDeleted: false,
-                            opportunityType: opportunityType || null
+                            opportunityType: opportunityType || null,
+                            scope: 'INDIVIDUAL'
                         }
                     });
 
@@ -146,7 +147,8 @@ export const assignTarget = async (req: Request, res: Response) => {
                                 organisationId: userOrgId,
                                 autoDistributed: true,
                                 productId: productId || null,
-                                opportunityType: opportunityType || null
+                                opportunityType: opportunityType || null,
+                                scope: 'INDIVIDUAL'
                             }
                         });
                         childTargets.push(childTarget);
@@ -187,7 +189,8 @@ export const assignTarget = async (req: Request, res: Response) => {
                     startDate,
                     endDate,
                     isDeleted: false,
-                    opportunityType: opportunityType || null
+                    opportunityType: opportunityType || null,
+                    scope: scope || 'HIERARCHY'
                 }
             });
 
@@ -234,7 +237,8 @@ export const assignTarget = async (req: Request, res: Response) => {
                             startDate,
                             endDate,
                             isDeleted: false,
-                            opportunityType: opportunityType || null
+                            opportunityType: opportunityType || null,
+                            scope: (await getDirectReports(report.id)).length > 0 ? 'HIERARCHY' : 'INDIVIDUAL'
                         }
                     });
 
