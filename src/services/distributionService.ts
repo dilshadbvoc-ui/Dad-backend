@@ -547,16 +547,32 @@ export const DistributionService = {
 
             if (users.length === 0) return null;
 
-            // Find index of last assigned user
-            let nextIndex = 0;
+            // Find index of last assigned user using ALL valid users to prevent skipping
+            const where: any = { organisationId, isActive: true };
+            if (rule.branchId || branchId) where.branchId = rule.branchId || branchId;
+            if (rule.targetRole) where.role = rule.targetRole;
+            const allUsers = await prisma.user.findMany({ where, orderBy: { id: 'asc' } });
+
+            let startIndex = 0;
             if (rule.lastAssignedUserId) {
-                const lastIndex = users.findIndex((u: any) => u.id === rule.lastAssignedUserId);
+                const lastIndex = allUsers.findIndex((u: any) => u.id === rule.lastAssignedUserId);
                 if (lastIndex !== -1) {
-                    nextIndex = (lastIndex + 1) % users.length;
+                    startIndex = (lastIndex + 1) % allUsers.length;
                 }
             }
 
-            const nextUser = users[nextIndex];
+            let nextUser = null;
+            for (let i = 0; i < allUsers.length; i++) {
+                const checkIndex = (startIndex + i) % allUsers.length;
+                const candidate = allUsers[checkIndex];
+                // Check if candidate is in the eligible users list
+                if (users.some(u => u.id === candidate.id)) {
+                    nextUser = candidate;
+                    break;
+                }
+            }
+
+            if (!nextUser) return null;
 
             // Update rule state
             await prisma.assignmentRule.update({
@@ -649,30 +665,37 @@ export const DistributionService = {
                 }
             });
 
-            // Filter out users at quota or outside working hours
-            const eligibleUsers = users.filter((user: any) => {
+            // Preserve the original order defined in the rule
+            const orderedUsers = userIds.map(id => users.find(u => u.id === id)).filter(Boolean);
+
+            let startIndex = 0;
+            if (rule.lastAssignedUserId) {
+                const lastIndex = orderedUsers.findIndex((u: any) => u.id === rule.lastAssignedUserId);
+                if (lastIndex !== -1) {
+                    startIndex = (lastIndex + 1) % orderedUsers.length;
+                }
+            }
+
+            let nextUser = null;
+            for (let i = 0; i < orderedUsers.length; i++) {
+                const checkIndex = (startIndex + i) % orderedUsers.length;
+                const user: any = orderedUsers[checkIndex];
+                
+                // Check eligibility
                 if (user.dailyLeadQuota) {
                     const todayCount = user.leadQuotaTracking?.[0]?.leadCount || 0;
-                    if (todayCount >= user.dailyLeadQuota) return false;
+                    if (todayCount >= user.dailyLeadQuota) continue;
                 }
-                return this.isUserAvailable(user);
-            });
+                if (!this.isUserAvailable(user)) continue;
 
-            if (eligibleUsers.length === 0) {
+                nextUser = user;
+                break;
+            }
+
+            if (!nextUser) {
                 console.log('[DistributionService] All campaign users at quota or unavailable');
                 return null;
             }
-
-            // Round-robin among eligible users
-            let nextIndex = 0;
-            if (rule.lastAssignedUserId) {
-                const lastIndex = eligibleUsers.findIndex((u: any) => u.id === rule.lastAssignedUserId);
-                if (lastIndex !== -1) {
-                    nextIndex = (lastIndex + 1) % eligibleUsers.length;
-                }
-            }
-
-            const nextUser = eligibleUsers[nextIndex];
 
             // Update rule state
             await prisma.assignmentRule.update({
