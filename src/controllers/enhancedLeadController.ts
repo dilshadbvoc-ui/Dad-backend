@@ -304,6 +304,22 @@ export const updateLeadEnhanced = async (req: Request, res: Response) => {
             }
         }
 
+        // 5.5. Check for duplicate phone if phone is being updated
+        if (sanitizedData.phone && sanitizedData.phone !== existingLead.phone) {
+            const { DuplicateLeadService } = await import('../services/duplicateLeadService');
+            const duplicateCheck = await DuplicateLeadService.checkDuplicate(
+                sanitizedData.phone,
+                undefined,
+                organisationId || '',
+                existingLead.branchId || undefined
+            );
+            
+            if (duplicateCheck.isDuplicate && duplicateCheck.existingLead && duplicateCheck.existingLead.id !== leadId) {
+                logger.warn('Attempted to update lead with duplicate phone', 'LEADS', userId, organisationId || undefined, { phone: sanitizedData.phone, leadId });
+                return ResponseHandler.validationError(res, `A lead with this phone number already exists in this branch`);
+            }
+        }
+
         // 6. Update lead
         const updatedLead = await prisma.lead.update({
             where: { id: leadId },
