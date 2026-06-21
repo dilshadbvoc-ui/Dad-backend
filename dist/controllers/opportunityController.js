@@ -114,7 +114,7 @@ const getOpportunities = async (req, res) => {
                 owner: { select: { id: true, firstName: true, lastName: true, profileImage: true } },
                 branch: { select: { name: true } },
                 emiSchedule: { select: { id: true, status: true } },
-                lead: { select: { id: true, firstName: true, lastName: true } }
+                lead: { select: { id: true, firstName: true, lastName: true, status: true } }
             },
             skip,
             take: limit,
@@ -143,6 +143,25 @@ const createOpportunity = async (req, res) => {
         if (!req.body.account) {
             return res.status(400).json({ message: 'Account is required to create an opportunity' });
         }
+        let leadStatus = req.body.leadStatus;
+        if (!leadStatus) {
+            const org = await prisma_1.default.organisation.findUnique({
+                where: { id: orgId },
+                select: { opportunityLeadStatuses: true }
+            });
+            if (org?.opportunityLeadStatuses && Array.isArray(org.opportunityLeadStatuses)) {
+                const statuses = org.opportunityLeadStatuses;
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    leadStatus = configuredDefault.id;
+                }
+                else if (statuses.length > 0) {
+                    leadStatus = statuses[0].id;
+                }
+            }
+            if (!leadStatus)
+                leadStatus = 'new_opportunity';
+        }
         const opportunityData = {
             name: req.body.name,
             amount: Number(req.body.amount),
@@ -154,6 +173,7 @@ const createOpportunity = async (req, res) => {
             customFields: req.body.customFields,
             tags: req.body.tags,
             type: req.body.type || 'NEW_BUSINESS', // Default
+            leadStatus,
             organisation: { connect: { id: orgId } },
             owner: { connect: { id: user.id } },
             branch: user.branchId ? { connect: { id: user.branchId } } : (req.body.branchId ? { connect: { id: req.body.branchId } } : undefined),
@@ -314,6 +334,7 @@ const getOpportunityById = async (req, res) => {
                         id: true,
                         firstName: true,
                         lastName: true,
+                        status: true,
                         assignedTo: {
                             select: {
                                 id: true,

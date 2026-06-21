@@ -1151,6 +1151,18 @@ const convertLead = async (req, res) => {
                     branchId: lead.branchId || undefined
                 }
             });
+            // Determine default opportunity lead status
+            let defaultOppStatus = 'new_opportunity';
+            if (org.opportunityLeadStatuses && Array.isArray(org.opportunityLeadStatuses)) {
+                const statuses = org.opportunityLeadStatuses;
+                const configuredDefault = statuses.find((s) => s.isDefault);
+                if (configuredDefault) {
+                    defaultOppStatus = configuredDefault.id;
+                }
+                else if (statuses.length > 0) {
+                    defaultOppStatus = statuses[0].id;
+                }
+            }
             // 3. Create Opportunity
             const opportunity = await tx.opportunity.create({
                 data: {
@@ -1165,7 +1177,8 @@ const convertLead = async (req, res) => {
                     branchId: lead.branchId || undefined,
                     pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
                     contacts: { connect: { id: contact.id } },
-                    lostReason: stage === 'closed_lost' ? lostReason : undefined
+                    lostReason: stage === 'closed_lost' ? lostReason : undefined,
+                    leadStatus: defaultOppStatus
                 }
             });
             // 4. Migrate Products from Lead to Account

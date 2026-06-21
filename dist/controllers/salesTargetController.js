@@ -118,7 +118,8 @@ const assignTarget = async (req, res) => {
                             startDate,
                             endDate,
                             isDeleted: false,
-                            opportunityType: opportunityType || null
+                            opportunityType: opportunityType || null,
+                            scope: 'INDIVIDUAL'
                         }
                     });
                     if (!existingMemberTarget) {
@@ -135,7 +136,8 @@ const assignTarget = async (req, res) => {
                                 organisationId: userOrgId,
                                 autoDistributed: true,
                                 productId: productId || null,
-                                opportunityType: opportunityType || null
+                                opportunityType: opportunityType || null,
+                                scope: 'INDIVIDUAL'
                             }
                         });
                         childTargets.push(childTarget);
@@ -174,7 +176,8 @@ const assignTarget = async (req, res) => {
                     startDate,
                     endDate,
                     isDeleted: false,
-                    opportunityType: opportunityType || null
+                    opportunityType: opportunityType || null,
+                    scope: scope || 'HIERARCHY'
                 }
             });
             if (existingTarget)
@@ -216,7 +219,8 @@ const assignTarget = async (req, res) => {
                             startDate,
                             endDate,
                             isDeleted: false,
-                            opportunityType: opportunityType || null
+                            opportunityType: opportunityType || null,
+                            scope: (await getDirectReports(report.id)).length > 0 ? 'HIERARCHY' : 'INDIVIDUAL'
                         }
                     });
                     if (!existingSubTarget) {

@@ -169,11 +169,73 @@ exports.DistributionService = {
                     if (assignedUserId) {
                         // Get the old owner before updating
                         const oldOwnerId = lead.assignedToId;
-                        // Fetch new user's branch
+                        // Fetch new user's branch, off-duty status, and name
                         const assignedUser = await prisma_1.default.user.findUnique({
                             where: { id: assignedUserId },
-                            select: { branchId: true }
+                            select: { id: true, branchId: true, isOffDuty: true, firstName: true, lastName: true }
                         });
+                        if (assignedUser?.isOffDuty) {
+                            console.log(`[DistributionService] User ${assignedUserId} (${assignedUser.firstName || ''} ${assignedUser.lastName || ''}) is off-duty. Routing lead to organisation admin...`);
+                            // Find an active administrator in this specific organisation
+                            const orgAdmin = await prisma_1.default.user.findFirst({
+                                where: {
+                                    organisationId: organisationId,
+                                    role: 'admin',
+                                    isActive: true,
+                                    isOffDuty: false
+                                },
+                                select: { id: true, branchId: true }
+                            }) || await prisma_1.default.user.findFirst({
+                                where: {
+                                    organisationId: organisationId,
+                                    role: 'admin',
+                                    isActive: true
+                                },
+                                select: { id: true, branchId: true }
+                            });
+                            let finalFallbackId = orgAdmin?.id;
+                            if (!finalFallbackId) {
+                                // Extreme fallback to organisation creator
+                                const org = await prisma_1.default.organisation.findUnique({
+                                    where: { id: organisationId },
+                                    select: { createdBy: true }
+                                });
+                                if (org?.createdBy) {
+                                    const creator = await prisma_1.default.user.findUnique({
+                                        where: { id: org.createdBy },
+                                        select: { organisationId: true }
+                                    });
+                                    if (creator?.organisationId === organisationId) {
+                                        finalFallbackId = org.createdBy;
+                                    }
+                                }
+                            }
+                            if (finalFallbackId) {
+                                const fallbackUser = await prisma_1.default.user.findUnique({
+                                    where: { id: finalFallbackId },
+                                    select: { branchId: true }
+                                });
+                                await prisma_1.default.lead.update({
+                                    where: { id: lead.id },
+                                    data: {
+                                        assignedToId: finalFallbackId,
+                                        branchId: fallbackUser?.branchId || lead.branchId
+                                    }
+                                });
+                                await prisma_1.default.leadHistory.create({
+                                    data: {
+                                        leadId: lead.id,
+                                        oldOwnerId: oldOwnerId,
+                                        newOwnerId: finalFallbackId,
+                                        changedById: finalFallbackId,
+                                        reason: `Re-routed to admin because assigned user ${assignedUser.firstName || ''} ${assignedUser.lastName || ''} is off-duty`
+                                    }
+                                });
+                                this.notifyUser(finalFallbackId, lead, organisationId);
+                                console.log(`[DistributionService] Assigned lead to fallback admin/owner ${finalFallbackId} because primary assignee was off-duty`);
+                                return finalFallbackId;
+                            }
+                        }
                         await prisma_1.default.lead.update({
                             where: { id: lead.id },
                             data: {
@@ -467,15 +529,32 @@ exports.DistributionService = {
             const users = await this.getEligibleUsers(rule, organisationId, branchId);
             if (users.length === 0)
                 return null;
-            // Find index of last assigned user
-            let nextIndex = 0;
+            // Find index of last assigned user using ALL valid users to prevent skipping
+            const where = { organisationId, isActive: true };
+            if (rule.branchId || branchId)
+                where.branchId = rule.branchId || branchId;
+            if (rule.targetRole)
+                where.role = rule.targetRole;
+            const allUsers = await prisma_1.default.user.findMany({ where, orderBy: { id: 'asc' } });
+            let startIndex = 0;
             if (rule.lastAssignedUserId) {
-                const lastIndex = users.findIndex((u) => u.id === rule.lastAssignedUserId);
+                const lastIndex = allUsers.findIndex((u) => u.id === rule.lastAssignedUserId);
                 if (lastIndex !== -1) {
-                    nextIndex = (lastIndex + 1) % users.length;
+                    startIndex = (lastIndex + 1) % allUsers.length;
                 }
             }
-            const nextUser = users[nextIndex];
+            let nextUser = null;
+            for (let i = 0; i < allUsers.length; i++) {
+                const checkIndex = (startIndex + i) % allUsers.length;
+                const candidate = allUsers[checkIndex];
+                // Check if candidate is in the eligible users list
+                if (users.some(u => u.id === candidate.id)) {
+                    nextUser = candidate;
+                    break;
+                }
+            }
+            if (!nextUser)
+                return null;
             // Update rule state
             await prisma_1.default.assignmentRule.update({
                 where: { id: rule.id },
@@ -557,28 +636,34 @@ exports.DistributionService = {
                     }
                 }
             });
-            // Filter out users at quota or outside working hours
-            const eligibleUsers = users.filter((user) => {
+            // Preserve the original order defined in the rule
+            const orderedUsers = userIds.map(id => users.find(u => u.id === id)).filter(Boolean);
+            let startIndex = 0;
+            if (rule.lastAssignedUserId) {
+                const lastIndex = orderedUsers.findIndex((u) => u.id === rule.lastAssignedUserId);
+                if (lastIndex !== -1) {
+                    startIndex = (lastIndex + 1) % orderedUsers.length;
+                }
+            }
+            let nextUser = null;
+            for (let i = 0; i < orderedUsers.length; i++) {
+                const checkIndex = (startIndex + i) % orderedUsers.length;
+                const user = orderedUsers[checkIndex];
+                // Check eligibility
                 if (user.dailyLeadQuota) {
                     const todayCount = user.leadQuotaTracking?.[0]?.leadCount || 0;
                     if (todayCount >= user.dailyLeadQuota)
-                        return false;
+                        continue;
                 }
-                return this.isUserAvailable(user);
-            });
-            if (eligibleUsers.length === 0) {
+                if (!this.isUserAvailable(user))
+                    continue;
+                nextUser = user;
+                break;
+            }
+            if (!nextUser) {
                 console.log('[DistributionService] All campaign users at quota or unavailable');
                 return null;
             }
-            // Round-robin among eligible users
-            let nextIndex = 0;
-            if (rule.lastAssignedUserId) {
-                const lastIndex = eligibleUsers.findIndex((u) => u.id === rule.lastAssignedUserId);
-                if (lastIndex !== -1) {
-                    nextIndex = (lastIndex + 1) % eligibleUsers.length;
-                }
-            }
-            const nextUser = eligibleUsers[nextIndex];
             // Update rule state
             await prisma_1.default.assignmentRule.update({
                 where: { id: rule.id },
@@ -595,6 +680,9 @@ exports.DistributionService = {
      * Check if user is currently within their working hours
      */
     isUserAvailable(user) {
+        // If user is off duty, they are not available
+        if (user.isOffDuty)
+            return false;
         // If no working hours defined, assume available 24/7
         if (!user.workingHours)
             return true;

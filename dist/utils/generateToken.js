@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateToken = (id) => {
     return jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET || 'secret_key_change_this', {
-        expiresIn: '30d',
+        expiresIn: '3650d',
     });
 };
 exports.default = generateToken;
