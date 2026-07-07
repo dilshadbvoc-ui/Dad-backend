@@ -165,6 +165,10 @@ sudo mkdir -p /var/www/crm-client
 sudo rm -rf /var/www/crm-client/*
 sudo cp -r dist/* /var/www/crm-client/
 
+# Clean up transient build directory to save server disk space
+echo "🧹 Cleaning up transient frontend build directory..."
+sudo rm -rf "$TRANS_DIR"
+
 echo "✨ Frontend standardly aligned in all target directories."
 
 echo "▶️ Starting Backend API..."
