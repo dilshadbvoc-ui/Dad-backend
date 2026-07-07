@@ -221,22 +221,46 @@ const initCronJobs = () => {
             // 1. Audit Log Retention (90 Days)
             const ninetyDaysAgo = new Date(now);
             ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-            const deletedLogs = await prisma_1.cronPrisma.auditLog.deleteMany({
-                where: { createdAt: { lt: ninetyDaysAgo } }
-            });
-            if (deletedLogs.count > 0) {
-                console.log(`[Cron] Cleaned up ${deletedLogs.count} old audit logs.`);
+            let totalLogsDeleted = 0;
+            while (true) {
+                const logsToDelete = await prisma_1.cronPrisma.auditLog.findMany({
+                    where: { createdAt: { lt: ninetyDaysAgo } },
+                    select: { id: true },
+                    take: 5000
+                });
+                if (logsToDelete.length === 0)
+                    break;
+                const ids = logsToDelete.map(l => l.id);
+                const deleted = await prisma_1.cronPrisma.auditLog.deleteMany({
+                    where: { id: { in: ids } }
+                });
+                totalLogsDeleted += deleted.count;
+                if (deleted.count > 0) {
+                    console.log(`[Cron] Batch deleted ${deleted.count} old audit logs. Total: ${totalLogsDeleted}`);
+                }
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
             // 2. Notification Retention (Keep only last 14 days, read or unread)
             const fourteenDaysAgo = new Date(now);
             fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-            const deletedNotifications = await prisma_1.cronPrisma.notification.deleteMany({
-                where: {
-                    createdAt: { lt: fourteenDaysAgo }
+            let totalNotificationsDeleted = 0;
+            while (true) {
+                const notificationsToDelete = await prisma_1.cronPrisma.notification.findMany({
+                    where: { createdAt: { lt: fourteenDaysAgo } },
+                    select: { id: true },
+                    take: 5000
+                });
+                if (notificationsToDelete.length === 0)
+                    break;
+                const ids = notificationsToDelete.map(n => n.id);
+                const deleted = await prisma_1.cronPrisma.notification.deleteMany({
+                    where: { id: { in: ids } }
+                });
+                totalNotificationsDeleted += deleted.count;
+                if (deleted.count > 0) {
+                    console.log(`[Cron] Batch deleted ${deleted.count} old notifications. Total: ${totalNotificationsDeleted}`);
                 }
-            });
-            if (deletedNotifications.count > 0) {
-                console.log(`[Cron] Cleaned up ${deletedNotifications.count} old notifications.`);
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
         }
         catch (error) {
