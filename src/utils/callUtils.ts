@@ -1,5 +1,25 @@
 
+import { execSync } from 'child_process';
+import fs from 'fs';
 import { Interaction } from '../generated/client';
+
+/**
+ * Extract true duration of an audio file in seconds using ffprobe.
+ */
+export function getAudioDuration(filePath: string): number {
+    try {
+        if (!filePath || !fs.existsSync(filePath)) return 0;
+        const output = execSync(
+            `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${filePath}"`,
+            { encoding: 'utf-8', timeout: 5000 }
+        );
+        const duration = parseFloat(output.trim());
+        return isNaN(duration) ? 0 : Math.round(duration);
+    } catch (err) {
+        console.error('[CallUtils] Error getting audio duration via ffprobe:', err);
+        return 0;
+    }
+}
 
 /**
  * Utility to resolve the best duration for a call based on multiple sources.

@@ -98,6 +98,19 @@ const getOpportunities = async (req, res) => {
         if (req.query.leadSource && req.query.leadSource !== 'all') {
             where.leadSource = String(req.query.leadSource);
         }
+        // Date Range Filters
+        if (req.query.startDate || req.query.endDate) {
+            const dateFilter = {};
+            if (req.query.startDate) {
+                dateFilter.gte = new Date(String(req.query.startDate));
+            }
+            if (req.query.endDate) {
+                const end = new Date(String(req.query.endDate));
+                end.setHours(23, 59, 59, 999);
+                dateFilter.lte = end;
+            }
+            where.createdAt = dateFilter;
+        }
         // Add filters if needed (e.g. stage, etc.) based on query params if standard match Mongoose behavior which passed `query` directly sometimes?
         // Mongoose code had `const query: any = {}` and populated it manually.
         // It didn't seemingly blindly pass req.query to find()? 

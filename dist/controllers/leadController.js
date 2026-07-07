@@ -544,6 +544,15 @@ const updateLead = async (req, res) => {
                 }
             }
         }
+        // Duplicate Check for phone/email update
+        if ((updates.phone && updates.phone !== currentLead.phone) || (updates.email && updates.email !== currentLead.email)) {
+            const duplicateCheck = await duplicateLeadService_1.default.checkDuplicate(updates.phone || currentLead.phone, updates.email || currentLead.email, currentLead.organisationId, currentLead.branchId || undefined);
+            if (duplicateCheck.isDuplicate && duplicateCheck.existingLead && duplicateCheck.existingLead.id !== currentLead.id) {
+                return res.status(400).json({
+                    message: `A lead with this ${duplicateCheck.matchedBy} already exists in this branch.`
+                });
+            }
+        }
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
             // CRITICAL: Block transition to 'qualified' or 'converted' if no products

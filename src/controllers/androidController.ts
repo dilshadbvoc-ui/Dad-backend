@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import fs from 'fs';
 import path from 'path';
-import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration } from '../utils/callUtils';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration, getAudioDuration } from '../utils/callUtils';
 
 // In-memory locks to serialize concurrent call uploads and prevent parallel race condition duplicates
 const activeSyncLocks = new Set<string>();
@@ -287,22 +287,31 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             return res.status(200).json({ message: 'Call dropped: Contact synchronization disabled for non-CRM numbers' });
         }
 
+        let durationSecs = parseInt(duration, 10) || 0;
+        const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
+
+        // HEAL ZERO DURATION: If client sends 0 duration but has a physical file, parse the true duration using ffprobe
+        if (file && (durationSecs === 0 || !durationSecs)) {
+            const fileDuration = getAudioDuration(file.path);
+            if (fileDuration > 0) {
+                console.log(`[AndroidUpload] Extracted real duration from file via ffprobe: ${fileDuration}s (client sent: ${duration}s)`);
+                durationSecs = fileDuration;
+            }
+        }
+
         // Create recording record (linked to lead if found)
         console.log(`[AndroidUpload] Creating CallRecording record (targetLeadId=${targetLeadId || 'null'}, targetContactId=${targetContactId || 'null'}, isMissed=${isMissed})`);
         const recording = await prisma.callRecording.create({
             data: {
                 leadId: targetLeadId,
-                duration: parseInt(duration, 10) || 0,
-                hardwareDuration: hardwareDuration ? parseInt(hardwareDuration, 10) : null,
+                duration: durationSecs,
+                hardwareDuration: carrierDurationSecs,
                 fileUrl: file ? `/uploads/recordings/${file.filename}` : '',
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
             }
         });
 
-        const durationSecs = parseInt(duration, 10) || 0;
-        const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
-        
         const tempDurationData = {
             duration: durationSecs / 60,
             recordingDuration: durationSecs,
