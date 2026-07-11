@@ -1441,7 +1441,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             const oppId = result.opportunity.id;
             
             if (paymentType === 'paid') {
-                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, user.id, orgId));
+                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, user.id, orgId).catch(console.error));
             } else if (paymentType === 'partial') {
                 import('../services/paymentService').then(async m => {
                     if (paidAmount > 0) {

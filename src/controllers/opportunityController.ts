@@ -200,7 +200,7 @@ export const createOpportunity = async (req: Request, res: Response) => {
             const oppId = opportunity.id;
 
             if (paymentType === 'paid') {
-                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, user.id, orgId));
+                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, user.id, orgId).catch(console.error));
             } else if (paymentType === 'partial') {
                 import('../services/paymentService').then(async m => {
                     if (paidAmount > 0) {
@@ -383,6 +383,15 @@ export const updateOpportunity = async (req: Request, res: Response) => {
         const currentOpp = await prisma.opportunity.findUnique({ where: { id: oppId } });
         if (!currentOpp) return res.status(404).json({ message: 'Opportunity not found' });
 
+        // Add validation to prevent moving out of terminal stages
+        if (opportunityUpdates.stage && opportunityUpdates.stage !== currentOpp.stage) {
+            if (currentOpp.stage === 'closed_won' || currentOpp.stage === 'closed_lost') {
+                return res.status(400).json({ 
+                    message: `Opportunity is already ${currentOpp.stage === 'closed_won' ? 'Won' : 'Lost'} and cannot be moved to another stage.` 
+                });
+            }
+        }
+
         if (opportunityUpdates.customFields) {
             const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, opportunityUpdates.customFields);
@@ -428,7 +437,7 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             const orgId = opportunity.organisationId;
 
             if (paymentType === 'paid') {
-                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, requester.id, orgId));
+                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, requester.id, orgId).catch(console.error));
             } else if (paymentType === 'partial') {
                 import('../services/paymentService').then(async m => {
                     if (paidAmount > 0) {
