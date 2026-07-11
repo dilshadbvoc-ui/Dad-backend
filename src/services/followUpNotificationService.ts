@@ -62,8 +62,9 @@ export class FollowUpNotificationService {
     private static async send30MinuteReminders(now: Date) {
         try {
             // Calculate time window: 0-45 minutes from now (inclusive of missed ones)
-            // But only if they haven't been notified in the last hour
-            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+            // Dedup guard: don't re-fire if already sent within the last 25 minutes
+            // (was: 1 hour — caused repeat storm as the guard reset every hour)
+            const twentyFiveMinsAgo = new Date(now.getTime() - 25 * 60 * 1000);
             const fortyFiveMinsFromNow = new Date(now.getTime() + 45 * 60 * 1000);
 
             console.log(`[FollowUpNotificationService] Checking 30-min reminders due before ${fortyFiveMinsFromNow.toISOString()}`);
@@ -79,7 +80,7 @@ export class FollowUpNotificationService {
                     isDeleted: false,
                     OR: [
                         { notified30MinAt: null },
-                        { notified30MinAt: { lt: oneHourAgo } }
+                        { notified30MinAt: { lt: twentyFiveMinsAgo } }
                     ]
                 },
                 include: {
@@ -134,7 +135,7 @@ export class FollowUpNotificationService {
                     isDeleted: false,
                     OR: [
                         { notified30MinAt: null },
-                        { notified30MinAt: { lt: oneHourAgo } }
+                        { notified30MinAt: { lt: twentyFiveMinsAgo } }
                     ]
                 },
                 include: {
