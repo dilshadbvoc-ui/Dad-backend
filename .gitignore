@@ -36,3 +36,17 @@ GITHUB_SSH_KEY.txt
 uploads/
 node_modules/
 full-backup-*.json
+
+# Prisma generated client (ignored so it doesn't clutter diffs)
+src/generated/client/
+
+# Workspace and lockfiles
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
+# Temporary query engine files
+*.tmp*
+*.dll.node
+
+# Test files
+dbb-test.js
