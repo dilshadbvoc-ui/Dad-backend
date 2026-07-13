@@ -970,17 +970,8 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     status = 'completed';
                 }
 
-                // 5. Create the CallRecording record (no audio file for bulk sync)
-                await prisma.callRecording.create({
-                    data: {
-                        leadId: targetLeadId,
-                        duration: durationSecs,
-                        hardwareDuration: carrierDurationSecs,
-                        fileUrl: '',
-                        callType: callType || 'UNKNOWN',
-                        timestamp: callDate
-                    }
-                });
+                // 5. CallRecording row is created AFTER the raceCheck below
+                //    to avoid orphaned rows when a near-duplicate is detected.
 
                 // 6. Create the Interaction record (makes it visible in Call Logs + Timeline)
                 // LAST-SECOND ATOMIC DEDUPLICATION:
@@ -1006,20 +997,39 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     }
                 }
 
+                // LAST-SECOND ATOMIC DEDUPLICATION (v2 — fixed)
+                // Goal: catch a near-simultaneous upload or a same-batch entry that slipped
+                //       through the hardwareId/callSessionId guards (e.g. SDK sent neither).
+                //
+                // Window: ±60 s to absorb real-world Android clock skew (typically ±30 s).
+                // Constraints:
+                //   - direction must match: two calls with different directions are NEVER the same call.
+                //   - duration must be within ±5 s: two distinct calls to the same number back-to-back
+                //     will almost always differ more than 5 s in length.
+                // This combination eliminates both false-positive merges and false-negative duplicates.
+                const RACE_WINDOW_MS = 60 * 1000; // 60 seconds — covers NTP/carrier clock drift
+                const RACE_DURATION_TOLERANCE_S = 5; // seconds
+
                 const raceCheck = await prisma.interaction.findFirst({
                     where: {
                         organisationId: user.organisationId,
                         createdById: user.id,
                         phoneNumber: { in: variations },
+                        direction: direction, // must share same direction
                         date: {
-                            gte: new Date(callDate.getTime() - 10000),
-                            lte: new Date(callDate.getTime() + 10000)
+                            gte: new Date(callDate.getTime() - RACE_WINDOW_MS),
+                            lte: new Date(callDate.getTime() + RACE_WINDOW_MS)
+                        },
+                        // Duration must be close — prevents merging two distinct short calls
+                        duration: {
+                            gte: Math.max(0, durationMinutes - (RACE_DURATION_TOLERANCE_S / 60)),
+                            lte: durationMinutes + (RACE_DURATION_TOLERANCE_S / 60)
                         }
                     }
                 });
 
                 if (raceCheck) {
-                    console.log(`[BulkSync] Atomic race check: merging ${phoneNumber}`);
+                    console.log(`[BulkSync] Atomic race check (60s window): merging duplicate for ${phoneNumber} into interaction ${raceCheck.id}`);
                     await prisma.interaction.update({
                         where: { id: raceCheck.id },
                         data: {
@@ -1029,8 +1039,22 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         }
                     });
                     results.synced.push(phoneNumber);
-                    continue;
+                    continue; // skip callRecording and interaction create below
                 }
+
+                // 5. Create the CallRecording record (no audio file for bulk sync)
+                // NOTE: This is intentionally placed AFTER the raceCheck so we never
+                //       create an orphaned callRecording for a duplicate that gets merged.
+                await prisma.callRecording.create({
+                    data: {
+                        leadId: targetLeadId,
+                        duration: durationSecs,
+                        hardwareDuration: carrierDurationSecs,
+                        fileUrl: '',
+                        callType: callType || 'UNKNOWN',
+                        timestamp: callDate
+                    }
+                });
 
                 await prisma.interaction.create({
                     data: {
