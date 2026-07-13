@@ -766,7 +766,21 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     });
                 }
 
-                // Priority 3: Fuzzy Match (Phone + User + Time window for existing entries - User-restricted)
+                // Priority 3: Fuzzy Match — two phases to avoid merging distinct back-to-back calls
+                // ─────────────────────────────────────────────────────────────────────────────────
+                // THE PROBLEM this solves:
+                //   If a user calls the same number 4 times in 30 mins, the old single-query
+                //   approach would find the very first call each time and either skip or overwrite it,
+                //   meaning only 1 interaction ever appeared in the CRM.
+                //
+                // Phase 3a — Reconcile a real-time 'initiated' interaction.
+                //   When a call is dialled from the CRM web app, a 'initiated' interaction is
+                //   created immediately. When the Android sync arrives later, we reconcile it.
+                //   No duration guard needed here — the final duration isn't known at initiation.
+                //
+                // Phase 3b — Reconcile an already-logged call (e.g. carrier-verified update).
+                //   MUST match direction AND duration (±5 s). This prevents four back-to-back
+                //   calls from all being treated as the same record.
                 if (!existingInteraction && phoneSuffix.length > 0) {
                     const variations = Array.from(new Set([
                         phoneSuffix,
@@ -777,25 +791,51 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         phoneNumber
                     ].filter(Boolean)));
 
-                    // Tightened from 1-hour to 30-minute window to reduce ghost mismatches
                     const fuzzyWindowStart = new Date(callDate.getTime() - 30 * 60 * 1000);
                     const fuzzyWindowEnd   = new Date(callDate.getTime() + 5 * 60 * 1000);
 
+                    // Phase 3a: Real-time initiated call → reconcile unconditionally
                     existingInteraction = await prisma.interaction.findFirst({
                         where: {
                             organisationId: user.organisationId,
                             createdById: user.id,
                             type: 'call',
-                            callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
+                            callStatus: 'initiated',
                             phoneNumber: { in: variations },
-                            date: {
-                                gte: fuzzyWindowStart,
-                                lte: fuzzyWindowEnd
-                            }
+                            date: { gte: fuzzyWindowStart, lte: fuzzyWindowEnd }
                         },
                         orderBy: { date: 'desc' }
                     });
+
+                    // Phase 3b: Already-logged call — only reconcile if it's genuinely the same call
+                    if (!existingInteraction) {
+                        // Derive direction early from rawType (same logic used later for CREATE path)
+                        const prelimDirection: 'inbound' | 'outbound' =
+                            ['2', 'OUTGOING', 'OUT', 'OUTB'].includes(rawType) ? 'outbound' : 'inbound';
+
+                        // Use raw duration for the guard (normalizeDuration runs at line below)
+                        const rawDurationSecs = parseInt(String(duration), 10) || 0;
+                        const FUZZY_DUR_TOL_MIN = 5 / 60; // 5-second tolerance expressed in minutes
+
+                        existingInteraction = await prisma.interaction.findFirst({
+                            where: {
+                                organisationId: user.organisationId,
+                                createdById: user.id,
+                                type: 'call',
+                                callStatus: { in: ['completed', 'missed', 'failed', 'rejected'] },
+                                direction: prelimDirection,            // direction MUST match
+                                phoneNumber: { in: variations },
+                                date: { gte: fuzzyWindowStart, lte: fuzzyWindowEnd },
+                                duration: {                            // duration must be within ±5 s
+                                    gte: Math.max(0, (rawDurationSecs / 60) - FUZZY_DUR_TOL_MIN),
+                                    lte: (rawDurationSecs / 60) + FUZZY_DUR_TOL_MIN
+                                }
+                            },
+                            orderBy: { date: 'desc' }
+                        });
+                    }
                 }
+
                 let durationSecs = normalizeDuration(duration);
 
                 if (existingInteraction) {
