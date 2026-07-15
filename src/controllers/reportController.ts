@@ -354,51 +354,173 @@ export const exportToExcel = async (req: Request, res: Response) => {
             sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
 
         } else if (type === 'sales') {
+            // Date Filter
+            const dateFilter: any = {};
+            if (startDate || endDate) {
+                dateFilter.closeDate = {};
+                if (startDate) {
+                    const sDate = new Date(String(startDate));
+                    sDate.setUTCHours(0, 0, 0, 0);
+                    dateFilter.closeDate.gte = sDate;
+                }
+                if (endDate) {
+                    const eDate = new Date(String(endDate));
+                    eDate.setUTCHours(23, 59, 59, 999);
+                    dateFilter.closeDate.lte = eDate;
+                }
+            }
+
             const where: any = {
                 organisationId: orgId as string,
                 stage: 'closed_won',
                 isDeleted: false,
-                ...branchFilter
+                ...branchFilter,
+                ...dateFilter
             };
             if (user.role !== 'admin' && user.role !== 'super_admin') {
                 where.ownerId = { in: visibleUserIds };
             }
 
-            if (startDate || endDate) {
-                where.updatedAt = {};
-                if (startDate) where.updatedAt.gte = new Date(startDate as string);
-                if (endDate) where.updatedAt.lte = new Date(endDate as string);
-            }
-
             const sales = await prisma.opportunity.findMany({
                 where,
-                include: {
+                select: {
+                    id: true,
+                    name: true,
+                    amount: true,
+                    closeDate: true,
+                    paymentStatus: true,
                     account: { select: { name: true } },
-                    owner: { select: { firstName: true, lastName: true } }
-                }
+                    owner: { select: { firstName: true, lastName: true } },
+                    branch: { select: { name: true } },
+                    emiSchedule: {
+                        select: {
+                            id: true,
+                            totalAmount: true,
+                            paidAmount: true,
+                            remainingAmount: true,
+                            status: true
+                        }
+                    },
+                    paymentRecords: {
+                        select: {
+                            amount: true
+                        }
+                    }
+                },
+                orderBy: { closeDate: 'desc' }
             });
 
             const sheet = workbook.addWorksheet('Sales Book');
             sheet.columns = [
-                { header: 'Deal Name', key: 'name', width: 30 },
-                { header: 'Account', key: 'account', width: 25 },
-                { header: 'Amount', key: 'amount', width: 15 },
+                { header: 'Date', key: 'closeDate', width: 15 },
+                { header: 'Branch', key: 'branch', width: 20 },
+                { header: 'Opportunity', key: 'opportunity', width: 30 },
+                { header: 'Customer', key: 'customer', width: 25 },
                 { header: 'Owner', key: 'owner', width: 20 },
-                { header: 'Closed Date', key: 'closedAt', width: 15 }
+                { header: 'Payment Status', key: 'paymentStatus', width: 18 },
+                { header: 'Amount', key: 'amount', width: 15 }
             ];
 
             sales.forEach(sale => {
+                const totalPaid = sale.paymentRecords?.reduce((sum, record) => sum + record.amount, 0) || 0;
+                
+                let displayStatus = sale.paymentStatus || 'pending';
+                if (displayStatus === 'paid') {
+                    displayStatus = 'Paid';
+                } else if (displayStatus === 'partial') {
+                    if (sale.emiSchedule) {
+                        displayStatus = `EMI (${sale.emiSchedule.status || 'active'})`;
+                    } else {
+                        displayStatus = 'Partial';
+                    }
+                } else {
+                    displayStatus = 'Pending';
+                }
+
                 sheet.addRow({
-                    name: sale.name,
-                    account: (sale as any).account?.name || 'N/A',
-                    amount: sale.amount,
-                    owner: (sale as any).owner ? `${(sale as any).owner.firstName} ${(sale as any).owner.lastName}` : 'Unassigned',
-                    closedAt: sale.updatedAt.toLocaleDateString()
+                    closeDate: sale.closeDate ? new Date(sale.closeDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '-',
+                    branch: sale.branch?.name || '-',
+                    opportunity: sale.name,
+                    customer: sale.account?.name || 'N/A',
+                    owner: sale.owner ? `${sale.owner.firstName} ${sale.owner.lastName}` : 'Unassigned',
+                    paymentStatus: displayStatus,
+                    amount: sale.amount
                 });
             });
 
-            sheet.getRow(1).font = { bold: true };
-            sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+            // Style the header row
+            const headerRow = sheet.getRow(1);
+            headerRow.height = 28;
+            headerRow.eachCell((cell) => {
+                cell.font = { name: 'Segoe UI', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF4F46E5' } // Indigo 600
+                };
+                cell.alignment = { vertical: 'middle', horizontal: 'left' };
+                cell.border = {
+                    bottom: { style: 'medium', color: { argb: 'FF3730A3' } }
+                };
+            });
+
+            // Style the data rows
+            sheet.eachRow((row, rowNumber) => {
+                if (rowNumber === 1) return; // Skip header
+
+                row.height = 22;
+                
+                // Zebra striping
+                const isEven = rowNumber % 2 === 0;
+                const rowBgColor = isEven ? 'FFF9FAFB' : 'FFFFFFFF';
+
+                row.eachCell((cell, colNumber) => {
+                    cell.font = { name: 'Segoe UI', size: 10 };
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: rowBgColor }
+                    };
+                    cell.border = {
+                        bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+                        right: { style: 'thin', color: { argb: 'FFE5E7EB' } }
+                    };
+                    
+                    // Left align text, center date, right align numbers
+                    if (colNumber === 1) { // Date
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    } else if (colNumber === 7) { // Amount
+                        cell.alignment = { vertical: 'middle', horizontal: 'right' };
+                        cell.numFmt = '#,##0'; // Standard integer formatting for currency
+                    } else {
+                        cell.alignment = { vertical: 'middle', horizontal: 'left' };
+                    }
+                    
+                    // Style the payment status colors
+                    if (colNumber === 6) { // Payment Status
+                        const statusVal = cell.value?.toString() || '';
+                        if (statusVal === 'Paid') {
+                            cell.font = { name: 'Segoe UI', size: 10, color: { argb: 'FF065F46' }, bold: true }; // Emerald 800
+                        } else if (statusVal.includes('EMI') || statusVal === 'Partial') {
+                            cell.font = { name: 'Segoe UI', size: 10, color: { argb: 'FFB45309' }, bold: true }; // Amber 700
+                        } else {
+                            cell.font = { name: 'Segoe UI', size: 10, color: { argb: 'FF374151' } }; // Slate 700
+                        }
+                    }
+                });
+            });
+
+            // Auto-fit column widths
+            sheet.columns.forEach((column) => {
+                let maxLen = 0;
+                column.eachCell?.({ includeEmpty: true }, (cell) => {
+                    const valueStr = cell.value ? cell.value.toString() : '';
+                    if (valueStr.length > maxLen) {
+                        maxLen = valueStr.length;
+                    }
+                });
+                column.width = Math.max(maxLen + 4, 12);
+            });
         } else if (type === 'user-sales') {
             const users = await prisma.user.findMany({
                 where: {
