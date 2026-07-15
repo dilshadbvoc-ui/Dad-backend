@@ -164,19 +164,16 @@ const handleVoiceResponse = (twiml: any, twilioConfig: any, shouldRecord: boolea
 
 export const handleStatusWebhook = async (req: Request, res: Response) => {
     const { orgId } = req.query;
-    const { CallSid, RecordingUrl, RecordingDuration, CallStatus } = req.body;
+    const { CallSid, RecordingUrl, RecordingDuration, CallStatus, CallDuration } = req.body;
 
     try {
         if (!orgId) {
             return res.status(400).send('No orgId');
         }
 
-        console.log(`Twilio Status: ${CallStatus}, Recording: ${RecordingUrl}`);
+        console.log(`Twilio Status: ${CallStatus}, Recording: ${RecordingUrl}, Duration: ${CallDuration}s`);
 
-        // Find the interaction by CallSid
-        // Since we stored CallSid in description safely or subject... 
-        // This is fuzzy. Better to have stored it properly. 
-        // For now, finding the most recent call with that description substring
+        // Find the interaction by CallSid stored in the description field
         const interaction = await prisma.interaction.findFirst({
             where: {
                 organisationId: orgId as string,
@@ -195,11 +192,58 @@ export const handleStatusWebhook = async (req: Request, res: Response) => {
                 data.recordingDuration = parseInt(RecordingDuration);
                 synchronizeDurations(data);
             }
+            // Store the total call duration from Twilio (includes ring + talk time)
+            if (CallDuration) {
+                data.hardwareDuration = parseInt(CallDuration);
+                synchronizeDurations(data);
+            }
 
             await prisma.interaction.update({
                 where: { id: interaction.id },
                 data
             });
+
+            // ---------------------------------------------------------------
+            // AUTO-UPDATE LEAD STATUS: new → completed
+            // Fires for ALL call types (browser dialer, phone dialer, Twilio)
+            // Only promotes status when the call actually connected (duration > 0)
+            // ---------------------------------------------------------------
+            const callActuallyConnected = parseInt(CallDuration || '0') > 0;
+            if (
+                interaction.leadId &&
+                CallStatus === 'completed' &&
+                callActuallyConnected
+            ) {
+                try {
+                    const lead = await prisma.lead.findUnique({
+                        where: { id: interaction.leadId },
+                        select: { status: true }
+                    });
+
+                    if (lead?.status === 'new') {
+                        await prisma.lead.update({
+                            where: { id: interaction.leadId },
+                            data: { status: 'completed' }
+                        });
+
+                        await prisma.leadHistory.create({
+                            data: {
+                                leadId: interaction.leadId,
+                                fieldName: 'status',
+                                oldValue: 'new',
+                                newValue: 'completed',
+                                changedById: (interaction as any).createdById || undefined,
+                                reason: 'Auto-updated via Twilio Call Completion Webhook'
+                            }
+                        });
+
+                        console.log(`[Telephony] Lead ${interaction.leadId} status promoted: new → completed`);
+                    }
+                } catch (leadUpdateError) {
+                    // Non-fatal — log but don't fail the webhook response
+                    console.error('[Telephony] Failed to auto-update lead status:', leadUpdateError);
+                }
+            }
 
             // Emit Socket event logic here if needed
         }
