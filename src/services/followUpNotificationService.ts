@@ -69,60 +69,8 @@ export class FollowUpNotificationService {
 
             console.log(`[FollowUpNotificationService] Checking 30-min reminders due before ${fortyFiveMinsFromNow.toISOString()}`);
 
-            // Find tasks (follow-ups)
-            const tasks = await prisma.task.findMany({
-                where: {
-                    dueDate: {
-                        lte: fortyFiveMinsFromNow,
-                        gt: now // Only for upcoming in this method
-                    },
-                    status: { notIn: ['completed', 'deferred'] },
-                    isDeleted: false,
-                    OR: [
-                        { notified30MinAt: null },
-                        { notified30MinAt: { lt: twentyFiveMinsAgo } }
-                    ]
-                },
-                include: {
-                    assignedTo: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            reportsToId: true,
-                            timezone: true
-                        }
-                    },
-                    lead: {
-                        where: { isDeleted: false },
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            company: true
-                        }
-                    },
-                    contact: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true
-                        }
-                    },
-                    account: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    },
-                    opportunity: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
-                }
-            });
+            // Find tasks (disabled as task module is removed)
+            const tasks: any[] = [];
 
             // Find pure follow-ups
             const followUps = await prisma.followUp.findMany({
@@ -263,60 +211,8 @@ export class FollowUpNotificationService {
 
             console.log(`[FollowUpNotificationService] Checking for day-of reminders due between ${twoHoursAgo.toISOString()} and ${fifteenMinsFromNow.toISOString()}`);
 
-            // Find tasks due in this window
-            const tasks = await prisma.task.findMany({
-                where: {
-                    dueDate: {
-                        gte: twoHoursAgo,
-                        lte: fifteenMinsFromNow
-                    },
-                    status: { notIn: ['completed', 'deferred'] },
-                    isDeleted: false,
-                    OR: [
-                        { notifiedDueAt: null },
-                        { notifiedDueAt: { lt: twoHoursAgo } }
-                    ]
-                },
-                include: {
-                    assignedTo: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            reportsToId: true,
-                            timezone: true
-                        }
-                    },
-                    lead: {
-                        where: { isDeleted: false },
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            company: true
-                        }
-                    },
-                    contact: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true
-                        }
-                    },
-                    account: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    },
-                    opportunity: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
-                }
-            });
+            // Find tasks (disabled as task module is removed)
+            const tasks: any[] = [];
 
             // Find follow-ups due in this window
             const followUps = await prisma.followUp.findMany({

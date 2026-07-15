@@ -88,17 +88,17 @@ export class SalesTargetService {
                 if (achievedValue >= target.targetValue && target.status !== 'completed') {
                     newStatus = 'completed';
 
-                    // Notify user
-                    try {
-                        await NotificationService.send(
-                            userId,
-                            'Sales Target Achieved! 🎯',
-                            `Congratulations! You have achieved your sales target for ${target.period} (${target.metric || 'revenue'}). Great work!`,
-                            'success'
-                        );
-                    } catch (err) {
-                        console.error('[SalesTargetService] Failed to send notification', err);
-                    }
+                    // Notify user (disabled as goal/target module is removed)
+                    // try {
+                    //     await NotificationService.send(
+                    //         userId,
+                    //         'Sales Target Achieved! 🎯',
+                    //         `Congratulations! You have achieved your sales target for ${target.period} (${target.metric || 'revenue'}). Great work!`,
+                    //         'success'
+                    //     );
+                    // } catch (err) {
+                    //     console.error('[SalesTargetService] Failed to send notification', err);
+                    // }
                 } else if (achievedValue < target.targetValue && target.status === 'completed') {
                     // Regression (e.g. order cancelled)
                     newStatus = 'active';
@@ -206,39 +206,39 @@ export class SalesTargetService {
                 const metricText = target.metric === 'units' ? 'units' : 'revenue';
                 const message = `Sales Target Missed: You achieved ${target.achievedValue} / ${target.targetValue} ${metricText} for ${target.period}.`;
 
-                // Notify User
-                await NotificationService.send(
-                    target.assignedToId,
-                    '❌ Sales Target Missed',
-                    message,
-                    'warning'
-                ).catch(err => console.error(`[SalesTargetService] Failed to notify user ${target.assignedToId}:`, err));
+                // Notify User (Disabled as goal/target module is removed)
+                // await NotificationService.send(
+                //     target.assignedToId,
+                //     '❌ Sales Target Missed',
+                //     message,
+                //     'warning'
+                // ).catch(err => console.error(`[SalesTargetService] Failed to notify user ${target.assignedToId}:`, err));
 
-                // Notify Manager
-                if (target.assignedTo.reportsToId) {
-                    await NotificationService.send(
-                        target.assignedTo.reportsToId,
-                        '⚠️ Team Member Missed Target',
-                        `${target.assignedTo.firstName} ${target.assignedTo.lastName} missed their sales target for ${target.period}. Achieved: ${target.achievedValue} / ${target.targetValue}.`,
-                        'warning'
-                    ).catch(err => console.error(`[SalesTargetService] Failed to notify manager ${target.assignedTo?.reportsToId}:`, err));
-                }
+                // // Notify Manager
+                // if (target.assignedTo.reportsToId) {
+                //     await NotificationService.send(
+                //         target.assignedTo.reportsToId,
+                //         '⚠️ Team Member Missed Target',
+                //         `${target.assignedTo.firstName} ${target.assignedTo.lastName} missed their sales target for ${target.period}. Achieved: ${target.achievedValue} / ${target.targetValue}.`,
+                //         'warning'
+                //     ).catch(err => console.error(`[SalesTargetService] Failed to notify manager ${target.assignedTo?.reportsToId}:`, err));
+                // }
 
-                // Notify Admins
-                if (target.assignedTo.organisationId) {
-                    const admins = await prisma.user.findMany({
-                        where: { organisationId: target.assignedTo.organisationId, role: 'admin', isActive: true },
-                        select: { id: true }
-                    });
-                    for (const admin of admins) {
-                        await NotificationService.send(
-                            admin.id,
-                            '⚠️ Missed Sales Target',
-                            `${target.assignedTo.firstName} ${target.assignedTo.lastName} missed their sales target for ${target.period}. Achieved: ${target.achievedValue} / ${target.targetValue}.`,
-                            'warning'
-                        ).catch(err => console.error(`[SalesTargetService] Failed to notify admin ${admin.id}:`, err));
-                    }
-                }
+                // // Notify Admins
+                // if (target.assignedTo.organisationId) {
+                //     const admins = await prisma.user.findMany({
+                //         where: { organisationId: target.assignedTo.organisationId, role: 'admin', isActive: true },
+                //         select: { id: true }
+                //     });
+                //     for (const admin of admins) {
+                //         await NotificationService.send(
+                //             admin.id,
+                //             '⚠️ Missed Sales Target',
+                //             `${target.assignedTo.firstName} ${target.assignedTo.lastName} missed their sales target for ${target.period}. Achieved: ${target.achievedValue} / ${target.targetValue}.`,
+                //             'warning'
+                //         ).catch(err => console.error(`[SalesTargetService] Failed to notify admin ${admin.id}:`, err));
+                //     }
+                // }
 
                 // Mark target as failed/missed if schema supports it, otherwise leave as-is or we update it to 'failed'
                 // Assuming schema has a 'failed' or 'missed' state, if it errors out we'll know the enum restricts it.
