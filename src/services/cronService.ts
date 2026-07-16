@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import { TrashService } from './trashService';
 import { cronPrisma } from '../config/prisma';
+import { runShuffler } from './shuffler-module/shufflerService';
 
 export const initCronJobs = () => {
     // Database Keep-Alive: a lightweight SELECT 1 every 5 minutes to prevent
@@ -362,4 +363,15 @@ export const initCronJobs = () => {
     });
 
     console.log('[Cron] Meta Lead Polling and Expiry Check jobs scheduled.');
+
+    // Shuffler job – every minute for now
+
+    cron.schedule('* * * * *', async () => {
+        try {
+            await runShuffler();
+        } catch (error) {
+            console.error('[Cron] Error running shuffler:', error);
+        }
+    });
+    console.log('[Cron] Shuffler job scheduled.');
 };
