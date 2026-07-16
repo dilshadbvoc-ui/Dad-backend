@@ -58,6 +58,13 @@ export const runShuffler = async () => {
             }
             // For 'days_before', we no longer filter by age, it's just a schedule interval, so dateCondition remains empty.
 
+            // Only apply minimum lead age filter in Auto Shuffler (as requested)
+            if (config.minLeadAgeDays && config.minLeadAgeDays > 0) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - config.minLeadAgeDays);
+                dateCondition.lt = cutoffDate;
+            }
+
             // Find eligible active users in the org
             let activeUsersWhere: any = {
                 organisationId: org.id,
