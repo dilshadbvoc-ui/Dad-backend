@@ -98,13 +98,16 @@ export const runShuffler = async () => {
 
             const activeUserIds = activeUsers.map(u => u.id);
 
+            const excludedStatuses = ['closed_won', 'closed_lost', 'Closed Won', 'Closed Lost', 'closed won', 'closed lost'];
+            const validStatuses = config.statuses.filter((s: string) => !excludedStatuses.includes(s) && !excludedStatuses.includes(s.toLowerCase()));
+
             // Find eligible leads
             // Only shuffle leads that are currently owned by the selected users
             const eligibleLeads = await prisma.lead.findMany({
                 where: {
                     organisationId: org.id,
                     isDeleted: false,
-                    status: { in: config.statuses },
+                    status: { in: validStatuses },
                     updatedAt: dateCondition,
                     assignedToId: { in: activeUserIds }
                 },
@@ -276,10 +279,13 @@ export const forceShuffleOrg = async (organisationId: string) => {
 
         const activeUserIds = activeUsers.map(u => u.id);
 
+        const excludedStatuses = ['closed_won', 'closed_lost', 'Closed Won', 'Closed Lost', 'closed won', 'closed lost'];
+        const validStatuses = config.statuses.filter((s: string) => !excludedStatuses.includes(s) && !excludedStatuses.includes(s.toLowerCase()));
+
         let leadWhereCondition: any = {
             organisationId: org.id,
             isDeleted: false,
-            status: { in: config.statuses },
+            status: { in: validStatuses },
             assignedToId: { in: activeUserIds }
         };
 

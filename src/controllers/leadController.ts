@@ -83,7 +83,8 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
                     { firstName: { contains: search, mode: 'insensitive' } },
                     { lastName: { contains: search, mode: 'insensitive' } },
                     { email: { contains: search, mode: 'insensitive' } },
-                    { company: { contains: search, mode: 'insensitive' } }
+                    { company: { contains: search, mode: 'insensitive' } },
+                    { phone: { contains: search, mode: 'insensitive' } }
                 ]
             });
         }
