@@ -178,7 +178,7 @@ export const runShuffler = async () => {
                         data: {
                             title: 'New Lead Assigned',
                             message: `A lead has been automatically reassigned to you by the Shuffler.`,
-                            type: 'popup',
+                            type: 'info',
                             relatedResource: 'lead',
                             relatedId: lead.id,
                             recipientId: targetUser.id,
@@ -359,7 +359,7 @@ export const forceShuffleOrg = async (organisationId: string) => {
                     data: {
                         title: 'New Lead Assigned',
                         message: `A lead has been reassigned to you by the manual Shuffler.`,
-                        type: 'popup',
+                        type: 'info',
                         relatedResource: 'lead',
                         relatedId: lead.id,
                         recipientId: targetUser.id,
