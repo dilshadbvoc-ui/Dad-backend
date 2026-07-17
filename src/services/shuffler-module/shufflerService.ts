@@ -86,7 +86,7 @@ export const runShuffler = async () => {
 
             const activeUsers = await prisma.user.findMany({
                 where: activeUsersWhere,
-                select: { id: true },
+                select: { id: true, teamId: true, branchId: true },
                 orderBy: { id: 'asc' }
             });
 
@@ -157,7 +157,12 @@ export const runShuffler = async () => {
                 if (targetUser.id !== lead.assignedToId) {
                     await prisma.lead.update({
                         where: { id: lead.id },
-                        data: { assignedToId: targetUser.id, status: 'shuffled_lead' }
+                        data: { 
+                            assignedToId: targetUser.id, 
+                            status: 'shuffled_lead',
+                            teamId: targetUser.teamId || null,
+                            branchId: targetUser.branchId || null
+                        }
                     });
 
                     // Log history
@@ -268,7 +273,7 @@ export const forceShuffleOrg = async (organisationId: string) => {
 
         const activeUsers = await prisma.user.findMany({
             where: activeUsersWhere,
-            select: { id: true },
+            select: { id: true, teamId: true, branchId: true },
             orderBy: { id: 'asc' }
         });
 
@@ -338,7 +343,12 @@ export const forceShuffleOrg = async (organisationId: string) => {
             if (targetUser.id !== lead.assignedToId) {
                 await prisma.lead.update({
                     where: { id: lead.id },
-                    data: { assignedToId: targetUser.id, status: 'shuffled_lead' }
+                    data: { 
+                        assignedToId: targetUser.id, 
+                        status: 'shuffled_lead',
+                        teamId: targetUser.teamId || null,
+                        branchId: targetUser.branchId || null
+                    }
                 });
 
                 // Log history

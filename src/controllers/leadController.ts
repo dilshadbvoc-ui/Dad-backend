@@ -535,13 +535,14 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 };
             }
 
-            // Sync branch with new owner
+            // Sync branch and team with new owner
             const assignedUser = await prisma.user.findUnique({
                 where: { id: targetUserId },
-                select: { branchId: true }
+                select: { branchId: true, teamId: true }
             });
-            if (assignedUser?.branchId) {
-                updates.branchId = assignedUser.branchId;
+            if (assignedUser) {
+                if (assignedUser.branchId) updates.branchId = assignedUser.branchId;
+                if (assignedUser.teamId) updates.teamId = assignedUser.teamId;
             }
 
             // Remap for Prisma - store the ID directly
@@ -1056,6 +1057,10 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     finalStage = null;
                 }
 
+                if (finalStatus === 'shuffled_lead' || finalStage === 'shuffled_lead') {
+                    throw new Error("Cannot import leads with 'shuffled_lead' status.");
+                }
+
                 const data: any = {
                     firstName: l.firstName,
                     lastName: l.lastName || '',
@@ -1137,10 +1142,20 @@ export const bulkAssignLeads = async (req: express.Request, res: express.Respons
             select: { id: true, assignedToId: true }
         });
 
+        // Fetch new owner to sync team and branch
+        const newOwner = await prisma.user.findUnique({
+            where: { id: assignedTo },
+            select: { teamId: true, branchId: true }
+        });
+
         // Update leads
         const result = await prisma.lead.updateMany({
             where: { id: { in: leadIds } },
-            data: { assignedToId: assignedTo }
+            data: { 
+                assignedToId: assignedTo,
+                teamId: newOwner?.teamId || null,
+                branchId: newOwner?.branchId || null
+            }
         });
 
         // Create history records for each lead
