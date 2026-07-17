@@ -1,7 +1,7 @@
 import express from 'express';
 import { createOrganisation, getAllOrganisations, getOrganisation, updateOrganisation, sendTestReport } from '../controllers/organisationController';
 import { protect } from '../middleware/authMiddleware';
-import { triggerShuffleNow } from '../controllers/shuffler-module/shufflerController';
+import { triggerShuffleNow, getShuffleCount } from '../controllers/shuffler-module/shufflerController';
 
 
 
@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/send-test-report', protect, sendTestReport);
 router.get('/all', protect, getAllOrganisations);
+router.get('/shuffle-count', protect, getShuffleCount);
 router.post('/shuffle-now', protect, triggerShuffleNow);
 
 // Root routes

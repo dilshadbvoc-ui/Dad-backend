@@ -756,3 +756,103 @@
 2026-07-11T10:58:59.269Z - [Leads] Visible users found: 5
 2026-07-11T10:58:59.273Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1"]}}
 2026-07-11T10:58:59.318Z - [Leads] [Leads] Violations found: 0
+2026-07-17T06:55:37.974Z - [Leads] Entered getViolations
+2026-07-17T06:55:37.982Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T06:55:37.987Z - [Leads] Fetching visible users...
+2026-07-17T06:55:38.802Z - [Leads] Visible users found: 5
+2026-07-17T06:55:38.806Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T06:55:38.933Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:04:04.941Z - [Leads] Entered getViolations
+2026-07-17T07:04:04.964Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:04:04.977Z - [Leads] Fetching visible users...
+2026-07-17T07:04:05.728Z - [Leads] Visible users found: 5
+2026-07-17T07:04:05.738Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:04:05.911Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:19:26.315Z - [Leads] Entered getViolations
+2026-07-17T07:19:26.323Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:19:26.338Z - [Leads] Fetching visible users...
+2026-07-17T07:19:27.085Z - [Leads] Visible users found: 5
+2026-07-17T07:19:27.096Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:19:27.235Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:19:52.303Z - [Leads] Entered getViolations
+2026-07-17T07:19:52.306Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:19:52.310Z - [Leads] Fetching visible users...
+2026-07-17T07:19:53.364Z - [Leads] Visible users found: 5
+2026-07-17T07:19:53.372Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:19:53.485Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:43:13.409Z - [Leads] Entered getViolations
+2026-07-17T07:43:13.451Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:43:13.478Z - [Leads] Fetching visible users...
+2026-07-17T07:43:15.998Z - [Leads] Visible users found: 5
+2026-07-17T07:43:16.014Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:43:16.409Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:44:09.797Z - [Leads] Entered getViolations
+2026-07-17T07:44:09.826Z - [Leads] User: d86f65fa-bd2b-4083-baa2-516038552d86, Role: admin
+2026-07-17T07:44:09.846Z - [Leads] Fetching visible users...
+2026-07-17T07:44:10.790Z - Entered getDashboardStats
+2026-07-17T07:44:10.808Z - [Analytics] User: d86f65fa-bd2b-4083-baa2-516038552d86, Org: 85cc3715-7f8d-4f22-b0b0-a40a502bc6fa, SuperAdmin: false
+2026-07-17T07:44:10.825Z - [Analytics] Importing hierarchyUtils...
+2026-07-17T07:44:10.835Z - [Analytics] Fetching visibleUserIds...
+2026-07-17T07:44:12.748Z - [Leads] Visible users found: 23
+2026-07-17T07:44:12.755Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"85cc3715-7f8d-4f22-b0b0-a40a502bc6fa","previousOwnerId":{"in":["d86f65fa-bd2b-4083-baa2-516038552d86","c2d7e5d0-62e6-49b3-8a73-ef28e4fc7a1a","c449e1d9-16c0-4dfc-9a6f-45b840924d9a","53da2bee-1da9-4273-9fe0-288637801d6d","de32f640-3438-4145-84b4-c69d59c883d1","5711e40b-0fb5-4f86-b8cd-7f3543da1b54","a5e061e5-5541-434d-acf6-a50b1df6c92d","0f77cacf-7d0d-4327-8779-f47048733a9c","a83eeafe-3682-412e-a86d-28799d8e642d","28f1e09a-6b76-4480-af09-4dec0c995f59","ca027094-f249-4f67-9cbf-82d865538036","64f74066-5d85-4f77-800a-b5acfdbc9c5f","0a0630d9-203e-43a9-836b-2ff7f7ae1922","f37694d5-97f2-42e4-8c8d-f9cb6a710119","3f2d8415-3217-4844-adb3-cd3a8643ff94","39ea93f0-49b5-4ef3-a16c-c5198e60002b","e416a7ee-17a5-4f33-92e4-1bfa1272055a","fef128ca-8930-4a6e-b783-94e31a0253ed","35da508c-48cc-4cec-8a9e-3833339ecc75","1375bc35-3082-4bec-9bbc-3e3646f6af36","55c81c25-e204-4b0d-8597-5b7a63671958","f8bea1af-cd6e-4c67-93a4-dd7e78aa5f00","78b350ab-a756-4bb2-8bbd-0b511e205b63"]}}
+2026-07-17T07:44:12.934Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:44:13.159Z - [Analytics] Visible users: 23
+2026-07-17T07:45:13.274Z - [Leads] Entered getViolations
+2026-07-17T07:45:13.279Z - [Leads] User: d86f65fa-bd2b-4083-baa2-516038552d86, Role: admin
+2026-07-17T07:45:13.281Z - [Leads] Fetching visible users...
+2026-07-17T07:45:14.802Z - [Leads] Visible users found: 23
+2026-07-17T07:45:14.819Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"85cc3715-7f8d-4f22-b0b0-a40a502bc6fa","previousOwnerId":{"in":["d86f65fa-bd2b-4083-baa2-516038552d86","c2d7e5d0-62e6-49b3-8a73-ef28e4fc7a1a","c449e1d9-16c0-4dfc-9a6f-45b840924d9a","53da2bee-1da9-4273-9fe0-288637801d6d","de32f640-3438-4145-84b4-c69d59c883d1","5711e40b-0fb5-4f86-b8cd-7f3543da1b54","a5e061e5-5541-434d-acf6-a50b1df6c92d","0f77cacf-7d0d-4327-8779-f47048733a9c","a83eeafe-3682-412e-a86d-28799d8e642d","28f1e09a-6b76-4480-af09-4dec0c995f59","ca027094-f249-4f67-9cbf-82d865538036","64f74066-5d85-4f77-800a-b5acfdbc9c5f","0a0630d9-203e-43a9-836b-2ff7f7ae1922","f37694d5-97f2-42e4-8c8d-f9cb6a710119","3f2d8415-3217-4844-adb3-cd3a8643ff94","39ea93f0-49b5-4ef3-a16c-c5198e60002b","e416a7ee-17a5-4f33-92e4-1bfa1272055a","fef128ca-8930-4a6e-b783-94e31a0253ed","35da508c-48cc-4cec-8a9e-3833339ecc75","1375bc35-3082-4bec-9bbc-3e3646f6af36","55c81c25-e204-4b0d-8597-5b7a63671958","f8bea1af-cd6e-4c67-93a4-dd7e78aa5f00","78b350ab-a756-4bb2-8bbd-0b511e205b63"]}}
+2026-07-17T07:45:14.936Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:46:06.923Z - Entered getDashboardStats
+2026-07-17T07:46:06.929Z - [Analytics] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Org: 23d99450-83e7-4382-9312-d07f083447c0, SuperAdmin: false
+2026-07-17T07:46:06.939Z - [Analytics] Importing hierarchyUtils...
+2026-07-17T07:46:06.942Z - [Analytics] Fetching visibleUserIds...
+2026-07-17T07:46:07.519Z - [Leads] Entered getViolations
+2026-07-17T07:46:07.525Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:46:07.529Z - [Leads] Fetching visible users...
+2026-07-17T07:46:07.816Z - [Analytics] Visible users: 5
+2026-07-17T07:46:08.301Z - [Leads] Visible users found: 5
+2026-07-17T07:46:08.307Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:46:08.414Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:47:08.916Z - [Leads] Entered getViolations
+2026-07-17T07:47:08.919Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:47:08.921Z - [Leads] Fetching visible users...
+2026-07-17T07:47:09.353Z - [Leads] Visible users found: 5
+2026-07-17T07:47:09.355Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:47:09.457Z - [Leads] [Leads] Violations found: 0
+2026-07-17T07:48:09.725Z - [Leads] Entered getViolations
+2026-07-17T07:48:09.727Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T07:48:09.729Z - [Leads] Fetching visible users...
+2026-07-17T07:48:10.197Z - [Leads] Visible users found: 5
+2026-07-17T07:48:10.203Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T07:48:10.257Z - [Leads] [Leads] Violations found: 0
+2026-07-17T08:31:01.574Z - [Leads] Entered getViolations
+2026-07-17T08:31:01.577Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T08:31:01.582Z - [Leads] Fetching visible users...
+2026-07-17T08:31:02.320Z - [Leads] Visible users found: 5
+2026-07-17T08:31:02.326Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T08:31:02.431Z - [Leads] [Leads] Violations found: 0
+2026-07-17T08:31:37.621Z - [Leads] Entered getViolations
+2026-07-17T08:31:37.623Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T08:31:37.626Z - [Leads] Fetching visible users...
+2026-07-17T08:31:38.525Z - [Leads] Visible users found: 5
+2026-07-17T08:31:38.530Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T08:31:38.662Z - [Leads] [Leads] Violations found: 0
+2026-07-17T08:38:39.106Z - [Leads] Entered getViolations
+2026-07-17T08:38:39.114Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T08:38:39.121Z - [Leads] Fetching visible users...
+2026-07-17T08:38:40.157Z - [Leads] Visible users found: 5
+2026-07-17T08:38:40.161Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T08:38:40.301Z - [Leads] [Leads] Violations found: 0
+2026-07-17T08:39:40.592Z - [Leads] Entered getViolations
+2026-07-17T08:39:40.599Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T08:39:40.604Z - [Leads] Fetching visible users...
+2026-07-17T08:39:41.406Z - [Leads] Visible users found: 5
+2026-07-17T08:39:41.410Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T08:39:41.529Z - [Leads] [Leads] Violations found: 0
+2026-07-17T08:40:41.888Z - [Leads] Entered getViolations
+2026-07-17T08:40:41.891Z - [Leads] User: fc139c17-d8ba-40f0-8fc0-de857274c943, Role: admin
+2026-07-17T08:40:41.895Z - [Leads] Fetching visible users...
+2026-07-17T08:40:42.371Z - [Leads] Visible users found: 5
+2026-07-17T08:40:42.374Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","e910d0ee-3bcc-4c46-82f8-4f696dd15078","a05b52ee-a5e2-4523-866f-fa6941e787a1","a2d5ddb4-f3f3-4638-882b-b1f4e23bb501","9543cddb-bdd2-4a8c-beed-a04ab0c6a687"]}}
+2026-07-17T08:40:42.434Z - [Leads] [Leads] Violations found: 0

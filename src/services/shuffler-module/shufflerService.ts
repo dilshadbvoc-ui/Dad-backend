@@ -396,3 +396,82 @@ export const forceShuffleOrg = async (organisationId: string) => {
         return { success: false, message: 'Failed to execute shuffle. Check server logs.' };
     }
 };
+
+export const getShuffleCountOrg = async (organisationId: string) => {
+    try {
+        const org = await prisma.organisation.findUnique({
+            where: { id: organisationId, isDeleted: false }
+        });
+
+        if (!org || !org.shufflerConfig) {
+            return { success: false, message: 'No valid shuffler config found.', count: 0 };
+        }
+
+        const config = org.shufflerConfig as any;
+        
+        if (!config.statuses || config.statuses.length === 0) {
+            return { success: false, message: 'No lead statuses configured for shuffling.', count: 0 };
+        }
+
+        if (!config.selectAllUsers && (!config.users || config.users.length === 0)) {
+            return { success: false, message: 'No users selected for shuffling.', count: 0 };
+        }
+
+        const timeFrameType = config.timeFrameType || 'days_before';
+        let dateCondition: any = undefined;
+
+        if (timeFrameType === 'date_range' && config.fromDate && config.toDate) {
+            dateCondition = { gte: new Date(config.fromDate), lte: new Date(config.toDate) };
+        } else if (timeFrameType === 'backwards_from_date' && config.backwardsDate) {
+            dateCondition = { lt: new Date(config.backwardsDate) };
+        }
+
+        let activeUsersWhere: any = {
+            organisationId: org.id,
+            isActive: true,
+            isOffDuty: false
+        };
+
+        if (config.selectAllUsers) {
+            activeUsersWhere.role = { notIn: ['super_admin', 'admin'] };
+            if (!config.selectAllBranches && config.branches && config.branches.length > 0) {
+                activeUsersWhere.branchId = { in: config.branches };
+            }
+        } else {
+            activeUsersWhere.id = { in: config.users };
+        }
+
+        const activeUsers = await prisma.user.findMany({
+            where: activeUsersWhere,
+            select: { id: true }
+        });
+
+        if (activeUsers.length === 0) {
+            return { success: false, message: 'No active non-admin users available.', count: 0 };
+        }
+
+        const activeUserIds = activeUsers.map(u => u.id);
+        const excludedStatuses = ['closed_won', 'closed_lost', 'Closed Won', 'Closed Lost', 'closed won', 'closed lost'];
+        const validStatuses = config.statuses.filter((s: string) => !excludedStatuses.includes(s) && !excludedStatuses.includes(s.toLowerCase()));
+
+        let leadWhereCondition: any = {
+            organisationId: org.id,
+            isDeleted: false,
+            status: { in: validStatuses },
+            assignedToId: { in: activeUserIds }
+        };
+
+        if (dateCondition) {
+            leadWhereCondition.updatedAt = dateCondition;
+        }
+
+        const eligibleLeadsCount = await prisma.lead.count({
+            where: leadWhereCondition
+        });
+
+        return { success: true, count: eligibleLeadsCount, message: 'Count retrieved' };
+    } catch (error) {
+        console.error('[ShufflerService] Error during shuffle count execution:', error);
+        return { success: false, message: 'Failed to count leads', count: 0 };
+    }
+};
