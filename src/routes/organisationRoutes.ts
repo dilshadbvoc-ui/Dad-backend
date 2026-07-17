@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/send-test-report', protect, sendTestReport);
 router.get('/all', protect, getAllOrganisations);
-router.get('/shuffle-count', protect, getShuffleCount);
+router.post('/shuffle-count', protect, getShuffleCount);
 router.post('/shuffle-now', protect, triggerShuffleNow);
 
 // Root routes

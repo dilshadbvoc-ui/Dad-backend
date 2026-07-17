@@ -77,14 +77,20 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
 
         // Filter: Search (OR condition)
         if (req.query.search) {
-            const search = String(req.query.search);
+            const search = String(req.query.search).trim();
+            const searchNoSpace = search.replace(/\s+/g, '');
             andConditions.push({
                 OR: [
                     { firstName: { contains: search, mode: 'insensitive' } },
+                    { firstName: { contains: searchNoSpace, mode: 'insensitive' } },
                     { lastName: { contains: search, mode: 'insensitive' } },
+                    { lastName: { contains: searchNoSpace, mode: 'insensitive' } },
                     { email: { contains: search, mode: 'insensitive' } },
+                    { email: { contains: searchNoSpace, mode: 'insensitive' } },
                     { company: { contains: search, mode: 'insensitive' } },
-                    { phone: { contains: search, mode: 'insensitive' } }
+                    { company: { contains: searchNoSpace, mode: 'insensitive' } },
+                    { phone: { contains: search, mode: 'insensitive' } },
+                    { phone: { contains: searchNoSpace, mode: 'insensitive' } }
                 ]
             });
         }

@@ -65,15 +65,14 @@ export const runShuffler = async () => {
                 dateCondition.lt = cutoffDate;
             }
 
-            // Find eligible active users in the org
             let activeUsersWhere: any = {
                 organisationId: org.id,
                 isActive: true,
-                isOffDuty: false
+                isOffDuty: false,
+                role: { notIn: ['super_admin', 'admin'] }
             };
 
             if (config.selectAllUsers) {
-                activeUsersWhere.role = { notIn: ['super_admin', 'admin'] };
                 if (!config.selectAllBranches && config.branches && config.branches.length > 0) {
                     activeUsersWhere.branchId = { in: config.branches };
                 }
@@ -158,7 +157,7 @@ export const runShuffler = async () => {
                 if (targetUser.id !== lead.assignedToId) {
                     await prisma.lead.update({
                         where: { id: lead.id },
-                        data: { assignedToId: targetUser.id }
+                        data: { assignedToId: targetUser.id, status: 'shuffled_lead' }
                     });
 
                     // Log history
@@ -255,11 +254,11 @@ export const forceShuffleOrg = async (organisationId: string) => {
         let activeUsersWhere: any = {
             organisationId: org.id,
             isActive: true,
-            isOffDuty: false
+            isOffDuty: false,
+            role: { notIn: ['super_admin', 'admin'] }
         };
 
         if (config.selectAllUsers) {
-            activeUsersWhere.role = { notIn: ['super_admin', 'admin'] };
             if (!config.selectAllBranches && config.branches && config.branches.length > 0) {
                 activeUsersWhere.branchId = { in: config.branches };
             }
@@ -339,7 +338,7 @@ export const forceShuffleOrg = async (organisationId: string) => {
             if (targetUser.id !== lead.assignedToId) {
                 await prisma.lead.update({
                     where: { id: lead.id },
-                    data: { assignedToId: targetUser.id }
+                    data: { assignedToId: targetUser.id, status: 'shuffled_lead' }
                 });
 
                 // Log history
@@ -397,17 +396,17 @@ export const forceShuffleOrg = async (organisationId: string) => {
     }
 };
 
-export const getShuffleCountOrg = async (organisationId: string) => {
+export const getShuffleCountOrg = async (organisationId: string, customConfig?: any) => {
     try {
         const org = await prisma.organisation.findUnique({
             where: { id: organisationId, isDeleted: false }
         });
 
-        if (!org || !org.shufflerConfig) {
+        const config = customConfig || (org?.shufflerConfig as any);
+        if (!org || !config) {
             return { success: false, message: 'No valid shuffler config found.', count: 0 };
         }
 
-        const config = org.shufflerConfig as any;
         
         if (!config.statuses || config.statuses.length === 0) {
             return { success: false, message: 'No lead statuses configured for shuffling.', count: 0 };
@@ -429,11 +428,11 @@ export const getShuffleCountOrg = async (organisationId: string) => {
         let activeUsersWhere: any = {
             organisationId: org.id,
             isActive: true,
-            isOffDuty: false
+            isOffDuty: false,
+            role: { notIn: ['super_admin', 'admin'] }
         };
 
         if (config.selectAllUsers) {
-            activeUsersWhere.role = { notIn: ['super_admin', 'admin'] };
             if (!config.selectAllBranches && config.branches && config.branches.length > 0) {
                 activeUsersWhere.branchId = { in: config.branches };
             }
@@ -469,7 +468,18 @@ export const getShuffleCountOrg = async (organisationId: string) => {
             where: leadWhereCondition
         });
 
-        return { success: true, count: eligibleLeadsCount, message: 'Count retrieved' };
+        const statusCounts = await prisma.lead.groupBy({
+            by: ['status'],
+            where: leadWhereCondition,
+            _count: { _all: true }
+        });
+
+        const countsByStatus = statusCounts.reduce((acc, curr) => {
+            acc[curr.status] = curr._count._all;
+            return acc;
+        }, {} as Record<string, number>);
+
+        return { success: true, count: eligibleLeadsCount, countsByStatus, message: 'Count retrieved' };
     } catch (error) {
         console.error('[ShufflerService] Error during shuffle count execution:', error);
         return { success: false, message: 'Failed to count leads', count: 0 };
