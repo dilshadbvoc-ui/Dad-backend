@@ -161,26 +161,36 @@ router.get('/callback', async (req, res) => {
         const tokenExpiresAt = expiresIn ? new Date(Date.now() + (expiresIn * 1000)).toISOString() : null;
 
         // Get user's ad accounts
-        const adAccountsResponse = await axios.get(`${META_GRAPH_URL}/me/adaccounts`, {
-            params: {
-                access_token: longLivedToken,
-                fields: 'id,name,account_status'
-            }
-        });
-
-        const adAccounts = adAccountsResponse.data.data || [];
-        const primaryAdAccount = adAccounts[0]; // Use first ad account
+        let adAccounts = [];
+        let primaryAdAccount = null;
+        try {
+            const adAccountsResponse = await axios.get(`${META_GRAPH_URL}/me/adaccounts`, {
+                params: {
+                    access_token: longLivedToken,
+                    fields: 'id,name,account_status'
+                }
+            });
+            adAccounts = adAccountsResponse.data.data || [];
+            primaryAdAccount = adAccounts[0]; // Use first ad account
+        } catch (adError: any) {
+            console.log('[Meta OAuth] Could not fetch ad accounts (fallback):', adError.response?.data || adError.message);
+        }
 
         // Get user's pages (for Page ID)
-        const pagesResponse = await axios.get(`${META_GRAPH_URL}/me/accounts`, {
-            params: {
-                access_token: longLivedToken,
-                fields: 'id,name,access_token'
-            }
-        });
-
-        const pages = pagesResponse.data.data || [];
-        const primaryPage = pages[0];
+        let pages = [];
+        let primaryPage = null;
+        try {
+            const pagesResponse = await axios.get(`${META_GRAPH_URL}/me/accounts`, {
+                params: {
+                    access_token: longLivedToken,
+                    fields: 'id,name,access_token'
+                }
+            });
+            pages = pagesResponse.data.data || [];
+            primaryPage = pages[0];
+        } catch (pageError: any) {
+            console.log('[Meta OAuth] Could not fetch pages (fallback):', pageError.response?.data || pageError.message);
+        }
 
         // Try to get WhatsApp Business Account
         let wabaId = null;

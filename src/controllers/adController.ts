@@ -90,6 +90,9 @@ export const getAds = async (req: AuthRequest, res: Response) => {
 export const getInsights = async (req: AuthRequest, res: Response) => {
     try {
         const config = await getMetaConfig(req);
+        if (req.query.accountId) {
+            config.adAccountId = req.query.accountId as string;
+        }
         const { level } = req.query;
         const insights = await metaService.getInsights(config, level as any);
         res.json(insights);
@@ -142,6 +145,9 @@ export const syncCampaigns = async (req: AuthRequest, res: Response) => {
 export const getCampaignInsights = async (req: AuthRequest, res: Response) => {
     try {
         const config = await getMetaConfig(req);
+        if (req.query.accountId) {
+            config.adAccountId = req.query.accountId as string;
+        }
         const insights = await metaService.getInsights(config, 'campaign');
         res.json(insights);
     } catch (error: any) {
@@ -157,6 +163,9 @@ export const getCampaignInsights = async (req: AuthRequest, res: Response) => {
 export const getAccountInsights = async (req: AuthRequest, res: Response) => {
     try {
         const config = await getMetaConfig(req);
+        if (req.query.accountId) {
+            config.adAccountId = req.query.accountId as string;
+        }
         const insights = await metaService.getInsights(config, 'account');
         res.json(insights);
     } catch (error: any) {
