@@ -1,7 +1,7 @@
 import express from 'express';
 import { createOrganisation, getAllOrganisations, getOrganisation, updateOrganisation, sendTestReport } from '../controllers/organisationController';
 import { protect } from '../middleware/authMiddleware';
-import { triggerShuffleNow, getShuffleCount } from '../controllers/shuffler-module/shufflerController';
+import { triggerShuffleNow, getShuffleCount, getShuffleStatus } from '../controllers/shuffler-module/shufflerController';
 
 
 
@@ -11,6 +11,7 @@ router.post('/send-test-report', protect, sendTestReport);
 router.get('/all', protect, getAllOrganisations);
 router.post('/shuffle-count', protect, getShuffleCount);
 router.post('/shuffle-now', protect, triggerShuffleNow);
+router.get('/shuffle-status', protect, getShuffleStatus);
 
 // Root routes
 router.get('/', protect, getOrganisation);

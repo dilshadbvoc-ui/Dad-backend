@@ -161,8 +161,20 @@ export const runShuffler = async () => {
                             assignedToId: targetUser.id, 
                             status: 'shuffled_lead',
                             teamId: targetUser.teamId || null,
-                            branchId: targetUser.branchId || null
+                            branchId: targetUser.branchId || null,
+                            previousOwnerId: lead.assignedToId
                         }
+                    });
+
+                    // Reassign active follow-ups and tasks to the new user
+                    await prisma.followUp.updateMany({
+                        where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
+                        data: { assignedToId: targetUser.id }
+                    });
+                    
+                    await prisma.task.updateMany({
+                        where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
+                        data: { assignedToId: targetUser.id }
                     });
 
                     // Log history
@@ -308,6 +320,21 @@ export const forceShuffleOrg = async (organisationId: string) => {
             return { success: true, message: 'No eligible leads found for selected statuses and time frame.' };
         }
 
+        // Initialize activeJob in shufflerConfig
+        const initialConfig: any = { 
+            ...config,
+            activeJob: {
+                status: "IN_PROGRESS",
+                totalLeads: eligibleLeads.length,
+                processedLeads: 0,
+                startTime: new Date().toISOString()
+            }
+        };
+        await prisma.organisation.update({
+            where: { id: org.id },
+            data: { shufflerConfig: initialConfig }
+        });
+
         let lastAssignedIndex = activeUsers.findIndex((u: any) => u.id === config.lastAssignedUserId);
         if (lastAssignedIndex === -1) lastAssignedIndex = -1;
 
@@ -347,8 +374,20 @@ export const forceShuffleOrg = async (organisationId: string) => {
                         assignedToId: targetUser.id, 
                         status: 'shuffled_lead',
                         teamId: targetUser.teamId || null,
-                        branchId: targetUser.branchId || null
+                        branchId: targetUser.branchId || null,
+                        previousOwnerId: lead.assignedToId
                     }
+                });
+
+                // Reassign active follow-ups and tasks to the new user
+                await prisma.followUp.updateMany({
+                    where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
+                    data: { assignedToId: targetUser.id }
+                });
+                
+                await prisma.task.updateMany({
+                    where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
+                    data: { assignedToId: targetUser.id }
                 });
 
                 // Log history
@@ -377,6 +416,24 @@ export const forceShuffleOrg = async (organisationId: string) => {
                 });
 
                 reassignedCount++;
+
+                // Update progress every 50 leads
+                if (reassignedCount % 50 === 0) {
+                    const currentOrg = await prisma.organisation.findUnique({
+                        where: { id: org.id },
+                        select: { shufflerConfig: true }
+                    });
+                    if (currentOrg && currentOrg.shufflerConfig) {
+                        const curConfig = currentOrg.shufflerConfig as any;
+                        if (curConfig.activeJob) {
+                            curConfig.activeJob.processedLeads = reassignedCount;
+                            await prisma.organisation.update({
+                                where: { id: org.id },
+                                data: { shufflerConfig: curConfig }
+                            });
+                        }
+                    }
+                }
             }
         }
 
@@ -387,7 +444,13 @@ export const forceShuffleOrg = async (organisationId: string) => {
         // Save the persistent round-robin pointer and manual run time
         const updatedConfig: any = { 
             ...(org.shufflerConfig as Record<string, any>), 
-            lastShuffledAt: new Date().toISOString() 
+            lastShuffledAt: new Date().toISOString(),
+            activeJob: {
+                status: "COMPLETED",
+                totalLeads: eligibleLeads.length,
+                processedLeads: reassignedCount,
+                endTime: new Date().toISOString()
+            }
         };
         
         if (lastAssignedIndex !== -1 && activeUsers[lastAssignedIndex]) {
@@ -402,6 +465,22 @@ export const forceShuffleOrg = async (organisationId: string) => {
         return { success: true, message: `Shuffled ${reassignedCount} leads successfully.` };
     } catch (error) {
         console.error('[ShufflerService] Error during force shuffle execution:', error);
+        
+        // Try to mark job as FAILED
+        try {
+            const org = await prisma.organisation.findUnique({ where: { id: organisationId } });
+            if (org && org.shufflerConfig) {
+                const config = org.shufflerConfig as any;
+                if (config.activeJob) {
+                    config.activeJob.status = "FAILED";
+                    await prisma.organisation.update({
+                        where: { id: organisationId },
+                        data: { shufflerConfig: config }
+                    });
+                }
+            }
+        } catch (e) {}
+
         return { success: false, message: 'Failed to execute shuffle. Check server logs.' };
     }
 };
