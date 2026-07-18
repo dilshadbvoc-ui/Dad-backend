@@ -107,7 +107,7 @@ export const runShuffler = async () => {
                     organisationId: org.id,
                     isDeleted: false,
                     status: { in: validStatuses },
-                    updatedAt: dateCondition,
+                    createdAt: Object.keys(dateCondition).length > 0 ? dateCondition : undefined,
                     assignedToId: { in: activeUserIds }
                 },
                 select: { id: true, assignedToId: true },
@@ -306,7 +306,7 @@ export const forceShuffleOrg = async (organisationId: string) => {
         };
 
         if (dateCondition) {
-            leadWhereCondition.updatedAt = dateCondition;
+            leadWhereCondition.createdAt = dateCondition;
         }
 
         // Find eligible leads
@@ -550,7 +550,7 @@ export const getShuffleCountOrg = async (organisationId: string, customConfig?: 
         };
 
         if (dateCondition) {
-            leadWhereCondition.updatedAt = dateCondition;
+            leadWhereCondition.createdAt = dateCondition;
         }
 
         const eligibleLeadsCount = await prisma.lead.count({
