@@ -190,6 +190,7 @@ app.use('/api/', (req, res, next) => {
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5174',
+    'http://192.168.1.12:5173',
     'http://localhost:3000',
     'https://dad-frontend-psi.vercel.app',
     'https://dad-frontend.vercel.app',

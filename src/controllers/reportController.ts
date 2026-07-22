@@ -418,7 +418,9 @@ export const exportToExcel = async (req: Request, res: Response) => {
                 { header: 'Customer', key: 'customer', width: 25 },
                 { header: 'Owner', key: 'owner', width: 20 },
                 { header: 'Payment Status', key: 'paymentStatus', width: 18 },
-                { header: 'Amount', key: 'amount', width: 15 }
+                { header: 'Amount', key: 'amount', width: 15 },
+                { header: 'Paid', key: 'paid', width: 15 },
+                { header: 'Due', key: 'due', width: 15 }
             ];
 
             sales.forEach(sale => {
@@ -444,7 +446,9 @@ export const exportToExcel = async (req: Request, res: Response) => {
                     customer: sale.account?.name || 'N/A',
                     owner: sale.owner ? `${sale.owner.firstName} ${sale.owner.lastName}` : 'Unassigned',
                     paymentStatus: displayStatus,
-                    amount: sale.amount
+                    amount: sale.amount,
+                    paid: totalPaid,
+                    due: sale.amount - totalPaid
                 });
             });
 
@@ -489,7 +493,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
                     // Left align text, center date, right align numbers
                     if (colNumber === 1) { // Date
                         cell.alignment = { vertical: 'middle', horizontal: 'center' };
-                    } else if (colNumber === 7) { // Amount
+                    } else if (colNumber >= 7 && colNumber <= 9) { // Amount, Paid, Due
                         cell.alignment = { vertical: 'middle', horizontal: 'right' };
                         cell.numFmt = '#,##0'; // Standard integer formatting for currency
                     } else {

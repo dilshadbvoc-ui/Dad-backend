@@ -1,35 +1,40 @@
-import { PrismaClient } from './src/generated/client';
-const prisma = new PrismaClient();
+import prisma from './src/config/prisma';
 
-async function checkLead() {
-  const id = '16c41d12-6eb4-48a1-a4b5-c40c370e356b';
-  const lead = await prisma.lead.findUnique({
-    where: { id },
-    include: {
-      assignedTo: { select: { id: true, firstName: true, lastName: true, email: true, role: true } },
-      organisation: { select: { id: true, name: true } },
-      createdBy: { select: { id: true, firstName: true, lastName: true, email: true, role: true } }
+async function main() {
+    const lead = await prisma.lead.findFirst({
+        where: {
+            OR: [
+                { phone: { contains: '919847580183' } },
+                { phone: { contains: '9847580183' } }
+            ]
+        },
+        include: {
+            assignedTo: true
+        }
+    });
+
+    if (!lead) {
+        console.log("Lead not found.");
+        return;
     }
-  });
 
-  if (lead) {
-    console.log('Lead found:', JSON.stringify(lead, null, 2));
+    console.log("LEAD DETAILS:");
+    console.log(lead);
     
-    // Check roles
-    if (lead.assignedTo?.role) {
-        const role = await prisma.role.findFirst({ where: { OR: [{id: lead.assignedTo.role}, {roleKey: lead.assignedTo.role}] } });
-        console.log('AssignedTo Role Info:', JSON.stringify(role, null, 2));
+    if (lead.assignedTo) {
+        console.log("\nASSIGNED USER DETAILS:");
+        console.log(`User ID: ${lead.assignedTo.id}`);
+        console.log(`Name: ${lead.assignedTo.name}`);
+        console.log(`Role: ${lead.assignedTo.role}`);
+        console.log(`Is Active: ${lead.assignedTo.isActive}`);
+        console.log(`Is Off Duty: ${lead.assignedTo.isOffDuty}`);
+    } else {
+        console.log("\nASSIGNED USER DETAILS: UNASSIGNED (null)");
     }
-     if (lead.createdBy?.role) {
-        const role = await prisma.role.findFirst({ where: { OR: [{id: lead.createdBy.role}, {roleKey: lead.createdBy.role}] } });
-        console.log('CreatedBy Role Info:', JSON.stringify(role, null, 2));
-    }
-
-  } else {
-    console.log('Lead NOT found with ID:', id);
-  }
 }
 
-checkLead()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+main()
+    .catch(e => console.error(e))
+    .finally(async () => {
+        await prisma.$disconnect();
+    });
