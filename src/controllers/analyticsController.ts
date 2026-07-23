@@ -897,7 +897,17 @@ export const getSalesBook = async (req: Request, res: Response) => {
         });
 
         const formattedSales = sales.map(s => {
-            const totalPaid = s.paymentRecords?.reduce((sum, record) => sum + record.amount, 0) || 0;
+            // For EMI deals, use emiSchedule.paidAmount as source of truth (it's updated atomically on each installment payment).
+            // For non-EMI deals, sum PaymentRecord rows directly.
+            const totalPaid = s.emiSchedule
+                ? (s.emiSchedule.paidAmount || 0)
+                : (s.paymentRecords?.reduce((sum, record) => sum + record.amount, 0) || 0);
+
+            // Compute due amount — for EMI use remainingAmount, otherwise difference
+            const totalDue = s.emiSchedule
+                ? (s.emiSchedule.remainingAmount || 0)
+                : Math.max(0, s.amount - totalPaid);
+
             return {
                 id: s.id,
                 opportunityName: s.name,
@@ -906,6 +916,7 @@ export const getSalesBook = async (req: Request, res: Response) => {
                 closeDate: s.closeDate,
                 paymentStatus: s.paymentStatus || 'pending',
                 totalPaid,
+                totalDue,
                 ownerName: s.owner ? `${s.owner.firstName} ${s.owner.lastName}` : 'Unknown',
                 branchName: (s as any).branch?.name || 'N/A',
                 hasEmi: !!s.emiSchedule,

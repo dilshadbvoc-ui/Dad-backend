@@ -47,7 +47,7 @@ export const EmailService = {
             // Fallback to SMTP
             if (!sentViaGmail) {
                 const info = await transporter.sendMail({
-                    from: '"PYPE" <no-reply@pype.com>',
+                    from: process.env.MAIL_FROM || process.env.SMTP_USER || '"PYPE" <no-reply@pype.com>',
                     to,
                     subject,
                     html

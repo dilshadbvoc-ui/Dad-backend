@@ -432,40 +432,41 @@ export const updateOpportunity = async (req: Request, res: Response) => {
 
         // Trigger Sales Target Update when opportunity is closed won
         if ((req.body.stage === 'closed_won' || (opportunity.stage === 'closed_won' && req.body.amount)) && opportunity.ownerId) {
-            // New logic for payment and EMI
+            // Payment recording is AWAITED to ensure PaymentRecord rows are written before responding
             const { paymentType, paidAmount, installments } = req.body;
             const orgId = opportunity.organisationId;
 
-            if (paymentType === 'paid') {
-                import('../services/paymentService').then(m => m.default.recordFullPayment(oppId, requester.id, orgId).catch(console.error));
-            } else if (paymentType === 'partial') {
-                import('../services/paymentService').then(async m => {
+            try {
+                if (paymentType === 'paid') {
+                    const PaymentService = (await import('../services/paymentService')).default;
+                    await PaymentService.recordFullPayment(oppId, requester.id, orgId);
+                } else if (paymentType === 'partial') {
+                    const PaymentService = (await import('../services/paymentService')).default;
                     if (paidAmount > 0) {
-                        await m.default.recordPartialPayment(oppId, paidAmount, requester.id, orgId);
+                        await PaymentService.recordPartialPayment(oppId, paidAmount, requester.id, orgId);
                     }
                     if (installments && installments.length > 0) {
-                        const { default: EMIService } = await import('../services/emiService');
+                        const EMIService = (await import('../services/emiService')).default;
                         await EMIService.convertToEMI(oppId, installments, orgId);
                     }
-                });
-            } else if (paymentType === 'emi') {
-                (async () => {
-                    try {
-                        // First update payment status
-                        await prisma.opportunity.update({
-                            where: { id: oppId },
-                            data: { paymentStatus: 'partial' }
-                        });
-
-                        // Then convert to EMI
-                        if (installments && installments.length > 0) {
-                            const { default: EMIService } = await import('../services/emiService');
-                            await EMIService.convertToEMI(oppId, installments, orgId);
-                        }
-                    } catch (error) {
-                        console.error('Error in EMI conversion:', error);
+                } else if (paymentType === 'emi') {
+                    // Update payment status first, then set up EMI schedule
+                    await prisma.opportunity.update({
+                        where: { id: oppId },
+                        data: { paymentStatus: 'partial' }
+                    });
+                    if (installments && installments.length > 0) {
+                        const EMIService = (await import('../services/emiService')).default;
+                        await EMIService.convertToEMI(oppId, installments, orgId);
                     }
-                })();
+                }
+            } catch (paymentError) {
+                // Payment processing failed — roll back paymentStatus to avoid mismatch with Sales Book
+                console.error('[updateOpportunity] Payment recording failed, rolling back paymentStatus:', paymentError);
+                await prisma.opportunity.update({
+                    where: { id: oppId },
+                    data: { paymentStatus: 'pending' }
+                }).catch(e => console.error('[updateOpportunity] Rollback failed:', e));
             }
 
             import('../services/salesTargetService').then(({ SalesTargetService }) => {
