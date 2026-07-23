@@ -207,6 +207,67 @@ export const MetaPollingService = {
         } catch (e) {
             logger.error('Failed to send Meta alert email:', e, 'MetaPolling');
         }
+    },
+
+    /**
+     * PING META API DAILY (CONSULTANT FALLBACK SCRIPT)
+     * This hits the Marketing API (Insights & Campaigns) daily to satisfy 
+     * Meta's App Review requirement of 15-day continuous API usage.
+     * Ensures access isn't revoked during holidays/weekends when users aren't manually checking the CRM.
+     * Note: Can be safely removed once App Review is fully approved or if no longer needed.
+     */
+    async pingMetaMarketingAPI() {
+        logger.info('[MetaPolling] Starting daily Meta Marketing API ping...', 'MetaPolling');
+        try {
+            const organisations = await prisma.organisation.findMany({
+                where: { isDeleted: false, status: { in: ['active', 'suspended'] } },
+                select: { id: true, name: true, integrations: true }
+            });
+
+            for (const org of organisations) {
+                const integrations = (org.integrations as any) || {};
+                const metaAccounts = integrations.metaAccounts || [];
+                
+                if (integrations.meta && integrations.meta.connected) {
+                    const exists = metaAccounts.some((acc: any) => acc.pageId === integrations.meta.pageId);
+                    if (!exists) metaAccounts.push(integrations.meta);
+                }
+
+                for (const account of metaAccounts) {
+                    if (!account.connected || !account.accessToken || !account.adAccountId) continue;
+
+                    try {
+                        const accessToken = decrypt(account.accessToken);
+                        const adAccountId = account.adAccountId.startsWith('act_') ? account.adAccountId : `act_${account.adAccountId}`;
+                        
+                        // 1. Ping Insights API
+                        await axios.get(`https://graph.facebook.com/v19.0/${adAccountId}/insights`, {
+                            params: {
+                                fields: 'spend,impressions,reach,ctr',
+                                date_preset: 'last_7d',
+                                access_token: accessToken
+                            }
+                        });
+
+                        // 2. Ping Campaigns API
+                        await axios.get(`https://graph.facebook.com/v19.0/${adAccountId}/campaigns`, {
+                            params: {
+                                fields: 'name,status,objective',
+                                access_token: accessToken
+                            }
+                        });
+
+                        logger.info(`[MetaPolling] Successfully pinged Marketing API for AdAccount ${adAccountId} (Org: ${org.name})`, 'MetaPolling', undefined, org.id);
+                    } catch (err: any) {
+                        const errorMsg = err.response?.data?.error?.message || err.message;
+                        logger.error(`[MetaPolling] Failed to ping Marketing API for Org ${org.name}: ${errorMsg}`, err, 'MetaPolling', undefined, org.id);
+                    }
+                }
+            }
+            logger.info('[MetaPolling] Completed daily Meta Marketing API ping.', 'MetaPolling');
+        } catch (error) {
+            logger.error('[MetaPolling] Critical error during daily Meta ping:', error as Error, 'MetaPolling');
+        }
     }
 };
 
