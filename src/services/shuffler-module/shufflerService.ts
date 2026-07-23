@@ -169,12 +169,12 @@ export const runShuffler = async () => {
                     // Reassign active follow-ups and tasks to the new user
                     await prisma.followUp.updateMany({
                         where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
-                        data: { assignedToId: targetUser.id }
+                        data: { assignedToId: targetUser.id, createdById: targetUser.id }
                     });
                     
                     await prisma.task.updateMany({
                         where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
-                        data: { assignedToId: targetUser.id }
+                        data: { assignedToId: targetUser.id, createdById: targetUser.id }
                     });
 
                     // Log history
@@ -382,12 +382,12 @@ export const forceShuffleOrg = async (organisationId: string) => {
                 // Reassign active follow-ups and tasks to the new user
                 await prisma.followUp.updateMany({
                     where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
-                    data: { assignedToId: targetUser.id }
+                    data: { assignedToId: targetUser.id, createdById: targetUser.id }
                 });
                 
                 await prisma.task.updateMany({
                     where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
-                    data: { assignedToId: targetUser.id }
+                    data: { assignedToId: targetUser.id, createdById: targetUser.id }
                 });
 
                 // Log history
