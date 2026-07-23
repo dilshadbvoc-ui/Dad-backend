@@ -732,7 +732,15 @@ export const exportToExcel = async (req: Request, res: Response) => {
                     source: lead.source,
                     assignedTo: lead.assignedTo ? `${lead.assignedTo.firstName} ${lead.assignedTo.lastName || ''}`.trim() : 'Unassigned',
                     branch: lead.branch?.name || 'N/A',
-                    createdAt: lead.createdAt.toLocaleString()
+                    createdAt: lead.createdAt.toLocaleString('en-IN', {
+                        timeZone: 'Asia/Kolkata',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    }).toUpperCase()
                 });
             });
 
