@@ -897,13 +897,27 @@ export const getSalesBook = async (req: Request, res: Response) => {
         });
 
         const formattedSales = sales.map(s => {
-            // For EMI deals, use emiSchedule.paidAmount as source of truth (it's updated atomically on each installment payment).
-            // For non-EMI deals, sum PaymentRecord rows directly.
-            const totalPaid = s.emiSchedule
-                ? (s.emiSchedule.paidAmount || 0)
-                : (s.paymentRecords?.reduce((sum, record) => sum + record.amount, 0) || 0);
+            const paymentRecordsSum = s.paymentRecords?.reduce((sum, record) => sum + record.amount, 0) || 0;
 
-            // Compute due amount — for EMI use remainingAmount, otherwise difference
+            // For EMI deals: use the HIGHER of paymentRecords sum vs emiSchedule.paidAmount.
+            //
+            // Why both sources exist and can diverge:
+            //   Case A: Lead converted with upfront advance (partial) + EMI for remainder →
+            //     PaymentRecord has the advance (e.g. ₹5000), emiSchedule.paidAmount = 0 (no installments marked yet)
+            //     → paymentRecordsSum wins
+            //
+            //   Case B: Pure EMI deal, installment marked paid via markInstallmentPaid →
+            //     emiSchedule.paidAmount updated (e.g. ₹5000), but if PaymentRecord creation failed silently →
+            //     paymentRecordsSum = 0, emiSchedule.paidAmount wins
+            //
+            // Taking the max covers both cases safely.
+            const totalPaid = s.emiSchedule
+                ? Math.max(paymentRecordsSum, s.emiSchedule.paidAmount || 0)
+                : paymentRecordsSum;
+
+            // For totalDue:
+            // - EMI deals: use emiSchedule.remainingAmount (tracks pending installments)
+            // - Non-EMI: simple difference
             const totalDue = s.emiSchedule
                 ? (s.emiSchedule.remainingAmount || 0)
                 : Math.max(0, s.amount - totalPaid);
