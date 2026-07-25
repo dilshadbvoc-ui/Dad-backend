@@ -140,6 +140,12 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             include: {
                 assignedTo: {
                     select: { id: true, firstName: true, lastName: true, email: true }
+                },
+                interactions: {
+                    where: { type: 'note', isDeleted: false },
+                    orderBy: { date: 'desc' },
+                    take: 1,
+                    select: { description: true, date: true }
                 }
             },
             skip: (page - 1) * pageSize,
