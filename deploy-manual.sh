@@ -9,7 +9,7 @@ echo "🚀 Starting Manual Deployment to EC2..."
 echo ""
 
 # Configuration
-EC2_HOST="65.2.29.78"
+EC2_HOST="65.2.169.30"
 EC2_USER="ubuntu"
 SSH_KEY="$(dirname "$0")/crm-key.pem"
 
