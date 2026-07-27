@@ -141,15 +141,19 @@ export const getUsers = async (req: Request, res: Response) => {
         const allRoles = await prisma.role.findMany({
             select: { id: true, roleKey: true, name: true }
         });
-        const roleIdToInfo = new Map(allRoles.map(r => [r.id, { key: r.roleKey, name: r.name }]));
+        const roleKeyToInfo = new Map(allRoles.map(r => [r.roleKey, { key: r.roleKey, name: r.name }]));
 
         // Transform results to match frontend expectations and ensure security
         const transformedUsers = users.map(u => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, ...userWithoutPassword } = u;
 
-            // Resolve role: if u.role is a UUID (matches a role id), use roleKey/name
-            const roleInfo = roleIdToInfo.get(u.role);
+            // Include related branch/parent info for UI
+            const branch = u.branch ? { id: u.branch.id, name: u.branch.name } : undefined;
+            const parent = u.reportsTo ? { id: u.reportsTo.id, name: `${u.reportsTo.firstName} ${u.reportsTo.lastName}` } : undefined;
+
+            // Resolve role: u.role stores the roleKey
+            const roleInfo = roleKeyToInfo.get(u.role);
             const roleKey = roleInfo ? roleInfo.key : u.role;
             const roleName = roleInfo ? roleInfo.name : u.role.replace(/_/g, ' ');
 
@@ -242,10 +246,10 @@ export const getMyTeam = async (req: Request, res: Response) => {
 
         // Role lookup
         const allRoles = await prisma.role.findMany({ select: { id: true, roleKey: true, name: true } });
-        const roleIdToInfo = new Map(allRoles.map(r => [r.id, { key: r.roleKey, name: r.name }]));
+        const roleKeyToInfo = new Map(allRoles.map(r => [r.roleKey, { key: r.roleKey, name: r.name }]));
 
         const team = directReports.map(u => {
-            const roleInfo = roleIdToInfo.get(u.role);
+            const roleInfo = roleKeyToInfo.get(u.role);
             return {
                 id: u.id,
                 firstName: u.firstName,
