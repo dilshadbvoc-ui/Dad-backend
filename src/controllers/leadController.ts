@@ -90,7 +90,9 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
                     { company: { contains: search, mode: 'insensitive' } },
                     { company: { contains: searchNoSpace, mode: 'insensitive' } },
                     { phone: { contains: search, mode: 'insensitive' } },
-                    { phone: { contains: searchNoSpace, mode: 'insensitive' } }
+                    { phone: { contains: searchNoSpace, mode: 'insensitive' } },
+                    { secondaryPhone: { contains: search, mode: 'insensitive' } },
+                    { secondaryPhone: { contains: searchNoSpace, mode: 'insensitive' } }
                 ]
             });
         }
