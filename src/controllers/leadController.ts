@@ -46,18 +46,35 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             // Role names no longer strictly limit visibility if they have reporting subordinates.
             const visibleUserIds = await getVisibleUserIds(user.id);
 
-            andConditions.push({
-                OR: [
-                    { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
-                    { createdById: user.id },                // Created by the user (always visible)
-                    {
-                        AND: [
-                            { createdById: { in: visibleUserIds } }, // Created by subordinate
-                            { assignedToId: null }    // But not reassigned to someone else (who might be outside visibility)
-                        ]
-                    }
-                ]
-            });
+            const orConditions: any[] = [
+                { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
+                { createdById: user.id },                // Created by the user (always visible)
+                {
+                    AND: [
+                        { createdById: { in: visibleUserIds } }, // Created by subordinate
+                        { assignedToId: null }    // But not reassigned to someone else (who might be outside visibility)
+                    ]
+                }
+            ];
+
+            // Admin and Manager can see orphaned/unassigned leads
+            if (user.role === 'admin') {
+                orConditions.push({ assignedToId: null });
+            } else if (user.role === 'manager') {
+                orConditions.push({
+                    AND: [
+                        { assignedToId: null },
+                        {
+                            OR: [
+                                { branchId: null },
+                                { branchId: user.branchId || undefined }
+                            ]
+                        }
+                    ]
+                });
+            }
+
+            andConditions.push({ OR: orConditions });
         }
 
         // Filter: Status
@@ -474,7 +491,7 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
         if (!user.isSuperAdmin && !isSuperAdmin(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             
-            where.OR = [
+            const orConditions: any[] = [
                 { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
                 { createdById: user.id },                // Created by the user (always visible)
                 {
@@ -484,6 +501,24 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
                     ]
                 }
             ];
+
+            if (user.role === 'admin') {
+                orConditions.push({ assignedToId: null });
+            } else if (user.role === 'manager') {
+                orConditions.push({
+                    AND: [
+                        { assignedToId: null },
+                        {
+                            OR: [
+                                { branchId: null },
+                                { branchId: user.branchId || undefined }
+                            ]
+                        }
+                    ]
+                });
+            }
+
+            where.OR = orConditions;
         }
 
         const lead = await prisma.lead.findFirst({
