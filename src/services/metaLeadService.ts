@@ -127,9 +127,16 @@ export const MetaLeadService = {
                         const strAdAccountId = String(adAccountId);
                         const normalizedLeadAdId = strAdAccountId.startsWith('act_') ? strAdAccountId : `act_${strAdAccountId}`;
                         
-                        // 1. Check in Whitelist (enabledLeadSyncAccounts)
+                        // 1. Check in per-account whitelist (enabledLeadSyncAccounts on metaAccounts entry)
                         const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
-                        const isWhitelisted = enabledAccounts.some((id: string) => {
+                        
+                        // 1b. ALSO check integrations.meta.enabledLeadSyncAccounts as fallback
+                        //     (the Ads Manager UI saves to this path — frontend fix deployed but
+                        //      existing orgs may still have it here only)
+                        const globalEnabledAccounts = (integrations.meta?.enabledLeadSyncAccounts as string[]) || [];
+                        const allEnabledAccounts = [...new Set([...enabledAccounts, ...globalEnabledAccounts])];
+                        
+                        const isWhitelisted = allEnabledAccounts.some((id: string) => {
                             const strId = String(id);
                             const normalizedId = strId.startsWith('act_') ? strId : `act_${strId}`;
                             return normalizedId === normalizedLeadAdId;
@@ -143,11 +150,11 @@ export const MetaLeadService = {
 
                         // 3. If no whitelist is configured AND no adAccountId set,
                         //    allow the lead (user hasn't configured filtering yet)
-                        const hasAnyFilter = enabledAccounts.length > 0 || !!mainAdAccountId;
+                        const hasAnyFilter = allEnabledAccounts.length > 0 || !!mainAdAccountId;
 
                         // 4. If it matches NEITHER, block it.
                         if (hasAnyFilter && !isWhitelisted && !isMainMatch) {
-                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}. MainAcc: ${mainAdAccountId}, Whitelist: [${enabledAccounts.join(',')}]`);
+                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}. MainAcc: ${mainAdAccountId}, Whitelist: [${allEnabledAccounts.join(',')}]`);
                             MetaLeadGuard.releaseLock(leadgenId, org.id);
                             continue;
                         }
