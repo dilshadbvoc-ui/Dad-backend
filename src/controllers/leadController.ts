@@ -759,7 +759,17 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 data: leadUpdates,
                 include: { assignedTo: { select: { firstName: true, lastName: true, email: true } } }
             }),
-            ...(historyData ? [prisma.leadHistory.create({ data: historyData })] : [])
+            ...(historyData ? [
+                prisma.leadHistory.create({ data: historyData }),
+                prisma.followUp.updateMany({
+                    where: { leadId, isDeleted: false, status: { notIn: ['completed'] } },
+                    data: { assignedToId: leadUpdates.assignedToId, createdById: leadUpdates.assignedToId }
+                }),
+                prisma.task.updateMany({
+                    where: { leadId, isDeleted: false, status: { notIn: ['completed'] } },
+                    data: { assignedToId: leadUpdates.assignedToId, createdById: leadUpdates.assignedToId }
+                })
+            ] : [])
         ]);
 
         let finalLead = lead;

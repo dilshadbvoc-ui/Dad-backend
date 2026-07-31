@@ -22,11 +22,7 @@ export const DistributionService = {
             const where: any = {
                 organisationId: organisationId,
                 isActive: true,
-                isDeleted: false,
-                OR: [
-                    { branchId: lead.branchId }, // Match specific branch
-                    { branchId: null }           // OR Global rules
-                ]
+                isDeleted: false
             };
 
             if (ruleId) {
