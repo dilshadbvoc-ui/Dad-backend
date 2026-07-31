@@ -106,10 +106,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         if (branchFilter.branchId) {
             paymentFilter.opportunity = { branchId: branchFilter.branchId };
         }
-        if (oppVisibilityFilter.ownerId) {
+        if (Object.keys(oppVisibilityFilter).length > 0) {
             paymentFilter.opportunity = { 
                 ...(paymentFilter.opportunity || {}), 
-                ownerId: oppVisibilityFilter.ownerId 
+                ...oppVisibilityFilter 
             };
         }
 
