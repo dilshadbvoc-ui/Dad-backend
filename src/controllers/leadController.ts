@@ -486,7 +486,7 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
         const where: any = { id: req.params.id, isDeleted: false };
 
         // 2. Hierarchy Visibility scoping
-        if (!user.isSuperAdmin && !isSuperAdmin(user)) {
+        if (!user.isSuperAdmin && !isSuperAdmin(user) && user.role !== 'admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
             
             const orConditions: any[] = [
