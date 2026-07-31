@@ -134,3 +134,53 @@ export const getOrgId = (user: any): string | null => {
 
     return null;
 };
+
+export const getLeadVisibilityFilter = async (user: any, isSuperAdmin: boolean = false) => {
+    if (isSuperAdmin || user.role === 'super_admin' || user.role === 'admin') {
+        return {};
+    }
+
+    const visibleUserIds = await getVisibleUserIds(user.id);
+    const orConditions: any[] = [
+        { assignedToId: { in: visibleUserIds } },
+        { createdById: user.id },
+        {
+            AND: [
+                { createdById: { in: visibleUserIds } },
+                { assignedToId: null }
+            ]
+        }
+    ];
+
+    if (user.role === 'admin') {
+        orConditions.push({ assignedToId: null });
+    } else if (user.role === 'manager') {
+        orConditions.push({
+            AND: [
+                { assignedToId: null },
+                {
+                    OR: [
+                        { branchId: null },
+                        { branchId: user.branchId || undefined }
+                    ]
+                }
+            ]
+        });
+    }
+
+    return { OR: orConditions };
+};
+
+export const getOppVisibilityFilter = async (user: any, isSuperAdmin: boolean = false) => {
+    if (isSuperAdmin || user.role === 'super_admin' || user.role === 'admin') {
+        return {};
+    }
+
+    const visibleUserIds = await getVisibleUserIds(user.id);
+    const orConditions: any[] = [
+        { ownerId: { in: visibleUserIds } },
+        { createdById: user.id }
+    ];
+
+    return { OR: orConditions };
+};

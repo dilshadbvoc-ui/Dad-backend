@@ -75,7 +75,7 @@ export const MetaLeadService = {
                         const response = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
                             params: { 
                                 access_token: accessToken,
-                                fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id,ad_account_id'
+                                fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id'
                             }
                         });
                         metaLeadData = response.data;

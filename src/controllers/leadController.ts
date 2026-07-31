@@ -39,9 +39,9 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
         }
 
         // 2. Hierarchy Visibility
-        // Only apply organization-wide override for super_admin. 
-        // Standard admins now fall into the hierarchy checking logic below.
-        if (!user.isSuperAdmin && !isSuperAdmin(user)) {
+        // Only apply organization-wide override for super_admin and admin. 
+        // Standard managers now fall into the hierarchy checking logic below.
+        if (!user.isSuperAdmin && !isSuperAdmin(user) && user.role !== 'admin') {
             // New Logic: Anyone can see their own leads + leads of their subordinates (recursively) + managed branches.
             // Role names no longer strictly limit visibility if they have reporting subordinates.
             const visibleUserIds = await getVisibleUserIds(user.id);
@@ -57,10 +57,8 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
                 }
             ];
 
-            // Admin and Manager can see orphaned/unassigned leads
-            if (user.role === 'admin') {
-                orConditions.push({ assignedToId: null });
-            } else if (user.role === 'manager') {
+            // Manager can see orphaned/unassigned leads
+            if (user.role === 'manager') {
                 orConditions.push({
                     AND: [
                         { assignedToId: null },

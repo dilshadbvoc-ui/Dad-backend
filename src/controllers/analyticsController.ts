@@ -84,17 +84,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         const orgFilter = orgId ? { organisationId: orgId } : {};
         const combinedFilter = { ...orgFilter, ...branchFilter };
 
-        // Base filter for users who are not admin/super_admin
-        const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
-            visibilityFilter.assignedToId = { in: visibleUserIds };
-        }
-
-        // Special case for opportunity ownerId vs assignedToId (if schema differs)
-        const oppVisibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
-            oppVisibilityFilter.ownerId = { in: visibleUserIds };
-        }
+        // Base filter matching leadController
+        const { getLeadVisibilityFilter, getOppVisibilityFilter } = await import('../utils/hierarchyUtils');
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdmin);
+        const oppVisibilityFilter = await getOppVisibilityFilter(user, isSuperAdmin);
 
         // Current Month Dates (Aligned to IST)
         const startOfMonth = new Date();
@@ -594,12 +587,9 @@ export const getLeadSourceAnalytics = async (req: Request, res: Response) => {
         const branchFilter = getBranchFilter(req);
         const combinedFilter = { ...orgFilter, ...branchFilter };
 
-        // Hierarchy Visibility
-        const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
-            const visibleUserIds = await getVisibleUserIds(user.id);
-            visibilityFilter.assignedToId = { in: visibleUserIds };
-        }
+        // Hierarchy Visibility matches leadController
+        const { getLeadVisibilityFilter } = await import('../utils/hierarchyUtils');
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdmin);
 
         // Prisma groupBy for lead sources
         const sourceStats = await prisma.lead.groupBy({
