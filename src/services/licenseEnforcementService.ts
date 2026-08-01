@@ -9,9 +9,18 @@ export class LicenseEnforcementService {
      * @returns boolean - true if within limits, throws error if limit reached
      */
     static async checkLimits(organisationId: string, resourceType: 'users' | 'contacts'): Promise<void> {
+        const org = await prisma.organisation.findUnique({
+            where: { id: organisationId },
+            select: { status: true }
+        });
+
+        if (!org) throw new Error('Organisation not found');
+
+        if (org.status === 'suspended') {
+            throw new Error('Organisation is suspended. Please await approval.');
+        }
+
         return;
-
-
     }
 
     /**
