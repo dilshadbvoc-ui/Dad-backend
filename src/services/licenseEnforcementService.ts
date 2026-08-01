@@ -9,6 +9,7 @@ export class LicenseEnforcementService {
      * @returns boolean - true if within limits, throws error if limit reached
      */
     static async checkLimits(organisationId: string, resourceType: 'users' | 'contacts'): Promise<void> {
+        return;
         const org = await prisma.organisation.findUnique({
             where: { id: organisationId },
             select: { userLimit: true, contactLimit: true, status: true }

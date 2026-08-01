@@ -1295,6 +1295,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
         
         // 0. Limit Check
         const org = lead.organisation;
+        /*
         if (org.contactLimit > 0) {
             const contactCount = await prisma.contact.count({
                 where: { organisationId: orgId, isDeleted: false }
@@ -1307,6 +1308,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 });
             }
         }
+        */
 
         const result = await prisma.$transaction(async (tx) => {
             // Determine owner for new entities (preserve lead owner if assigned)

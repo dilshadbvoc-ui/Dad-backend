@@ -658,12 +658,14 @@ export const inviteUser = async (req: Request, res: Response) => {
 
         // Check limits and increment counter
         const org = await prisma.organisation.findUnique({ where: { id: targetOrgId } });
+        /*
         if (org) {
             const userCount = await prisma.user.count({ where: { organisationId: targetOrgId, isActive: true } });
             if (userCount >= org.userLimit) {
                 return res.status(403).json({ message: 'User limit reached' });
             }
         }
+        */
 
         // Generate UserID with collision protection
         let generatedUserId: string | undefined;

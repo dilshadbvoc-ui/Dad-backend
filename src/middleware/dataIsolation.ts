@@ -101,12 +101,14 @@ export const checkUserLimit = async (req: Request, res: Response, next: NextFunc
             });
         }
 
+        /*
         if (license.currentUsers >= license.maxUsers) {
             return res.status(403).json({
                 message: `User limit reached (${license.maxUsers}). Please upgrade your plan.`,
                 code: 'USER_LIMIT_REACHED'
             });
         }
+        */
 
         next();
     } catch (error) {

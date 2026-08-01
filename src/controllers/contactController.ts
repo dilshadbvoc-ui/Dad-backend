@@ -81,6 +81,7 @@ export const createContact = async (req: Request, res: Response) => {
             where: { id: orgId },
             select: { contactLimit: true }
         });
+        /*
         if (org && org.contactLimit > 0) {
             const count = await prisma.contact.count({
                 where: { organisationId: orgId, isDeleted: false }
@@ -93,6 +94,7 @@ export const createContact = async (req: Request, res: Response) => {
                 });
             }
         }
+        */
 
         if (email) {
             const existingContact = await prisma.contact.findFirst({

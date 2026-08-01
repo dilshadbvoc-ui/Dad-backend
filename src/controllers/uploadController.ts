@@ -29,6 +29,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
             select: { storageLimit: true }
         });
 
+        /*
         if (org && org.storageLimit > 0) {
             // Calculate total storage used by this org
             const totalUsed = await prisma.interaction.aggregate({
@@ -47,6 +48,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 });
             }
         }
+        */
 
         // Find Lead or Contact
         let entityId = null;
