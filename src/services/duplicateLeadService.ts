@@ -44,18 +44,21 @@ export const DuplicateLeadService = {
                 { secondaryPhone: `+${cleanPhone}` }
             ];
 
-            // Explicit Indian number normalization (91 prefix handling)
-            // If 12 digits starting with 91, add the 10-digit version
-            if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
-                const tenDigit = cleanPhone.substring(2);
-                conditions.push({ phone: tenDigit });
-                conditions.push({ secondaryPhone: tenDigit });
-            } 
-            // If 10 digits, add the 91-prefixed version
-            else if (cleanPhone.length === 10) {
-                const twelveDigit = '91' + cleanPhone;
-                conditions.push({ phone: twelveDigit });
-                conditions.push({ secondaryPhone: twelveDigit });
+            // If we have at least 10 digits, we extract the last 10 digits as the core number
+            // This is extremely effective for matching variations like +918086351383 vs 8086351383
+            if (cleanPhone.length >= 10) {
+                const core10 = cleanPhone.slice(-10);
+                
+                conditions.push(
+                    { phone: core10 }, { secondaryPhone: core10 },
+                    { phone: `+${core10}` }, { secondaryPhone: `+${core10}` },
+                    { phone: `91${core10}` }, { secondaryPhone: `91${core10}` },
+                    { phone: `+91${core10}` }, { secondaryPhone: `+91${core10}` },
+                    { phone: `1${core10}` }, { secondaryPhone: `1${core10}` },
+                    { phone: `+1${core10}` }, { secondaryPhone: `+1${core10}` },
+                    { phone: { endsWith: core10 } }, { secondaryPhone: { endsWith: core10 } },
+                    { phone: { contains: core10 } }, { secondaryPhone: { contains: core10 } }
+                );
             }
 
             // Handle international variations using libphonenumber-js
