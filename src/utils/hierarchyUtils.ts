@@ -177,10 +177,6 @@ export const getOppVisibilityFilter = async (user: any, isSuperAdmin: boolean = 
     }
 
     const visibleUserIds = await getVisibleUserIds(user.id);
-    const orConditions: any[] = [
-        { ownerId: { in: visibleUserIds } },
-        { createdById: user.id }
-    ];
 
-    return { OR: orConditions };
+    return { ownerId: { in: visibleUserIds } };
 };
