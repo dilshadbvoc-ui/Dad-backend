@@ -4678,3 +4678,15 @@
 2026-07-21T09:43:06.935Z - [Leads] Visible users found: 13
 2026-07-21T09:43:06.936Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"23d99450-83e7-4382-9312-d07f083447c0","previousOwnerId":{"in":["fc139c17-d8ba-40f0-8fc0-de857274c943","6d5e601a-d676-4cc6-a860-1a65d3734dab","c68a8236-7b93-4ff3-be69-01297ecfaceb","86498817-2f82-4695-ac75-4feae00ba43b","3b2c2b6a-7ec1-48cb-b98e-4ce026c6a984","2dc472bd-b2a9-4f5b-9066-b0561963cafe","941754a0-1107-4c7c-b7db-980d23df8557","5dac5c27-9d02-455e-bb18-022d0f9afc43","a98aa35e-414a-4939-b425-e0455bfe7eb7","59c25921-95e6-45bd-b7ad-0a07d7079537","6fbc44cd-4167-4571-8198-953e7281a059","9bd78fcd-deeb-4106-a5ec-68a6df672b97","4a6fae60-0298-4026-b0b6-378ed0ec880b"]}}
 2026-07-21T09:43:06.985Z - [Leads] [Leads] Violations found: 0
+2026-08-03T06:58:20.504Z - [Leads] Entered getViolations
+2026-08-03T06:58:20.547Z - [Leads] User: 10b387cb-b010-4915-a200-867c7de8bb90, Role: admin
+2026-08-03T06:58:20.548Z - [Leads] Fetching visible users...
+2026-08-03T06:58:22.125Z - [Leads] Visible users found: 6
+2026-08-03T06:58:22.128Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"ac7ea51b-55f1-45dc-8c4d-4ba40fb9ab8e","previousOwnerId":{"in":["10b387cb-b010-4915-a200-867c7de8bb90","a2573ee9-0902-4908-b754-908a4061de56","ee077256-1857-4def-9609-19fa11b5cf32","0b9e6e8f-4e43-4a73-abf6-495b3a2b131f","61e91eae-6f70-4403-b5ba-7a5eba227c11","ff0e8216-d750-4af4-a42b-0d0ef4c216a5"]}}
+2026-08-03T06:58:22.265Z - [Leads] [Leads] Violations found: 0
+2026-08-03T06:59:22.889Z - [Leads] Entered getViolations
+2026-08-03T06:59:22.899Z - [Leads] User: 10b387cb-b010-4915-a200-867c7de8bb90, Role: admin
+2026-08-03T06:59:22.902Z - [Leads] Fetching visible users...
+2026-08-03T06:59:23.904Z - [Leads] Visible users found: 6
+2026-08-03T06:59:23.906Z - [Leads] [Leads] Querying Prisma with where: {"rotationViolation":true,"isDeleted":false,"organisationId":"ac7ea51b-55f1-45dc-8c4d-4ba40fb9ab8e","previousOwnerId":{"in":["10b387cb-b010-4915-a200-867c7de8bb90","a2573ee9-0902-4908-b754-908a4061de56","ee077256-1857-4def-9609-19fa11b5cf32","0b9e6e8f-4e43-4a73-abf6-495b3a2b131f","61e91eae-6f70-4403-b5ba-7a5eba227c11","ff0e8216-d750-4af4-a42b-0d0ef4c216a5"]}}
+2026-08-03T06:59:24.026Z - [Leads] [Leads] Violations found: 0

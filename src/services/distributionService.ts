@@ -106,8 +106,7 @@ export const DistributionService = {
             // 2. Iterate through rules to find a match
             let matchedAnyRule = false;
             for (const rule of rules) {
-                // strict check: if rule has branchId, it MUST match (already covered by query, but double check)
-                if (rule.branchId && rule.branchId !== lead.branchId) continue;
+                // Branch check removed as branchId is only used for UI filtering of users when creating rules.
 
                 if (this.matchesRule(rule, lead)) {
                     matchedAnyRule = true;
@@ -347,10 +346,18 @@ export const DistributionService = {
 
             switch (criterion.operator) {
                 case 'equals':
-                    if (leadValue != ruleValue) return false;
+                    if (typeof leadValue === 'string' && typeof ruleValue === 'string') {
+                        if (leadValue.trim().toLowerCase() !== ruleValue.trim().toLowerCase()) return false;
+                    } else {
+                        if (leadValue != ruleValue) return false;
+                    }
                     break;
                 case 'not_equals':
-                    if (leadValue == ruleValue) return false;
+                    if (typeof leadValue === 'string' && typeof ruleValue === 'string') {
+                        if (leadValue.trim().toLowerCase() === ruleValue.trim().toLowerCase()) return false;
+                    } else {
+                        if (leadValue == ruleValue) return false;
+                    }
                     break;
                 case 'contains':
                     if (typeof leadValue === 'string' && !leadValue.toLowerCase().includes(String(ruleValue).toLowerCase())) return false;
