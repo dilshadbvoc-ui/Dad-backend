@@ -371,20 +371,39 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 phoneNumber
             ].filter(Boolean)));
 
+            // First try to find an 'initiated' call within a 24-hour window
             existingInteraction = await prisma.interaction.findFirst({
                 where: {
                     organisationId: user.organisationId,
                     createdById: user.id,
                     type: 'call',
-                    callStatus: { in: ['initiated', 'completed', 'missed', 'failed', 'rejected'] },
+                    callStatus: 'initiated',
                     phoneNumber: { in: variations },
                     date: {
-                        gte: searchWindowStart,
+                        gte: new Date(callDate.getTime() - 24 * 60 * 60 * 1000), // 24 hours before
                         lte: searchWindowEnd
                     }
                 },
                 orderBy: { date: 'desc' }
             });
+
+            // If no initiated call, fall back to the strict 1-hour window for completed/missed/failed calls
+            if (!existingInteraction) {
+                existingInteraction = await prisma.interaction.findFirst({
+                    where: {
+                        organisationId: user.organisationId,
+                        createdById: user.id,
+                        type: 'call',
+                        callStatus: { in: ['completed', 'missed', 'failed', 'rejected'] },
+                        phoneNumber: { in: variations },
+                        date: {
+                            gte: searchWindowStart,
+                            lte: searchWindowEnd
+                        }
+                    },
+                    orderBy: { date: 'desc' }
+                });
+            }
         }
 
         if (existingInteraction) {
@@ -791,7 +810,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         phoneNumber
                     ].filter(Boolean)));
 
-                    const fuzzyWindowStart = new Date(callDate.getTime() - 30 * 60 * 1000);
+                    const fuzzyWindowStart = new Date(callDate.getTime() - 24 * 60 * 60 * 1000); // 24 hours
                     const fuzzyWindowEnd   = new Date(callDate.getTime() + 5 * 60 * 1000);
 
                     // Phase 3a: Real-time initiated call → reconcile unconditionally
