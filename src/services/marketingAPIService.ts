@@ -33,10 +33,36 @@ class MarketingAPIService {
     }
 
     /**
-     * Fetch all Ad Accounts the user has access to
+     * Fetch Ad Accounts. If businessIds is provided (the Business(es) the user
+     * actually granted during Meta login), scope the result to ad accounts owned
+     * by or shared with those businesses only — not every ad account the token
+     * has grants for. Falls back to the unscoped /me/adaccounts if no businessIds
+     * are known, or if the scoped lookup comes back empty, so a connection never
+     * silently breaks for orgs connected before this scoping existed.
      */
-    async getAdAccounts(fields = 'id,name,account_id,account_status,currency,timezone_name'): Promise<AdAccount[]> {
+    async getAdAccounts(businessIds?: string[], fields = 'id,name,account_id,account_status,currency,timezone_name'): Promise<AdAccount[]> {
         try {
+            if (businessIds && businessIds.length > 0) {
+                const scoped: AdAccount[] = [];
+                for (const businessId of businessIds) {
+                    for (const edge of ['owned_ad_accounts', 'client_ad_accounts']) {
+                        try {
+                            const response = await this.customAxios.get(`/${businessId}/${edge}`, {
+                                params: { fields },
+                            });
+                            for (const acc of (response.data.data || [])) {
+                                if (!scoped.some((a) => a.id === acc.id)) {
+                                    scoped.push(acc);
+                                }
+                            }
+                        } catch {
+                            // One business/edge failing shouldn't break the whole lookup.
+                        }
+                    }
+                }
+                if (scoped.length > 0) return scoped;
+            }
+
             const response = await this.customAxios.get('/me/adaccounts', {
                 params: { fields },
             });

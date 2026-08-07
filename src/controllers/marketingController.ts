@@ -62,8 +62,18 @@ export const getAdAccounts = async (req: AuthRequest, res: Response) => {
             });
         }
 
+        // Scope to the Business(es) actually granted at connect time, if known,
+        // so the dropdown only shows ad accounts the org connected — not every
+        // ad account the stored token happens to have grants for.
+        const orgId = getOrgId(req.user);
+        const org = orgId ? await prisma.organisation.findUnique({
+            where: { id: orgId },
+            select: { integrations: true }
+        }) : null;
+        const businessIds: string[] = ((org?.integrations as any)?.meta?.businessIds) || [];
+
         const marketingService = new MarketingAPIService(accessToken);
-        const accounts = await marketingService.getAdAccounts();
+        const accounts = await marketingService.getAdAccounts(businessIds);
 
         res.status(200).json({
             success: true,

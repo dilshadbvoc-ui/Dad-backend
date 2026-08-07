@@ -160,17 +160,61 @@ router.get('/callback', async (req, res) => {
         const expiresIn = longLivedTokenResponse.data.expires_in;
         const tokenExpiresAt = expiresIn ? new Date(Date.now() + (expiresIn * 1000)).toISOString() : null;
 
-        // Get user's ad accounts
-        let adAccounts = [];
-        let primaryAdAccount = null;
+        // Get the Business(es) the user actually granted in Facebook's own asset
+        // picker during login — this list IS already scoped to what they selected
+        // (unlike /me/adaccounts below, which is not scoped by that picker).
+        let businesses: any[] = [];
         try {
-            const adAccountsResponse = await axios.get(`${META_GRAPH_URL}/me/adaccounts`, {
+            const businessResponse = await axios.get(`${META_GRAPH_URL}/me/businesses`, {
                 params: {
                     access_token: longLivedToken,
-                    fields: 'id,name,account_status'
+                    fields: 'id,name,owned_whatsapp_business_accounts{id,name}'
                 }
             });
-            adAccounts = adAccountsResponse.data.data || [];
+            businesses = businessResponse.data.data || [];
+        } catch (businessError: any) {
+            console.log('[Meta OAuth] Could not fetch businesses (fallback):', businessError.response?.data || businessError.message);
+        }
+        const businessIds: string[] = businesses.map((b: any) => b.id);
+
+        // Get user's ad accounts — scoped to the granted Business(es) so we only
+        // ever see accounts the user actually connected, not every ad account the
+        // token happens to have grants for. Falls back to the unscoped /me/adaccounts
+        // only if no business was granted (or the scoped lookup returns nothing),
+        // so a working connection never gets silently blocked.
+        let adAccounts: any[] = [];
+        let primaryAdAccount = null;
+        try {
+            for (const businessId of businessIds) {
+                for (const edge of ['owned_ad_accounts', 'client_ad_accounts']) {
+                    try {
+                        const scopedResponse = await axios.get(`${META_GRAPH_URL}/${businessId}/${edge}`, {
+                            params: {
+                                access_token: longLivedToken,
+                                fields: 'id,name,account_status'
+                            }
+                        });
+                        for (const acc of (scopedResponse.data.data || [])) {
+                            if (!adAccounts.some((a: any) => a.id === acc.id)) {
+                                adAccounts.push(acc);
+                            }
+                        }
+                    } catch (edgeError: any) {
+                        console.log(`[Meta OAuth] Could not fetch ${edge} for business ${businessId}:`, edgeError.response?.data || edgeError.message);
+                    }
+                }
+            }
+
+            if (adAccounts.length === 0) {
+                const adAccountsResponse = await axios.get(`${META_GRAPH_URL}/me/adaccounts`, {
+                    params: {
+                        access_token: longLivedToken,
+                        fields: 'id,name,account_status'
+                    }
+                });
+                adAccounts = adAccountsResponse.data.data || [];
+            }
+
             primaryAdAccount = adAccounts[0]; // Use first ad account
         } catch (adError: any) {
             console.log('[Meta OAuth] Could not fetch ad accounts (fallback):', adError.response?.data || adError.message);
@@ -192,20 +236,11 @@ router.get('/callback', async (req, res) => {
             console.log('[Meta OAuth] Could not fetch pages (fallback):', pageError.response?.data || pageError.message);
         }
 
-        // Try to get WhatsApp Business Account
+        // Try to get WhatsApp Business Account (reuses the `businesses` list fetched above)
         let wabaId = null;
         let phoneNumberId = null;
 
         try {
-            // List WABA accounts the user has access to via business
-            const businessResponse = await axios.get(`${META_GRAPH_URL}/me/businesses`, {
-                params: {
-                    access_token: longLivedToken,
-                    fields: 'id,name,owned_whatsapp_business_accounts{id,name}'
-                }
-            });
-
-            const businesses = businessResponse.data.data || [];
             for (const business of businesses) {
                 const wabas = business.owned_whatsapp_business_accounts?.data || [];
                 if (wabas.length > 0) {
@@ -285,6 +320,10 @@ router.get('/callback', async (req, res) => {
                     ...currentIntegrations,
                     meta: {
                         ...primaryAccount,
+                        // Business(es) actually granted during login — used to scope the
+                        // Ads Manager ad-account dropdown instead of showing every ad
+                        // account the token can technically see.
+                        businessIds,
                         accessToken: encrypt(primaryAccount.accessToken)
                     },
                     metaAccounts: metaAccounts.map((acc: any) => ({
