@@ -28,14 +28,21 @@ export const getMetaConfig = async (req: AuthRequest) => {
     const integrations = org.integrations as any;
     const metaConfig = integrations?.meta;
 
-    if (!metaConfig?.accessToken) {
+    // Ads/Insights Graph API calls (campaigns, insights, ad creation) require a
+    // User (or System User) access token with ads_read/ads_management — a Page
+    // token cannot query ad-account-level endpoints like /act_.../insights and
+    // Facebook will reject it. Prefer userAccessToken, same as marketingController's
+    // getMetaAccessToken, falling back to the page token only if no user token is stored.
+    const tokenToUse = metaConfig?.userAccessToken || metaConfig?.accessToken;
+
+    if (!tokenToUse) {
         throw new Error('Meta integration not configured. Please connect your Facebook account in Settings → Integrations.');
     }
 
     // Decrypt the token before using it
     return {
         ...metaConfig,
-        accessToken: decrypt(metaConfig.accessToken)
+        accessToken: decrypt(tokenToUse)
     };
 };
 
