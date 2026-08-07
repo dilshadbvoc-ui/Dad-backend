@@ -220,17 +220,42 @@ router.get('/callback', async (req, res) => {
             console.log('[Meta OAuth] Could not fetch ad accounts (fallback):', adError.response?.data || adError.message);
         }
 
-        // Get user's pages (for Page ID)
-        let pages = [];
+        // Get user's pages (for Page ID) — scoped to the granted Business(es), same
+        // reasoning as ad accounts above: /me/accounts on its own returns every Page
+        // the Facebook user administers, not just the Page selected for this business.
+        let pages: any[] = [];
         let primaryPage = null;
         try {
-            const pagesResponse = await axios.get(`${META_GRAPH_URL}/me/accounts`, {
-                params: {
-                    access_token: longLivedToken,
-                    fields: 'id,name,access_token'
+            for (const businessId of businessIds) {
+                for (const edge of ['owned_pages', 'client_pages']) {
+                    try {
+                        const scopedResponse = await axios.get(`${META_GRAPH_URL}/${businessId}/${edge}`, {
+                            params: {
+                                access_token: longLivedToken,
+                                fields: 'id,name,access_token'
+                            }
+                        });
+                        for (const page of (scopedResponse.data.data || [])) {
+                            if (!pages.some((p: any) => p.id === page.id)) {
+                                pages.push(page);
+                            }
+                        }
+                    } catch (edgeError: any) {
+                        console.log(`[Meta OAuth] Could not fetch ${edge} for business ${businessId}:`, edgeError.response?.data || edgeError.message);
+                    }
                 }
-            });
-            pages = pagesResponse.data.data || [];
+            }
+
+            if (pages.length === 0) {
+                const pagesResponse = await axios.get(`${META_GRAPH_URL}/me/accounts`, {
+                    params: {
+                        access_token: longLivedToken,
+                        fields: 'id,name,access_token'
+                    }
+                });
+                pages = pagesResponse.data.data || [];
+            }
+
             primaryPage = pages[0];
         } catch (pageError: any) {
             console.log('[Meta OAuth] Could not fetch pages (fallback):', pageError.response?.data || pageError.message);
