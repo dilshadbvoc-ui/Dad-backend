@@ -175,6 +175,19 @@ export const DuplicateLeadService = {
         try {
             const now = new Date();
 
+            // Only auto-set status to 're_enquiry' if nobody has actually worked this lead yet
+            // (status is empty, still 'new', or already flagged as a re-enquiry). If a rep/admin
+            // has already moved it to any other status (interested, contacted, qualified, won,
+            // lost, or any org-custom status), preserve it — a re-enquiry must not clobber a
+            // rep's progress. isReEnquiry/reEnquiryCount/notifications below still fire either way,
+            // so the lead still surfaces on the Re-Enquiries page (which filters by isReEnquiry,
+            // not status) even when status is left untouched.
+            const currentStatus = existingLead.status ? existingLead.status.toLowerCase() : null;
+            const noProgressYet = !currentStatus || ['new', 're_enquiry'].includes(currentStatus);
+            const newStatus = noProgressYet
+                ? (newData.stage ? newData.stage.toLowerCase() : 're_enquiry')
+                : existingLead.status;
+
             // Update existing lead with latest contact info if provided
             const updatedLead = await prisma.lead.update({
                 where: { id: existingLead.id },
@@ -183,9 +196,7 @@ export const DuplicateLeadService = {
                     lastName: newData.lastName || existingLead.lastName,
                     email: (newData.email && newData.email.trim() !== '') ? newData.email.trim() : existingLead.email,
                     company: newData.company || existingLead.company,
-                    status: (newData.stage && (!existingLead.status || ['new', 're_enquiry'].includes(existingLead.status.toLowerCase()))) 
-                        ? newData.stage.toLowerCase() 
-                        : 're_enquiry',
+                    status: newStatus,
                     stage: newData.stage || existingLead.stage,
                     isReEnquiry: true,
                     isDeleted: false, // Restore if it was deleted
@@ -232,14 +243,18 @@ export const DuplicateLeadService = {
                 }
             });
 
-            // Log in LeadHistory for ownership history timeline
+            // Log in LeadHistory for ownership history timeline — only record a "status" field
+            // change when the status actually changed; otherwise log the re-enquiry as a note
+            // so the timeline doesn't claim a status transition that didn't happen.
             await prisma.leadHistory.create({
                 data: {
                     leadId: existingLead.id,
-                    reason: `Re-Enquiry received from ${newData.source || 'Website'}`,
-                    fieldName: 'status',
-                    oldValue: existingLead.status,
-                    newValue: 're_enquiry',
+                    reason: newStatus !== existingLead.status
+                        ? `Re-Enquiry received from ${newData.source || 'Website'}`
+                        : `Re-Enquiry received from ${newData.source || 'Website'} (status kept as "${existingLead.status}")`,
+                    fieldName: newStatus !== existingLead.status ? 'status' : 'reEnquiryCount',
+                    oldValue: newStatus !== existingLead.status ? existingLead.status : String(existingLead.reEnquiryCount ?? 0),
+                    newValue: newStatus !== existingLead.status ? newStatus : String(updatedLead.reEnquiryCount),
                     createdAt: now
                 }
             });
