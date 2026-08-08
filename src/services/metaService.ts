@@ -159,15 +159,20 @@ export class MetaService {
         return data.data;
     }
 
-    async getInsights(config: MetaConfig, level: 'campaign' | 'adset' | 'ad' | 'account' = 'account') {
-        const fields = 'impressions,clicks,spend,cpc,cpm,cpp,ctr,unique_clicks,reach,actions';
-        // Default to last 30 days
-        const date_preset = 'last_30d';
+    async getInsights(config: MetaConfig, level: 'campaign' | 'adset' | 'ad' | 'account' = 'account', dateRange?: { since: string; until: string }) {
+        // campaign_id/campaign_name aren't included by default — Meta only returns them
+        // when explicitly requested, and the frontend matches campaign-level rows back to
+        // campaigns by campaign_id.
+        const fields = 'impressions,clicks,spend,cpc,cpm,cpp,ctr,unique_clicks,reach,actions,campaign_id,campaign_name';
+
+        const dateParams = dateRange
+            ? { time_range: JSON.stringify({ since: dateRange.since, until: dateRange.until }) }
+            : { date_preset: 'last_30d' }; // Default to last 30 days when no range is requested
 
         const data = await this.makeRequest(`${this.getFormattedAdAccountId(config.adAccountId)}/insights`, config.accessToken, {
             level,
             fields,
-            date_preset
+            ...dateParams
         });
         return data.data;
     }

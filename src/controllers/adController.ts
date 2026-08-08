@@ -100,8 +100,9 @@ export const getInsights = async (req: AuthRequest, res: Response) => {
         if (req.query.accountId) {
             config.adAccountId = req.query.accountId as string;
         }
-        const { level } = req.query;
-        const insights = await metaService.getInsights(config, level as any);
+        const { level, startDate, endDate } = req.query;
+        const dateRange = startDate && endDate ? { since: startDate as string, until: endDate as string } : undefined;
+        const insights = await metaService.getInsights(config, level as any, dateRange);
         res.json(insights);
     } catch (error: any) {
         console.error('Error in getInsights:', error);
@@ -173,7 +174,9 @@ export const getAccountInsights = async (req: AuthRequest, res: Response) => {
         if (req.query.accountId) {
             config.adAccountId = req.query.accountId as string;
         }
-        const insights = await metaService.getInsights(config, 'account');
+        const { startDate, endDate } = req.query;
+        const dateRange = startDate && endDate ? { since: startDate as string, until: endDate as string } : undefined;
+        const insights = await metaService.getInsights(config, 'account', dateRange);
         res.json(insights);
     } catch (error: any) {
         console.error('Error in getAccountInsights:', error);
