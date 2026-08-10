@@ -163,6 +163,12 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
                     orderBy: { date: 'desc' },
                     take: 1,
                     select: { description: true, date: true }
+                },
+                convertedOpportunities: {
+                    where: { stage: { in: ['closed_won', 'closed_lost'] } },
+                    orderBy: { updatedAt: 'desc' },
+                    take: 1,
+                    select: { stage: true, lostReason: true }
                 }
             },
             skip: (page - 1) * pageSize,
@@ -170,7 +176,16 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             orderBy
         });
 
-        res.json({ leads, page, pages: Math.ceil(total / pageSize), total });
+        // Derive a human-readable closed opportunity status (Won/Lost) for leads that converted.
+        const leadsWithClosedStatus = leads.map(lead => {
+            const closedOpp = (lead as any).convertedOpportunities?.[0];
+            const closedOpportunityStatus = closedOpp
+                ? (closedOpp.stage === 'closed_won' ? 'Won' : 'Lost')
+                : null;
+            return { ...lead, closedOpportunityStatus };
+        });
+
+        res.json({ leads: leadsWithClosedStatus, page, pages: Math.ceil(total / pageSize), total });
     } catch (error) {
         console.error('getLeads Error:', error);
         // Return 500 but include error message for debugging

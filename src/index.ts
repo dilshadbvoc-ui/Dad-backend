@@ -17,7 +17,6 @@ dotenv.config();
 EnvironmentValidator.initializeValidation();
 
 
-
 import authRoutes from './routes/authRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
 import leadRoutes from './routes/leadRoutes';

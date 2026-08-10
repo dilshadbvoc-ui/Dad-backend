@@ -45,25 +45,40 @@ export const getLeadsReport = async (req: Request, res: Response) => {
             where,
             include: {
                 assignedTo: { select: { id: true, firstName: true, lastName: true } },
-                branch: { select: { name: true } }
+                branch: { select: { name: true } },
+                convertedOpportunities: {
+                    where: { stage: { in: ['closed_won', 'closed_lost'] } },
+                    orderBy: { updatedAt: 'desc' },
+                    take: 1,
+                    select: { stage: true, lostReason: true }
+                }
             },
             orderBy: { createdAt: 'desc' }
         });
 
+        // Derive a human-readable closed opportunity status (Won/Lost) for leads that converted.
+        const leadsWithClosedStatus = leads.map(lead => {
+            const closedOpp = (lead as any).convertedOpportunities?.[0];
+            const closedOpportunityStatus = closedOpp
+                ? (closedOpp.stage === 'closed_won' ? 'Won' : 'Lost')
+                : null;
+            return { ...lead, closedOpportunityStatus };
+        });
+
         // Aggregate by stage and status
-        const byStage = leads.reduce((acc: any, lead) => {
+        const byStage = leadsWithClosedStatus.reduce((acc: any, lead) => {
             const s = lead.stage || 'Unknown';
             acc[s] = (acc[s] || 0) + 1;
             return acc;
         }, {});
 
-        const byStatus = leads.reduce((acc: any, lead) => {
+        const byStatus = leadsWithClosedStatus.reduce((acc: any, lead) => {
             acc[lead.status] = (acc[lead.status] || 0) + 1;
             return acc;
         }, {});
 
         res.json({
-            leads,
+            leads: leadsWithClosedStatus,
             summary: {
                 total: leads.length,
                 byStage,
@@ -319,7 +334,13 @@ export const exportToExcel = async (req: Request, res: Response) => {
             const leads = await prisma.lead.findMany({
                 where,
                 include: {
-                    assignedTo: { select: { firstName: true, lastName: true } }
+                    assignedTo: { select: { firstName: true, lastName: true } },
+                    convertedOpportunities: {
+                        where: { stage: { in: ['closed_won', 'closed_lost'] } },
+                        orderBy: { updatedAt: 'desc' },
+                        take: 1,
+                        select: { stage: true }
+                    }
                 }
             });
 
@@ -330,6 +351,7 @@ export const exportToExcel = async (req: Request, res: Response) => {
                 { header: 'Phone', key: 'phone', width: 15 },
                 { header: 'Company', key: 'company', width: 20 },
                 { header: 'Status', key: 'status', width: 12 },
+                { header: 'Closed Opportunity Status', key: 'closedOpportunityStatus', width: 22 },
                 { header: 'Stage', key: 'stage', width: 15 },
                 { header: 'Score', key: 'score', width: 8 },
                 { header: 'Assigned To', key: 'assignedTo', width: 20 },
@@ -337,12 +359,17 @@ export const exportToExcel = async (req: Request, res: Response) => {
             ];
 
             leads.forEach(lead => {
+                const closedOpp = (lead as any).convertedOpportunities?.[0];
+                const closedOpportunityStatus = closedOpp
+                    ? (closedOpp.stage === 'closed_won' ? 'Won' : 'Lost')
+                    : '';
                 sheet.addRow({
                     name: `${lead.firstName} ${lead.lastName}`,
                     email: lead.email || '',
                     phone: lead.phone,
                     company: lead.company || '',
                     status: lead.status,
+                    closedOpportunityStatus,
                     stage: lead.stage || '',
                     score: lead.leadScore,
                     assignedTo: (lead as any).assignedTo ? `${(lead as any).assignedTo.firstName} ${(lead as any).assignedTo.lastName}` : '',
