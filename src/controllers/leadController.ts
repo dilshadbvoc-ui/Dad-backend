@@ -118,15 +118,24 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
         }
 
         // Filter: Date Range (createdAt)
+        // startDate/endDate arrive as plain "YYYY-MM-DD" (the calendar day picked in the UI, which
+        // displays "Created At" in the browser's local/IST time). Building the window from UTC
+        // midnight instead of IST midnight excludes leads created in the early-morning IST hours
+        // (UTC previous day) even though their displayed date matches — shift by IST's +5:30 offset
+        // so the query window lines up with the IST calendar day actually shown in the column.
         if (req.query.startDate || req.query.endDate) {
             const dateFilter: any = {};
             if (req.query.startDate) {
-                dateFilter.gte = new Date(req.query.startDate as string);
+                const s = new Date(req.query.startDate as string);
+                const start = new Date(Date.UTC(s.getUTCFullYear(), s.getUTCMonth(), s.getUTCDate(), 0, 0, 0, 0));
+                start.setMinutes(start.getMinutes() - 330);
+                dateFilter.gte = start;
             }
             if (req.query.endDate) {
-                const end = new Date(req.query.endDate as string);
-                end.setHours(23, 59, 59, 999);
-                dateFilter.lte = end;
+                const e = new Date(req.query.endDate as string);
+                const end = new Date(Date.UTC(e.getUTCFullYear(), e.getUTCMonth(), e.getUTCDate() + 1, 0, 0, 0, 0));
+                end.setMinutes(end.getMinutes() - 330);
+                dateFilter.lt = end;
             }
             where.createdAt = dateFilter;
         }
@@ -1284,7 +1293,16 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             });
         }
 
-        if (['converted', 'won', 'lost'].includes(lead.status)) {
+        // Lead.status alone isn't a reliable signal here: 'won'/'lost'/'converted' can also be a
+        // plain custom status a user picked manually from the org's configured lead-status list
+        // (Organisation.leadStatuses), completely independent of ever actually converting this
+        // lead into an Opportunity. The only real signal that conversion already happened is an
+        // existing Opportunity linked to this lead.
+        const existingOpportunity = await prisma.opportunity.findFirst({
+            where: { leadId, isDeleted: false },
+            select: { id: true }
+        });
+        if (existingOpportunity) {
             return res.status(400).json({ message: 'Lead already converted' });
         }
 
