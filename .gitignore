@@ -54,3 +54,6 @@ dbb-test.js
 # pub files
 sshadithyan
 sshadithyan.pubfirebase-service-account.json
+
+# Firebase Credentials
+firebase-service-account.json
