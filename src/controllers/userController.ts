@@ -36,14 +36,23 @@ export const getUserStats = async (req: Request, res: Response) => {
             where: { assignedToId: userId, isDeleted: false }
         });
 
-        // 2. Leads Converted (Won)
+        // 2. Leads Won — Lead.status only ever reaches 'converted' (never 'won'/'lost'); the real
+        // outcome lives on the linked Opportunity's stage.
         const convertedLeads = await prisma.lead.count({
-            where: { assignedToId: userId, status: 'converted', isDeleted: false }
+            where: {
+                assignedToId: userId,
+                isDeleted: false,
+                convertedOpportunities: { some: { stage: 'closed_won' } }
+            }
         });
 
         // 3. Leads Lost
         const lostLeads = await prisma.lead.count({
-            where: { assignedToId: userId, status: 'lost', isDeleted: false }
+            where: {
+                assignedToId: userId,
+                isDeleted: false,
+                convertedOpportunities: { some: { stage: 'closed_lost' } }
+            }
         });
 
         // 4. Sales Value (from Opportunities won or Orders?) 

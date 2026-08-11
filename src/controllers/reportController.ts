@@ -33,7 +33,15 @@ export const getLeadsReport = async (req: Request, res: Response) => {
         }
 
         if (stage) where.stage = stage as string;
-        if (status) where.status = status as string;
+        // 'won'/'lost' aren't values Lead.status ever holds (it stays 'converted' once an
+        // opportunity is created) — the actual outcome lives on the linked Opportunity's stage.
+        if (status === 'won') {
+            where.convertedOpportunities = { some: { stage: 'closed_won' } };
+        } else if (status === 'lost') {
+            where.convertedOpportunities = { some: { stage: 'closed_lost' } };
+        } else if (status) {
+            where.status = status as string;
+        }
         if (userId) where.assignedToId = userId as string;
         if (startDate || endDate) {
             where.createdAt = {};
@@ -72,8 +80,10 @@ export const getLeadsReport = async (req: Request, res: Response) => {
             return acc;
         }, {});
 
+        // Break Won/Lost out from the generic 'converted' bucket so charts don't lump them together.
         const byStatus = leadsWithClosedStatus.reduce((acc: any, lead) => {
-            acc[lead.status] = (acc[lead.status] || 0) + 1;
+            const key = lead.closedOpportunityStatus || lead.status;
+            acc[key] = (acc[key] || 0) + 1;
             return acc;
         }, {});
 
@@ -323,7 +333,13 @@ export const exportToExcel = async (req: Request, res: Response) => {
             }
 
             if (stage) where.stage = stage as string;
-            if (status) where.status = status as string;
+            if (status === 'won') {
+                where.convertedOpportunities = { some: { stage: 'closed_won' } };
+            } else if (status === 'lost') {
+                where.convertedOpportunities = { some: { stage: 'closed_lost' } };
+            } else if (status) {
+                where.status = status as string;
+            }
             if (source) where.source = source as string;
             if (startDate || endDate) {
                 where.createdAt = {};
@@ -850,8 +866,15 @@ export const getTeamPerformanceReport = async (req: Request, res: Response) => {
                 where: { ownerId: u.id, organisationId: orgId as string, stage: 'closed_won', isDeleted: false },
             });
 
+            // Lead.status never becomes 'lost' — it stays 'converted' once an opportunity exists.
+            // The actual won/lost outcome lives on the linked Opportunity's stage.
             const lostStats = await prisma.lead.count({
-                where: { assignedToId: u.id, organisationId: orgId as string, status: 'lost', isDeleted: false }
+                where: {
+                    assignedToId: u.id,
+                    organisationId: orgId as string,
+                    isDeleted: false,
+                    convertedOpportunities: { some: { stage: 'closed_lost' } }
+                }
             });
 
             return {
