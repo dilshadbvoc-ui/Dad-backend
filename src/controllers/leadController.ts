@@ -1284,7 +1284,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             });
         }
 
-        if (lead.status === "converted") {
+        if (['converted', 'won', 'lost'].includes(lead.status)) {
             return res.status(400).json({ message: 'Lead already converted' });
         }
 
@@ -1441,11 +1441,13 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 }
             }
 
-            // 5. Update Lead
+            // 5. Update Lead — reflect the opportunity's outcome directly on the lead when it's
+            // created already closed (won/lost); otherwise it's just 'converted' (still open).
+            const newLeadStatus = stage === 'closed_won' ? 'won' : stage === 'closed_lost' ? 'lost' : 'converted';
             const updatedLead = await tx.lead.update({
                 where: { id: leadId },
                 data: {
-                    status: 'converted'
+                    status: newLeadStatus
                 }
             });
 
@@ -1455,7 +1457,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                     leadId: leadId,
                     fieldName: 'status',
                     oldValue: lead.status,
-                    newValue: 'converted',
+                    newValue: newLeadStatus,
                     changedById: user.id,
                     reason: 'Lead Converted to Opportunity'
                 }

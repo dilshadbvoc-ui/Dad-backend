@@ -148,7 +148,7 @@ export const getUserPerformance = async (req: Request, res: Response) => {
                 prisma.lead.count({
                     where: {
                         assignedToId: user.id,
-                        status: 'converted',
+                        status: { in: ['converted', 'won', 'lost'] },
                         isDeleted: false,
                         ...(Object.keys(dateFilter).length ? { updatedAt: dateFilter } : {})
                     }

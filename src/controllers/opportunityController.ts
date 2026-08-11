@@ -415,6 +415,19 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             }
         });
 
+        // Back-sync the outcome onto the originating Lead when this opportunity closes.
+        // convertLead sets Lead.status to 'converted' for a still-open opportunity; once it's
+        // later closed won/lost, the lead should reflect that instead of staying 'converted'.
+        if (
+            opportunity.leadId &&
+            (opportunityUpdates.stage === 'closed_won' || opportunityUpdates.stage === 'closed_lost')
+        ) {
+            await prisma.lead.updateMany({
+                where: { id: opportunity.leadId, status: 'converted' },
+                data: { status: opportunityUpdates.stage === 'closed_won' ? 'won' : 'lost' }
+            });
+        }
+
         // Audit Log
         try {
             const { logAudit } = await import('../utils/auditLogger');

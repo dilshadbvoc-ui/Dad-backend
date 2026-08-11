@@ -178,7 +178,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             // Leads
             prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, ...visibilityFilter } }),
             prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'new', ...visibilityFilter } }),
-            prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, status: 'converted', ...visibilityFilter } }),
+            prisma.lead.count({ where: { ...combinedFilter, isDeleted: false, status: { in: ['converted', 'won', 'lost'] }, ...visibilityFilter } }),
 
             // Revenue calculation and trend (Payments)
             prisma.paymentRecord.aggregate({
