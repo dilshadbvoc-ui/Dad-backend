@@ -547,18 +547,23 @@ export const getLeadById = async (req: express.Request, res: express.Response) =
             where,
             include: {
                 assignedTo: { select: { firstName: true, lastName: true, email: true } },
-                products: { include: { product: true } }
+                products: { include: { product: true } },
+                // Lead.status alone can't tell the UI whether this lead was actually converted —
+                // 'won'/'lost'/'converted' can also just be a manually-picked custom status from
+                // the org's configured lead-status list, unrelated to a real Opportunity ever
+                // existing. Expose the real signal so the frontend can gate "Move to Pipeline" on it.
+                convertedOpportunities: { where: { isDeleted: false }, select: { id: true, stage: true } }
             }
         });
 
         if (!lead) {
-            return res.status(403).json({ 
+            return res.status(403).json({
                 message: 'Access Denied: This lead is outside of your visibility hierarchy.',
                 error: 'HIERARCHY_FORBIDDEN'
             });
         }
 
-        res.json(lead);
+        res.json({ ...lead, isConverted: lead.convertedOpportunities.length > 0 });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
