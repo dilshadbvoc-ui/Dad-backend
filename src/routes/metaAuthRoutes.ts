@@ -183,7 +183,6 @@ router.get('/callback', async (req, res) => {
         // only if no business was granted (or the scoped lookup returns nothing),
         // so a working connection never gets silently blocked.
         let adAccounts: any[] = [];
-        let primaryAdAccount = null;
         try {
             for (const businessId of businessIds) {
                 for (const edge of ['owned_ad_accounts', 'client_ad_accounts']) {
@@ -214,8 +213,6 @@ router.get('/callback', async (req, res) => {
                 });
                 adAccounts = adAccountsResponse.data.data || [];
             }
-
-            primaryAdAccount = adAccounts[0]; // Use first ad account
         } catch (adError: any) {
             console.log('[Meta OAuth] Could not fetch ad accounts (fallback):', adError.response?.data || adError.message);
         }
@@ -303,14 +300,22 @@ router.get('/callback', async (req, res) => {
         const currentIntegrations = (org.integrations as any) || {};
         let metaAccounts = Array.isArray(currentIntegrations.metaAccounts) ? [...currentIntegrations.metaAccounts] : [];
 
-        // 5. Prepare all account objects
+        // 5. Prepare all account objects.
+        // Only auto-assign the ad account when there's exactly one candidate — that's the only
+        // case where there's no real choice to make. With 2+ ad accounts (common when the
+        // connecting Facebook user manages several businesses/clients), silently guessing
+        // adAccounts[0] has no relation to which one this org actually meant — flag it as
+        // needing an explicit selection instead of guessing wrong.
+        const unambiguousAdAccount = adAccounts.length === 1 ? adAccounts[0] : null;
+        const needsAdAccountSelection = adAccounts.length > 1;
         const newAccounts = pages.map((page: any, index: number) => ({
             connected: index === 0, // Only connected by default for the primary page
             accessToken: page.access_token,
             userAccessToken: longLivedToken,
             tokenExpiresAt: tokenExpiresAt,
-            adAccountId: primaryAdAccount?.id || null, // Best effort link to primary ad account
-            adAccountName: primaryAdAccount?.name || null,
+            adAccountId: unambiguousAdAccount?.id || null,
+            adAccountName: unambiguousAdAccount?.name || null,
+            needsAdAccountSelection,
             pageId: page.id,
             pageName: page.name,
             appId: appId,
@@ -332,8 +337,9 @@ router.get('/callback', async (req, res) => {
             accessToken: longLivedToken,
             userAccessToken: longLivedToken,
             tokenExpiresAt: tokenExpiresAt,
-            adAccountId: primaryAdAccount?.id || null,
-            adAccountName: primaryAdAccount?.name || null,
+            adAccountId: unambiguousAdAccount?.id || null,
+            adAccountName: unambiguousAdAccount?.name || null,
+            needsAdAccountSelection,
             appId: appId,
             connectedAt: new Date().toISOString()
         };
@@ -378,7 +384,7 @@ router.get('/callback', async (req, res) => {
             }
         }
 
-        const finalRedirectUrl = `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}`;
+        const finalRedirectUrl = `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}${needsAdAccountSelection ? '&needsAdAccountSelection=true' : ''}`;
         console.log(`[Meta OAuth] Redirecting to: ${finalRedirectUrl}`);
 
         // Set headers for no-cache to ensure redirect is followed and not stalled by Service Worker
