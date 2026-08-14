@@ -71,20 +71,6 @@ export const createProduct = async (req: Request, res: Response) => {
 
         if (!orgId) return res.status(403).json({ message: 'No org' });
 
-        // Check for existing SKU
-        if (req.body.sku) {
-            const existing = await prisma.product.findFirst({
-                where: {
-                    sku: req.body.sku,
-                    isDeleted: false,
-                    organisationId: orgId
-                }
-            });
-            if (existing) {
-                return res.status(400).json({ message: 'Product with this SKU already exists' });
-            }
-        }
-
         const product = await prisma.product.create({
             data: {
                 name: req.body.name,
