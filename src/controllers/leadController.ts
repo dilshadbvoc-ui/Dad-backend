@@ -1311,6 +1311,15 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             return res.status(400).json({ message: 'Lead already converted' });
         }
 
+        // The generic "Move to Pipeline" convert flow (ConvertLeadDialog) doesn't send a `stage`
+        // at all — only the dedicated Closed Won/Closed Lost quick-actions do. Without this, a
+        // lead a rep had already manually marked 'won' (via the plain status dropdown, unrelated
+        // to actually closing a deal) would still convert into a plain open 'prospecting'
+        // opportunity, leaving it stuck showing as "Expected" everywhere instead of "Won" even
+        // though the rep believed they'd already won it. Fall back to the lead's current status
+        // when the caller doesn't specify a stage explicitly.
+        const effectiveStage = stage || (lead.status === 'won' ? 'closed_won' : lead.status === 'lost' ? 'closed_lost' : 'prospecting');
+
         // Calculate opportunity amount from lead products if not provided
         let opportunityAmount = Number(amount) || 0;
 
@@ -1425,7 +1434,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                 data: {
                     name: dealName || `Deal - ${lead.company || lead.lastName || lead.firstName}`,
                     amount: opportunityAmount,
-                    stage: stage || 'prospecting',
+                    stage: effectiveStage,
                     closeDate: new Date(), // Set to today by default instead of +30 days
                     organisationId: orgId,
                     ownerId: finalOwnerId,
@@ -1434,7 +1443,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
                     branchId: lead.branchId || undefined,
                     pipelineId: lead.pipelineId || undefined, // Preserve pipeline context
                     contacts: { connect: { id: contact.id } },
-                    lostReason: stage === 'closed_lost' ? lostReason : undefined,
+                    lostReason: effectiveStage === 'closed_lost' ? lostReason : undefined,
                     leadStatus: defaultOppStatus
                 }
             });
@@ -1466,7 +1475,7 @@ export const convertLead = async (req: express.Request, res: express.Response) =
 
             // 5. Update Lead — reflect the opportunity's outcome directly on the lead when it's
             // created already closed (won/lost); otherwise it's just 'converted' (still open).
-            const newLeadStatus = stage === 'closed_won' ? 'won' : stage === 'closed_lost' ? 'lost' : 'converted';
+            const newLeadStatus = effectiveStage === 'closed_won' ? 'won' : effectiveStage === 'closed_lost' ? 'lost' : 'converted';
             const updatedLead = await tx.lead.update({
                 where: { id: leadId },
                 data: {
