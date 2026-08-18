@@ -171,10 +171,26 @@ export const runShuffler = async () => {
                         where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
                         data: { assignedToId: targetUser.id, createdById: targetUser.id }
                     });
-                    
+
                     await prisma.task.updateMany({
                         where: { leadId: lead.id, isDeleted: false, status: { notIn: ['completed'] } },
                         data: { assignedToId: targetUser.id, createdById: targetUser.id }
+                    });
+
+                    // No-op for the usual case (a shuffled lead hasn't converted yet), but
+                    // guards against a stray already-converted lead silently leaving its
+                    // Opportunity/Account/Contact attributed to the pre-shuffle owner.
+                    await prisma.opportunity.updateMany({
+                        where: { leadId: lead.id, isDeleted: false },
+                        data: { ownerId: targetUser.id, previousOwnerId: lead.assignedToId }
+                    });
+                    await prisma.account.updateMany({
+                        where: { leadId: lead.id, isDeleted: false },
+                        data: { ownerId: targetUser.id, previousOwnerId: lead.assignedToId }
+                    });
+                    await prisma.contact.updateMany({
+                        where: { leadId: lead.id, isDeleted: false },
+                        data: { ownerId: targetUser.id, previousOwnerId: lead.assignedToId }
                     });
 
                     // Log history

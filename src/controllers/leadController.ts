@@ -797,6 +797,24 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 prisma.task.updateMany({
                     where: { leadId, isDeleted: false, status: { notIn: ['completed'] } },
                     data: { assignedToId: leadUpdates.assignedToId, createdById: leadUpdates.assignedToId }
+                }),
+                // Keep any Opportunity/Account/Contact already spawned from this lead in
+                // sync with reassignment. Without this, a deal keeps showing its owner as
+                // whoever the lead happened to be assigned to at the moment it was
+                // converted — reassigning the lead afterward (e.g. shuffler, manual
+                // reassignment) silently left the deal attributed to the old owner
+                // forever, breaking that person's (and the new owner's) Won/Expected counts.
+                prisma.opportunity.updateMany({
+                    where: { leadId, isDeleted: false },
+                    data: { ownerId: leadUpdates.assignedToId, previousOwnerId: currentLead.assignedToId }
+                }),
+                prisma.account.updateMany({
+                    where: { leadId, isDeleted: false },
+                    data: { ownerId: leadUpdates.assignedToId, previousOwnerId: currentLead.assignedToId }
+                }),
+                prisma.contact.updateMany({
+                    where: { leadId, isDeleted: false },
+                    data: { ownerId: leadUpdates.assignedToId, previousOwnerId: currentLead.assignedToId }
                 })
             ] : [])
         ]);
@@ -1251,6 +1269,23 @@ export const bulkAssignLeads = async (req: express.Request, res: express.Respons
             await prisma.leadHistory.createMany({
                 data: historyRecords
             });
+
+            // Keep any already-spawned Opportunity/Account/Contact in sync with the
+            // reassignment — same reasoning as the single-lead update path.
+            await Promise.all([
+                prisma.opportunity.updateMany({
+                    where: { leadId: { in: leadIds }, isDeleted: false },
+                    data: { ownerId: assignedTo }
+                }),
+                prisma.account.updateMany({
+                    where: { leadId: { in: leadIds }, isDeleted: false },
+                    data: { ownerId: assignedTo }
+                }),
+                prisma.contact.updateMany({
+                    where: { leadId: { in: leadIds }, isDeleted: false },
+                    data: { ownerId: assignedTo }
+                })
+            ]);
 
             // Notify new owner
             if (assignedTo !== requester.id) {
