@@ -674,25 +674,12 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
 
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
-            // 'won'/'lost'/'converted' must only ever be set by the real conversion/close actions
-            // (convertLead, the opportunity-close back-sync) — never picked manually here. Those
-            // system paths write status directly via their own prisma calls and never go through
-            // this generic update endpoint, so this can't be blocking a legitimate flow. Letting a
-            // rep set these by hand is what caused leads to say "won" with no real Opportunity
-            // behind them, cascading into duplicate deals and false "already converted" blocks.
-            if (['won', 'lost', 'converted'].includes(updates.status)) {
-                return res.status(400).json({
-                    message: `Status "${updates.status}" can't be set manually — use "Move to Pipeline" or "Closed Won"/"Closed Lost" to close a real deal instead.`
-                });
-            }
-
-            // CRITICAL: Block transition to 'qualified' if no products ('converted' is handled by
-            // the guard above — this endpoint no longer accepts it as a manual target at all)
-            if (updates.status === 'qualified') {
+            // CRITICAL: Block transition to 'qualified' or 'converted' if no products
+            if (['qualified', 'converted'].includes(updates.status)) {
                 const productCount = await prisma.leadProduct.count({ where: { leadId } });
                 if (productCount === 0) {
                     return res.status(400).json({
-                        message: 'Please add at least one product before qualifying this lead.'
+                        message: 'Please add at least one product before qualifying or converting this lead.'
                     });
                 }
             }
@@ -1324,14 +1311,11 @@ export const convertLead = async (req: express.Request, res: express.Response) =
             return res.status(400).json({ message: 'Lead already converted' });
         }
 
-        // The generic "Move to Pipeline" convert flow (ConvertLeadDialog) doesn't send a `stage`
-        // at all — only the dedicated Closed Won/Closed Lost quick-actions do. Without this, a
-        // lead a rep had already manually marked 'won' (via the plain status dropdown, unrelated
-        // to actually closing a deal) would still convert into a plain open 'prospecting'
-        // opportunity, leaving it stuck showing as "Expected" everywhere instead of "Won" even
-        // though the rep believed they'd already won it. Fall back to the lead's current status
-        // when the caller doesn't specify a stage explicitly.
-        const effectiveStage = stage || (lead.status === 'won' ? 'closed_won' : lead.status === 'lost' ? 'closed_lost' : 'prospecting');
+        // "Move to Pipeline" always creates the opportunity as 'prospecting' (Expected) regardless
+        // of whatever the lead's status label currently says — a lead pre-marked 'won' still lands
+        // in Expected and has to be moved to Closed Won explicitly afterward via the Opportunities
+        // board. Only the dedicated Closed Won/Closed Lost quick-actions send an explicit `stage`.
+        const effectiveStage = stage || 'prospecting';
 
         // Calculate opportunity amount from lead products if not provided
         let opportunityAmount = Number(amount) || 0;
