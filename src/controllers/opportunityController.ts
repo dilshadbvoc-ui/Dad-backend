@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds, getOppVisibilityFilter } from '../utils/hierarchyUtils';
 import { Prisma } from '../generated/client';
 import { NotificationService } from '../services/notificationService';
 
@@ -301,6 +301,15 @@ export const getOpportunityById = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
             // Removed strict branchId check to allow cross-branch visibility via hierarchy
+
+            // The list endpoint (getOpportunities) already restricts non-admins to their
+            // own hierarchy's opportunities — this direct-by-ID lookup was missing that
+            // same check, so anyone in the org could view any other rep's deal (including
+            // amount/payment info) just by knowing or guessing the opportunity ID.
+            if (user.role !== 'admin') {
+                const visibilityFilter = await getOppVisibilityFilter(user, user.isSuperAdmin);
+                Object.assign(where, visibilityFilter);
+            }
         }
 
         const opportunity = await prisma.opportunity.findFirst({
@@ -404,6 +413,14 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
             // Removed strict branchId check for cross-branch updates
+
+            // Same hierarchy scoping as the read/list endpoints — without this, any rep
+            // could edit (amount, stage, owner, etc.) any other rep's opportunity just by
+            // knowing its ID, regardless of whether they're allowed to even see it.
+            if (requester.role !== 'admin') {
+                const visibilityFilter = await getOppVisibilityFilter(requester, requester.isSuperAdmin);
+                Object.assign(whereObj, visibilityFilter);
+            }
         }
 
         const opportunity = await prisma.opportunity.update({
