@@ -8,27 +8,34 @@ interface AuthRequest extends Request {
     user?: any;
 }
 
-// Helper to get decrypted Meta access token from the organisation's integrations
-const getMetaAccessToken = async (user: any): Promise<string | null> => {
+// Helper to get a decrypted Meta access token from the organisation's integrations.
+// Pass a specific `account` (an entry from integrations.metaAccounts, or the legacy
+// integrations.meta object) to get that Page's own token; omitted, it falls back to
+// the legacy single `meta` slot for callers that only ever deal with one connection.
+const getMetaAccessToken = async (user: any, account?: any): Promise<string | null> => {
     try {
+        let metaIntegration = account;
         const orgId = getOrgId(user);
-        if (!orgId) return null;
 
-        const org = await prisma.organisation.findUnique({
-            where: { id: orgId },
-            select: { integrations: true }
-        });
+        if (!metaIntegration) {
+            if (!orgId) return null;
 
-        const integrations = (org?.integrations as any) || {};
-        const metaIntegration = integrations.meta;
-        
+            const org = await prisma.organisation.findUnique({
+                where: { id: orgId },
+                select: { integrations: true }
+            });
+
+            const integrations = (org?.integrations as any) || {};
+            metaIntegration = integrations.meta;
+        }
+
         if (!metaIntegration?.connected) {
             return null;
         }
 
         // Use userAccessToken for marketing API if available, fallback to accessToken
         const tokenToDecrypt = metaIntegration.userAccessToken || metaIntegration.accessToken;
-        
+
         if (!tokenToDecrypt) {
             return null;
         }
@@ -52,9 +59,24 @@ const getMetaAccessToken = async (user: any): Promise<string | null> => {
 
 export const getAdAccounts = async (req: AuthRequest, res: Response) => {
     try {
-        const accessToken = await getMetaAccessToken(req.user);
+        const orgId = getOrgId(req.user);
+        const org = orgId ? await prisma.organisation.findUnique({
+            where: { id: orgId },
+            select: { integrations: true }
+        }) : null;
+        const integrations = (org?.integrations as any) || {};
 
-        if (!accessToken) {
+        // An org can have several connected Pages, each with its own access token
+        // (integrations.metaAccounts[]) — only reading the single legacy `meta` slot
+        // meant whichever Page was connected/reconnected most recently silently hid
+        // every other Page's ad account from this dropdown. Merge across all of them.
+        const rawAccounts: any[] = [...(integrations.metaAccounts || [])];
+        if (integrations.meta?.pageId && !rawAccounts.some((a: any) => a.pageId === integrations.meta.pageId)) {
+            rawAccounts.push(integrations.meta);
+        }
+        const connectedAccounts = rawAccounts.filter((a: any) => a.connected && a.accessToken);
+
+        if (connectedAccounts.length === 0) {
             return res.status(200).json({
                 success: false,
                 code: 'META_NOT_CONNECTED',
@@ -62,28 +84,32 @@ export const getAdAccounts = async (req: AuthRequest, res: Response) => {
             });
         }
 
-        // Scope to the Business(es) actually granted at connect time, if known,
-        // so the dropdown only shows ad accounts the org connected — not every
-        // ad account the stored token happens to have grants for.
-        const orgId = getOrgId(req.user);
-        const org = orgId ? await prisma.organisation.findUnique({
-            where: { id: orgId },
-            select: { integrations: true }
-        }) : null;
-        const businessIds: string[] = ((org?.integrations as any)?.meta?.businessIds) || [];
-
-        const marketingService = new MarketingAPIService(accessToken);
-        const accounts = await marketingService.getAdAccounts(businessIds);
+        const merged: any[] = [];
+        for (const account of connectedAccounts) {
+            try {
+                const accessToken = await getMetaAccessToken(req.user, account);
+                if (!accessToken) continue;
+                // Each Page's own token is already scoped to what that specific Facebook
+                // login granted, so no businessIds filter is needed per-account here.
+                const marketingService = new MarketingAPIService(accessToken);
+                const accounts = await marketingService.getAdAccounts();
+                for (const acc of accounts) {
+                    if (!merged.some((m) => m.id === acc.id)) merged.push(acc);
+                }
+            } catch (accountError: any) {
+                console.error(`[MarketingController] Failed to fetch ad accounts for page ${account.pageId}:`, accountError.message);
+            }
+        }
 
         res.status(200).json({
             success: true,
-            count: accounts.length,
-            data: accounts
+            count: merged.length,
+            data: merged
         });
     } catch (error: any) {
         const status = error.status || 500;
         console.error('[MarketingController] Get Ad Accounts Error:', error.message);
-        res.status(status).json({ 
+        res.status(status).json({
             success: false,
             message: error.message,
             code: status === 401 ? 'META_TOKEN_EXPIRED' : 'META_API_ERROR'

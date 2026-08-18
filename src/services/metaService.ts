@@ -303,8 +303,11 @@ export class MetaService {
     async subscribePageToApp(pageId: string, pageAccessToken: string) {
         try {
             console.log(`[MetaService] Attempting to subscribe Page ${pageId} to app...`);
+            // 'ads' is not a valid Page subscription field — including it makes Facebook
+            // reject the whole request (including the 'leadgen' field we actually need),
+            // so subscription silently failed for every page ever connected through here.
             const response = await this.makePostRequest(`${pageId}/subscribed_apps`, pageAccessToken, {
-                subscribed_fields: ['leadgen', 'ads']
+                subscribed_fields: ['leadgen']
             });
             console.log(`[MetaService] Successfully subscribed Page ${pageId}:`, response);
             return response;
