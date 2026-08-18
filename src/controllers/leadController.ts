@@ -674,12 +674,25 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
 
         // Track Status Change
         if (updates.status && updates.status !== currentLead.status) {
-            // CRITICAL: Block transition to 'qualified' or 'converted' if no products
-            if (['qualified', 'converted'].includes(updates.status)) {
+            // 'won'/'lost'/'converted' must only ever be set by the real conversion/close actions
+            // (convertLead, the opportunity-close back-sync) — never picked manually here. Those
+            // system paths write status directly via their own prisma calls and never go through
+            // this generic update endpoint, so this can't be blocking a legitimate flow. Letting a
+            // rep set these by hand is what caused leads to say "won" with no real Opportunity
+            // behind them, cascading into duplicate deals and false "already converted" blocks.
+            if (['won', 'lost', 'converted'].includes(updates.status)) {
+                return res.status(400).json({
+                    message: `Status "${updates.status}" can't be set manually — use "Move to Pipeline" or "Closed Won"/"Closed Lost" to close a real deal instead.`
+                });
+            }
+
+            // CRITICAL: Block transition to 'qualified' if no products ('converted' is handled by
+            // the guard above — this endpoint no longer accepts it as a manual target at all)
+            if (updates.status === 'qualified') {
                 const productCount = await prisma.leadProduct.count({ where: { leadId } });
                 if (productCount === 0) {
-                    return res.status(400).json({ 
-                        message: 'Please add at least one product before qualifying or converting this lead.' 
+                    return res.status(400).json({
+                        message: 'Please add at least one product before qualifying this lead.'
                     });
                 }
             }
