@@ -13,8 +13,14 @@ interface AuthRequest extends Request {
 }
 
 import { decrypt } from '../utils/encryption';
+import { resolveMetaTokenForAdAccount } from '../utils/metaAccountResolver';
 
-export const getMetaConfig = async (req: AuthRequest) => {
+// `adAccountId`, when given, resolves the token from whichever connected Meta Page
+// actually has access to that specific ad account — an org can have several connected
+// Pages, each scoped to a different set of ad accounts, so always using the single
+// legacy integrations.meta token fails for every ad account except the one belonging
+// to whichever Page was connected/reconnected most recently.
+export const getMetaConfig = async (req: AuthRequest, adAccountId?: string) => {
     if (!req.user?.organisationId) {
         throw new Error('User not authenticated or missing organisation');
     }
@@ -28,11 +34,18 @@ export const getMetaConfig = async (req: AuthRequest) => {
     const integrations = org.integrations as any;
     const metaConfig = integrations?.meta;
 
+    if (adAccountId) {
+        const resolvedToken = await resolveMetaTokenForAdAccount(req.user.organisationId, adAccountId);
+        if (resolvedToken) {
+            return { ...metaConfig, accessToken: resolvedToken, adAccountId };
+        }
+    }
+
     // Ads/Insights Graph API calls (campaigns, insights, ad creation) require a
     // User (or System User) access token with ads_read/ads_management — a Page
     // token cannot query ad-account-level endpoints like /act_.../insights and
-    // Facebook will reject it. Prefer userAccessToken, same as marketingController's
-    // getMetaAccessToken, falling back to the page token only if no user token is stored.
+    // Facebook will reject it. Prefer userAccessToken, falling back to the page
+    // token only if no user token is stored.
     const tokenToUse = metaConfig?.userAccessToken || metaConfig?.accessToken;
 
     if (!tokenToUse) {
@@ -96,7 +109,7 @@ export const getAds = async (req: AuthRequest, res: Response) => {
 
 export const getInsights = async (req: AuthRequest, res: Response) => {
     try {
-        const config = await getMetaConfig(req);
+        const config = await getMetaConfig(req, req.query.accountId as string | undefined);
         if (req.query.accountId) {
             config.adAccountId = req.query.accountId as string;
         }
@@ -152,7 +165,7 @@ export const syncCampaigns = async (req: AuthRequest, res: Response) => {
 
 export const getCampaignInsights = async (req: AuthRequest, res: Response) => {
     try {
-        const config = await getMetaConfig(req);
+        const config = await getMetaConfig(req, req.query.accountId as string | undefined);
         if (req.query.accountId) {
             config.adAccountId = req.query.accountId as string;
         }
@@ -170,7 +183,7 @@ export const getCampaignInsights = async (req: AuthRequest, res: Response) => {
 
 export const getAccountInsights = async (req: AuthRequest, res: Response) => {
     try {
-        const config = await getMetaConfig(req);
+        const config = await getMetaConfig(req, req.query.accountId as string | undefined);
         if (req.query.accountId) {
             config.adAccountId = req.query.accountId as string;
         }

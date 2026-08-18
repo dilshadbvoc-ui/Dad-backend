@@ -3,6 +3,7 @@ import MarketingAPIService from '../services/marketingAPIService';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { decrypt } from '../utils/encryption';
+import { resolveMetaTokenForAdAccount } from '../utils/metaAccountResolver';
 
 interface AuthRequest extends Request {
     user?: any;
@@ -120,13 +121,14 @@ export const getAdAccounts = async (req: AuthRequest, res: Response) => {
 export const getCampaigns = async (req: AuthRequest, res: Response) => {
     try {
         const { adAccountId } = req.params;
-        const accessToken = await getMetaAccessToken(req.user);
+        const orgId = getOrgId(req.user);
+        const accessToken = orgId ? await resolveMetaTokenForAdAccount(orgId, adAccountId) : null;
 
         if (!accessToken) {
             return res.status(200).json({
                 success: false,
                 code: 'META_NOT_CONNECTED',
-                message: 'Meta account not connected. Please connect in Settings → Integrations.'
+                message: 'No connected Meta account has access to this ad account. Please reconnect in Settings → Integrations.'
             });
         }
 
@@ -154,13 +156,14 @@ export const createCampaign = async (req: AuthRequest, res: Response) => {
         const { adAccountId } = req.params;
         const { name, objective, status, special_ad_categories } = req.body;
 
-        const accessToken = await getMetaAccessToken(req.user);
+        const orgId = getOrgId(req.user);
+        const accessToken = orgId ? await resolveMetaTokenForAdAccount(orgId, adAccountId) : null;
 
         if (!accessToken) {
             return res.status(200).json({
                 success: false,
                 code: 'META_NOT_CONNECTED',
-                message: 'Meta account not connected. Please connect in Settings → Integrations.'
+                message: 'No connected Meta account has access to this ad account. Please reconnect in Settings → Integrations.'
             });
         }
 
