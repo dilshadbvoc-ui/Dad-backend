@@ -393,12 +393,25 @@ export const updateOpportunity = async (req: Request, res: Response) => {
         if (!currentOpp) return res.status(404).json({ message: 'Opportunity not found' });
 
         // Add validation to prevent moving out of terminal stages
+        const isClosingNow = opportunityUpdates.stage && opportunityUpdates.stage !== currentOpp.stage &&
+            (opportunityUpdates.stage === 'closed_won' || opportunityUpdates.stage === 'closed_lost');
         if (opportunityUpdates.stage && opportunityUpdates.stage !== currentOpp.stage) {
             if (currentOpp.stage === 'closed_won' || currentOpp.stage === 'closed_lost') {
-                return res.status(400).json({ 
-                    message: `Opportunity is already ${currentOpp.stage === 'closed_won' ? 'Won' : 'Lost'} and cannot be moved to another stage.` 
+                return res.status(400).json({
+                    message: `Opportunity is already ${currentOpp.stage === 'closed_won' ? 'Won' : 'Lost'} and cannot be moved to another stage.`
                 });
             }
+        }
+
+        // closeDate is what every dashboard/report actually filters "deals closed in
+        // [month]" by, so it needs to reflect when the deal was ACTUALLY closed — not
+        // whenever it happened to be converted/created. None of the closing UIs (Kanban
+        // drag, Close Won/Lost dialogs) send a closeDate, so without this the field stayed
+        // frozen at creation time forever, misattributing the close to the wrong month.
+        // Only fills in when the caller didn't explicitly provide one, so an intentional
+        // backdated closeDate is still respected.
+        if (isClosingNow && opportunityUpdates.closeDate === undefined) {
+            opportunityUpdates.closeDate = new Date();
         }
 
         if (opportunityUpdates.customFields) {

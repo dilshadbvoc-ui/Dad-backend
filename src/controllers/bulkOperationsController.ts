@@ -539,7 +539,13 @@ export const bulkOpportunityOperations = async (req: Request, res: Response) => 
           data: {
             stage: data.stage,
             probability: data.probability || undefined,
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            // Same reasoning as the single-opportunity update: closeDate drives
+            // "deals closed in [month]" reporting, so a bulk move into a closed
+            // stage needs to stamp it too, not leave it stuck at creation time.
+            ...((data.stage === 'closed_won' || data.stage === 'closed_lost') && data.closeDate === undefined
+              ? { closeDate: new Date() }
+              : {})
           }
         });
         message = `${result.count} opportunities stage updated successfully`;
