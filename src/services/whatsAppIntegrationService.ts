@@ -138,16 +138,21 @@ export const WhatsAppIntegrationService = {
     async saveIncomingMessage(organisationId: string, message: any, provider: string) {
         try {
             const normalizedPhone = message.from.replace(/\D/g, '');
+            const { DuplicateLeadService } = await import('./duplicateLeadService');
 
-            // Check if message already exists
-            const existingMessage = await prisma.whatsAppMessage.findFirst({
-                where: {
-                    waMessageId: message.id,
-                    organisationId
-                }
-            });
+            // Check if message already exists (app-level check; the DB @@unique on
+            // [organisationId, waMessageId] is the authoritative guard against races -
+            // see the P2002 catch below on create).
+            if (message.id) {
+                const existingMessage = await prisma.whatsAppMessage.findFirst({
+                    where: {
+                        waMessageId: message.id,
+                        organisationId
+                    }
+                });
 
-            if (existingMessage) return;
+                if (existingMessage) return;
+            }
 
             // Determine content structure
             let messageType = message.type;
@@ -168,44 +173,56 @@ export const WhatsAppIntegrationService = {
                 // ... add other Meta types if needed
             }
 
-            // Try to find existing lead or contact
-            const lead = await prisma.lead.findFirst({
-                where: {
-                    OR: [
-                        { phone: message.from },
-                        { phone: normalizedPhone },
-                        { phone: `+${normalizedPhone}` }
-                    ],
-                    organisationId,
-                    isDeleted: false
-                }
-            });
+            // Try to find an existing Lead anywhere in the org (not branch-scoped -
+            // an inbound message should attach to whichever record already owns this
+            // phone number, regardless of which branch it belongs to), using the same
+            // phone-normalization/variant logic as manual duplicate detection.
+            const existingLeadCheck = await DuplicateLeadService.checkDuplicate(
+                normalizedPhone,
+                null,
+                organisationId,
+                null,
+                true // includeAllBranches - identification, not branch-scoped dedup
+            );
+            let lead = existingLeadCheck.isDuplicate ? existingLeadCheck.existingLead : null;
 
             const contactRecord = await prisma.$queryRawUnsafe(`
-                SELECT id FROM "Contact" 
+                SELECT id FROM "Contact"
                 WHERE "organisationId" = $1
                 AND ("phones"::text ILIKE $2 OR "phones"::text ILIKE $3)
             `, organisationId, `%${message.from}%`, `%${normalizedPhone}%`) as any[];
 
             const contactId = contactRecord?.[0]?.id;
 
-            // Create WhatsApp message record
-            const messageRecord = await prisma.whatsAppMessage.create({
-                data: {
-                    conversationId: `${message.from}_${organisationId}`,
-                    phoneNumber: message.from,
-                    direction: 'incoming',
-                    messageType,
-                    content,
-                    status: 'delivered',
-                    waMessageId: message.id,
-                    deliveredAt: new Date(message.timestamp * 1000),
-                    organisationId,
-                    leadId: lead?.id,
-                    contactId: contactId,
-                    isReadByAgent: false
+            // Create WhatsApp message record. If waMessageId already exists for this
+            // org (a concurrent duplicate webhook delivery slipped past the check
+            // above), the DB unique constraint rejects it - treat that as "already
+            // handled" and stop, same as the findFirst short-circuit above.
+            let messageRecord;
+            try {
+                messageRecord = await prisma.whatsAppMessage.create({
+                    data: {
+                        conversationId: `${message.from}_${organisationId}`,
+                        phoneNumber: message.from,
+                        direction: 'incoming',
+                        messageType,
+                        content,
+                        status: 'delivered',
+                        waMessageId: message.id,
+                        deliveredAt: new Date(message.timestamp * 1000),
+                        organisationId,
+                        leadId: lead?.id,
+                        contactId: contactId,
+                        isReadByAgent: false
+                    }
+                });
+            } catch (createError: any) {
+                if (createError?.code === 'P2002') {
+                    console.warn(`[WhatsAppWebhook] Duplicate waMessageId ${message.id} for org ${organisationId} - already processed`);
+                    return;
                 }
-            });
+                throw createError;
+            }
 
             // Create lead if none exists and link to message
             if (!lead && !contactId) {
@@ -214,7 +231,6 @@ export const WhatsAppIntegrationService = {
 
                 // Resolve target branch early to isolate duplicate check
                 const { DistributionService } = await import('./distributionService');
-                const { DuplicateLeadService } = await import('./duplicateLeadService');
 
                 // Simulate distribution to find target owner and their branch
                 // We use a dummy lead object for simulation
@@ -234,9 +250,9 @@ export const WhatsAppIntegrationService = {
 
                 // Check for duplicates in the RESOLVED branch
                 const duplicateCheck = await DuplicateLeadService.checkDuplicate(
-                    cleanPhone, 
-                    null, 
-                    organisationId, 
+                    cleanPhone,
+                    null,
+                    organisationId,
                     targetBranchId
                 );
 
@@ -256,25 +272,44 @@ export const WhatsAppIntegrationService = {
                     );
                     leadToLink = duplicateCheck.existingLead;
                 } else {
-                    const newLead = await prisma.lead.create({
-                        data: {
-                            firstName: contactName.split(' ')[0] || contactName,
-                            lastName: contactName.split(' ').slice(1).join(' ') || '',
-                            phone: cleanPhone,
-                            source: 'whatsapp',
-                            status: 'new',
-                            organisationId,
-                            assignedToId: targetOwnerId || undefined,
-                            branchId: targetBranchId
+                    try {
+                        leadToLink = await prisma.lead.create({
+                            data: {
+                                firstName: contactName.split(' ')[0] || contactName,
+                                lastName: contactName.split(' ').slice(1).join(' ') || '',
+                                phone: cleanPhone,
+                                source: 'whatsapp',
+                                status: 'new',
+                                organisationId,
+                                assignedToId: targetOwnerId || undefined,
+                                branchId: targetBranchId
+                            }
+                        });
+                    } catch (leadCreateError: any) {
+                        if (leadCreateError?.code === 'P2002') {
+                            // Lost a race to a concurrent inbound message from the same
+                            // number - another request already created the Lead. Re-fetch
+                            // and link to it instead of dropping this message unlinked.
+                            console.warn(`[WhatsAppWebhook] Lost race creating Lead for phone ${cleanPhone} in org ${organisationId} - linking to concurrently-created Lead`);
+                            const raceWinner = await DuplicateLeadService.checkDuplicate(
+                                cleanPhone,
+                                null,
+                                organisationId,
+                                targetBranchId
+                            );
+                            leadToLink = raceWinner.existingLead;
+                        } else {
+                            throw leadCreateError;
                         }
-                    });
-                    leadToLink = newLead;
+                    }
                 }
 
-                await prisma.whatsAppMessage.update({
-                    where: { id: messageRecord.id },
-                    data: { leadId: leadToLink.id }
-                });
+                if (leadToLink) {
+                    await prisma.whatsAppMessage.update({
+                        where: { id: messageRecord.id },
+                        data: { leadId: leadToLink.id }
+                    });
+                }
             }
 
             // Real-time notification

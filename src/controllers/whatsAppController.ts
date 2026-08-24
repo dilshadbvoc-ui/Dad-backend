@@ -918,11 +918,25 @@ export const uploadMedia = async (req: any, res: any) => {
 export const handleWebhook = async (req: Request, res: Response) => {
     try {
         const signature = req.headers['x-hub-signature-256'] as string;
-        const appSecret = process.env.WHATSAPP_APP_SECRET;
+        // WHATSAPP_APP_SECRET is the canonical name; WHATSAPP_WEBHOOK_SECRET is accepted
+        // for backward compatibility with existing deployed env files that used that name.
+        const appSecret = process.env.WHATSAPP_APP_SECRET || process.env.WHATSAPP_WEBHOOK_SECRET;
+        const rawBody: Buffer | undefined = (req as any).rawBody;
 
-        if (appSecret && signature) {
+        if (!appSecret) {
+            if (process.env.NODE_ENV === 'production') {
+                console.error('[WhatsAppWebhook] Rejected: WHATSAPP_APP_SECRET is not configured');
+                return res.sendStatus(401);
+            }
+            console.warn('[WhatsAppWebhook] WHATSAPP_APP_SECRET not configured - skipping signature verification (non-production only)');
+        } else {
+            if (!signature || !rawBody) {
+                console.warn('[WhatsAppWebhook] Missing signature or raw body');
+                return res.sendStatus(401);
+            }
+
             const isValid = WhatsAppService.verifySignature(
-                JSON.stringify(req.body),
+                rawBody.toString('utf8'),
                 signature,
                 appSecret
             );
@@ -954,11 +968,22 @@ export const handleGallaboxWebhook = async (req: Request, res: Response) => {
     try {
         const signature = req.headers['x-gallabox-signature'] as string;
         const secret = process.env.GALLABOX_WEBHOOK_SECRET;
+        const rawBody: Buffer | undefined = (req as any).rawBody;
 
-        // If secret is configured, verify signature
-        if (secret && signature) {
+        if (!secret) {
+            if (process.env.NODE_ENV === 'production') {
+                console.error('[GallaboxWebhook] Rejected: GALLABOX_WEBHOOK_SECRET is not configured');
+                return res.sendStatus(401);
+            }
+            console.warn('[GallaboxWebhook] GALLABOX_WEBHOOK_SECRET not configured - skipping signature verification (non-production only)');
+        } else {
+            if (!signature || !rawBody) {
+                console.warn('[GallaboxWebhook] Missing signature or raw body');
+                return res.sendStatus(401);
+            }
+
             const isValid = GallaboxService.verifySignature(
-                JSON.stringify(req.body),
+                rawBody.toString('utf8'),
                 signature,
                 secret
             );

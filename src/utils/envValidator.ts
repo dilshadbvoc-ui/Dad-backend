@@ -15,6 +15,7 @@ export class EnvironmentValidator {
     private static readonly OPTIONAL_VARS = [
         'META_APP_SECRET',
         'META_WEBHOOK_SECRET',
+        'WHATSAPP_APP_SECRET',
         'WHATSAPP_WEBHOOK_SECRET',
         'META_VERIFY_TOKEN',
         'WHATSAPP_VERIFY_TOKEN',

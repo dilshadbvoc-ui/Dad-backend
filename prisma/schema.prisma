@@ -1519,6 +1519,7 @@ model WhatsAppMessage {
   agent          User?        @relation("WhatsAppMessageAgent", fields: [agentId], references: [id])
   campaign       WhatsAppCampaign? @relation(fields: [campaignId], references: [id])
 
+  @@unique([organisationId, waMessageId])
   @@index([conversationId, createdAt])
   @@index([leadId])
   @@index([phoneNumber])
