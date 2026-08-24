@@ -555,10 +555,22 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
 
                 if (raceCheck) {
                     console.log(`[AndroidUpload] Atomic race check: Merging into just-created interaction ${raceCheck.id}`);
+                    // Whichever side actually connected (higher duration) is the real call — its
+                    // status/subject/description should win, not just its duration number, so a
+                    // "ghost" 0s failed entry doesn't leave the merged row mislabeled as failed.
+                    const incomingIsBetter = finalizedDurationSecs > (raceCheck.duration || 0) * 60;
                     await prisma.interaction.update({
                         where: { id: raceCheck.id },
-                        data: {
-                            duration: finalizedDurationSecs > 0 ? (Math.round(durationMinutes * 100) / 100) : undefined,
+                        data: incomingIsBetter ? {
+                            duration: Math.round(durationMinutes * 100) / 100,
+                            hardwareDuration: carrierDurationSecs,
+                            recordingDuration: durationSecs,
+                            callStatus: status,
+                            subject,
+                            description: formattedDescription,
+                            hardwareId: hardwareId || undefined,
+                            callSessionId: callSessionId || undefined
+                        } : {
                             hardwareId: hardwareId || undefined,
                             callSessionId: callSessionId || undefined
                         }
@@ -1079,20 +1091,44 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                             gte: new Date(callDate.getTime() - RACE_WINDOW_MS),
                             lte: new Date(callDate.getTime() + RACE_WINDOW_MS)
                         },
-                        // Duration must be close — prevents merging two distinct short calls
-                        duration: {
-                            gte: Math.max(0, durationMinutes - (RACE_DURATION_TOLERANCE_S / 60)),
-                            lte: durationMinutes + (RACE_DURATION_TOLERANCE_S / 60)
-                        }
+                        OR: [
+                            // A 0-duration entry on EITHER side is Android's own "ghost" call-log
+                            // row — some devices double-log a single real call as an instant 0s
+                            // failed attempt plus the real connected entry a second or two later.
+                            // These will never be within RACE_DURATION_TOLERANCE_S of each other
+                            // (that's the whole reason they need merging), so the ghost case has
+                            // to bypass the duration-closeness check entirely rather than requiring it.
+                            { duration: 0 },
+                            ...(durationMinutes === 0 ? [{}] : []),
+                            // Duration must be close — prevents merging two distinct short calls
+                            {
+                                duration: {
+                                    gte: Math.max(0, durationMinutes - (RACE_DURATION_TOLERANCE_S / 60)),
+                                    lte: durationMinutes + (RACE_DURATION_TOLERANCE_S / 60)
+                                }
+                            }
+                        ]
                     }
                 });
 
                 if (raceCheck) {
                     console.log(`[BulkSync] Atomic race check (60s window): merging duplicate for ${phoneNumber} into interaction ${raceCheck.id}`);
+                    // Whichever side actually connected (higher duration) is the real call —
+                    // its status/subject/description should win, not just its duration number,
+                    // so a "ghost" 0s failed entry doesn't leave the merged row mislabeled.
+                    const incomingIsBetter = finalizedNewDurationSecs > (raceCheck.duration || 0) * 60;
                     await prisma.interaction.update({
                         where: { id: raceCheck.id },
-                        data: {
-                            duration: finalizedNewDurationSecs > 0 ? Math.round(durationMinutes * 100) / 100 : undefined,
+                        data: incomingIsBetter ? {
+                            duration: Math.round(durationMinutes * 100) / 100,
+                            hardwareDuration: carrierDurationSecs,
+                            recordingDuration: durationSecs,
+                            callStatus: status,
+                            subject,
+                            description: formattedDescription,
+                            hardwareId: hardwareId || undefined,
+                            callSessionId: callSessionId || undefined
+                        } : {
                             hardwareId: hardwareId || undefined,
                             callSessionId: callSessionId || undefined
                         }

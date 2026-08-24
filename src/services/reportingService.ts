@@ -59,7 +59,7 @@ export class ReportingService {
         });
 
         // 6. Call Statistics
-        const callsToday = await prisma.interaction.findMany({
+        const rawCallsToday = await prisma.interaction.findMany({
             where: {
                 organisationId,
                 type: 'call',
@@ -67,6 +67,29 @@ export class ReportingService {
                 isDeleted: false
             }
         });
+
+        // Some Android devices double-log a single real call as an instant 0-duration
+        // "failed" entry plus the real connected entry a second or two later — same
+        // caller/number/direction, moments apart. Ingest-side dedup should now catch
+        // most of these, but collapse any that slip through so a report never counts
+        // one real call as "1 connected, 1 unconnected".
+        const CALL_DEDUP_WINDOW_MS = 60 * 1000;
+        const sortedCalls = [...rawCallsToday].sort((a, b) => a.date.getTime() - b.date.getTime());
+        const callsToday: typeof rawCallsToday = [];
+        for (const call of sortedCalls) {
+            const dupIndex = callsToday.findIndex(kept =>
+                kept.createdById === call.createdById &&
+                kept.direction === call.direction &&
+                kept.phoneNumber === call.phoneNumber &&
+                Math.abs(kept.date.getTime() - call.date.getTime()) <= CALL_DEDUP_WINDOW_MS &&
+                ((kept.duration || 0) === 0 || (call.duration || 0) === 0)
+            );
+            if (dupIndex === -1) {
+                callsToday.push(call);
+            } else if ((call.duration || 0) > (callsToday[dupIndex].duration || 0)) {
+                callsToday[dupIndex] = call; // keep whichever side actually connected
+            }
+        }
 
         const callStats = {
             total: callsToday.length,
@@ -163,7 +186,7 @@ _Powered by CRM Automation_`;
         });
 
         // 3. Calls by User
-        const calls = await prisma.interaction.findMany({
+        const rawCalls = await prisma.interaction.findMany({
             where: {
                 organisationId,
                 createdById: { in: userIds },
@@ -171,8 +194,29 @@ _Powered by CRM Automation_`;
                 date: { gte: today, lt: tomorrow },
                 isDeleted: false
             },
-            select: { createdById: true, direction: true, callStatus: true, duration: true, recordingDuration: true, phoneNumber: true }
+            select: { createdById: true, direction: true, callStatus: true, duration: true, recordingDuration: true, phoneNumber: true, date: true }
         });
+
+        // Collapse Android's occasional double-logged call (a 0-duration "failed"
+        // ghost entry alongside the real connected one, moments apart) — see the
+        // matching dedup in the call-stats block above for the full explanation.
+        const CALL_DEDUP_WINDOW_MS = 60 * 1000;
+        const sortedCalls = [...rawCalls].sort((a, b) => a.date.getTime() - b.date.getTime());
+        const calls: typeof rawCalls = [];
+        for (const call of sortedCalls) {
+            const dupIndex = calls.findIndex(kept =>
+                kept.createdById === call.createdById &&
+                kept.direction === call.direction &&
+                kept.phoneNumber === call.phoneNumber &&
+                Math.abs(kept.date.getTime() - call.date.getTime()) <= CALL_DEDUP_WINDOW_MS &&
+                ((kept.duration || 0) === 0 || (call.duration || 0) === 0)
+            );
+            if (dupIndex === -1) {
+                calls.push(call);
+            } else if ((call.duration || 0) > (calls[dupIndex].duration || 0)) {
+                calls[dupIndex] = call;
+            }
+        }
 
         // Grouping logic
         const userStats: Record<string, any> = {};
