@@ -885,8 +885,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         synchronizeDurations(tempSyncData);
                         const finalizedSyncDurationSecs = resolveBestDurationSeconds(tempSyncData);
 
-                        console.log(`[BulkSync] Healing interaction ${existingInteraction.id}: ${currentDuration}s -> ${finalizedSyncDurationSecs}s (from ${existingInteraction.callStatus})`);
-                        
                         let direction: 'inbound' | 'outbound' = existingInteraction.direction as any || 'outbound';
                         let subject = existingInteraction.subject;
                         let status = finalizedSyncDurationSecs > 0 ? 'completed' : 'failed';
@@ -1013,7 +1011,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                     // IRON VEIL RELAXED (v4.0): Preserve 0-sec ghosts during bulk sync
                     if (finalizedNewDurationSecs === 0 && !existingInteraction) {
-                        console.log(`[BulkSync] Iron Veil v4.0: Recording 0-sec ghost outbound (${phoneNumber}) as failed attempt`);
                         status = 'failed';
                         subject = 'Outbound Call Attempt (No Answer)';
                     }
@@ -1062,7 +1059,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         where: { organisationId: user.organisationId, hardwareId }
                     });
                     if (hwGuard) {
-                        console.log(`[BulkSync] HardwareId guard: interaction ${hwGuard.id} already exists for hwId=${hardwareId}. Skipping create.`);
                         results.synced.push(phoneNumber);
                         continue;
                     }
@@ -1208,7 +1204,6 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 results.synced.push(phoneNumber);
             } catch (entryError: any) {
                 if (entryError.code === 'P2002') {
-                    console.log(`[BulkSync] Duplicate call log suppressed via database unique constraint (HwId: ${call.hardwareId || 'none'}, SessId: ${call.callSessionId || 'none'})`);
                     results.skipped++;
                 } else {
                     console.error(`[BulkSync] Error processing entry:`, entryError);

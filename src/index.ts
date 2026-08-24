@@ -179,12 +179,6 @@ app.use(compression()); // Enable gzip compression
 // Apply rate limiting
 app.use('/api/', generalLimiter);
 
-// Global Request Logger
-app.use('/api/', (req, res, next) => {
-    console.log(`[Request] ${new Date().toISOString()} ${req.method} ${req.originalUrl}`);
-    next();
-});
-
 // CORS Configuration - Allow production frontend
 const allowedOrigins = [
     'http://localhost:5173',
@@ -281,11 +275,20 @@ app.use(generalLimiter); // General rate limiting
 const io = initSocket(httpServer);
 app.set('io', io);
 
+// Every request was previously logged twice, unconditionally, for the life of the
+// server (this middleware plus the near-duplicate one removed above) — on a
+// multi-tenant app with several polling views (e.g. Opportunities refetches every
+// 5s per open tab), that's a large, ever-growing volume of routine "200 OK" lines
+// with no rotation, which is exactly what fills PM2's log files on disk over time.
+// Only log what's actually worth seeing: failures and unusually slow requests.
+const SLOW_REQUEST_MS = 2000;
 app.use((req, res, next) => {
     const start = Date.now();
     res.on('finish', () => {
         const duration = Date.now() - start;
-        console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${res.statusCode} (${duration}ms)`);
+        if (res.statusCode >= 400 || duration > SLOW_REQUEST_MS) {
+            console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${res.statusCode} (${duration}ms)`);
+        }
     });
     next();
 });
