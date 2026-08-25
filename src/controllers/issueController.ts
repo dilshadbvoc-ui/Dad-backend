@@ -145,6 +145,14 @@ export const addReply = async (req: Request, res: Response) => {
             return res.status(403).json({ message: 'Not authorized to reply to this issue' });
         }
 
+        // A closed issue is final — neither side can add further replies. The admin
+        // has to explicitly reopen it (status change) before the conversation can
+        // continue; this also keeps the retention cleanup timeline (see
+        // issueCleanupService.ts) meaningful, since closedAt stops moving once locked.
+        if (issue.status === 'closed') {
+            return res.status(400).json({ message: 'This issue is closed and no longer accepting replies.' });
+        }
+
         const reply = await prisma.issueReply.create({
             data: {
                 issueId: issue.id,
@@ -157,14 +165,13 @@ export const addReply = async (req: Request, res: Response) => {
         });
 
         // Bump the issue so it re-sorts to the top of whichever list is showing it,
-        // and re-open it if the admin had marked it resolved/closed and the reporter
-        // is following up again.
-        const reopenStatuses = ['resolved', 'closed'];
+        // and re-open it if the admin had marked it resolved and the reporter is
+        // following up again. 'closed' is excluded — that's blocked above entirely.
         await prisma.issueReport.update({
             where: { id: issue.id },
             data: {
                 updatedAt: new Date(),
-                status: (!isSuperAdminUser && reopenStatuses.includes(issue.status)) ? 'open' : undefined
+                status: (!isSuperAdminUser && issue.status === 'resolved') ? 'open' : undefined
             }
         });
 
@@ -212,9 +219,16 @@ export const updateIssueStatus = async (req: Request, res: Response) => {
         const issue = await prisma.issueReport.findFirst({ where: { id: req.params.id, isDeleted: false } });
         if (!issue) return res.status(404).json({ message: 'Issue not found' });
 
+        // closedAt anchors the retention cleanup schedule (attachments stripped after
+        // 1 day, replies cleared after 1 week, the issue itself removed after 1 month —
+        // see issueCleanupService.ts). Reopening clears it so a later re-close restarts
+        // the clock cleanly.
         const updated = await prisma.issueReport.update({
             where: { id: req.params.id },
-            data: { status },
+            data: {
+                status,
+                closedAt: status === 'closed' ? (issue.closedAt ?? new Date()) : null
+            },
             include: { reportedBy: { select: AUTHOR_SELECT } }
         });
 

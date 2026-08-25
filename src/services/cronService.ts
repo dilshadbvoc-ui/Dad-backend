@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import { TrashService } from './trashService';
 import { cronPrisma } from '../config/prisma';
 import { runShuffler } from './shuffler-module/shufflerService';
+import { runIssueRetentionCleanup } from './issueCleanupService';
 
 export const initCronJobs = () => {
     // Database Keep-Alive: a lightweight SELECT 1 every 5 minutes to prevent
@@ -271,6 +272,17 @@ export const initCronJobs = () => {
     });
 
     console.log('[Cron] Daily trash purge job scheduled.');
+
+    // Run every day at 02:30 AM (Closed Issue Retention Cleanup)
+    cron.schedule('30 2 * * *', async () => {
+        try {
+            await runIssueRetentionCleanup();
+        } catch (error) {
+            console.error('[Cron] Error during issue retention cleanup:', error);
+        }
+    });
+
+    console.log('[Cron] Issue retention cleanup job scheduled.');
 
     // Run every 30 minutes for Meta Lead Polling (Real-time fallback)
     cron.schedule('*/30 * * * *', async () => {

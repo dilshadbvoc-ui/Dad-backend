@@ -1126,7 +1126,8 @@ model IssueReport {
   issueType      String       @default("bug") // 'bug' | 'feature_request' | 'question' | 'other'
   priority       String       @default("medium") // 'low' | 'medium' | 'high' | 'critical'
   status         String       @default("open") // 'open' | 'in_progress' | 'resolved' | 'closed'
-  attachments    Json?        // [{ documentId, url, name }]
+  attachments    Json?        // [{ documentId, url, name }] or, once cleaned up, [{ name, removed: true }]
+  closedAt       DateTime?    // set when status becomes 'closed' — anchors the retention cleanup schedule
   isDeleted      Boolean      @default(false)
   deletedAt      DateTime?
   createdAt      DateTime     @default(now())
