@@ -47,6 +47,18 @@ const uploadDocument = multer({
     }
 });
 
+const uploadVoiceNote = multer({
+    storage: memoryStorage,
+    limits: { fileSize: 15 * 1024 * 1024 }, // 15MB limit - compressed voice notes stay well under this
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('audio/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only audio files are allowed!'));
+        }
+    }
+});
+
 // Route: POST /api/upload/call-recording
 router.post('/call-recording', protect, upload.single('recording'), uploadCallRecording);
 
@@ -54,11 +66,14 @@ router.post('/call-recording', protect, upload.single('recording'), uploadCallRe
 router.post('/log-call', protect, logCallWithoutRecording);
 
 // Route: POST /api/upload/image
-import { uploadGenericImage, uploadDocument as uploadDocController } from '../controllers/uploadController';
+import { uploadGenericImage, uploadDocument as uploadDocController, uploadVoiceNote as uploadVoiceNoteController } from '../controllers/uploadController';
 router.post('/image', protect, uploadImage.single('image'), uploadGenericImage);
 
 // Route: POST /api/upload/document
 router.post('/document', protect, uploadDocument.single('document'), uploadDocController);
+
+// Route: POST /api/upload/voice-note
+router.post('/voice-note', protect, uploadVoiceNote.single('voice'), uploadVoiceNoteController);
 
 // Error handling middleware for multer errors
 router.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

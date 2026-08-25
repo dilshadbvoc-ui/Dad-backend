@@ -430,3 +430,38 @@ export const uploadDocument = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Upload failed: ' + (error as Error).message });
     }
 };
+
+export const uploadVoiceNote = async (req: Request, res: Response) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+
+        const document = await prisma.document.create({
+            data: {
+                name: req.file.originalname || 'voice-message',
+                fileKey: req.file.originalname,
+                fileData: req.file.buffer,
+                fileUrl: null,
+                fileType: req.file.mimetype,
+                fileSize: req.file.size,
+                category: 'issue_voice_note',
+                tags: [],
+                organisationId: orgId || user.organisationId,
+                createdById: user.id
+            }
+        });
+
+        res.json({
+            message: 'Voice note uploaded successfully',
+            url: `/api/documents/${document.id}/download`,
+            documentId: document.id
+        });
+    } catch (error) {
+        console.error('[Upload Voice Note] Error:', error);
+        res.status(500).json({ message: 'Upload failed: ' + (error as Error).message });
+    }
+};

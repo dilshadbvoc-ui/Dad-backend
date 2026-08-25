@@ -129,9 +129,10 @@ export const addReply = async (req: Request, res: Response) => {
         const user = (req as any).user;
         const orgId = getOrgId(user);
         const { message, attachments } = req.body;
+        const hasAttachments = Array.isArray(attachments) && attachments.length > 0;
 
-        if (!message || !String(message).trim()) {
-            return res.status(400).json({ message: 'Reply message is required' });
+        if ((!message || !String(message).trim()) && !hasAttachments) {
+            return res.status(400).json({ message: 'Reply message or an attachment is required' });
         }
 
         const issue = await prisma.issueReport.findFirst({
@@ -157,8 +158,8 @@ export const addReply = async (req: Request, res: Response) => {
             data: {
                 issueId: issue.id,
                 authorId: user.id,
-                message: String(message).trim(),
-                attachments: Array.isArray(attachments) && attachments.length > 0 ? attachments : undefined,
+                message: message ? String(message).trim() : '',
+                attachments: hasAttachments ? attachments : undefined,
                 isFromAdmin: isSuperAdminUser
             },
             include: { author: { select: AUTHOR_SELECT } }

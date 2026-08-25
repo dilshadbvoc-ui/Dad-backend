@@ -10,12 +10,13 @@ interface AttachmentLike {
     documentId?: string | null;
     url?: string | null;
     name: string;
+    type?: string;
     removed?: boolean;
 }
 
 function stripToPlaceholders(attachments: unknown): Prisma.InputJsonValue {
     if (!Array.isArray(attachments)) return [];
-    return (attachments as AttachmentLike[]).map(a => ({ name: a.name, removed: true })) as unknown as Prisma.InputJsonValue;
+    return (attachments as AttachmentLike[]).map(a => ({ name: a.name, type: a.type, removed: true })) as unknown as Prisma.InputJsonValue;
 }
 
 function collectDocumentIds(attachments: unknown): string[] {
