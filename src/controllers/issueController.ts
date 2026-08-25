@@ -249,3 +249,33 @@ export const updateIssueStatus = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+// Permanently delete a single reply — the reply's own author, or the super admin
+// (moderation). There is no "delete for me" / soft-hide variant: this removes the
+// message (and any attachment it holds) for everyone, immediately.
+export const deleteReply = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const { id: issueId, replyId } = req.params;
+
+        const reply = await prisma.issueReply.findFirst({ where: { id: replyId, issueId } });
+        if (!reply) return res.status(404).json({ message: 'Reply not found' });
+
+        const isAuthor = reply.authorId === user.id;
+        if (!isAuthor && !checkSuperAdmin(user)) {
+            return res.status(403).json({ message: 'Not authorized to delete this message' });
+        }
+
+        const attachments = Array.isArray(reply.attachments) ? reply.attachments as Array<{ documentId?: string }> : [];
+        const documentIds = attachments.map(a => a?.documentId).filter((id): id is string => !!id);
+        if (documentIds.length > 0) {
+            await prisma.document.deleteMany({ where: { id: { in: documentIds } } });
+        }
+
+        await prisma.issueReply.delete({ where: { id: replyId } });
+
+        res.json({ message: 'Message deleted' });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};

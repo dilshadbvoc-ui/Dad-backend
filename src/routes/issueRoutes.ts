@@ -5,7 +5,8 @@ import {
     getAllIssuesForAdmin,
     getIssueById,
     addReply,
-    updateIssueStatus
+    updateIssueStatus,
+    deleteReply
 } from '../controllers/issueController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -20,6 +21,7 @@ router.get('/admin/all', getAllIssuesForAdmin); // super-admin check happens in 
 router.post('/', createIssue);
 router.get('/:id', getIssueById);
 router.post('/:id/replies', addReply);
+router.delete('/:id/replies/:replyId', deleteReply);
 router.put('/:id/status', updateIssueStatus); // super-admin check happens in the controller
 
 export default router;
