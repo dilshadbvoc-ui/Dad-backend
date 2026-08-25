@@ -53,6 +53,7 @@ model Organisation {
   emailLists        EmailList[]
   goals             Goal[]
   interactions      Interaction[]
+  issueReports      IssueReport[]
   leads             Lead[]
   licenses          License[]
   opportunities     Opportunity[]
@@ -192,6 +193,8 @@ model User {
   branch          Branch?                @relation(fields: [branchId], references: [id])
   managedBranches Branch[]               @relation("BranchManager")
   createdPaymentRecords PaymentRecord[]  @relation("PaymentRecordCreator")
+  reportedIssues        IssueReport[]    @relation("IssueReporter")
+  issueReplies          IssueReply[]     @relation("IssueReplyAuthor")
 
   @@index([organisationId])
   @@index([email])
@@ -1111,6 +1114,51 @@ model Case {
   @@index([organisationId])
   @@index([caseNumber])
   @@index([status])
+}
+
+// Platform-level bug/issue reports raised by any user about the CRM itself (distinct
+// from `Case`, which is a tenant's own customer-support ticket). Visible to the
+// reporter and to the platform super admin only — see issueController.ts.
+model IssueReport {
+  id             String       @id @default(uuid())
+  title          String
+  description    String
+  issueType      String       @default("bug") // 'bug' | 'feature_request' | 'question' | 'other'
+  priority       String       @default("medium") // 'low' | 'medium' | 'high' | 'critical'
+  status         String       @default("open") // 'open' | 'in_progress' | 'resolved' | 'closed'
+  attachments    Json?        // [{ documentId, url, name }]
+  isDeleted      Boolean      @default(false)
+  deletedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  reportedById   String
+  reportedBy     User         @relation("IssueReporter", fields: [reportedById], references: [id])
+
+  replies        IssueReply[]
+
+  @@index([organisationId])
+  @@index([reportedById])
+  @@index([status])
+}
+
+model IssueReply {
+  id          String      @id @default(uuid())
+  message     String
+  attachments Json?       // [{ documentId, url, name }]
+  isFromAdmin Boolean     @default(false) // true when authored by the platform super admin
+  createdAt   DateTime    @default(now())
+
+  issueId     String
+  issue       IssueReport @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  authorId    String
+  author      User        @relation("IssueReplyAuthor", fields: [authorId], references: [id])
+
+  @@index([issueId])
 }
 
 model CheckIn {
