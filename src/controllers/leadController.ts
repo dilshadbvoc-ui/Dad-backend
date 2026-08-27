@@ -1867,6 +1867,23 @@ export const getPendingFollowUpsCount = async (req: express.Request, res: expres
     }
 };
 
+export const suggestNextStep = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params;
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(403).json({ message: 'No organisation context' });
+
+        const { NextStepService } = await import('../services/nextStepService');
+        const suggestion = await NextStepService.suggestNextStep(id, orgId);
+
+        res.json(suggestion);
+    } catch (error) {
+        console.error('[suggestNextStep] Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 export const generateAIResponse = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
