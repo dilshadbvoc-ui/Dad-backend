@@ -383,7 +383,15 @@ export const uploadDocument = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
 
         // Get optional metadata from request body
-        const { name, description, category, leadId, contactId, accountId, opportunityId } = req.body;
+        const { name, description, category, leadId, contactId, accountId, opportunityId, organisationId } = req.body;
+
+        // Platform-level users (super admin) have no organisationId of their own — e.g. replying
+        // to an issue raised by some tenant org. In that case the caller passes the target
+        // context's organisationId explicitly (see uploadVoiceNote for the same pattern).
+        const resolvedOrgId = orgId || user.organisationId || organisationId;
+        if (!resolvedOrgId) {
+            return res.status(400).json({ message: 'No organisation context available for this upload' });
+        }
 
         // Read file data as buffer
         const fileData = req.file.buffer;
@@ -400,7 +408,7 @@ export const uploadDocument = async (req: Request, res: Response) => {
                 fileSize: req.file.size,
                 category: category || 'other',
                 tags: [],
-                organisationId: orgId || user.organisationId,
+                organisationId: resolvedOrgId,
                 createdById: user.id,
                 leadId: leadId || null,
                 contactId: contactId || null,
@@ -440,6 +448,14 @@ export const uploadVoiceNote = async (req: Request, res: Response) => {
         const user = (req as any).user;
         const orgId = getOrgId(user);
 
+        // Platform-level users (super admin) have no organisationId of their own — e.g. replying
+        // to an issue raised by some tenant org. The frontend passes the target issue's
+        // organisationId explicitly in that case.
+        const resolvedOrgId = orgId || user.organisationId || req.body.organisationId;
+        if (!resolvedOrgId) {
+            return res.status(400).json({ message: 'No organisation context available for this upload' });
+        }
+
         const document = await prisma.document.create({
             data: {
                 name: req.file.originalname || 'voice-message',
@@ -450,7 +466,7 @@ export const uploadVoiceNote = async (req: Request, res: Response) => {
                 fileSize: req.file.size,
                 category: 'issue_voice_note',
                 tags: [],
-                organisationId: orgId || user.organisationId,
+                organisationId: resolvedOrgId,
                 createdById: user.id
             }
         });
