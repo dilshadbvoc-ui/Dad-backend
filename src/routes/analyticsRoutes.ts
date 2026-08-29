@@ -14,7 +14,8 @@ import {
     getCallActivityTrend,
     getTaskFollowUpCompletion,
     getOpportunityPipelineValue,
-    getBranchPerformance
+    getBranchPerformance,
+    getUserTrendsSummary
 } from '../controllers/analyticsController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -36,5 +37,6 @@ router.get('/call-activity-trend', protect, getCallActivityTrend);
 router.get('/task-followup-completion', protect, getTaskFollowUpCompletion);
 router.get('/opportunity-pipeline-value', protect, getOpportunityPipelineValue);
 router.get('/branch-performance', protect, getBranchPerformance);
+router.get('/user-trends-summary', protect, getUserTrendsSummary);
 
 export default router;

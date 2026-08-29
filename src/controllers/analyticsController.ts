@@ -1349,3 +1349,82 @@ export const getBranchPerformance = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+// GET /api/analytics/user-trends-summary
+// Quick-panel metrics for Dashboard II: calls, connected calls, new leads and
+// conversions for the selected period vs. the immediately preceding period of
+// equal length, so the frontend can show a trend arrow + % change per tile.
+export const getUserTrendsSummary = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const isSuperAdmin = checkSuperAdmin(user);
+        const branchFilter = getBranchFilter(req);
+        const current = resolvePeriodRange(req);
+        const currentEnd = current.lt ?? new Date();
+        const spanMs = currentEnd.getTime() - current.gte.getTime();
+        const previous = { gte: new Date(current.gte.getTime() - spanMs), lt: current.gte };
+
+        const leadVisibility = await getLeadVisibilityFilter(user, isSuperAdmin);
+
+        let callUserWhere: any = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            callUserWhere = { createdById: { in: visibleUserIds } };
+        }
+
+        const callWhereFor = (range: { gte: Date; lt?: Date }) => ({
+            organisationId: orgId,
+            type: 'call' as const,
+            callStatus: { not: 'initiated' },
+            isDeleted: false,
+            date: range.lt ? { gte: range.gte, lt: range.lt } : { gte: range.gte },
+            ...callUserWhere,
+            ...(branchFilter.branchId ? { lead: { branchId: branchFilter.branchId } } : {}),
+        });
+
+        const leadWhereFor = (range: { gte: Date; lt?: Date }, extra: any = {}) => ({
+            organisationId: orgId,
+            isDeleted: false,
+            createdAt: range.lt ? { gte: range.gte, lt: range.lt } : { gte: range.gte },
+            ...branchFilter,
+            ...leadVisibility,
+            ...extra,
+        });
+
+        const [
+            currentCalls, previousCalls,
+            currentConnected, previousConnected,
+            currentLeads, previousLeads,
+            currentConverted, previousConverted,
+        ] = await Promise.all([
+            prisma.interaction.count({ where: callWhereFor(current) }),
+            prisma.interaction.count({ where: callWhereFor(previous) }),
+            prisma.interaction.count({ where: { ...callWhereFor(current), callStatus: 'completed' } }),
+            prisma.interaction.count({ where: { ...callWhereFor(previous), callStatus: 'completed' } }),
+            prisma.lead.count({ where: leadWhereFor(current) }),
+            prisma.lead.count({ where: leadWhereFor(previous) }),
+            prisma.lead.count({ where: leadWhereFor(current, { status: 'converted' }) }),
+            prisma.lead.count({ where: leadWhereFor(previous, { status: 'converted' }) }),
+        ]);
+
+        const pctChange = (curr: number, prev: number) => {
+            if (prev === 0) return curr > 0 ? 100 : 0;
+            return Math.round(((curr - prev) / prev) * 1000) / 10;
+        };
+
+        const tiles = [
+            { key: 'calls', label: 'Calls Made', current: currentCalls, previous: previousCalls },
+            { key: 'connected', label: 'Connected Calls', current: currentConnected, previous: previousConnected },
+            { key: 'leads', label: 'New Leads', current: currentLeads, previous: previousLeads },
+            { key: 'converted', label: 'Converted', current: currentConverted, previous: previousConverted },
+        ].map((t) => ({ ...t, changePct: pctChange(t.current, t.previous) }));
+
+        res.json(tiles);
+    } catch (error) {
+        console.error('getUserTrendsSummary error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
