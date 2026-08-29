@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getVisibleUserIds, getLeadVisibilityFilter } from '../utils/hierarchyUtils';
+import { getOrgId, getVisibleUserIds, getLeadVisibilityFilter, getOppVisibilityFilter } from '../utils/hierarchyUtils';
 import { isSuperAdmin as checkSuperAdmin } from '../utils/roleUtils';
 import fs from 'fs';
 import path from 'path';
@@ -1121,6 +1121,231 @@ export const getLeadCampaigns = async (req: Request, res: Response) => {
         res.json(Array.from(names).sort());
     } catch (error) {
         console.error('getLeadCampaigns error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// Resolves the same period vocabulary used by the Dashboard II date-range dropdown
+// (today/yesterday/week/last30/thisMonth/custom) into a Prisma date-comparison object.
+const resolvePeriodRange = (req: Request): { gte: Date; lt?: Date } => {
+    const { period = 'week', startDate, endDate } = req.query as { period?: string; startDate?: string; endDate?: string };
+    const now = new Date();
+
+    switch (period) {
+        case 'today':
+            return { gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()) };
+        case 'yesterday':
+            return {
+                gte: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1),
+                lt: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+            };
+        case 'thisMonth':
+            return { gte: new Date(now.getFullYear(), now.getMonth(), 1) };
+        case 'last30':
+            return { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) };
+        case 'custom': {
+            const gte = startDate ? new Date(String(startDate)) : new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            let lt: Date | undefined;
+            if (endDate) {
+                lt = new Date(String(endDate));
+                lt.setHours(23, 59, 59, 999);
+            }
+            return { gte, lt };
+        }
+        case 'week':
+        default:
+            return { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) };
+    }
+};
+
+// GET /api/analytics/call-activity-trend
+// Daily total vs connected call counts for the selected date range — powers the
+// Dashboard II call-activity line chart.
+export const getCallActivityTrend = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const range = resolvePeriodRange(req);
+        const branchFilter = getBranchFilter(req);
+        const isSuperAdmin = checkSuperAdmin(user);
+
+        const where: any = {
+            organisationId: orgId,
+            type: 'call',
+            callStatus: { not: 'initiated' },
+            isDeleted: false,
+            date: range.lt ? { gte: range.gte, lt: range.lt } : { gte: range.gte },
+            ...(branchFilter.branchId ? { lead: { branchId: branchFilter.branchId } } : {}),
+        };
+
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            where.OR = [
+                { createdById: { in: visibleUserIds } },
+                { lead: { assignedToId: { in: visibleUserIds } } },
+            ];
+        }
+
+        const calls = await prisma.interaction.findMany({
+            where,
+            select: { date: true, callStatus: true },
+        });
+
+        const byDay = new Map<string, { total: number; connected: number }>();
+        calls.forEach((c) => {
+            const key = c.date.toISOString().slice(0, 10);
+            const bucket = byDay.get(key) || { total: 0, connected: 0 };
+            bucket.total += 1;
+            if (c.callStatus === 'completed') bucket.connected += 1;
+            byDay.set(key, bucket);
+        });
+
+        const trend = Array.from(byDay.entries())
+            .map(([date, v]) => ({ date, total: v.total, connected: v.connected }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+
+        res.json(trend);
+    } catch (error) {
+        console.error('getCallActivityTrend error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/analytics/task-followup-completion
+// Merged Task + FollowUp status counts (both share the same status vocabulary),
+// respecting the same visibility rules as their own controllers.
+export const getTaskFollowUpCompletion = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const isSuperAdmin = checkSuperAdmin(user);
+        const branchFilter = getBranchFilter(req);
+        const visibleUserIds = !isSuperAdmin && user.role !== 'admin' ? await getVisibleUserIds(user.id) : null;
+
+        const visibilityWhere = visibleUserIds
+            ? { OR: [{ assignedToId: { in: visibleUserIds } }, { createdById: { in: visibleUserIds } }] }
+            : {};
+
+        const [taskGroups, followUpGroups] = await Promise.all([
+            prisma.task.groupBy({
+                by: ['status'],
+                where: { organisationId: orgId, isDeleted: false, ...branchFilter, ...visibilityWhere },
+                _count: { _all: true },
+            }),
+            prisma.followUp.groupBy({
+                by: ['status'],
+                where: { organisationId: orgId, isDeleted: false, ...branchFilter, ...visibilityWhere },
+                _count: { _all: true },
+            }),
+        ]);
+
+        const STATUS_LABELS: Record<string, string> = {
+            not_started: 'Not Started',
+            in_progress: 'In Progress',
+            completed: 'Completed',
+            deferred: 'Deferred',
+        };
+
+        const merged: Record<string, { tasks: number; followUps: number }> = {};
+        taskGroups.forEach((g) => {
+            merged[g.status] = merged[g.status] || { tasks: 0, followUps: 0 };
+            merged[g.status].tasks = g._count._all;
+        });
+        followUpGroups.forEach((g) => {
+            merged[g.status] = merged[g.status] || { tasks: 0, followUps: 0 };
+            merged[g.status].followUps = g._count._all;
+        });
+
+        const result = Object.entries(merged).map(([status, counts]) => ({
+            status,
+            label: STATUS_LABELS[status] || status,
+            tasks: counts.tasks,
+            followUps: counts.followUps,
+            total: counts.tasks + counts.followUps,
+        }));
+
+        res.json(result);
+    } catch (error) {
+        console.error('getTaskFollowUpCompletion error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/analytics/opportunity-pipeline-value
+// Sum of Opportunity.amount bucketed into the same Expected / Closed Won / Closed
+// Lost groups the Opportunities Kanban board uses (see KanbanBoard.tsx's STAGES).
+const CLOSED_WON_STAGES = new Set(['closed_won']);
+const CLOSED_LOST_STAGES = new Set(['closed_lost']);
+
+export const getOpportunityPipelineValue = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const isSuperAdmin = checkSuperAdmin(user);
+        const branchFilter = getBranchFilter(req);
+        const visibilityFilter = await getOppVisibilityFilter(user, isSuperAdmin);
+
+        const grouped = await prisma.opportunity.groupBy({
+            by: ['stage'],
+            where: { organisationId: orgId, isDeleted: false, ...branchFilter, ...visibilityFilter },
+            _sum: { amount: true },
+            _count: { _all: true },
+        });
+
+        const buckets = {
+            expected: { label: 'Expected', value: 0, count: 0 },
+            closed_won: { label: 'Closed Won', value: 0, count: 0 },
+            closed_lost: { label: 'Closed Lost', value: 0, count: 0 },
+        };
+
+        grouped.forEach((g) => {
+            const key = CLOSED_WON_STAGES.has(g.stage) ? 'closed_won' : CLOSED_LOST_STAGES.has(g.stage) ? 'closed_lost' : 'expected';
+            buckets[key].value += g._sum.amount || 0;
+            buckets[key].count += g._count._all;
+        });
+
+        res.json(Object.entries(buckets).map(([id, b]) => ({ id, ...b })));
+    } catch (error) {
+        console.error('getOpportunityPipelineValue error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/analytics/branch-performance
+// Per-branch lead volume vs conversion, for orgs with multiple branches.
+export const getBranchPerformance = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const isSuperAdmin = checkSuperAdmin(user);
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdmin);
+
+        const branches = await prisma.branch.findMany({
+            where: { organisationId: orgId, isDeleted: false },
+            select: { id: true, name: true },
+        });
+
+        const results = await Promise.all(
+            branches.map(async (branch) => {
+                const [totalLeads, convertedLeads] = await Promise.all([
+                    prisma.lead.count({ where: { organisationId: orgId, branchId: branch.id, isDeleted: false, ...visibilityFilter } }),
+                    prisma.lead.count({ where: { organisationId: orgId, branchId: branch.id, isDeleted: false, status: 'converted', ...visibilityFilter } }),
+                ]);
+                return { id: branch.id, name: branch.name, totalLeads, convertedLeads };
+            })
+        );
+
+        res.json(results.filter((r) => r.totalLeads > 0));
+    } catch (error) {
+        console.error('getBranchPerformance error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };

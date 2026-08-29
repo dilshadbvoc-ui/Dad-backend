@@ -10,7 +10,11 @@ import {
     getSalesBook,
     getUserWiseSales,
     getLeadsByStage,
-    getLeadCampaigns
+    getLeadCampaigns,
+    getCallActivityTrend,
+    getTaskFollowUpCompletion,
+    getOpportunityPipelineValue,
+    getBranchPerformance
 } from '../controllers/analyticsController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -28,5 +32,9 @@ router.get('/user-sales', protect, getUserWiseSales);
 router.get('/overview', protect, getDashboardStats); // Alias for reports page
 router.get('/leads-by-stage', protect, getLeadsByStage);
 router.get('/lead-campaigns', protect, getLeadCampaigns);
+router.get('/call-activity-trend', protect, getCallActivityTrend);
+router.get('/task-followup-completion', protect, getTaskFollowUpCompletion);
+router.get('/opportunity-pipeline-value', protect, getOpportunityPipelineValue);
+router.get('/branch-performance', protect, getBranchPerformance);
 
 export default router;
