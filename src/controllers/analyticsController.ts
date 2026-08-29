@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { getOrgId, getVisibleUserIds, getLeadVisibilityFilter } from '../utils/hierarchyUtils';
 import { isSuperAdmin as checkSuperAdmin } from '../utils/roleUtils';
 import fs from 'fs';
 import path from 'path';
@@ -1010,6 +1010,117 @@ export const getUserWiseSales = async (req: Request, res: Response) => {
         res.json(userStats.filter(Boolean));
     } catch (error) {
         console.error('getUserWiseSales Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+// Default lead-stage config used when an org hasn't configured Organisation.leadStatuses.
+// Mirrors DEFAULT_LEAD_STATUSES in the frontend's useLeadStatuses hook, kept in sync manually.
+const DEFAULT_LEAD_STAGES = [
+    { id: 'new', label: 'New', color: '#3b82f6', order: 0 },
+    { id: 'contacted', label: 'Contacted', color: '#f59e0b', order: 1 },
+    { id: 'interested', label: 'Interested', color: '#10b981', order: 2 },
+    { id: 'pre_qualified', label: 'Pre-qualified Lead', color: '#6366f1', order: 3 },
+    { id: 'qualified', label: 'Qualified Lead', color: '#8b5cf6', order: 4 },
+    { id: 'nurturing', label: 'Nurturing', color: '#ec4899', order: 5 },
+    { id: 'converted', label: 'Converted', color: '#059669', order: 6 },
+    { id: 'lost', label: 'Lost', color: '#6b7280', order: 7 },
+    { id: 'not_interested', label: 'Not Interested', color: '#ef4444', order: 8 },
+    { id: 're_enquiry', label: 'Re-Enquiry', color: '#f97316', order: 9 },
+];
+
+// GET /api/analytics/leads-by-stage
+// Returns lead counts grouped by the organisation's configured pipeline stages
+// (Organisation.leadStatuses), optionally filtered by branch, campaign and date range.
+export const getLeadsByStage = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const { branchId, campaignId } = req.query as { branchId?: string; campaignId?: string };
+        const isSuperAdmin = checkSuperAdmin(user);
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdmin);
+        const dateFilter = getDateFilter(req, 'createdAt');
+
+        const where: any = {
+            organisationId: orgId,
+            isDeleted: false,
+            ...visibilityFilter,
+            ...(dateFilter || {}),
+        };
+        if (branchId && branchId !== 'all') where.branchId = branchId;
+        if (campaignId && campaignId !== 'all') {
+            where.sourceDetails = { path: ['campaignName'], equals: campaignId };
+        }
+
+        const grouped = await prisma.lead.groupBy({
+            by: ['status'],
+            where,
+            _count: { _all: true },
+        });
+        const countsByStatus: Record<string, number> = {};
+        grouped.forEach(g => { countsByStatus[g.status] = g._count._all; });
+
+        const org = await prisma.organisation.findUnique({
+            where: { id: orgId },
+            select: { leadStatuses: true },
+        });
+        const configuredStages = Array.isArray(org?.leadStatuses) && (org!.leadStatuses as any[]).length > 0
+            ? (org!.leadStatuses as any[])
+            : DEFAULT_LEAD_STAGES;
+
+        const stages = [...configuredStages]
+            .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+            .map((s: any) => ({
+                id: s.id,
+                label: s.label,
+                color: s.color || '#6b7280',
+                count: countsByStatus[s.id] || 0,
+            }));
+
+        const knownIds = new Set(stages.map(s => s.id));
+        const untracked = Object.entries(countsByStatus)
+            .filter(([id]) => !knownIds.has(id))
+            .reduce((sum, [, count]) => sum + count, 0);
+        if (untracked > 0) {
+            stages.push({ id: 'other', label: 'Other', color: '#94a3b8', count: untracked });
+        }
+
+        const total = stages.reduce((sum, s) => sum + s.count, 0);
+
+        res.json({ stages, total });
+    } catch (error) {
+        console.error('getLeadsByStage error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/analytics/lead-campaigns
+// Distinct campaign names found in Lead.sourceDetails.campaignName for this org,
+// used to populate the campaign filter dropdown (no separate Campaign model is linked to Lead).
+export const getLeadCampaigns = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const leads = await prisma.lead.findMany({
+            where: { organisationId: orgId, isDeleted: false, sourceDetails: { not: null as any } },
+            select: { sourceDetails: true },
+            take: 2000,
+            orderBy: { createdAt: 'desc' },
+        });
+
+        const names = new Set<string>();
+        leads.forEach(l => {
+            const details = l.sourceDetails as any;
+            const name = details?.campaignName;
+            if (typeof name === 'string' && name.trim()) names.add(name.trim());
+        });
+
+        res.json(Array.from(names).sort());
+    } catch (error) {
+        console.error('getLeadCampaigns error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };

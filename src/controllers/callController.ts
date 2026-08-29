@@ -397,21 +397,37 @@ export const getCallStats = async (req: Request, res: Response) => {
 
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const { period = 'week', userId } = req.query;
+        const { period = 'week', userId, startDate: customStart, endDate: customEnd } = req.query;
 
         // Calculate date range
         const now = new Date();
         let startDate: Date;
+        let endDate: Date | null = null;
 
         switch (period) {
             case 'today':
                 startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 break;
+            case 'yesterday':
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                break;
             case 'week':
                 startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                 break;
+            case 'last30':
+                startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                break;
             case 'month':
+            case 'thisMonth':
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                break;
+            case 'custom':
+                startDate = customStart ? new Date(String(customStart)) : new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                if (customEnd) {
+                    endDate = new Date(String(customEnd));
+                    endDate.setHours(23, 59, 59, 999);
+                }
                 break;
             default:
                 startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -422,7 +438,7 @@ export const getCallStats = async (req: Request, res: Response) => {
             type: 'call' as const,
             callStatus: { not: 'initiated' },
             isDeleted: false,
-            date: { gte: startDate }
+            date: endDate ? { gte: startDate, lt: endDate } : { gte: startDate }
         };
 
         // Hierarchy filtering
@@ -512,6 +528,7 @@ export const getCallStats = async (req: Request, res: Response) => {
             inboundCalls,
             missedCalls,
             completedCalls,
+            connectedCalls: completedCalls, // alias: a "connected" call is one that completed
             avgDuration: Math.round(avgDuration * 10) / 10, // Round to 1 decimal
             callsWithRecording,
             period
