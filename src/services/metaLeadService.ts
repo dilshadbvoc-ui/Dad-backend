@@ -263,6 +263,22 @@ export const MetaLeadService = {
                 return;
             }
 
+            // 1b. Per-campaign sync filter — an org can opt specific campaigns OUT of lead
+            // sync (Ads Manager checkbox) even while the ad account/page stays connected.
+            // Absence from this list means "still enabled" so existing orgs/campaigns are
+            // unaffected until someone explicitly unchecks one.
+            if (metaLeadData.campaign_id) {
+                const orgForFilter = await prisma.organisation.findUnique({
+                    where: { id: orgId },
+                    select: { integrations: true }
+                });
+                const disabledCampaignIds = ((orgForFilter?.integrations as any)?.meta?.disabledLeadSyncCampaignIds as string[]) || [];
+                if (disabledCampaignIds.includes(String(metaLeadData.campaign_id))) {
+                    console.log(`[MetaLeadService] Lead ${leadgenId} skipped — campaign ${metaLeadData.campaign_id} is disabled for lead sync in Org ${orgId}.`);
+                    return;
+                }
+            }
+
             // 2. Map Field Data
             const fieldMap: Record<string, string> = {};
             metaLeadData.field_data.forEach((field: any) => {
