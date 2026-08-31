@@ -116,11 +116,18 @@ export const getUserPerformance = async (req: Request, res: Response) => {
         if (startDate) dateFilter.gte = new Date(startDate as string);
         if (endDate) dateFilter.lte = new Date(endDate as string);
 
-        const visibleUserIds = await getVisibleUserIds(user.id);
+        // Admin/super_admin see every active user in the org — same bypass
+        // `getLeadVisibilityFilter`/`getOppVisibilityFilter` already apply
+        // before calling `getVisibleUserIds`. Without it, an admin who isn't
+        // also set as someone's manager/team-lead/branch-manager in the
+        // reporting-hierarchy tables would only see themselves here, unlike
+        // every other admin-scoped view in the app.
+        const isOrgWideViewer = user.isSuperAdmin || user.role === 'super_admin' || user.role === 'admin';
+        const visibleUserIds = isOrgWideViewer ? null : await getVisibleUserIds(user.id);
         const where: any = {
-            id: { in: visibleUserIds },
             organisationId: orgId,
-            isActive: true
+            isActive: true,
+            ...(visibleUserIds ? { id: { in: visibleUserIds } } : {})
         };
         if (branchId) where.branchId = branchId as string;
 
