@@ -8,7 +8,14 @@ import {
     getAiInsights,
     getTopPerformers,
     getSalesBook,
-    getUserWiseSales
+    getUserWiseSales,
+    getLeadsByStage,
+    getLeadCampaigns,
+    getCallActivityTrend,
+    getTaskFollowUpCompletion,
+    getOpportunityPipelineValue,
+    getBranchPerformance,
+    getUserTrendsSummary
 } from '../controllers/analyticsController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -24,5 +31,12 @@ router.get('/top-performers', protect, getTopPerformers);
 router.get('/sales-book', protect, getSalesBook);
 router.get('/user-sales', protect, getUserWiseSales);
 router.get('/overview', protect, getDashboardStats); // Alias for reports page
+router.get('/leads-by-stage', protect, getLeadsByStage);
+router.get('/lead-campaigns', protect, getLeadCampaigns);
+router.get('/call-activity-trend', protect, getCallActivityTrend);
+router.get('/task-followup-completion', protect, getTaskFollowUpCompletion);
+router.get('/opportunity-pipeline-value', protect, getOpportunityPipelineValue);
+router.get('/branch-performance', protect, getBranchPerformance);
+router.get('/user-trends-summary', protect, getUserTrendsSummary);
 
 export default router;
