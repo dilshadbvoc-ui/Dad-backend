@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers, getUserById, updateUser, inviteUser, deactivateUser, activateUser, getUserStats, getMyTeam, permanentlyDeleteUser } from '../controllers/userController';
+import { getUsers, getUserById, updateUser, inviteUser, deactivateUser, activateUser, getUserStats, getMyTeam, permanentlyDeleteUser, registerDeviceToken } from '../controllers/userController';
 import { protect } from '../middleware/authMiddleware';
 import { checkPlanLimits } from '../middleware/subscriptionMiddleware';
 import { protectSuperAdmin, verifySuperAdminSecret } from '../middleware/superAdminProtection';
@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/', protect, getUsers);
 router.get('/my-team', protect, getMyTeam);
+router.post('/device-token', protect, registerDeviceToken);
 router.get('/:id', protect, getUserById);
 router.get('/:id/stats', protect, getUserStats);
 router.put('/:id', protect, verifySuperAdminSecret, protectSuperAdmin, updateUser);

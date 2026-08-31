@@ -7,6 +7,28 @@ import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
 import { logAudit } from '../utils/auditLogger';
 import { isAdmin } from '../utils/roleUtils';
 
+// POST /api/users/device-token - Register/refresh the caller's mobile push (FCM) token
+export const registerDeviceToken = async (req: Request, res: Response) => {
+    try {
+        const currentUser = (req as any).user;
+        const { fcmToken } = req.body;
+
+        if (!fcmToken || typeof fcmToken !== 'string') {
+            return res.status(400).json({ message: 'fcmToken is required' });
+        }
+
+        await prisma.user.update({
+            where: { id: currentUser.id },
+            data: { fcmToken, fcmTokenUpdatedAt: new Date() }
+        });
+
+        res.json({ message: 'Device token registered' });
+    } catch (error) {
+        logger.error('registerDeviceToken Error', error, 'UserController');
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 // GET /api/users/:id/stats - Get user performance stats
 export const getUserStats = async (req: Request, res: Response) => {
     try {

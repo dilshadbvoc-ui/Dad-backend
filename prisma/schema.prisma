@@ -107,6 +107,8 @@ model User {
   metaAccessToken             String?                // Facebook User Access Token
   metaUserId                  String?
   notificationPreferences     Json?
+  fcmToken                    String?                // Mobile push (FCM) device token, overwritten on each login/registration
+  fcmTokenUpdatedAt           DateTime?
   resetPasswordToken          String?
   resetPasswordExpire         DateTime?
   workingHours                Json?

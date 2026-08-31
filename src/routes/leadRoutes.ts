@@ -11,7 +11,7 @@ router.post('/bulk-assign', protect, bulkAssignLeads as any);
 router.get('/violations', protect, getViolations as any); // New Route
 router.post('/explanation', protect, submitExplanation as any); // New Route
 router.get('/pending-follow-ups', protect, getPendingFollowUpsCount as any);
-router.get('/re-enquiries', protect, authorize('admin', 'manager', 'org_admin'), getReEnquiryLeads as any);
+router.get('/re-enquiries', protect, authorize('admin', 'manager', 'org_admin', 'super_admin'), getReEnquiryLeads as any);
 router.get('/duplicates', protect, authorize('admin', 'manager', 'org_admin'), getDuplicateLeads as any);
 router.get('/', protect, getLeads as any);
 router.post('/', protect, checkPlanLimits('leads'), createLead as any);
