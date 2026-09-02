@@ -1,5 +1,6 @@
 
 import prisma from '../config/prisma';
+import { sendPushNotification } from '../config/firebaseAdmin';
 import { getIO } from '../socket';
 import { EmailService } from './emailService';
 import { WhatsAppService } from './whatsAppService';
@@ -35,7 +36,29 @@ export class NotificationService {
                 console.warn('[NotificationService] Socket IO not initialized');
             }
 
-            // 3. Email Fallback
+            // 3. Push Notification (FCM) — fired for every type, not just
+            // high_priority/alert/reminder like the email/WhatsApp fallback
+            // below: a push is the mobile equivalent of the in-app bell,
+            // not an escalation channel, so it should fire whenever a
+            // Notification row is created, matching what the mobile app's
+            // registered `fcmToken` is actually for.
+            const pushUser = await prisma.user.findUnique({
+                where: { id: recipientId },
+                select: { fcmToken: true, notificationPreferences: true }
+            });
+            const pushPrefs = pushUser?.notificationPreferences as any;
+            if (pushUser?.fcmToken && pushPrefs?.pushNotifications !== false) {
+                // Fire-and-forget: never let a push failure block or fail
+                // the notification the DB/socket/email paths already
+                // succeeded at. `sendPushNotification` itself never throws.
+                sendPushNotification(recipientId, pushUser.fcmToken, {
+                    title,
+                    body: message,
+                    data: { type }
+                }).catch((err) => console.error('[NotificationService] Unexpected push error:', err));
+            }
+
+            // 4. Email Fallback
             if (type === 'high_priority' || type === 'alert' || type === 'reminder') {
                 const user = await prisma.user.findUnique({
                     where: { id: recipientId },
@@ -43,7 +66,7 @@ export class NotificationService {
                 });
 
                 const prefs = user?.notificationPreferences as any;
-                
+
                 // Email Fallback
                 if (user?.email && prefs?.emailNotifications !== false) {
                     const emailHtml = `

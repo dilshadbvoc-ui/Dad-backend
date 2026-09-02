@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Claude Code local session artifacts (worktrees, local settings) — not
+# project source, never meant to be committed.
+.claude/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
