@@ -129,7 +129,7 @@ export class MetaService {
     }
 
     async getCampaigns(config: MetaConfig) {
-        const fields = 'id,name,status,objective,daily_budget,lifetime_budget,start_time,stop_time';
+        const fields = 'id,name,status,effective_status,objective,daily_budget,lifetime_budget,start_time,stop_time';
         const data = await this.makeRequest(`${this.getFormattedAdAccountId(config.adAccountId)}/campaigns`, config.accessToken, {
             fields,
             limit: 50
