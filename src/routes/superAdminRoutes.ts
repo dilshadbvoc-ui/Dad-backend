@@ -6,7 +6,9 @@ import {
     suspendOrganisation,
     getOrganisationStats,
     resetUserPassword,
-    broadcastToOrgAdmins
+    broadcastToOrgAdmins,
+    getHelperActivityLogs,
+    getHelperActivityLogUsers
 } from '../controllers/superAdminController';
 import { deleteOrganisation, restoreOrganisation, permanentlyDeleteOrganisation } from '../controllers/organisationController';
 import {
@@ -68,5 +70,9 @@ router.post('/users/reset-password', protect, resetUserPassword);
 
 // Broadcast Notification to all Org Admins
 router.post('/broadcast-notification', protect, broadcastToOrgAdmins);
+
+// Helper (PypeCRM Helper / Dad-call-recorder) activity log monitoring
+router.get('/helper-logs', protect, getHelperActivityLogs);
+router.get('/helper-logs/users', protect, getHelperActivityLogUsers);
 
 export default router;

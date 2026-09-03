@@ -1229,3 +1229,51 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Bulk sync failed' });
     }
 };
+
+// POST /api/android/helper-logs
+// Ingests a batch of EngineDebugLog entries from the PypeCRM Helper app
+// (Dad-call-recorder) for the super-admin "Helper Logs" panel. Never blocks
+// or fails the caller's own sync flow — this is diagnostics, not a
+// data-critical path, so a bad batch here shouldn't retry-storm the device.
+const MAX_HELPER_LOG_BATCH = 200;
+const VALID_LEVELS = new Set(['info', 'warn', 'error']);
+
+export const uploadHelperLogs = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        if (!user || !user.organisationId) {
+            return res.status(401).json({ error: 'Unauthorized. Organisation ID missing.' });
+        }
+
+        const events = Array.isArray(req.body?.events) ? req.body.events : [];
+        if (events.length === 0) {
+            return res.status(200).json({ message: 'No events to store', stored: 0 });
+        }
+
+        const rows = events
+            .slice(0, MAX_HELPER_LOG_BATCH)
+            .filter((e: any) => e && typeof e.event === 'string' && e.event.trim().length > 0)
+            .map((e: any) => {
+                const level = VALID_LEVELS.has(e.level) ? e.level : 'info';
+                const timestampMillis = Number(e.timestampMillis);
+                return {
+                    organisationId: user.organisationId,
+                    userId: user.id,
+                    event: String(e.event).slice(0, 200),
+                    detail: typeof e.detail === 'string' ? e.detail.slice(0, 2000) : null,
+                    level,
+                    clientTimestamp: Number.isFinite(timestampMillis) ? new Date(timestampMillis) : new Date(),
+                };
+            });
+
+        if (rows.length === 0) {
+            return res.status(200).json({ message: 'No valid events to store', stored: 0 });
+        }
+
+        await prisma.helperActivityLog.createMany({ data: rows });
+        res.status(200).json({ message: 'Helper logs stored', stored: rows.length });
+    } catch (error) {
+        console.error('[HelperLogs] Upload failed:', error);
+        res.status(500).json({ error: 'Failed to store helper logs' });
+    }
+};

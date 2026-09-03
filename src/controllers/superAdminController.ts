@@ -459,3 +459,74 @@ export const broadcastToOrgAdmins = async (req: Request, res: Response) => {
     }
 };
 
+// GET /api/super-admin/helper-logs
+// Paginated, filterable view of HelperActivityLog rows (uploaded by the
+// PypeCRM Helper / Dad-call-recorder app) across every organisation.
+// Supports polling (frontend refetchInterval) for a near-real-time feed.
+export const getHelperActivityLogs = async (req: Request, res: Response) => {
+    try {
+        if (!(req as any).user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Access denied. Super admin only.' });
+        }
+
+        const { userId, organisationId, level, event, page = '1', limit = '50' } = req.query as Record<string, string>;
+        const pageNum = Math.max(1, parseInt(page, 10) || 1);
+        const limitNum = Math.min(200, Math.max(1, parseInt(limit, 10) || 50));
+
+        const where: any = {};
+        if (userId) where.userId = userId;
+        if (organisationId) where.organisationId = organisationId;
+        if (level) where.level = level;
+        if (event) where.event = { contains: event, mode: 'insensitive' };
+
+        const [logs, total] = await Promise.all([
+            prisma.helperActivityLog.findMany({
+                where,
+                orderBy: { clientTimestamp: 'desc' },
+                skip: (pageNum - 1) * limitNum,
+                take: limitNum,
+                include: {
+                    user: { select: { id: true, firstName: true, lastName: true, email: true } },
+                    organisation: { select: { id: true, name: true } },
+                },
+            }),
+            prisma.helperActivityLog.count({ where }),
+        ]);
+
+        res.json({
+            logs,
+            pagination: { page: pageNum, limit: limitNum, total, totalPages: Math.ceil(total / limitNum) },
+        });
+    } catch (error) {
+        console.error('getHelperActivityLogs Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/super-admin/helper-logs/users
+// Distinct (user, organisation) pairs that have ever uploaded a helper log —
+// powers the filter dropdown without loading the full log list first.
+export const getHelperActivityLogUsers = async (req: Request, res: Response) => {
+    try {
+        if (!(req as any).user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Access denied. Super admin only.' });
+        }
+
+        const rows = await prisma.helperActivityLog.findMany({
+            distinct: ['userId'],
+            select: {
+                userId: true,
+                organisationId: true,
+                user: { select: { firstName: true, lastName: true, email: true } },
+                organisation: { select: { name: true } },
+            },
+            orderBy: { userId: 'asc' },
+        });
+
+        res.json({ users: rows });
+    } catch (error) {
+        console.error('getHelperActivityLogUsers Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+

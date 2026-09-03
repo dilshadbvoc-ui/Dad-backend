@@ -85,6 +85,7 @@ model Organisation {
   rolePermissions   Role[]
   emiSchedules      EMISchedule[]
   paymentRecords    PaymentRecord[]
+  helperActivityLogs HelperActivityLog[]
   shufflerConfig    Json?
 }
 
@@ -197,6 +198,7 @@ model User {
   createdPaymentRecords PaymentRecord[]  @relation("PaymentRecordCreator")
   reportedIssues        IssueReport[]    @relation("IssueReporter")
   issueReplies          IssueReply[]     @relation("IssueReplyAuthor")
+  helperActivityLogs    HelperActivityLog[]
 
   @@index([organisationId])
   @@index([email])
@@ -1648,6 +1650,30 @@ model AuditLog {
   @@index([organisationId, createdAt])
   @@index([organisationId, actorId, createdAt])
 }
+
+// Structured activity log uploaded by the PypeCRM Helper (Dad-call-recorder)
+// sideloaded companion app — call-detection, call-log reconciliation, and
+// bulk-sync events, batched from the device's local EngineDebugLog ring
+// buffer. Read by the super-admin "Helper Logs" panel (Dad-frontend), not
+// exposed to normal org users.
+model HelperActivityLog {
+  id               String   @id @default(uuid())
+  organisationId   String
+  userId           String
+  event            String   // e.g. CALL_DETECTED, CALL_LOG_RECONCILED, BULK_SYNC_SUCCESS, BULK_SYNC_FAILED, BULK_SYNC_RATE_LIMITED, TIER0_MATCH_FOUND, TIER0_NO_MATCH
+  detail           String?
+  level            String   @default("info") // info | warn | error
+  clientTimestamp  DateTime // when the event actually happened on-device, per EngineDebugLog's timestampMillis
+  createdAt        DateTime @default(now()) // when the server received/stored it
+
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([organisationId, createdAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
 model Document {
   id             String       @id @default(uuid())
   name           String

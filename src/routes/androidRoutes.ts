@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { getAndroidLeads, uploadCallRecording, syncCallLogs } from '../controllers/androidController';
+import { getAndroidLeads, uploadCallRecording, syncCallLogs, uploadHelperLogs } from '../controllers/androidController';
 import { logExternalMessage } from '../controllers/whatsAppController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -87,6 +87,7 @@ router.get('/leads', protect, getAndroidLeads as any);
 router.post('/recordings', protect, handleRecordingUpload, uploadCallRecording as any);
 router.post('/whatsapp/sync', protect, logExternalMessage as any);
 router.post('/bulk-sync', protect, bulkSyncRateLimiter, syncCallLogs as any);
+router.post('/helper-logs', protect, uploadHelperLogs as any);
 
 export default router;
 
