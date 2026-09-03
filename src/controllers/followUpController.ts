@@ -162,18 +162,17 @@ export const getFollowUps = async (req: Request, res: Response) => {
             return new Date(endOfTodayIST.getTime() - (5.5 * 60 * 60 * 1000));
         })();
 
-        const startOfToday = (() => {
-            const istTime = now.getTime() + (5.5 * 60 * 60 * 1000);
-            const istDate = new Date(istTime);
-            const startOfTodayIST = new Date(Date.UTC(
-                istDate.getUTCFullYear(),
-                istDate.getUTCMonth(),
-                istDate.getUTCDate(),
-                0, 0, 0, 0
-            ));
-            return new Date(startOfTodayIST.getTime() - (5.5 * 60 * 60 * 1000));
-        })();
-
+        // `overdue`/`today` split on `now` (the exact instant), not on the
+        // start of the IST calendar day. Every per-card "Overdue" badge —
+        // both `FollowUpMobileCard.tsx` (web, via date-fns `isPast`) and
+        // Dad-mobile's `FollowUpCard` (`dueDate.isBefore(now)`) — already
+        // uses precise-instant comparison, so a follow-up due earlier today
+        // (already past) correctly renders "Overdue" on its own card. The
+        // old `dueDate < startOfToday` cutoff here counted that same
+        // follow-up under "today" instead, so the stat card's Overdue total
+        // silently undercounted anything overdue-by-hours-not-days within
+        // the current day — exactly the mismatch reported: a user's card
+        // list showing overdue items while their own stat card read 0.
         const [activeCount, overdueCount, todayCount, upcomingCount] = await Promise.all([
             prisma.followUp.count({
                 where: {
@@ -185,14 +184,14 @@ export const getFollowUps = async (req: Request, res: Response) => {
                 where: {
                     ...baseWhere,
                     status: { in: ['not_started', 'in_progress'] },
-                    dueDate: { lt: startOfToday }
+                    dueDate: { lt: now }
                 }
             }),
             prisma.followUp.count({
                 where: {
                     ...baseWhere,
                     status: { in: ['not_started', 'in_progress'] },
-                    dueDate: { gte: startOfToday, lte: endOfToday }
+                    dueDate: { gte: now, lte: endOfToday }
                 }
             }),
             prisma.followUp.count({
