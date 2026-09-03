@@ -83,7 +83,15 @@ export class FollowUpService {
             effectiveBranchId = lead?.branchId || null;
         }
 
-        // Find existing non-terminal follow-up for this lead
+        // Find existing non-terminal follow-up for this lead. Ordered by
+        // `dueDate` ascending (the currently-active/soonest-due one), NOT
+        // `createdAt` descending — a lead can end up with more than one
+        // stale non-terminal row over time (each past reschedule/create
+        // that didn't clean up after itself), and picking "most recently
+        // created" is arbitrary: it can silently update a newer, unrelated
+        // row while leaving the genuinely overdue one untouched forever.
+        // Picking "soonest due" always targets the row that's actually
+        // pending action right now.
         const existingFollowUp = await prisma.followUp.findFirst({
             where: {
                 leadId,
@@ -92,7 +100,7 @@ export class FollowUpService {
                 status: { notIn: ['completed', 'deferred'] }
             },
             orderBy: {
-                createdAt: 'desc'
+                dueDate: 'asc'
             }
         });
 
