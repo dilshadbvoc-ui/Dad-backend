@@ -66,7 +66,7 @@ export const ssoCallback = (req: Request, res: Response, next: NextFunction) => 
         }
 
         // Generate JWT
-        const token = generateToken(user.id);
+        const token = generateToken(user.id, user.tokenVersion);
 
         // Audit Log
         await logAudit({

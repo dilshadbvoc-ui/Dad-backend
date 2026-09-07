@@ -433,6 +433,7 @@ export const updateUser = async (req: Request, res: Response) => {
         if (password && password.trim() !== '') {
             const salt = await bcrypt.genSalt(10);
             dataToUpdate.password = await bcrypt.hash(password, salt);
+            dataToUpdate.tokenVersion = { increment: 1 };
         }
 
         const updatedUser = await prisma.user.update({

@@ -373,7 +373,7 @@ export const resetUserPassword = async (req: Request, res: Response) => {
 
         const updatedUser = await prisma.user.update({
             where: { id: userId },
-            data: { password: hashedPassword }
+            data: { password: hashedPassword, tokenVersion: { increment: 1 } }
         });
 
         // Audit Log

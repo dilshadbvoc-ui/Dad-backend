@@ -34,7 +34,8 @@ const resetPasswords = async () => {
                 where: { id: user.id },
                 data: {
                     password: hashedPassword,
-                    isActive: true // Make sure the user is active so they can log in
+                    isActive: true, // Make sure the user is active so they can log in
+                    tokenVersion: { increment: 1 }
                 }
             });
 

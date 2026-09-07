@@ -13,6 +13,7 @@ interface Campaign {
     id: string;
     name: string;
     status: string;
+    effective_status?: string;
     objective: string;
     daily_budget?: string;
     lifetime_budget?: string;
@@ -76,15 +77,28 @@ class MarketingAPIService {
     /**
      * Fetch Campaigns for a specific Ad Account
      */
-    async getCampaigns(adAccountId: string, fields = 'id,name,status,objective,daily_budget,lifetime_budget'): Promise<Campaign[]> {
+    async getCampaigns(adAccountId: string, fields = 'id,name,status,effective_status,objective,daily_budget,lifetime_budget'): Promise<Campaign[]> {
         try {
             // Ensure adAccountId starts with 'act_'
             const formattedId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
 
-            const response = await this.customAxios.get(`/${formattedId}/campaigns`, {
-                params: { fields },
+            // Follows Meta's paging.next cursor — without this, accounts with more
+            // campaigns than a single page returns were silently truncated, hiding
+            // both campaigns and any effective_status values beyond page 1.
+            const allCampaigns: Campaign[] = [];
+            let response = await this.customAxios.get(`/${formattedId}/campaigns`, {
+                params: { fields, limit: 50 },
             });
-            return response.data.data;
+            allCampaigns.push(...(response.data.data || []));
+
+            let pages = 1;
+            while (response.data.paging?.next && pages < 20) {
+                response = await axios.get(response.data.paging.next);
+                allCampaigns.push(...(response.data.data || []));
+                pages++;
+            }
+
+            return allCampaigns;
         } catch (error: any) {
             this.handleError(error, `fetching campaigns for ${adAccountId}`);
             return [];

@@ -32,6 +32,17 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
                 return;
             }
 
+            // Tokens issued before tokenVersion existed carry no claim at all —
+            // treat that as version 0 so already-logged-in users aren't mass-logged-out
+            // the moment this check ships; only an actual password change (which bumps
+            // the DB value above 0) should invalidate anything.
+            const tokenVersion = typeof decoded.tokenVersion === 'number' ? decoded.tokenVersion : 0;
+            if (tokenVersion !== user.tokenVersion) {
+                console.warn(`[AuthDebug] Stale token version for user ${user.email} (token: ${tokenVersion}, current: ${user.tokenVersion}) — password was changed since this token was issued`);
+                res.status(401).json({ message: 'Not authorized, token failed' });
+                return;
+            }
+
             console.log(`[AuthDebug] Authenticated user: ${user.email} (Role: ${user.role})`);
 
             // Exclude password from the object attached to request

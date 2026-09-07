@@ -54,6 +54,34 @@ export class MetaService {
         throw new Error(errorMsg);
     }
 
+    /**
+     * Like makeRequest, but follows Meta's paging.next cursor until exhausted
+     * (or maxPages is hit) instead of returning just the first page. Meta caps
+     * list endpoints (e.g. campaigns) at the requested `limit` per call — a
+     * plain makeRequest silently truncates any account with more items than
+     * that limit, hiding both campaigns and their statuses beyond page 1.
+     */
+    async makePagedRequest(endpoint: string, accessToken: string, params: any = {}, maxPages: number = 20) {
+        const allData: any[] = [];
+        let data = await this.makeRequest(endpoint, accessToken, params);
+        allData.push(...(data.data || []));
+
+        let pages = 1;
+        while (data.paging?.next && pages < maxPages) {
+            try {
+                const response = await axios.get(data.paging.next, { timeout: 30000 });
+                data = response.data;
+                allData.push(...(data.data || []));
+                pages++;
+            } catch (error: any) {
+                console.error('[MetaService] Pagination request failed, returning what was fetched so far:', error.response?.data || error.message);
+                break;
+            }
+        }
+
+        return allData;
+    }
+
     async makePostRequest(endpoint: string, accessToken: string, data: any = {}, retries: number = 2) {
         let lastError: any;
         console.log(`[MetaService] POST request to ${endpoint} starting (retries: ${retries})...`);
@@ -130,11 +158,12 @@ export class MetaService {
 
     async getCampaigns(config: MetaConfig) {
         const fields = 'id,name,status,effective_status,objective,daily_budget,lifetime_budget,start_time,stop_time';
-        const data = await this.makeRequest(`${this.getFormattedAdAccountId(config.adAccountId)}/campaigns`, config.accessToken, {
+        // Follows Meta's pagination cursor — accounts with 50+ campaigns were
+        // silently truncated to just the first page (see makePagedRequest).
+        return await this.makePagedRequest(`${this.getFormattedAdAccountId(config.adAccountId)}/campaigns`, config.accessToken, {
             fields,
             limit: 50
         });
-        return data.data; // Meta returns { data: [], paging: {} }
     }
 
     async getAdSets(config: MetaConfig, campaignId?: string) {

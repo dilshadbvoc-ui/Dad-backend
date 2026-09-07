@@ -74,7 +74,7 @@ export const authUser = async (req: Request, res: Response) => {
                 isBranchManager,
                 organisation: user.organisation,
                 branchId: user.branchId,
-                token: generateToken(user.id),
+                token: generateToken(user.id, user.tokenVersion),
             });
         } else {
             console.log(`Login FAILED for: ${email}`);
@@ -199,7 +199,7 @@ export const registerUser = async (req: Request, res: Response) => {
                 role: user.role,
                 organisationId: org.id,
                 branchId: user.branchId,
-                token: generateToken(user.id),
+                token: generateToken(user.id, user.tokenVersion),
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -342,7 +342,8 @@ export const resetPassword = async (req: Request, res: Response) => {
             data: {
                 password: hashedPassword,
                 resetPasswordToken: null,
-                resetPasswordExpire: null
+                resetPasswordExpire: null,
+                tokenVersion: { increment: 1 }
             }
         });
 

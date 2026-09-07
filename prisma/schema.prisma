@@ -112,6 +112,7 @@ model User {
   fcmTokenUpdatedAt           DateTime?
   resetPasswordToken          String?
   resetPasswordExpire         DateTime?
+  tokenVersion                Int                    @default(0)
   workingHours                Json?
   timezone                    String                 @default("UTC")
   createdAt                   DateTime               @default(now())

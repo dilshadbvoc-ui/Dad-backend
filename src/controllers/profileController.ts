@@ -68,10 +68,10 @@ export const changePassword = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await prisma.user.update({
             where: { id: userId },
-            data: { password: hashedPassword }
+            data: { password: hashedPassword, tokenVersion: { increment: 1 } }
         });
 
-        res.json({ message: 'Password updated successfully' });
+        res.json({ message: 'Password updated successfully. Please log in again.' });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }

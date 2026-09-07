@@ -29,7 +29,7 @@ const resetPassword = async () => {
 
         const user = await prisma.user.upsert({
             where: { email },
-            update: { password },
+            update: { password, tokenVersion: { increment: 1 } },
             create: {
                 email,
                 password,
