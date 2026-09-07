@@ -1428,3 +1428,73 @@ export const getUserTrendsSummary = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+// GET /api/analytics/user-deal-ranking
+// Per-user "Won Deals" leaderboard for the Dashboard II User Ranking card —
+// counts Opportunities in the closed_won stage, filtered by the same
+// period vocabulary used everywhere else on the dashboard (today/yesterday/
+// thisMonth/last30/week/custom). Opportunity.closeDate is nullable and
+// client-supplied (not reliably present), so the win date used for
+// filtering is `updatedAt` — the last time the opportunity record changed,
+// which in practice is when a rep moves it into Closed Won.
+export const getUserDealRanking = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const isSuperAdmin = checkSuperAdmin(user);
+        const branchFilter = getBranchFilter(req);
+        const range = resolvePeriodRange(req);
+        const visibilityFilter = await getOppVisibilityFilter(user, isSuperAdmin);
+
+        let userWhere: any = { organisationId: orgId, isActive: true };
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            userWhere.id = { in: visibleUserIds };
+        }
+        if (branchFilter.branchId) userWhere.branchId = branchFilter.branchId;
+
+        const users = await prisma.user.findMany({
+            where: userWhere,
+            select: { id: true, firstName: true, lastName: true, branch: { select: { name: true } } },
+        });
+        const userIds = users.map((u) => u.id);
+
+        const wonOpportunities = await prisma.opportunity.findMany({
+            where: {
+                organisationId: orgId,
+                isDeleted: false,
+                stage: 'closed_won',
+                ownerId: { in: userIds },
+                updatedAt: range.lt ? { gte: range.gte, lt: range.lt } : { gte: range.gte },
+                ...visibilityFilter,
+            },
+            select: { ownerId: true, amount: true },
+        });
+
+        const statsByUser: Record<string, { wonDeals: number; wonValue: number }> = {};
+        wonOpportunities.forEach((opp) => {
+            if (!opp.ownerId) return;
+            const stats = statsByUser[opp.ownerId] || { wonDeals: 0, wonValue: 0 };
+            stats.wonDeals += 1;
+            stats.wonValue += opp.amount || 0;
+            statsByUser[opp.ownerId] = stats;
+        });
+
+        const reportData = users
+            .map((u) => ({
+                userId: u.id,
+                agentName: `${u.firstName} ${u.lastName || ''}`.trim(),
+                branch: u.branch?.name || 'N/A',
+                wonDeals: statsByUser[u.id]?.wonDeals || 0,
+                wonValue: statsByUser[u.id]?.wonValue || 0,
+            }))
+            .sort((a, b) => b.wonDeals - a.wonDeals);
+
+        res.json({ reportData });
+    } catch (error) {
+        console.error('getUserDealRanking error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};

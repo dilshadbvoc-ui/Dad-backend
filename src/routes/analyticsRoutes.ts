@@ -15,7 +15,8 @@ import {
     getTaskFollowUpCompletion,
     getOpportunityPipelineValue,
     getBranchPerformance,
-    getUserTrendsSummary
+    getUserTrendsSummary,
+    getUserDealRanking
 } from '../controllers/analyticsController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -38,5 +39,6 @@ router.get('/task-followup-completion', protect, getTaskFollowUpCompletion);
 router.get('/opportunity-pipeline-value', protect, getOpportunityPipelineValue);
 router.get('/branch-performance', protect, getBranchPerformance);
 router.get('/user-trends-summary', protect, getUserTrendsSummary);
+router.get('/user-deal-ranking', protect, getUserDealRanking);
 
 export default router;
