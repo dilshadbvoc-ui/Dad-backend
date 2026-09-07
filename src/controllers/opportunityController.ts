@@ -414,6 +414,15 @@ export const updateOpportunity = async (req: Request, res: Response) => {
             opportunityUpdates.closeDate = new Date();
         }
 
+        // Same idea for leadStatus: none of the closing UIs (Kanban drag → Close Won/Lost
+        // dialogs) send it, so it stayed stuck at whatever it was before closing (e.g.
+        // "New Opportunity") even on a deal that's now actually Won/Lost — misleading on
+        // the Kanban card. Only fills in when not explicitly provided, so an intentional
+        // custom leadStatus on close is still respected.
+        if (isClosingNow && opportunityUpdates.leadStatus === undefined) {
+            opportunityUpdates.leadStatus = opportunityUpdates.stage === 'closed_won' ? 'won' : 'lost';
+        }
+
         if (opportunityUpdates.customFields) {
             const { CustomFieldValidationService } = await import('../services/customFieldValidationService');
             await CustomFieldValidationService.validateFields('Opportunity', currentOpp.organisationId, opportunityUpdates.customFields);

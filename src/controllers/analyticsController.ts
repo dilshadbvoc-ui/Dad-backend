@@ -573,6 +573,129 @@ export const getSalesForecast = async (req: Request, res: Response) => {
     }
 };
 
+// GET /api/analytics/expected-revenue
+// Row-level backing for the Expected Revenue report (linked from the Dashboard's
+// "Exp. Revenue" tile). Unlike getSalesForecast (a single running total), this
+// returns every open deal plus a per-deal classification against the selected
+// period's close-date window, so stale-but-still-open deals ("carried forward"
+// from an earlier month) are visible instead of silently blending into one number.
+export const getExpectedRevenueReport = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        const isSuperAdmin = checkSuperAdmin(user);
+
+        if (!orgId && !isSuperAdmin) {
+            return res.status(400).json({ message: 'Organisation not found' });
+        }
+
+        const orgFilter = orgId ? { organisationId: orgId } : {};
+        const branchFilter = getBranchFilter(req);
+        const combinedFilter = { ...orgFilter, ...branchFilter };
+
+        const visibilityFilter: any = {};
+        if (!isSuperAdmin && user.role !== 'admin') {
+            const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            visibilityFilter.ownerId = { in: visibleUserIds };
+        }
+
+        // Period boundaries: explicit startDate/endDate if given (same plain-UTC-day
+        // convention getSalesBook already uses), else the current calendar month.
+        const { startDate, endDate } = req.query;
+        const now = new Date();
+        let periodStart: Date;
+        let periodEnd: Date;
+
+        if (startDate || endDate) {
+            periodStart = startDate ? new Date(String(startDate)) : new Date(now.getFullYear(), now.getMonth(), 1);
+            periodStart.setUTCHours(0, 0, 0, 0);
+            periodEnd = endDate ? new Date(String(endDate)) : new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            periodEnd.setUTCHours(23, 59, 59, 999);
+        } else {
+            periodStart = new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0));
+            periodEnd = new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999));
+        }
+
+        const openDeals = await prisma.opportunity.findMany({
+            where: {
+                ...combinedFilter,
+                stage: { notIn: ['closed_won', 'closed_lost'] },
+                isDeleted: false,
+                ...visibilityFilter
+            },
+            select: {
+                id: true,
+                name: true,
+                amount: true,
+                probability: true,
+                closeDate: true,
+                stage: true,
+                account: { select: { name: true } },
+                owner: { select: { firstName: true, lastName: true } },
+                branch: { select: { name: true } }
+            },
+            orderBy: { closeDate: 'asc' }
+        });
+
+        const summary = {
+            totalExpectedRevenue: 0,
+            currentPeriodAmount: 0,
+            currentPeriodCount: 0,
+            carriedForwardAmount: 0,
+            carriedForwardCount: 0,
+            upcomingAmount: 0,
+            upcomingCount: 0,
+            noCloseDateAmount: 0,
+            noCloseDateCount: 0
+        };
+
+        const deals = openDeals.map(d => {
+            const amount = d.amount || 0;
+            summary.totalExpectedRevenue += amount;
+
+            let status: 'current' | 'carried_forward' | 'upcoming' | 'no_date';
+            if (!d.closeDate) {
+                status = 'no_date';
+                summary.noCloseDateAmount += amount;
+                summary.noCloseDateCount++;
+            } else if (d.closeDate < periodStart) {
+                status = 'carried_forward';
+                summary.carriedForwardAmount += amount;
+                summary.carriedForwardCount++;
+            } else if (d.closeDate > periodEnd) {
+                status = 'upcoming';
+                summary.upcomingAmount += amount;
+                summary.upcomingCount++;
+            } else {
+                status = 'current';
+                summary.currentPeriodAmount += amount;
+                summary.currentPeriodCount++;
+            }
+
+            return {
+                id: d.id,
+                name: d.name,
+                customerName: d.account?.name || 'N/A',
+                ownerName: d.owner ? `${d.owner.firstName} ${d.owner.lastName}` : 'Unassigned',
+                branchName: (d as any).branch?.name || 'N/A',
+                stage: d.stage,
+                amount,
+                probability: d.probability || 0,
+                closeDate: d.closeDate,
+                status
+            };
+        });
+
+        const periodLabel = periodStart.toLocaleDateString('en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+        res.json({ periodLabel, periodStart, periodEnd, summary, deals });
+    } catch (error) {
+        console.error('getExpectedRevenueReport Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 export const getLeadSourceAnalytics = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
