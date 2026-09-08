@@ -79,35 +79,6 @@ export const MetaLeadService = {
                             }
                         });
                         metaLeadData = response.data;
-
-                        // The lead object itself has no ad_account_id field (Meta rejects it as
-                        // nonexistent on this endpoint) — that's why the STRICT AD ACCOUNT VALIDATION
-                        // below always saw it as undefined and silently skipped filtering for every
-                        // webhook-triggered lead. Resolve it via the ad object instead, which does
-                        // expose account_id.
-                        if (metaLeadData.ad_id) {
-                            try {
-                                const adResponse = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${metaLeadData.ad_id}`, {
-                                    params: { access_token: accessToken, fields: 'account_id' }
-                                });
-                                metaLeadData.ad_account_id = adResponse.data.account_id;
-                            } catch (adErr: any) {
-                                const adErrMsg = adErr.response?.data?.error?.message || adErr.message;
-                                console.warn(`[MetaLeadService] Could not resolve ad_account_id for ad ${metaLeadData.ad_id}:`, adErrMsg);
-                                // A token that can manage its own connected ad account's leads should
-                                // always be able to read its own ad's account_id. A permission error here
-                                // specifically (not a network/rate-limit blip) is the exact signature of
-                                // an ad belonging to a *different*, unconnected ad account — the same
-                                // symptom confirmed manually for the cross-account "Edufolio July 22" case.
-                                // Flag it so a strictly-filtered org treats "couldn't verify" as "foreign",
-                                // not "no filter needed" — otherwise the one case this fix targets is
-                                // exactly the case that fails open through the missing-field fallback.
-                                if (adErr.response?.data?.error?.code === 100) {
-                                    metaLeadData._adAccountLookupPermissionDenied = true;
-                                }
-                            }
-                        }
-
                         fetchedSuccess = true;
                         break;
                     } catch (e: any) {
@@ -150,62 +121,11 @@ export const MetaLeadService = {
                         continue;
                     }
 
-                    // --- STRICT AD ACCOUNT VALIDATION ---
-                    const adAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
-                    if (adAccountId) {
-                        const strAdAccountId = String(adAccountId);
-                        const normalizedLeadAdId = strAdAccountId.startsWith('act_') ? strAdAccountId : `act_${strAdAccountId}`;
-                        
-                        // 1. Check in per-account whitelist (enabledLeadSyncAccounts on metaAccounts entry)
-                        const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
-                        
-                        // 1b. ALSO check integrations.meta.enabledLeadSyncAccounts as fallback
-                        //     (the Ads Manager UI saves to this path — frontend fix deployed but
-                        //      existing orgs may still have it here only)
-                        const globalEnabledAccounts = (integrations.meta?.enabledLeadSyncAccounts as string[]) || [];
-                        const allEnabledAccounts = [...new Set([...enabledAccounts, ...globalEnabledAccounts])];
-                        
-                        const isWhitelisted = allEnabledAccounts.some((id: string) => {
-                            const strId = String(id);
-                            const normalizedId = strId.startsWith('act_') ? strId : `act_${strId}`;
-                            return normalizedId === normalizedLeadAdId;
-                        });
-
-                        // 2. Check in Main Ad Account Field (adAccountId)
-                        const mainAdAccountId = matchedAccount.adAccountId ? String(matchedAccount.adAccountId) : null;
-                        const isMainMatch = mainAdAccountId && (
-                            (mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId
-                        );
-
-                        // 3. If no whitelist is configured AND no adAccountId set,
-                        //    allow the lead (user hasn't configured filtering yet)
-                        const hasAnyFilter = allEnabledAccounts.length > 0 || !!mainAdAccountId;
-
-                        // 4. If it matches NEITHER, block it.
-                        if (hasAnyFilter && !isWhitelisted && !isMainMatch) {
-                            console.warn(`[MetaLeadService] Blocking cross-org lead. Lead ${metaLeadData.id} (AdAccount: ${normalizedLeadAdId}) does not belong to Org ${org.id}. MainAcc: ${mainAdAccountId}, Whitelist: [${allEnabledAccounts.join(',')}]`);
-                            MetaLeadGuard.releaseLock(leadgenId, org.id);
-                            continue;
-                        }
-                        if (!hasAnyFilter) {
-                            console.log(`[MetaLeadService] No ad account filter configured for Org ${org.id}. Allowing lead ${metaLeadData.id}.`);
-                        }
-                    } else {
-                        const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
-                        const globalEnabledAccounts = (integrations.meta?.enabledLeadSyncAccounts as string[]) || [];
-                        const hasAnyFilter = enabledAccounts.length > 0 || globalEnabledAccounts.length > 0 || !!matchedAccount.adAccountId;
-
-                        if (hasAnyFilter && metaLeadData._adAccountLookupPermissionDenied) {
-                            // Couldn't verify ownership specifically because Meta denied access to the
-                            // ad's own account_id — for an org that explicitly wants ad-account filtering,
-                            // "unverifiable" must mean "foreign", not "let it through".
-                            console.warn(`[MetaLeadService] Blocking lead ${metaLeadData.id} for Org ${org.id}: ad account ownership could not be verified (permission denied) and this org has ad-account filtering configured.`);
-                            MetaLeadGuard.releaseLock(leadgenId, org.id);
-                            continue;
-                        }
-                        console.log(`[MetaLeadService] Lead ${metaLeadData.id} has no ad_account_id from Meta. Proceeding without account filtering.`);
-                    }
-
+                    // Ad-account whitelist validation now lives inside saveAndDistributeLead itself
+                    // (see there for why) — this is the one chokepoint every entry path funnels
+                    // through (webhook here, the 30-min polling fallback, and manual backfills),
+                    // so putting the check there instead of duplicating it per-caller means no
+                    // future caller can silently bypass it the way polling did before this fix.
                     await this.saveAndDistributeLead(org.id, pageId, metaLeadData, formId, adId);
                     MetaLeadGuard.markSuccess(leadgenId, org.id);
                 } catch (orgErr: any) {
@@ -304,19 +224,91 @@ export const MetaLeadService = {
                 return;
             }
 
+            // Fetched once, used by both the per-campaign filter and the ad-account check below.
+            const orgForFilter = await prisma.organisation.findUnique({
+                where: { id: orgId },
+                select: { integrations: true }
+            });
+            const orgIntegrations = (orgForFilter?.integrations as any) || {};
+
             // 1b. Per-campaign sync filter — an org can opt specific campaigns OUT of lead
             // sync (Ads Manager checkbox) even while the ad account/page stays connected.
             // Absence from this list means "still enabled" so existing orgs/campaigns are
             // unaffected until someone explicitly unchecks one.
             if (metaLeadData.campaign_id) {
-                const orgForFilter = await prisma.organisation.findUnique({
-                    where: { id: orgId },
-                    select: { integrations: true }
-                });
-                const disabledCampaignIds = ((orgForFilter?.integrations as any)?.meta?.disabledLeadSyncCampaignIds as string[]) || [];
+                const disabledCampaignIds = (orgIntegrations?.meta?.disabledLeadSyncCampaignIds as string[]) || [];
                 if (disabledCampaignIds.includes(String(metaLeadData.campaign_id))) {
                     console.log(`[MetaLeadService] Lead ${leadgenId} skipped — campaign ${metaLeadData.campaign_id} is disabled for lead sync in Org ${orgId}.`);
                     return;
+                }
+            }
+
+            // 1c. Ad-account whitelist — the single enforcement point for this check, so every
+            // caller (webhook, the 30-min polling fallback, manual backfills) is covered uniformly.
+            // A lead's own object never exposes ad_account_id (Meta rejects that field there), and
+            // the polling path's /leads edge *does* include it — so only resolve it ourselves
+            // (via the ad object, which does expose account_id) when it's not already present.
+            {
+                const accounts = [...(orgIntegrations.metaAccounts || [])];
+                if (orgIntegrations.meta) accounts.push(orgIntegrations.meta);
+                const matchedAccount = accounts.find((acc: any) => acc.pageId === pageId);
+
+                const enabledAccounts = (matchedAccount?.enabledLeadSyncAccounts as string[]) || [];
+                const globalEnabledAccounts = (orgIntegrations.meta?.enabledLeadSyncAccounts as string[]) || [];
+                const allEnabledAccounts = [...new Set([...enabledAccounts, ...globalEnabledAccounts])];
+                const mainAdAccountId = matchedAccount?.adAccountId ? String(matchedAccount.adAccountId) : null;
+                const hasAnyFilter = allEnabledAccounts.length > 0 || !!mainAdAccountId;
+
+                if (hasAnyFilter && matchedAccount?.accessToken) {
+                    let resolvedAdAccountId = metaLeadData.ad_account_id || metaLeadData.ad?.account_id;
+                    let lookupPermissionDenied = false;
+                    const adIdForLookup = metaLeadData.ad_id || adId;
+
+                    if (!resolvedAdAccountId && adIdForLookup) {
+                        try {
+                            const accessToken = decrypt(matchedAccount.accessToken);
+                            const adResponse = await axios.get(`https://graph.facebook.com/v18.0/${adIdForLookup}`, {
+                                params: { access_token: accessToken, fields: 'account_id' }
+                            });
+                            resolvedAdAccountId = adResponse.data.account_id;
+                        } catch (adErr: any) {
+                            const adErrMsg = adErr.response?.data?.error?.message || adErr.message;
+                            console.warn(`[MetaLeadService] Could not resolve ad_account_id for ad ${adIdForLookup}:`, adErrMsg);
+                            // A token that can manage its own connected ad account's leads should
+                            // always be able to read its own ad's account_id. A permission error here
+                            // specifically is the exact signature of an ad belonging to a *different*,
+                            // unconnected ad account (confirmed manually for the cross-account
+                            // "Edufolio July 22" / "MT May 12" leads) — so for a strictly-filtered org,
+                            // "unverifiable" must mean "foreign", not "let it through".
+                            if (adErr.response?.data?.error?.code === 100) {
+                                lookupPermissionDenied = true;
+                            }
+                        }
+                    }
+
+                    if (resolvedAdAccountId) {
+                        const strAdAccountId = String(resolvedAdAccountId);
+                        const normalizedLeadAdId = strAdAccountId.startsWith('act_') ? strAdAccountId : `act_${strAdAccountId}`;
+
+                        const isWhitelisted = allEnabledAccounts.some((id: string) => {
+                            const strId = String(id);
+                            const normalizedId = strId.startsWith('act_') ? strId : `act_${strId}`;
+                            return normalizedId === normalizedLeadAdId;
+                        });
+                        const isMainMatch = mainAdAccountId && (
+                            (mainAdAccountId.startsWith('act_') ? mainAdAccountId : `act_${mainAdAccountId}`) === normalizedLeadAdId
+                        );
+
+                        if (!isWhitelisted && !isMainMatch) {
+                            console.warn(`[MetaLeadService] Blocking cross-account lead ${leadgenId} (AdAccount: ${normalizedLeadAdId}) for Org ${orgId}. MainAcc: ${mainAdAccountId}, Whitelist: [${allEnabledAccounts.join(',')}]`);
+                            return;
+                        }
+                    } else if (lookupPermissionDenied) {
+                        console.warn(`[MetaLeadService] Blocking lead ${leadgenId} for Org ${orgId}: ad account ownership could not be verified (permission denied) and this org has ad-account filtering configured.`);
+                        return;
+                    } else {
+                        console.log(`[MetaLeadService] Lead ${leadgenId} has no resolvable ad_account_id. Proceeding without account filtering for Org ${orgId}.`);
+                    }
                 }
             }
 
