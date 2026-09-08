@@ -72,7 +72,19 @@ export const getOpportunities = async (req: Request, res: Response) => {
                 end.setHours(23, 59, 59, 999);
                 dateFilter.lte = end;
             }
-            where.createdAt = dateFilter;
+            // For closed deals, "this month" means "closed this month" — matches the
+            // Dashboard's Won/Lost tiles (getDashboardStats filters closed opportunities
+            // by closeDate). Filtering by createdAt here instead caused deals created in
+            // one month but closed in another to silently disappear from the very list
+            // the dashboard tile links to, showing a different count than the tile.
+            // Non-closed stages keep filtering by createdAt (closeDate is often null/future
+            // for those, e.g. this page's own All Time/This Month/Last Month browsing filter).
+            const stage = req.query.stage ? String(req.query.stage) : '';
+            if (stage === 'closed_won' || stage === 'closed_lost') {
+                where.closeDate = dateFilter;
+            } else {
+                where.createdAt = dateFilter;
+            }
         }
 
         // Add filters if needed (e.g. stage, etc.) based on query params if standard match Mongoose behavior which passed `query` directly sometimes?
