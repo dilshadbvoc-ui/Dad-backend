@@ -73,14 +73,43 @@ export const MetaLeadService = {
                     try {
                         const accessToken = decrypt(matchedAccount.accessToken);
                         const response = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${leadgenId}`, {
-                            params: { 
+                            params: {
                                 access_token: accessToken,
                                 fields: 'id,created_time,field_data,ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,form_id'
                             }
                         });
                         metaLeadData = response.data;
+
+                        // The lead object itself has no ad_account_id field (Meta rejects it as
+                        // nonexistent on this endpoint) — that's why the STRICT AD ACCOUNT VALIDATION
+                        // below always saw it as undefined and silently skipped filtering for every
+                        // webhook-triggered lead. Resolve it via the ad object instead, which does
+                        // expose account_id.
+                        if (metaLeadData.ad_id) {
+                            try {
+                                const adResponse = await axios.get(`https://graph.facebook.com/${META_API_VERSION}/${metaLeadData.ad_id}`, {
+                                    params: { access_token: accessToken, fields: 'account_id' }
+                                });
+                                metaLeadData.ad_account_id = adResponse.data.account_id;
+                            } catch (adErr: any) {
+                                const adErrMsg = adErr.response?.data?.error?.message || adErr.message;
+                                console.warn(`[MetaLeadService] Could not resolve ad_account_id for ad ${metaLeadData.ad_id}:`, adErrMsg);
+                                // A token that can manage its own connected ad account's leads should
+                                // always be able to read its own ad's account_id. A permission error here
+                                // specifically (not a network/rate-limit blip) is the exact signature of
+                                // an ad belonging to a *different*, unconnected ad account — the same
+                                // symptom confirmed manually for the cross-account "Edufolio July 22" case.
+                                // Flag it so a strictly-filtered org treats "couldn't verify" as "foreign",
+                                // not "no filter needed" — otherwise the one case this fix targets is
+                                // exactly the case that fails open through the missing-field fallback.
+                                if (adErr.response?.data?.error?.code === 100) {
+                                    metaLeadData._adAccountLookupPermissionDenied = true;
+                                }
+                            }
+                        }
+
                         fetchedSuccess = true;
-                        break; 
+                        break;
                     } catch (e: any) {
                         lastError = e;
                         console.warn(`[MetaLeadService] Token for org ${candidate.id} failed, trying next...`);
@@ -162,6 +191,18 @@ export const MetaLeadService = {
                             console.log(`[MetaLeadService] No ad account filter configured for Org ${org.id}. Allowing lead ${metaLeadData.id}.`);
                         }
                     } else {
+                        const enabledAccounts = (matchedAccount.enabledLeadSyncAccounts as string[]) || [];
+                        const globalEnabledAccounts = (integrations.meta?.enabledLeadSyncAccounts as string[]) || [];
+                        const hasAnyFilter = enabledAccounts.length > 0 || globalEnabledAccounts.length > 0 || !!matchedAccount.adAccountId;
+
+                        if (hasAnyFilter && metaLeadData._adAccountLookupPermissionDenied) {
+                            // Couldn't verify ownership specifically because Meta denied access to the
+                            // ad's own account_id — for an org that explicitly wants ad-account filtering,
+                            // "unverifiable" must mean "foreign", not "let it through".
+                            console.warn(`[MetaLeadService] Blocking lead ${metaLeadData.id} for Org ${org.id}: ad account ownership could not be verified (permission denied) and this org has ad-account filtering configured.`);
+                            MetaLeadGuard.releaseLock(leadgenId, org.id);
+                            continue;
+                        }
                         console.log(`[MetaLeadService] Lead ${metaLeadData.id} has no ad_account_id from Meta. Proceeding without account filtering.`);
                     }
 

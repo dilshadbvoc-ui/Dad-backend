@@ -17,6 +17,20 @@ export const registerDeviceToken = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'fcmToken is required' });
         }
 
+        // An FCM token identifies a physical device install, not a user — if
+        // someone logs out and a different person logs into the same app on
+        // the same device, the mobile app re-registers the SAME token under
+        // the new account, but nothing previously cleared it from the old
+        // one. Both users' `fcmToken` then held the identical value, so a
+        // push meant for either account landed on this one device
+        // regardless of who was actually logged in. Clearing it from every
+        // other user first makes a token exclusive to whoever most recently
+        // registered it — exactly one account per device at a time.
+        await prisma.user.updateMany({
+            where: { fcmToken, id: { not: currentUser.id } },
+            data: { fcmToken: null, fcmTokenUpdatedAt: null }
+        });
+
         await prisma.user.update({
             where: { id: currentUser.id },
             data: { fcmToken, fcmTokenUpdatedAt: new Date() }
@@ -25,6 +39,24 @@ export const registerDeviceToken = async (req: Request, res: Response) => {
         res.json({ message: 'Device token registered' });
     } catch (error) {
         logger.error('registerDeviceToken Error', error, 'UserController');
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// POST /api/users/device-token/clear - Called on logout so this device stops
+// receiving push for the account that just signed out, rather than leaving
+// it registered until whoever logs in next on this device re-registers the
+// same token (see registerDeviceToken's cross-user cleanup for that half).
+export const clearDeviceToken = async (req: Request, res: Response) => {
+    try {
+        const currentUser = (req as any).user;
+        await prisma.user.update({
+            where: { id: currentUser.id },
+            data: { fcmToken: null, fcmTokenUpdatedAt: null }
+        });
+        res.json({ message: 'Device token cleared' });
+    } catch (error) {
+        logger.error('clearDeviceToken Error', error, 'UserController');
         res.status(500).json({ message: (error as Error).message });
     }
 };
