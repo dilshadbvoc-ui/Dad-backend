@@ -4,6 +4,7 @@ import { submitWebForm } from '../controllers/webFormController';
 import { MetaIntegrationService } from '../services/metaIntegrationService';
 import { getPublicFAQs } from '../controllers/siteFAQController';
 import { ZapierWebhookService } from '../services/zapierWebhookService';
+import { getPublicDailySummary } from '../controllers/dailySummaryController';
 
 const router = express.Router();
 
@@ -39,6 +40,13 @@ router.post('/meta/webhook', (req, res) => {
  * @desc Get active FAQs for landing page
  */
 router.get('/faqs', getPublicFAQs);
+
+/**
+ * @route GET /api/public/daily-summary/:token
+ * @desc Business-owner-facing daily report (calls + leads + revenue), linked from the
+ *       WhatsApp daily report message. Signed token is the access control.
+ */
+router.get('/daily-summary/:token', getPublicDailySummary);
 
 /**
  * @route POST /api/public/zapier/webhook/:orgId

@@ -157,6 +157,19 @@ export const initCronJobs = () => {
                             await waClient.sendTextMessage(targetPhone, managerReport);
                         }
                     }
+
+                    // 3. Gupshup daily business summary — shared platform account, always-on
+                    // whenever Contact Phone is set. Independent of the two flows above.
+                    if (org.contactPhone) {
+                        try {
+                            const { gupshupService, sendDailySummaryViaGupshup } = await import('./gupshupService');
+                            if (gupshupService.isConfigured()) {
+                                await sendDailySummaryViaGupshup(org.id, org.name, org.contactPhone);
+                            }
+                        } catch (gupshupError) {
+                            console.error(`[Cron] Error sending Gupshup daily summary for ${org.name}:`, gupshupError);
+                        }
+                    }
                 } catch (orgError) {
                     console.error(`[Cron] Error generating daily reports for ${org.name}:`, orgError);
                 }

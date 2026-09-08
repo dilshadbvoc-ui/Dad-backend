@@ -511,6 +511,18 @@ export const sendTestReport = async (req: Request, res: Response) => {
             );
         }
 
+        // Gupshup daily business summary — same always-on-if-Contact-Phone-is-set behavior as the cron job
+        if (org.contactPhone) {
+            try {
+                const { gupshupService, sendDailySummaryViaGupshup } = await import('../services/gupshupService');
+                if (gupshupService.isConfigured()) {
+                    await sendDailySummaryViaGupshup(orgId, org.name, org.contactPhone);
+                }
+            } catch (gupshupError) {
+                console.error('sendTestReport Gupshup Error:', gupshupError);
+            }
+        }
+
         res.json({ message: `Test report sent`, stats });
     } catch (error) {
         console.error('sendTestReport Error:', error);
