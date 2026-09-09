@@ -1628,11 +1628,11 @@ export const getUserDealRanking = async (req: Request, res: Response) => {
 //    in the "new" stage (i.e. nobody has worked them yet) — the same definition
 //    already used for the per-user "Unattended" column on the Performance Report
 //    (reportController.ts's getPerformanceReport, "Strictly New Leads").
-//  - noActivityLeads: leads that aren't already closed (converted/lost) and
-//    haven't been touched — no field/status update — in 30+ days, i.e. gone cold.
-//    Mirrors the threshold the Leads page's own "No Activity" quick view uses,
-//    but additionally excludes closed leads, which naturally stop changing and
-//    shouldn't be flagged as "going stale".
+//  - noActivityLeads: leads that aren't already closed (converted/lost), whose
+//    record hasn't been updated in 30+ days, AND that have no logged
+//    interaction (call/WhatsApp/email/meeting/note) in that same window either
+//    — checking both avoids false negatives from any single code path that
+//    forgets to bump the lead's updatedAt when logging an interaction.
 export const getLeadHealth = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
@@ -1666,6 +1666,9 @@ export const getLeadHealth = async (req: Request, res: Response) => {
                     isDeleted: false,
                     status: { notIn: ['converted', 'lost'] },
                     updatedAt: { lt: staleThreshold },
+                    // Confirm directly there's no call/WhatsApp/email/meeting/note in the
+                    // same window too, rather than trusting updatedAt alone.
+                    interactions: { none: { date: { gte: staleThreshold } } },
                     ...branchFilter,
                     ...visibilityFilter,
                 },

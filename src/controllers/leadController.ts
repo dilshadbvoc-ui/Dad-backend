@@ -2048,6 +2048,11 @@ export const getNoActivityLeads = async (req: express.Request, res: express.Resp
             isDeleted: false,
             status: { notIn: ['converted', 'lost'] },
             updatedAt: { lt: staleThreshold },
+            // Don't rely on updatedAt alone — it's only a proxy for "somebody touched this
+            // record" and can miss gaps in whichever code path logged the interaction.
+            // Directly confirm there's no call/WhatsApp/email/meeting/note of any kind in
+            // the same window before calling a lead "no activity".
+            interactions: { none: { date: { gte: staleThreshold } } },
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;
