@@ -1652,6 +1652,10 @@ export const getLeadHealth = async (req: Request, res: Response) => {
                     isDeleted: false,
                     status: 'new',
                     assignedToId: { not: null },
+                    // Status alone isn't enough — a lead can stay "new" while already
+                    // having real activity logged (a call made, a note added) that just
+                    // never updated the stage. Only count it if the timeline is empty.
+                    interactions: { none: {} },
                     ...branchFilter,
                     ...visibilityFilter,
                 },

@@ -1994,6 +1994,11 @@ export const getUnattendedLeads = async (req: express.Request, res: express.Resp
             isDeleted: false,
             status: 'new',
             assignedToId: { not: null },
+            // A lead can sit at status "new" while still having real activity logged
+            // against it (a rep called but hasn't updated the stage yet) — that's not
+            // actually unattended. Only flag it when the interaction timeline is
+            // genuinely empty, i.e. nobody has done anything with it at all.
+            interactions: { none: {} },
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;
