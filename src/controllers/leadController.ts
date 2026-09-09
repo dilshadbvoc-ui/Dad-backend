@@ -2013,7 +2013,9 @@ export const getUnattendedLeads = async (req: express.Request, res: express.Resp
             organisationId: orgId,
             isDeleted: false,
             status: 'new',
-            assignedToId: { not: null },
+            // Owner filter narrows WHO it's assigned to; without one, still require
+            // it to be assigned to *someone* — that's the whole definition of "unattended".
+            assignedToId: req.query.assignedTo ? (req.query.assignedTo as string) : { not: null },
             // A lead can sit at status "new" while still having real activity logged
             // against it (a rep called but hasn't updated the stage yet) — that's not
             // actually unattended. Only flag it when the interaction timeline is
@@ -2022,6 +2024,9 @@ export const getUnattendedLeads = async (req: express.Request, res: express.Resp
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;
+        if (req.query.source && Object.values(LeadSource).includes(req.query.source as LeadSource)) {
+            where.source = req.query.source as LeadSource;
+        }
         const createdAtFilter = buildCreatedAtDateFilter(req);
         if (createdAtFilter) where.createdAt = createdAtFilter;
 
@@ -2068,7 +2073,9 @@ export const getNoActivityLeads = async (req: express.Request, res: express.Resp
         const where: any = {
             organisationId: orgId,
             isDeleted: false,
-            status: { notIn: ['converted', 'lost'] },
+            // A specific stage filter narrows within the open set; without one, still
+            // exclude closed leads — those naturally stop changing and shouldn't count.
+            status: req.query.status ? (req.query.status as string) : { notIn: ['converted', 'lost'] },
             updatedAt: { lt: staleThreshold },
             // Don't rely on updatedAt alone — it's only a proxy for "somebody touched this
             // record" and can miss gaps in whichever code path logged the interaction.
@@ -2078,6 +2085,10 @@ export const getNoActivityLeads = async (req: express.Request, res: express.Resp
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;
+        if (req.query.assignedTo) where.assignedToId = req.query.assignedTo as string;
+        if (req.query.source && Object.values(LeadSource).includes(req.query.source as LeadSource)) {
+            where.source = req.query.source as LeadSource;
+        }
         const createdAtFilter = buildCreatedAtDateFilter(req);
         if (createdAtFilter) where.createdAt = createdAtFilter;
 
