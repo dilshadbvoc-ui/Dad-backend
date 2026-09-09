@@ -1,7 +1,7 @@
 import express from 'express';
 import { emitToOrg } from '../socket';
 import prisma from '../config/prisma';
-import { getOrgId, getSubordinateIds, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { getOrgId, getSubordinateIds, getVisibleUserIds, getLeadVisibilityFilter } from '../utils/hierarchyUtils';
 import { DistributionService } from '../services/distributionService';
 import { WorkflowEngine } from '../services/workflowEngine';
 import { NotificationService } from '../services/notificationService';
@@ -740,6 +740,16 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 leadId: leadId,
                 assignedToId: updates.assignedToId || currentLead.assignedToId || requester.id,
                 branchId: currentLead.branchId
+            });
+        } else if (updates.nextFollowUp === null) {
+            // User explicitly cleared the follow-up date, so defer all active follow-ups
+            await prisma.followUp.updateMany({
+                where: {
+                    leadId: leadId,
+                    isDeleted: false,
+                    status: { notIn: ['completed', 'deferred'] }
+                },
+                data: { status: 'deferred' }
             });
         }
 
@@ -1959,6 +1969,101 @@ export const getDuplicateLeads = async (req: express.Request, res: express.Respo
         });
     } catch (error) {
         console.error('getDuplicateLeads Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/leads/unattended
+// Leads that have been ASSIGNED to a rep but are still sitting in "new" — i.e.
+// nobody has worked them yet. Same definition as the "Unattended" metric on the
+// Performance Report (reportController.ts) and the Dashboard's lead-health card.
+export const getUnattendedLeads = async (req: express.Request, res: express.Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(403).json({ message: 'No organisation context' });
+
+        const pageSize = Number(req.query.pageSize) || 50;
+        const page = Number(req.query.page) || 1;
+
+        const isSuperAdminUser = user.isSuperAdmin || isSuperAdmin(user);
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdminUser);
+
+        const where: any = {
+            organisationId: orgId,
+            isDeleted: false,
+            status: 'new',
+            assignedToId: { not: null },
+            ...visibilityFilter,
+        };
+        if (req.query.branchId) where.branchId = req.query.branchId as string;
+
+        const [total, leads] = await Promise.all([
+            prisma.lead.count({ where }),
+            prisma.lead.findMany({
+                where,
+                include: {
+                    assignedTo: { select: { id: true, firstName: true, lastName: true, email: true } },
+                },
+                // Oldest-assigned-first — the longer a lead has sat untouched, the more urgent it is.
+                orderBy: { createdAt: 'asc' },
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+            }),
+        ]);
+
+        res.json({ leads, page, pages: Math.ceil(total / pageSize), total });
+    } catch (error) {
+        console.error('getUnattendedLeads Error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+// GET /api/leads/no-activity
+// Leads that aren't already closed (converted/lost) and haven't had any field/
+// status update in 30+ days — i.e. gone cold. Same definition as the
+// Dashboard's lead-health card, minus the client-side "no-activity" quick view
+// on the main Leads list (which doesn't exclude closed leads).
+export const getNoActivityLeads = async (req: express.Request, res: express.Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(403).json({ message: 'No organisation context' });
+
+        const pageSize = Number(req.query.pageSize) || 50;
+        const page = Number(req.query.page) || 1;
+
+        const isSuperAdminUser = user.isSuperAdmin || isSuperAdmin(user);
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdminUser);
+
+        const staleThreshold = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+        const where: any = {
+            organisationId: orgId,
+            isDeleted: false,
+            status: { notIn: ['converted', 'lost'] },
+            updatedAt: { lt: staleThreshold },
+            ...visibilityFilter,
+        };
+        if (req.query.branchId) where.branchId = req.query.branchId as string;
+
+        const [total, leads] = await Promise.all([
+            prisma.lead.count({ where }),
+            prisma.lead.findMany({
+                where,
+                include: {
+                    assignedTo: { select: { id: true, firstName: true, lastName: true, email: true } },
+                },
+                // Most-stale-first — the longest-untouched leads surface at the top.
+                orderBy: { updatedAt: 'asc' },
+                skip: (page - 1) * pageSize,
+                take: pageSize,
+            }),
+        ]);
+
+        res.json({ leads, page, pages: Math.ceil(total / pageSize), total });
+    } catch (error) {
+        console.error('getNoActivityLeads Error:', error);
         res.status(500).json({ message: (error as Error).message });
     }
 };
