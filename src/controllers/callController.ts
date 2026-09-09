@@ -405,6 +405,9 @@ export const getCallStats = async (req: Request, res: Response) => {
         let endDate: Date | null = null;
 
         switch (period) {
+            case 'allTime':
+                startDate = new Date(0);
+                break;
             case 'today':
                 startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 break;

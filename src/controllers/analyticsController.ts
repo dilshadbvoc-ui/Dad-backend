@@ -1255,6 +1255,8 @@ const resolvePeriodRange = (req: Request): { gte: Date; lt?: Date } => {
     const now = new Date();
 
     switch (period) {
+        case 'allTime':
+            return { gte: new Date(0) };
         case 'today':
             return { gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()) };
         case 'yesterday':
