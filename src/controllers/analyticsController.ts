@@ -1639,9 +1639,15 @@ export const getLeadHealth = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No org' });
 
-        const isSuperAdmin = checkSuperAdmin(user);
+        // Matches the same "is this user a super admin" check the corresponding
+        // /leads/unattended and /leads/no-activity list endpoints use (leadController.ts),
+        // so this count and that page's total never disagree for the same user.
+        const isSuperAdmin = user.isSuperAdmin || checkSuperAdmin(user);
         const branchFilter = getBranchFilter(req);
         const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdmin);
+        // The Dashboard's date-range filter, forwarded here the same way branch is —
+        // interpreted as "created within this window", matching the list pages.
+        const createdAtFilter = getDateFilter(req, 'createdAt') || {};
 
         const staleThreshold = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
@@ -1658,6 +1664,7 @@ export const getLeadHealth = async (req: Request, res: Response) => {
                     interactions: { none: {} },
                     ...branchFilter,
                     ...visibilityFilter,
+                    ...createdAtFilter,
                 },
             }),
             prisma.lead.count({
@@ -1671,6 +1678,7 @@ export const getLeadHealth = async (req: Request, res: Response) => {
                     interactions: { none: { date: { gte: staleThreshold } } },
                     ...branchFilter,
                     ...visibilityFilter,
+                    ...createdAtFilter,
                 },
             }),
         ]);

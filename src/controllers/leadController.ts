@@ -14,7 +14,27 @@ import { GallaboxService } from '../services/gallaboxService';
 import DuplicateLeadService from '../services/duplicateLeadService';
 // Dynamic import used for OpenAI to avoid startup errors if missing
 
-
+// Shared by the dashboard-linked lead-health list endpoints (getUnattendedLeads,
+// getNoActivityLeads) below — mirrors the IST-aware createdAt date-range logic
+// already inlined in getLeads, so a date range picked on the Dashboard filters
+// "created within this window" consistently everywhere.
+const buildCreatedAtDateFilter = (req: express.Request): { gte?: Date; lt?: Date } | null => {
+    if (!req.query.startDate && !req.query.endDate) return null;
+    const dateFilter: { gte?: Date; lt?: Date } = {};
+    if (req.query.startDate) {
+        const s = new Date(req.query.startDate as string);
+        const start = new Date(Date.UTC(s.getUTCFullYear(), s.getUTCMonth(), s.getUTCDate(), 0, 0, 0, 0));
+        start.setMinutes(start.getMinutes() - 330);
+        dateFilter.gte = start;
+    }
+    if (req.query.endDate) {
+        const e = new Date(req.query.endDate as string);
+        const end = new Date(Date.UTC(e.getUTCFullYear(), e.getUTCMonth(), e.getUTCDate() + 1, 0, 0, 0, 0));
+        end.setMinutes(end.getMinutes() - 330);
+        dateFilter.lt = end;
+    }
+    return dateFilter;
+};
 
 // GET /api/leads
 export const getLeads = async (req: express.Request, res: express.Response) => {
@@ -2002,6 +2022,8 @@ export const getUnattendedLeads = async (req: express.Request, res: express.Resp
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;
+        const createdAtFilter = buildCreatedAtDateFilter(req);
+        if (createdAtFilter) where.createdAt = createdAtFilter;
 
         const [total, leads] = await Promise.all([
             prisma.lead.count({ where }),
@@ -2056,6 +2078,8 @@ export const getNoActivityLeads = async (req: express.Request, res: express.Resp
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;
+        const createdAtFilter = buildCreatedAtDateFilter(req);
+        if (createdAtFilter) where.createdAt = createdAtFilter;
 
         const [total, leads] = await Promise.all([
             prisma.lead.count({ where }),
