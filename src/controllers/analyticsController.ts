@@ -1621,3 +1621,56 @@ export const getUserDealRanking = async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 };
+
+// GET /api/analytics/lead-health
+// Two industry-standard "needs attention" lead counts for the Dashboard:
+//  - unattendedLeads: leads that have been ASSIGNED to a rep but are still sitting
+//    in the "new" stage (i.e. nobody has worked them yet) — the same definition
+//    already used for the per-user "Unattended" column on the Performance Report
+//    (reportController.ts's getPerformanceReport, "Strictly New Leads").
+//  - noActivityLeads: leads that aren't already closed (converted/lost) and
+//    haven't been touched — no field/status update — in 30+ days, i.e. gone cold.
+//    Mirrors the threshold the Leads page's own "No Activity" quick view uses,
+//    but additionally excludes closed leads, which naturally stop changing and
+//    shouldn't be flagged as "going stale".
+export const getLeadHealth = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+        if (!orgId) return res.status(400).json({ message: 'No org' });
+
+        const isSuperAdmin = checkSuperAdmin(user);
+        const branchFilter = getBranchFilter(req);
+        const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdmin);
+
+        const staleThreshold = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+        const [unattendedLeads, noActivityLeads] = await Promise.all([
+            prisma.lead.count({
+                where: {
+                    organisationId: orgId,
+                    isDeleted: false,
+                    status: 'new',
+                    assignedToId: { not: null },
+                    ...branchFilter,
+                    ...visibilityFilter,
+                },
+            }),
+            prisma.lead.count({
+                where: {
+                    organisationId: orgId,
+                    isDeleted: false,
+                    status: { notIn: ['converted', 'lost'] },
+                    updatedAt: { lt: staleThreshold },
+                    ...branchFilter,
+                    ...visibilityFilter,
+                },
+            }),
+        ]);
+
+        res.json({ unattendedLeads, noActivityLeads });
+    } catch (error) {
+        console.error('getLeadHealth error:', error);
+        res.status(500).json({ message: (error as Error).message });
+    }
+};

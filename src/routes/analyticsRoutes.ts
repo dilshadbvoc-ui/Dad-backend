@@ -17,6 +17,7 @@ import {
     getBranchPerformance,
     getUserTrendsSummary,
     getUserDealRanking,
+    getLeadHealth,
     getExpectedRevenueReport
 } from '../controllers/analyticsController';
 import { protect } from '../middleware/authMiddleware';
@@ -42,5 +43,6 @@ router.get('/opportunity-pipeline-value', protect, getOpportunityPipelineValue);
 router.get('/branch-performance', protect, getBranchPerformance);
 router.get('/user-trends-summary', protect, getUserTrendsSummary);
 router.get('/user-deal-ranking', protect, getUserDealRanking);
+router.get('/lead-health', protect, getLeadHealth);
 
 export default router;
