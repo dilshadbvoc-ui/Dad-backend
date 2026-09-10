@@ -269,15 +269,18 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 }
             }),
 
-            // Active and Total Opportunities
-            prisma.opportunity.count({ 
-                where: { 
-                    ...combinedFilter, 
-                    isDeleted: false, 
-                    stage: { notIn: ['closed_won', 'closed_lost'] }, 
-                    ...oppVisibilityFilter,
-                    ...(oppDateFilter ? oppDateFilter : {})
-                } 
+            // Active Opportunities — a live snapshot of everything currently open, not a
+            // per-period slice, so a deal opened before the selected range but still open
+            // ("carried forward") must still count. Deliberately NOT applying oppDateFilter
+            // here, matching getOpportunities' 'expected' stage and getExpectedRevenueReport,
+            // both of which never date-filter their own open-deals query for the same reason.
+            prisma.opportunity.count({
+                where: {
+                    ...combinedFilter,
+                    isDeleted: false,
+                    stage: { notIn: ['closed_won', 'closed_lost'] },
+                    ...oppVisibilityFilter
+                }
             }),
             prisma.opportunity.count({ 
                 where: { 

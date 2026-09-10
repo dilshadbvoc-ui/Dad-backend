@@ -79,10 +79,18 @@ export const getOpportunities = async (req: Request, res: Response) => {
             // the dashboard tile links to, showing a different count than the tile.
             // Non-closed stages keep filtering by createdAt (closeDate is often null/future
             // for those, e.g. this page's own All Time/This Month/Last Month browsing filter).
+            //
+            // The "expected" pipeline view is the one exception: it's a live snapshot of
+            // everything currently open, not a per-period slice — a deal opened in an
+            // earlier month that's still open ("carried forward") is still part of today's
+            // pipeline. Filtering it by createdAt hid those deals whenever a date range
+            // was applied (e.g. the Dashboard's "Pipeline" tile deep-links here with the
+            // current month range), which is exactly what getExpectedRevenueReport already
+            // avoids by never date-filtering its own open-deals query.
             const stage = req.query.stage ? String(req.query.stage) : '';
             if (stage === 'closed_won' || stage === 'closed_lost') {
                 where.closeDate = dateFilter;
-            } else {
+            } else if (stage !== 'expected') {
                 where.createdAt = dateFilter;
             }
         }
