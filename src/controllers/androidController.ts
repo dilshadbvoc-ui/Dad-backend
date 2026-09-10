@@ -725,10 +725,23 @@ export const syncCallLogs = async (req: Request, res: Response) => {
         }
         console.log(`[BulkSync] In-memory deduplicated incoming calls list from ${calls.length} entries to ${uniqueCalls.length} unique entries`);
 
-        const results: { synced: string[]; skipped: number; errors: number } = {
+        // syncedHardwareIds/failedHardwareIds echo back the client's own (un-namespaced)
+        // hardwareId per entry so the caller can tell exactly which queued events actually
+        // made it, instead of inferring "everything" from a bare 200 — see BackendApi.bulkSync
+        // and CallSyncWorker in Dad-call-recorder's call_recording_engine, which previously
+        // marked its *entire* local retry queue synced (and deleted it) off nothing more than
+        // an overall 2xx, silently losing any entry this endpoint legitimately skipped.
+        const results: { synced: string[]; skipped: number; errors: number; syncedHardwareIds: string[]; failedHardwareIds: string[] } = {
             synced: [],
             skipped: calls.length - uniqueCalls.length, // Pre-increment skipped counts for duplicate calls
-            errors: 0
+            errors: 0,
+            syncedHardwareIds: [],
+            failedHardwareIds: []
+        };
+
+        const trackHardwareId = (rawId: string | undefined | null, outcome: 'synced' | 'failed') => {
+            if (!rawId || rawId === 'none') return;
+            (outcome === 'synced' ? results.syncedHardwareIds : results.failedHardwareIds).push(rawId);
         };
 
         for (const call of uniqueCalls) {
@@ -736,6 +749,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
             const hardwareId = (rawHardwareId && rawHardwareId !== 'none' && !rawHardwareId.includes('_')) ? `${user.id}_${rawHardwareId}` : rawHardwareId;
             if (!phoneNumber) {
                 results.skipped++;
+                trackHardwareId(rawHardwareId, 'failed');
                 continue;
             }
 
@@ -754,6 +768,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
 
                 if (last10.length === 0) {
                     results.skipped++;
+                    trackHardwareId(rawHardwareId, 'failed');
                     continue;
                 }
 
@@ -768,6 +783,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 if (!entity && !canSyncUnknown && !isMissed) {
                     // Not a CRM number and sync disabled — skip silently
                     results.skipped++;
+                    trackHardwareId(rawHardwareId, 'failed');
                     continue;
                 }
 
@@ -974,8 +990,13 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         }
 
                         results.synced.push(phoneNumber);
+                        trackHardwareId(rawHardwareId, 'synced');
                     } else {
+                        // Not worth updating (existing record already has equal-or-better
+                        // data), but the call IS already represented server-side — the
+                        // caller's queue entry is done, not failed.
                         results.skipped++;
+                        trackHardwareId(rawHardwareId, 'synced');
                     }
                     continue;
                 }
@@ -1060,6 +1081,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                     });
                     if (hwGuard) {
                         results.synced.push(phoneNumber);
+                        trackHardwareId(rawHardwareId, 'synced');
                         continue;
                     }
                 }
@@ -1130,6 +1152,7 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                         }
                     });
                     results.synced.push(phoneNumber);
+                    trackHardwareId(rawHardwareId, 'synced');
                     continue; // skip callRecording and interaction create below
                 }
 
@@ -1202,12 +1225,18 @@ export const syncCallLogs = async (req: Request, res: Response) => {
                 }
 
                 results.synced.push(phoneNumber);
+                trackHardwareId(rawHardwareId, 'synced');
             } catch (entryError: any) {
                 if (entryError.code === 'P2002') {
+                    // Unique-constraint hit — a concurrent request (e.g. the real-time
+                    // Tier 0 upload) already created this same record. Already represented
+                    // server-side, so this is a success for the caller's queue, not a failure.
                     results.skipped++;
+                    trackHardwareId(rawHardwareId, 'synced');
                 } else {
                     console.error(`[BulkSync] Error processing entry:`, entryError);
                     results.errors++;
+                    trackHardwareId(rawHardwareId, 'failed');
                 }
             } finally {
                 if (lockKey) {
@@ -1222,7 +1251,13 @@ export const syncCallLogs = async (req: Request, res: Response) => {
             synced: results.synced.length,
             skipped: results.skipped,
             errors: results.errors,
-            syncedNumbers: results.synced
+            syncedNumbers: results.synced,
+            // Per-entry correlation (client's own un-namespaced hardwareId) so a caller with
+            // a local retry queue can tell exactly which entries actually landed, instead of
+            // assuming "all of them" from this being a 200. See Dad-call-recorder's
+            // BackendApi.bulkSync/CallSyncWorker.
+            syncedHardwareIds: results.syncedHardwareIds,
+            failedHardwareIds: results.failedHardwareIds
         });
     } catch (error) {
         console.error('[BulkSync] CRITICAL ERROR:', error);
