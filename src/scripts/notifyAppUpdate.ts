@@ -1,26 +1,40 @@
 /**
- * Pushes an "update available" notification to every mobile user with a
- * registered FCM token (`User.fcmToken`), cross-organisation — app releases
- * aren't tenant-scoped, so this deliberately isn't org-filtered like
- * `broadcastNotification` (that endpoint is an unrelated org-admin
- * announcement feature, no push, not reused here).
+ * Common notify step for both app platforms — shares one script/CLI shape
+ * with `publishRelease.ts` (`<platform> ...`) so `publish_release.sh` can
+ * call this unconditionally after every publish instead of branching on
+ * platform itself.
  *
- * Goes through `NotificationService.send()` (type: 'app_update') so each
- * recipient gets both the in-app bell notification AND a real FCM push —
- * the mobile app's `PushNotificationsController` recognizes
- * `data.type === 'app_update'` specifically: if the app is in the
- * foreground it re-checks for an update and shows the dialog immediately
- * (no relaunch needed); if backgrounded/killed, tapping the system
- * notification deep-links straight to the in-app Updates screen.
+ * `platform=mobile`: pushes an "update available" notification to every
+ * user with a registered FCM token (`User.fcmToken`), cross-organisation —
+ * app releases aren't tenant-scoped, so this deliberately isn't org-filtered
+ * like `broadcastNotification` (that endpoint is an unrelated org-admin
+ * announcement feature, no push, not reused here). Goes through
+ * `NotificationService.send()` (type: 'app_update') so each recipient gets
+ * both the in-app bell notification AND a real FCM push — the mobile app's
+ * `PushNotificationsController` recognizes `data.type === 'app_update'`
+ * specifically: if the app is in the foreground it re-checks for an update
+ * and shows the dialog immediately (no relaunch needed); if
+ * backgrounded/killed, tapping the system notification deep-links straight
+ * to the in-app Updates screen.
+ *
+ * `platform=helper`: a deliberate no-op, not an oversight. Dad-call-recorder
+ * (PypeCRM Helper) has no Firebase/FCM integration at all — no token to
+ * push to, and no in-app bell UI to show a CRM `Notification` row in even
+ * if we created one — so there is nothing this script could actually
+ * deliver. Its `UpdateCheckerOverlay` already polls the release manifest on
+ * every app open and pops the same update dialog without any push needed;
+ * this branch just says so instead of silently doing nothing or (worse)
+ * pretending to have notified someone.
  *
  * Run AFTER `publishRelease.ts` has actually published the new version —
  * this only notifies, it doesn't check or change what's published.
- * `publish_release.sh` calls this automatically for `platform=mobile`; run
- * `notify_app_update.sh <versionName>` by hand to re-nudge stragglers
- * later without publishing anything new.
+ * `publish_release.sh` calls this automatically after every publish; run
+ * `notify_app_update.sh <platform> <versionName>` by hand to re-nudge
+ * mobile stragglers later without publishing anything new.
  *
  * Usage:
- *   npx tsx src/scripts/notifyAppUpdate.ts <versionName>
+ *   npx tsx src/scripts/notifyAppUpdate.ts <platform> <versionName>
+ *   <platform> must be "mobile" or "helper"
  */
 import prisma from '../config/prisma';
 import { NotificationService } from '../services/notificationService';
@@ -34,10 +48,19 @@ function chunk<T>(items: T[], size: number): T[][] {
 }
 
 async function main() {
-    const [versionName] = process.argv.slice(2);
-    if (!versionName) {
-        console.error('Usage: npx tsx src/scripts/notifyAppUpdate.ts <versionName>');
+    const [platform, versionName] = process.argv.slice(2);
+    if (!platform || !versionName || !['mobile', 'helper'].includes(platform)) {
+        console.error('Usage: npx tsx src/scripts/notifyAppUpdate.ts <platform> <versionName>');
+        console.error('  <platform> must be "mobile" or "helper"');
         process.exit(1);
+    }
+
+    if (platform === 'helper') {
+        console.log(
+            'PypeCRM Helper has no push notifications wired up — nothing to send. ' +
+            'Its in-app update popup already checks on every app open, so no action is needed here.'
+        );
+        return;
     }
 
     const users = await prisma.user.findMany({
