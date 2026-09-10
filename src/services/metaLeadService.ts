@@ -243,6 +243,26 @@ export const MetaLeadService = {
                 }
             }
 
+            // 1b-2. Per-account campaign ALLOWLIST — the inverse of the opt-out list above.
+            // Some orgs share a Page with unrelated campaigns run through the same Facebook
+            // Business/ad account on Meta's side (e.g. Edufolio's Page is also used to run
+            // wholly unrelated "IQED"/"UNIVERSITY" campaigns for a different business) — the
+            // ad-account whitelist below can't distinguish them since they're the same account.
+            // When a metaAccounts[] entry sets allowedCampaignIds, ONLY those campaign IDs may
+            // sync through that specific page for this org; everything else is blocked, even if
+            // it shares the same ad account. Absence of this field means "no restriction" so
+            // every other org/account is unaffected.
+            if (metaLeadData.campaign_id) {
+                const accountsForAllowlist = [...(orgIntegrations.metaAccounts || [])];
+                if (orgIntegrations.meta) accountsForAllowlist.push(orgIntegrations.meta);
+                const matchedAccountForAllowlist = accountsForAllowlist.find((acc: any) => acc.pageId === pageId);
+                const allowedCampaignIds = (matchedAccountForAllowlist?.allowedCampaignIds as string[]) || [];
+                if (allowedCampaignIds.length > 0 && !allowedCampaignIds.includes(String(metaLeadData.campaign_id))) {
+                    console.log(`[MetaLeadService] Lead ${leadgenId} skipped — campaign ${metaLeadData.campaign_id} is not in the allowed campaign list for page ${pageId} in Org ${orgId}.`);
+                    return;
+                }
+            }
+
             // 1c. Ad-account whitelist — the single enforcement point for this check, so every
             // caller (webhook, the 30-min polling fallback, manual backfills) is covered uniformly.
             // A lead's own object never exposes ad_account_id (Meta rejects that field there), and
