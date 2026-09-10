@@ -436,6 +436,19 @@ export const createLead = async (req: express.Request, res: express.Response) =>
         // This allows assignment rules to work for automated leads, but respects manual assignments
         if (!assignedTo) {
             await DistributionService.assignLead(lead, orgId);
+        } else if (assignedTo !== currentUser.id) {
+            // Manual assignment at creation time (e.g. an admin creating a
+            // lead and handing it straight to a rep) previously never
+            // notified the assignee at all — only reassignment via
+            // `updateLead` did. Same message convention as that path; no
+            // notification when the creator assigns the lead to themself.
+            const leadName = `${lead.firstName} ${lead.lastName || ''}`.trim();
+            NotificationService.send(
+                leadOwnerId,
+                'New Lead Assigned',
+                `Lead "${leadName}" has been assigned to you by ${currentUser.firstName}.`,
+                'info'
+            ).catch(console.error);
         }
 
         // Trigger Workflow Engine for lead creation
@@ -1153,6 +1166,12 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                 }
 
                 let finalOwnerId = targetOwnerId;
+                // `DistributionService.assignLead` already notifies the
+                // assignee itself (see `notifyUser`, called on all of its
+                // success/fallback branches) — track when that path was
+                // taken so the notification added below isn't sent twice
+                // for the same lead.
+                let assignedViaDistribution = false;
 
                 if (splitIds.length > 0) {
                     finalOwnerId = splitIds[splitIndex % splitIds.length];
@@ -1165,6 +1184,7 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                         ruleId,
                         user.id // Importer fallback
                     ) || undefined;
+                    assignedViaDistribution = true;
                 }
 
                 // Robust Status and Stage Resolution for Bulk Creation
@@ -1229,6 +1249,20 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                 import('../services/leadScoringService').then(({ LeadScoringService }) => {
                     LeadScoringService.scoreLead(lead.id).catch(console.error);
                 });
+
+                // Notify the assignee — only for an explicit/split
+                // assignment (`assignedViaDistribution` already handled its
+                // own notification internally) and only when it's not the
+                // importer assigning the row to themself.
+                if (!assignedViaDistribution && finalAssignedTo !== user.id) {
+                    const leadName = `${lead.firstName} ${lead.lastName || ''}`.trim();
+                    NotificationService.send(
+                        finalAssignedTo,
+                        'New Lead Assigned',
+                        `Lead "${leadName}" has been assigned to you (bulk import).`,
+                        'info'
+                    ).catch(console.error);
+                }
 
                 createdCount++;
             } catch (error: any) {

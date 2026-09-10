@@ -98,6 +98,7 @@ export const DistributionService = {
                     });
 
                     console.log(`[DistributionService] Lead ${lead.id} assigned to fallback owner ${finalFallbackId}`);
+                    this.notifyUser(finalFallbackId, lead, organisationId);
                 }
 
                 return finalFallbackId || null;
@@ -283,6 +284,7 @@ export const DistributionService = {
                         });
 
                         // Don't increment quota for manager - they'll manually reassign
+                        this.notifyUser(managerId, lead, organisationId);
                         console.log(`[DistributionService] Escalated to manager ${managerId} for manual assignment`);
                         return managerId;
                     }
@@ -319,7 +321,8 @@ export const DistributionService = {
                             reason: 'Auto-assigned to admin (no matching campaign rules found)'
                         }
                     });
-                    
+
+                    this.notifyUser(orgAdmin.id, lead, organisationId);
                     return orgAdmin.id;
                 }
             }
@@ -809,7 +812,14 @@ export const DistributionService = {
     },
 
     /**
-     * Notify user of new lead assignment via WhatsApp
+     * Notify user of new lead assignment — CRM/native (push + in-app) is
+     * always attempted first, independent of the WhatsApp text below (which
+     * only fires if this user has a phone on file AND the org has WhatsApp
+     * connected). Previously the CRM notification was placed AFTER those
+     * two WhatsApp preconditions and returned early before ever reaching
+     * it, so any rep with no phone number, or any org without WhatsApp
+     * configured, silently got no notification at all for auto-assigned
+     * leads.
      */
     async notifyUser(userId: string, lead: any, organisationId: string) {
         try {
@@ -817,6 +827,13 @@ export const DistributionService = {
                 where: { id: userId },
                 select: { phone: true, firstName: true }
             });
+
+            await NotificationService.send(
+                userId,
+                'New Lead Assigned (Auto)',
+                `You have been auto-assigned a new lead: ${lead.firstName} ${lead.lastName}`,
+                'info'
+            );
 
             if (!user?.phone) return;
 
@@ -829,15 +846,7 @@ export const DistributionService = {
             const message = `Hi ${user.firstName}, New Lead Assigned!\n\nName: ${lead.firstName} ${lead.lastName}\nCompany: ${lead.company || 'N/A'}\n\nPlease check the CRM for details.`;
 
             await waClient.sendTextMessage(user.phone, message);
-            console.log(`[DistributionService] Notification sent to ${user.phone}`);
-
-            // Also send CRM/Native notification
-            await NotificationService.send(
-                userId,
-                'New Lead Assigned (Auto)',
-                `You have been auto-assigned a new lead: ${lead.firstName} ${lead.lastName}`,
-                'info'
-            );
+            console.log(`[DistributionService] WhatsApp notification sent to ${user.phone}`);
 
         } catch (error) {
             console.error('[DistributionService] Failed to notify user:', error);
