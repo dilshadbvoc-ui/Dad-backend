@@ -677,7 +677,25 @@ export const deleteTarget = async (req: Request, res: Response) => {
 export const getSubordinates = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
-        const subordinates = await getDirectReports(user.id);
+        const orgId = getOrgId(user);
+        const isAdminUser = user.isSuperAdmin || user.role === 'super_admin' || user.role === 'admin';
+
+        let subordinates;
+        if (isAdminUser) {
+            // Admins can assign targets to anyone in the organisation, not just their direct reports.
+            subordinates = await prisma.user.findMany({
+                where: { organisationId: orgId, isActive: true, id: { not: user.id } },
+                select: { id: true, firstName: true, lastName: true }
+            });
+        } else {
+            // Everyone else gets their full reporting downline (recursive), not just direct reports.
+            const subordinateIds = await getSubordinateIdsRecursive(user.id);
+            subordinates = await prisma.user.findMany({
+                where: { id: { in: subordinateIds }, isActive: true },
+                select: { id: true, firstName: true, lastName: true }
+            });
+        }
+
         res.json({ subordinates });
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
