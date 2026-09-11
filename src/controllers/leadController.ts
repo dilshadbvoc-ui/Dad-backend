@@ -824,6 +824,24 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
         if (updates.assignedToId) leadUpdates.assignedToId = updates.assignedToId;
         if (updates.branchId) leadUpdates.branchId = updates.branchId;
 
+        // Whether this request actually changes anything vs. what's already stored — a
+        // client stuck resubmitting the same payload (e.g. a runaway autosave loop) should
+        // still succeed as a no-op, but must not re-fire hierarchy-wide notifications on
+        // every call. Seen in production: two users' clients hammered this endpoint with
+        // identical payloads hundreds of times per second, flooding one branch manager with
+        // 17,000+ "Lead Updated" notifications since nothing here was gated on real change.
+        const hasRealChange = Object.keys(leadUpdates).some((field) => {
+            const before = (currentLead as any)[field];
+            const after = leadUpdates[field];
+            if (before instanceof Date || after instanceof Date) {
+                return new Date(before as any).getTime() !== new Date(after as any).getTime();
+            }
+            if (typeof before === 'object' || typeof after === 'object') {
+                return JSON.stringify(before) !== JSON.stringify(after);
+            }
+            return before !== after;
+        });
+
         // Update Lead Basic Info
         const [lead] = await prisma.$transaction([
             prisma.lead.update({
@@ -961,13 +979,16 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
         import('../services/notificationService').then(({ NotificationService }) => {
             const leadName = `${finalLead.firstName} ${finalLead.lastName || ''}`.trim();
 
-            // 1. Hierarchy Notification (existing)
-            NotificationService.sendToHierarchy(
-                requester.id,
-                'Lead Updated',
-                `${requester.firstName} updated lead: ${leadName}`,
-                'info'
-            ).catch(console.error);
+            // 1. Hierarchy Notification (existing) — only for requests that actually changed
+            // something (see hasRealChange above); a no-op resubmission shouldn't notify anyone.
+            if (hasRealChange) {
+                NotificationService.sendToHierarchy(
+                    requester.id,
+                    'Lead Updated',
+                    `${requester.firstName} updated lead: ${leadName}`,
+                    'info'
+                ).catch(console.error);
+            }
 
             // 2. Owner Notification for Status Change
             if (updates.status && updates.status !== currentLead.status) {
