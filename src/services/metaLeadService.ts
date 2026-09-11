@@ -252,14 +252,28 @@ export const MetaLeadService = {
             // sync through that specific page for this org; everything else is blocked, even if
             // it shares the same ad account. Absence of this field means "no restriction" so
             // every other org/account is unaffected.
-            if (metaLeadData.campaign_id) {
+            {
                 const accountsForAllowlist = [...(orgIntegrations.metaAccounts || [])];
                 if (orgIntegrations.meta) accountsForAllowlist.push(orgIntegrations.meta);
                 const matchedAccountForAllowlist = accountsForAllowlist.find((acc: any) => acc.pageId === pageId);
                 const allowedCampaignIds = (matchedAccountForAllowlist?.allowedCampaignIds as string[]) || [];
-                if (allowedCampaignIds.length > 0 && !allowedCampaignIds.includes(String(metaLeadData.campaign_id))) {
-                    console.log(`[MetaLeadService] Lead ${leadgenId} skipped — campaign ${metaLeadData.campaign_id} is not in the allowed campaign list for page ${pageId} in Org ${orgId}.`);
-                    return;
+
+                if (allowedCampaignIds.length > 0) {
+                    // Meta doesn't always return campaign_id on a lead object (seen even while
+                    // campaign_name is present, e.g. "IQED" leads coming through with a null
+                    // campaign_id) — gating this check behind `if (metaLeadData.campaign_id)`
+                    // meant every such lead silently skipped the allowlist entirely and leaked
+                    // through. For a strictly-allowlisted account, "unverifiable" must mean
+                    // "not allowed", not "let it through" — same fail-closed principle already
+                    // used for the ad-account whitelist's permission-denied case below.
+                    if (!metaLeadData.campaign_id) {
+                        console.log(`[MetaLeadService] Lead ${leadgenId} skipped — no campaign_id on the lead payload and page ${pageId} in Org ${orgId} is restricted to specific campaigns.`);
+                        return;
+                    }
+                    if (!allowedCampaignIds.includes(String(metaLeadData.campaign_id))) {
+                        console.log(`[MetaLeadService] Lead ${leadgenId} skipped — campaign ${metaLeadData.campaign_id} is not in the allowed campaign list for page ${pageId} in Org ${orgId}.`);
+                        return;
+                    }
                 }
             }
 
