@@ -1656,6 +1656,25 @@ export const getLeadHealth = async (req: Request, res: Response) => {
 
         const staleThreshold = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
+        // `interactions: { none: {} }` (no filter conditions inside `none`) compiles
+        // to an UNCORRELATED, ORG-UNSCOPED `NOT IN (SELECT leadId FROM Interaction
+        // WHERE leadId IS NOT NULL)` — i.e. it scans/builds a set from EVERY
+        // organisation's Interaction rows platform-wide, not just this org's, which
+        // timed out in production once that table grew large (confirmed: ~30s on a
+        // real org, vs ~3s with this two-step version). Prisma only generates an
+        // efficient correlated NOT EXISTS when `none`'s filter is non-empty (see
+        // `noActivityLeads` below, which was never slow for exactly that reason).
+        // Fetching this org's own interacted lead ids first (via `Interaction.
+        // organisationId`, already indexed) and excluding them via `id: { notIn }`
+        // avoids the bad codegen entirely while returning identical results.
+        const interactedLeadIds = (
+            await prisma.interaction.findMany({
+                where: { organisationId: orgId, leadId: { not: null } },
+                select: { leadId: true },
+                distinct: ['leadId'],
+            })
+        ).map((i) => i.leadId as string);
+
         const [unattendedLeads, noActivityLeads] = await Promise.all([
             prisma.lead.count({
                 where: {
@@ -1666,7 +1685,7 @@ export const getLeadHealth = async (req: Request, res: Response) => {
                     // Status alone isn't enough — a lead can stay "new" while already
                     // having real activity logged (a call made, a note added) that just
                     // never updated the stage. Only count it if the timeline is empty.
-                    interactions: { none: {} },
+                    id: { notIn: interactedLeadIds },
                     ...branchFilter,
                     ...visibilityFilter,
                     ...createdAtFilter,

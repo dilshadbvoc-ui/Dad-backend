@@ -2043,6 +2043,22 @@ export const getUnattendedLeads = async (req: express.Request, res: express.Resp
         const isSuperAdminUser = user.isSuperAdmin || isSuperAdmin(user);
         const visibilityFilter = await getLeadVisibilityFilter(user, isSuperAdminUser);
 
+        // `interactions: { none: {} }` (no filter conditions inside `none`) compiles
+        // to an UNCORRELATED, ORG-UNSCOPED `NOT IN (SELECT leadId FROM Interaction
+        // WHERE leadId IS NOT NULL)` — scanning every organisation's Interaction rows
+        // platform-wide, not just this org's. That's what was timing out this page in
+        // production. Fetching this org's own interacted lead ids first (via
+        // `Interaction.organisationId`, already indexed) and excluding them via
+        // `id: { notIn }` avoids the bad codegen — see the identical fix + longer
+        // explanation on `getLeadHealth` in analyticsController.ts.
+        const interactedLeadIds = (
+            await prisma.interaction.findMany({
+                where: { organisationId: orgId, leadId: { not: null } },
+                select: { leadId: true },
+                distinct: ['leadId'],
+            })
+        ).map((i) => i.leadId as string);
+
         const where: any = {
             organisationId: orgId,
             isDeleted: false,
@@ -2054,7 +2070,7 @@ export const getUnattendedLeads = async (req: express.Request, res: express.Resp
             // against it (a rep called but hasn't updated the stage yet) — that's not
             // actually unattended. Only flag it when the interaction timeline is
             // genuinely empty, i.e. nobody has done anything with it at all.
-            interactions: { none: {} },
+            id: { notIn: interactedLeadIds },
             ...visibilityFilter,
         };
         if (req.query.branchId) where.branchId = req.query.branchId as string;

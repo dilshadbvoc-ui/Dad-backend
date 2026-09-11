@@ -760,6 +760,18 @@ model Interaction {
   @@index([branchId])
   @@index([organisationId])
   @@index([organisationId, createdAt])
+  // Backs the `interactions: { none: {...} } ` relational filter used by
+  // the Dashboard's Lead Health tiles (`getLeadHealth` in
+  // analyticsController.ts) and their click-through list endpoints
+  // (`getUnattendedLeads`/`getNoActivityLeads` in leadController.ts) —
+  // both compile to a correlated NOT EXISTS subquery keyed on `leadId`.
+  // Without this, Postgres had to sequentially scan the entire
+  // (org-wide, potentially tens of thousands of rows) Interaction table
+  // once per candidate Lead, which is what was timing out the mobile
+  // app's "Unattended"/"No Activity" screens. Leading column `leadId`
+  // also covers the plain `interactions: { none: {} }` (no date filter)
+  // case the "unattended" query uses.
+  @@index([leadId, date])
 }
 
 model CalendarEvent {
