@@ -183,6 +183,11 @@ export class ImportJobService {
                         } else if (crmField === 'notes') {
                             if (!leadData.customFields) leadData.customFields = {};
                             leadData.customFields.importNotes = value;
+                        } else if (crmField === 'campaignName') {
+                            // Stored under sourceDetails (not a top-level column) so it lines up
+                            // with the Meta webhook / API ingestion paths, which is what
+                            // Assignment Rules and the Leads table's Campaign column read from.
+                            leadData.sourceDetails = { ...(leadData.sourceDetails || {}), campaignName: value };
                         } else if (crmField.startsWith('address.')) {
                             const addressField = crmField.split('.')[1];
                             leadData.address[addressField] = value;

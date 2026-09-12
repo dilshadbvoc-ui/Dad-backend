@@ -79,6 +79,7 @@ export const ZapierWebhookService = {
             const country = getField(['country', 'location', 'region']);
             const city = getField(['city', 'town']);
             const source = getField(['source', 'lead_source', 'lead source', 'utm_source']);
+            const campaignName = getField(['campaign_name', 'campaignname', 'campaign', 'utm_campaign', 'ad_name', 'form_name']);
 
             // Geo detection from phone
             let geoData = null;
@@ -117,6 +118,7 @@ export const ZapierWebhookService = {
                 source: source || 'zapier',
                 sourceDetails: {
                     zapier: true,
+                    campaignName: campaignName || undefined,
                     rawPayload: payload,
                     receivedAt: new Date().toISOString()
                 },
