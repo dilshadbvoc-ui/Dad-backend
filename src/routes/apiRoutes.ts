@@ -18,12 +18,18 @@ router.post('/leads', verifyApiKey, async (req, res) => {
     console.log(`[LeadAPI][${REQUEST_ID}] Step 1: Request Received at ${new Date().toISOString()}`);
     
     try {
-        const { firstName, lastName, name, email, phone, company, message, enquiryDetails, msg, comments, notes, payload_message, source, branchId, assignedToId } = req.body;
+        const { firstName, lastName, name, email, phone, company, message, enquiryDetails, msg, comments, notes, payload_message, source, branchId, assignedToId, campaignName, campaign_name, campaign, adName, ad_name, formName, form_name } = req.body;
         const user = (req as any).user;
         const orgId = user?.organisationId;
 
         // NUCLEAR FALLBACK: Exhaustive list of possible message fields
         const resolvedMessage = message || enquiryDetails || msg || comments || notes || payload_message || "";
+
+        // Campaign name — needed so Assignment Rules (which key off sourceDetails.campaignName)
+        // and the lead table's Campaign column can see it. Without this, leads posted here
+        // (e.g. via a Zapier/Make bridge from Meta Ads) silently fall through every
+        // campaign-based assignment rule with no way to tell why.
+        const resolvedCampaignName = campaignName || campaign_name || campaign || adName || ad_name || formName || form_name || "";
 
         console.log(`[LeadAPI][${REQUEST_ID}] Step 2: Context - Org: ${orgId}, User: ${user?.id}`);
         console.log(`[LeadAPI][${REQUEST_ID}] FULL DATA TRACE: ${JSON.stringify(req.body)}`);
@@ -89,10 +95,11 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                     phone: cleanPhone,
                     company,
                     source: resolvedSource,
-                    sourceDetails: { 
+                    sourceDetails: {
                         message: resolvedMessage,
                         originalSource: originalSourceLabel,
-                        rawPayload: req.body 
+                        campaignName: resolvedCampaignName || undefined,
+                        rawPayload: req.body
                     }
                 },
                 orgId
@@ -137,10 +144,11 @@ router.post('/leads', verifyApiKey, async (req, res) => {
                 organisationId: orgId,
                 branchId: branchId || undefined,
                 assignedToId: assignedToId || undefined,
-                sourceDetails: { 
+                sourceDetails: {
                     message: resolvedMessage,
                     originalSource: originalSourceLabel,
-                    rawPayload: req.body 
+                    campaignName: resolvedCampaignName || undefined,
+                    rawPayload: req.body
                 }
             }
         });

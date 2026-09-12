@@ -1186,6 +1186,13 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     geoData = GeoLocationService.detectCountryFromPhone(cleanPhone);
                 }
 
+                // Normalize campaign info once so both rule-matching (below) and the
+                // created lead itself (which previously dropped this entirely) agree
+                // on the same sourceDetails.campaignName that assignment rules key on.
+                const finalSourceDetails = l.sourceDetails || (l.campaignName || l.campaign
+                    ? { campaignName: l.campaignName || l.campaign }
+                    : undefined);
+
                 let finalOwnerId = targetOwnerId;
                 // `DistributionService.assignLead` already notifies the
                 // assignee itself (see `notifyUser`, called on all of its
@@ -1200,7 +1207,7 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                 } else if (!finalOwnerId && applyRules) {
                     const { DistributionService } = await import('../services/distributionService');
                     finalOwnerId = await DistributionService.assignLead(
-                        { ...l, id: undefined, branchId: targetBranchId || undefined },
+                        { ...l, sourceDetails: finalSourceDetails, id: undefined, branchId: targetBranchId || undefined },
                         orgId,
                         ruleId,
                         user.id // Importer fallback
@@ -1244,7 +1251,11 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     status: finalStatus,
                     leadScore: l.leadScore ? parseInt(l.leadScore.toString()) : 0,
                     stage: finalStage || undefined,
-                    createdBy: { connect: { id: user.id } }
+                    createdBy: { connect: { id: user.id } },
+                    // Preserve campaign info from the import row so it's visible on the lead
+                    // afterward (Campaign column, lead detail) and so campaign-based
+                    // assignment rules can match against it, same as the live Meta webhook does.
+                    sourceDetails: finalSourceDetails
                 };
 
                 // Connect to branch if available
