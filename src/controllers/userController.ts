@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { logger } from '../utils/logger';
 import prisma from '../config/prisma';
-import { getOrgId, getVisibleUserIds } from '../utils/hierarchyUtils';
+import { getOrgId, getVisibleUserIds, wouldCreateReportingCycle } from '../utils/hierarchyUtils';
 // UserRole import removed
 import { logAudit } from '../utils/auditLogger';
 import { isAdmin } from '../utils/roleUtils';
@@ -430,6 +430,13 @@ export const updateUser = async (req: Request, res: Response) => {
         if (updateData.reportsTo) {
             if (updateData.reportsTo === userId) {
                 return res.status(400).json({ message: 'User cannot report to themselves' });
+            }
+            // Beyond the direct self-report case above: walk the proposed manager's own
+            // chain upward to make sure it doesn't loop back to this user (e.g. A -> B,
+            // then later reassigning B -> A). A cycle leaves everyone in it invisible in
+            // the org chart (see wouldCreateReportingCycle's doc comment).
+            if (await wouldCreateReportingCycle(userId, updateData.reportsTo as string)) {
+                return res.status(400).json({ message: 'This would create a circular reporting structure' });
             }
             const manager = await prisma.user.findUnique({ where: { id: updateData.reportsTo as string } });
             if (!manager) return res.status(400).json({ message: 'Manager not found' });

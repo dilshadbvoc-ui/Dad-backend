@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { getOrgId } from '../utils/hierarchyUtils';
+import { getOrgId, wouldCreateReportingCycle } from '../utils/hierarchyUtils';
 
 export const getHierarchy = async (req: Request, res: Response) => {
     try {
@@ -67,6 +67,15 @@ export const updateReportsTo = async (req: Request, res: Response) => {
     try {
         const { reportsTo } = req.body;
         const userId = req.params.id;
+
+        if (reportsTo) {
+            if (reportsTo === userId) {
+                return res.status(400).json({ message: 'User cannot report to themselves' });
+            }
+            if (await wouldCreateReportingCycle(userId, reportsTo)) {
+                return res.status(400).json({ message: 'This would create a circular reporting structure' });
+            }
+        }
 
         const user = await prisma.user.update({
             where: { id: userId },

@@ -35,6 +35,39 @@ export const getSubordinateIds = async (userId: string): Promise<string[]> => {
 };
 
 /**
+ * Checks whether setting `userId`'s manager to `newManagerId` would create a circular
+ * reporting chain (e.g. A -> B -> A, or any longer loop) — not just the trivial
+ * "reports to themselves" case. Walks upward from the proposed new manager through
+ * reportsToId; if that walk ever reaches `userId`, connecting them would close a loop.
+ *
+ * This matters beyond just data hygiene: a cycle leaves every member in it with no
+ * "top" — buildHierarchyTree on the frontend (settings/team) only roots a member when
+ * they have no manager or their manager isn't in the loaded list, so a cyclic pair
+ * never qualifies as a root and silently vanishes from the org chart instead of
+ * erroring, which is what was reported as "hierarchy shows blank for some users."
+ */
+export const wouldCreateReportingCycle = async (userId: string, newManagerId: string): Promise<boolean> => {
+    if (userId === newManagerId) return true;
+
+    const visited = new Set<string>();
+    let currentId: string | null = newManagerId;
+
+    while (currentId) {
+        if (currentId === userId) return true;
+        if (visited.has(currentId)) return false; // pre-existing loop upstream, not one we're creating
+        visited.add(currentId);
+
+        const current: { reportsToId: string | null } | null = await prisma.user.findUnique({
+            where: { id: currentId },
+            select: { reportsToId: true }
+        });
+        currentId = current?.reportsToId ?? null;
+    }
+
+    return false;
+};
+
+/**
  * Safely extracts the Organisation ID as a string from a user object.
  * Handles both Prisma objects (flat or included) and potential legacy inputs.
  */
