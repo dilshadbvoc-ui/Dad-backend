@@ -62,9 +62,12 @@ export class FollowUpNotificationService {
     private static async send30MinuteReminders(now: Date) {
         try {
             // Calculate time window: 0-45 minutes from now (inclusive of missed ones)
-            // Dedup guard: don't re-fire if already sent within the last 25 minutes
-            // (was: 1 hour — caused repeat storm as the guard reset every hour)
-            const twentyFiveMinsAgo = new Date(now.getTime() - 25 * 60 * 1000);
+            // Dedup guard: don't re-fire if already sent within the last 40 minutes.
+            // This must safely exceed 2x the cron interval (15 min): at 25 minutes, a
+            // follow-up first notified 45 minutes out would fall outside the reuse
+            // window by the time it's re-checked 30 minutes later (two ticks on), so
+            // it fired again — the exact repeat-storm this guard was meant to prevent.
+            const dedupWindowAgo = new Date(now.getTime() - 40 * 60 * 1000);
             const fortyFiveMinsFromNow = new Date(now.getTime() + 45 * 60 * 1000);
 
             console.log(`[FollowUpNotificationService] Checking 30-min reminders due before ${fortyFiveMinsFromNow.toISOString()}`);
@@ -83,7 +86,7 @@ export class FollowUpNotificationService {
                     isDeleted: false,
                     OR: [
                         { notified30MinAt: null },
-                        { notified30MinAt: { lt: twentyFiveMinsAgo } }
+                        { notified30MinAt: { lt: dedupWindowAgo } }
                     ]
                 },
                 include: {
@@ -137,6 +140,34 @@ export class FollowUpNotificationService {
             for (const item of allReminders) {
                 if (!item.assignedToId) continue;
 
+                // Atomically claim this item before sending anything: re-apply the exact
+                // same eligibility condition used in the query above as an updateMany
+                // WHERE clause. If another process (or an overlapping run of this same
+                // job) already claimed it between the query and here, `count` comes back
+                // 0 and we skip — this is what actually prevents duplicate sends, since
+                // the earlier find-then-update-after-sending order left a window where
+                // two concurrent runs could both see "not yet notified" and both send.
+                const claim = item.type === 'task'
+                    ? await prisma.task.updateMany({
+                        where: {
+                            id: item.id,
+                            OR: [{ notified30MinAt: null }, { notified30MinAt: { lt: dedupWindowAgo } }]
+                        },
+                        data: { notified30MinAt: now, notifiedAt: now }
+                    })
+                    : await prisma.followUp.updateMany({
+                        where: {
+                            id: item.id,
+                            OR: [{ notified30MinAt: null }, { notified30MinAt: { lt: dedupWindowAgo } }]
+                        },
+                        data: { notified30MinAt: now, notifiedAt: now }
+                    });
+
+                if (claim.count === 0) {
+                    console.log(`[FollowUpNotificationService] Skipped 30-min reminder for ${item.type} ${item.id} — already claimed by a concurrent run`);
+                    continue;
+                }
+
                 // Format the related entity name
                 let relatedName = 'Unknown';
                 if (item.lead) {
@@ -179,19 +210,6 @@ export class FollowUpNotificationService {
 
                     console.log(`[FollowUpNotificationService] Sent 30-min reminder to manager ${item.assignedTo.reportsToId} for ${item.type} ${item.id}`);
                 }
-
-                // Update notified30MinAt to prevent duplicates
-                if (item.type === 'task') {
-                    await prisma.task.update({
-                        where: { id: item.id },
-                        data: { notified30MinAt: now, notifiedAt: now }
-                    });
-                } else {
-                    await prisma.followUp.update({
-                        where: { id: item.id },
-                        data: { notified30MinAt: now, notifiedAt: now }
-                    });
-                }
             }
         } catch (error) {
             console.error('[FollowUpNotificationService] Error in send30MinuteReminders:', error);
@@ -204,12 +222,14 @@ export class FollowUpNotificationService {
      */
     private static async sendDayOfReminders(now: Date) {
         try {
-            // Calculate time window: from 2 hours ago up to 15 minutes from now
-            // This catches missed notifications while preventing duplicates via notifiedAt
+            // Calculate time window: from 2 hours ago up to now.
+            // Was previously extended 15 minutes into the future, which meant a
+            // follow-up not yet due got a "Due Now"/"due at X" notification up to
+            // 15 minutes early (confirmed: a follow-up due at 9:30 had notifiedDueAt
+            // stamped at 9:15). "Due" should only ever mean the due time has passed.
             const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-            const fifteenMinsFromNow = new Date(now.getTime() + 15 * 60 * 1000);
 
-            console.log(`[FollowUpNotificationService] Checking for day-of reminders due between ${twoHoursAgo.toISOString()} and ${fifteenMinsFromNow.toISOString()}`);
+            console.log(`[FollowUpNotificationService] Checking for day-of reminders due between ${twoHoursAgo.toISOString()} and ${now.toISOString()}`);
 
             // Find tasks (disabled as task module is removed)
             const tasks: any[] = [];
@@ -219,7 +239,7 @@ export class FollowUpNotificationService {
                 where: {
                     dueDate: {
                         gte: twoHoursAgo,
-                        lte: fifteenMinsFromNow
+                        lte: now
                     },
                     status: { notIn: ['completed', 'deferred'] },
                     isDeleted: false,
@@ -279,6 +299,30 @@ export class FollowUpNotificationService {
             for (const item of allReminders) {
                 if (!item.assignedToId || !item.dueDate) continue;
 
+                // Atomically claim this item before sending — see the matching comment
+                // in send30MinuteReminders for why this has to happen before, not after,
+                // the notification sends.
+                const claim = item.type === 'task'
+                    ? await prisma.task.updateMany({
+                        where: {
+                            id: item.id,
+                            OR: [{ notifiedDueAt: null }, { notifiedDueAt: { lt: twoHoursAgo } }]
+                        },
+                        data: { notifiedDueAt: now, notifiedAt: now }
+                    })
+                    : await prisma.followUp.updateMany({
+                        where: {
+                            id: item.id,
+                            OR: [{ notifiedDueAt: null }, { notifiedDueAt: { lt: twoHoursAgo } }]
+                        },
+                        data: { notifiedDueAt: now, notifiedAt: now }
+                    });
+
+                if (claim.count === 0) {
+                    console.log(`[FollowUpNotificationService] Skipped day-of reminder for ${item.type} ${item.id} — already claimed by a concurrent run`);
+                    continue;
+                }
+
                 const taskDueTime = new Date(item.dueDate);
 
                 // Format the related entity name
@@ -322,19 +366,6 @@ export class FollowUpNotificationService {
                     );
 
                     console.log(`[FollowUpNotificationService] Sent day-of reminder to manager ${item.assignedTo.reportsToId} for ${item.type} ${item.id}`);
-                }
-
-                // Update notifiedDueAt to prevent duplicates
-                if (item.type === 'task') {
-                    await prisma.task.update({
-                        where: { id: item.id },
-                        data: { notifiedDueAt: now, notifiedAt: now }
-                    });
-                } else {
-                    await prisma.followUp.update({
-                        where: { id: item.id },
-                        data: { notifiedDueAt: now, notifiedAt: now }
-                    });
                 }
             }
         } catch (error) {
