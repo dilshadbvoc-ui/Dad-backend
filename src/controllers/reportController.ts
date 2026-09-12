@@ -210,38 +210,51 @@ export const getUserPerformance = async (req: Request, res: Response) => {
 
 /**
  * Get sales book data with time period filter
- * Query params: period (day|week|month|year)
+ * Query params: EITHER period (day|week|month|year|all) OR explicit
+ * startDate/endDate — the explicit dates take priority when given (same
+ * "explicit range wins over the preset" convention as getDashboardStats'
+ * getDateFilter and getUserPerformance/getLeadsReport above), so a caller
+ * can filter to an exact calendar month, "All Time", or an arbitrary
+ * custom range instead of only the four fixed trailing-window presets.
  */
 export const getSalesBook = async (req: Request, res: Response) => {
     try {
         const user = (req as any).user;
         const orgId = getOrgId(user);
         const subordinateIds = await getSubordinateIds(user.id);
-        const { period = 'month', branchId } = req.query;
+        const { period = 'month', branchId, startDate: startDateParam, endDate: endDateParam } = req.query;
 
         const now = new Date();
-        const startDate = new Date();
+        let startDate: Date | null = new Date();
+        let endDate: Date = now;
 
-        switch (period) {
-            case 'day':
-                startDate.setHours(0, 0, 0, 0);
-                break;
-            case 'week':
-                startDate.setDate(now.getDate() - 7);
-                break;
-            case 'month':
-                startDate.setMonth(now.getMonth() - 1);
-                break;
-            case 'year':
-                startDate.setFullYear(now.getFullYear() - 1);
-                break;
+        if (startDateParam || endDateParam) {
+            startDate = startDateParam ? new Date(startDateParam as string) : null;
+            endDate = endDateParam ? new Date(endDateParam as string) : now;
+        } else if (period === 'all') {
+            startDate = null;
+        } else {
+            switch (period) {
+                case 'day':
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'week':
+                    startDate.setDate(now.getDate() - 7);
+                    break;
+                case 'month':
+                    startDate.setMonth(now.getMonth() - 1);
+                    break;
+                case 'year':
+                    startDate.setFullYear(now.getFullYear() - 1);
+                    break;
+            }
         }
 
         const where: any = {
             organisationId: orgId as string,
             stage: 'closed_won',
             isDeleted: false,
-            updatedAt: { gte: startDate }
+            ...(startDate ? { updatedAt: { gte: startDate, lte: endDate } } : {})
         };
 
         if (branchId) where.branchId = branchId as string;
