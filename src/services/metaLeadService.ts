@@ -277,6 +277,27 @@ export const MetaLeadService = {
                 }
             }
 
+            // 1b-3. Per-form opt-out — confirmed against Meta's Graph API directly (both the
+            // single-leadgen GET and the form's /leads list edge) that campaign_id/campaign_name/
+            // ad_id are simply never returned at all for at least one of Edufolio's "IQED"-branded
+            // forms on the MT Vlog page, even though allowedCampaignIds was already configured and
+            // should fail-closed on a missing campaign_id (see 1b-2 above). form_id, unlike
+            // campaign_id, IS always present on every lead payload from every path (webhook,
+            // polling, and the leadgen_forms listing used to build this data) — so filtering by the
+            // handful of "wrong business" form IDs is the one mechanism that can't silently degrade
+            // to a no-op the way campaign-based filtering can for forms Meta won't attribute.
+            const formIdForFilter = metaLeadData.form_id || formId;
+            if (formIdForFilter) {
+                const accountsForFormFilter = [...(orgIntegrations.metaAccounts || [])];
+                if (orgIntegrations.meta) accountsForFormFilter.push(orgIntegrations.meta);
+                const matchedAccountForFormFilter = accountsForFormFilter.find((acc: any) => acc.pageId === pageId);
+                const disabledFormIds = (matchedAccountForFormFilter?.disabledLeadSyncFormIds as string[]) || [];
+                if (disabledFormIds.includes(String(formIdForFilter))) {
+                    console.log(`[MetaLeadService] Lead ${leadgenId} skipped — form ${formIdForFilter} is disabled for lead sync on page ${pageId} in Org ${orgId}.`);
+                    return;
+                }
+            }
+
             // 1c. Ad-account whitelist — the single enforcement point for this check, so every
             // caller (webhook, the 30-min polling fallback, manual backfills) is covered uniformly.
             // A lead's own object never exposes ad_account_id (Meta rejects that field there), and
