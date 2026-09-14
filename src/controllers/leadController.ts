@@ -1132,9 +1132,12 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                 // Sanitize phone: keep all digits for the service to handle normalization
                 let cleanPhone = l.phone?.toString().replace(/\D/g, '') || '';
 
-                // Resolve owner and branch EARLY to correctly isolate duplicate check
+                // Resolve owner and branch EARLY. `explicitBranchId` tracks whether THIS row
+                // actually named a branch/owner (as opposed to just falling back to the
+                // importer's own branch) — that distinction matters below: a row with no
+                // branch signal of its own should never move an existing lead to a
+                // different branch, it should just land back with whoever already owns it.
                 let targetOwnerId = l.assignedTo || l.assignedToId;
-                let targetBranchId = l.branchId || user.branchId;
 
                 // Resolution via ownerEmail if provided in import
                 if (!targetOwnerId && l.ownerEmail && typeof l.ownerEmail === 'string') {
@@ -1142,28 +1145,62 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     if (resolvedId) targetOwnerId = resolvedId;
                 }
 
+                let explicitBranchId: string | undefined = l.branchId || undefined;
+
                 // If specific user resolved, sync branch with them
                 if (targetOwnerId) {
                     const assignedUser = await prisma.user.findUnique({
                         where: { id: targetOwnerId },
                         select: { branchId: true }
                     });
-                    if (assignedUser?.branchId) targetBranchId = assignedUser.branchId;
+                    if (assignedUser?.branchId) explicitBranchId = explicitBranchId || assignedUser.branchId;
                 }
 
-                // Check for duplicates in the RESOLVED branch
+                let targetBranchId = explicitBranchId || user.branchId;
+
+                // Duplicate detection is intentionally ORG-WIDE for bulk import, not scoped
+                // to targetBranchId — branch-scoped detection is right for genuine walk-ins,
+                // but for imports (which routinely re-upload the same contacts under a
+                // different source label or branch guess) it just lets the same person get
+                // re-created once per branch/source combination. See handleReEnquiry below
+                // for how a genuinely-different branch on the row is still respected.
                 const DuplicateLeadService = (await import('../services/duplicateLeadService')).default;
                 const duplicateCheck = await DuplicateLeadService.checkDuplicate(
-                    cleanPhone, 
-                    l.email, 
-                    orgId, 
-                    targetBranchId || undefined
+                    cleanPhone,
+                    l.email,
+                    orgId,
+                    targetBranchId || undefined,
+                    true // includeAllBranches
                 );
 
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
+                    const existingLead = duplicateCheck.existingLead;
+                    // Only actually move branch/owner when this row explicitly names one
+                    // AND it's genuinely different from where the lead already sits —
+                    // "not branch specific" (explicitBranchId unset) always keeps the
+                    // current owner, matching the default re-enquiry behavior.
+                    const movingToNewBranch = !!explicitBranchId && explicitBranchId !== existingLead.branchId;
+
+                    let newOwnerId: string | undefined;
+                    if (movingToNewBranch) {
+                        // Prefer an explicitly-named owner/ownerEmail for this row; otherwise
+                        // auto-distribute within the new branch the same way a fresh lead
+                        // would be, so it doesn't just land on the importer by default.
+                        newOwnerId = targetOwnerId || undefined;
+                        if (!newOwnerId) {
+                            const { DistributionService } = await import('../services/distributionService');
+                            newOwnerId = await DistributionService.assignLead(
+                                { ...l, id: undefined, branchId: explicitBranchId },
+                                orgId,
+                                undefined,
+                                user.id
+                            ) || undefined;
+                        }
+                    }
+
                     // Handle as re-enquiry
                     await DuplicateLeadService.handleReEnquiry(
-                        duplicateCheck.existingLead,
+                        existingLead,
                         {
                             firstName: l.firstName,
                             lastName: l.lastName || '',
@@ -1172,7 +1209,8 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                             company: l.company,
                             enquiryAbout: l.enquiryAbout,
                             source: l.source || 'import',
-                            sourceDetails: l.sourceDetails
+                            sourceDetails: l.sourceDetails,
+                            ...(movingToNewBranch ? { newBranchId: explicitBranchId, newOwnerId } : {})
                         },
                         orgId
                     );

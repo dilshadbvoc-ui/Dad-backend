@@ -17,6 +17,14 @@ interface ReEnquiryData {
     stage?: string;
     source?: string;
     sourceDetails?: any;
+    // Set only when the caller explicitly wants to move the lead to a different
+    // branch/owner (e.g. a bulk import row that names a specific branch different
+    // from where the existing lead already sits). When omitted, the existing
+    // lead's owner and branch are left exactly as they are — the default and by
+    // far the more common case, since most re-enquiries should land back with
+    // whoever already has the relationship, not get silently reassigned.
+    newBranchId?: string;
+    newOwnerId?: string;
 }
 
 export const DuplicateLeadService = {
@@ -188,6 +196,13 @@ export const DuplicateLeadService = {
                 ? (newData.stage ? newData.stage.toLowerCase() : 're_enquiry')
                 : existingLead.status;
 
+            // Only actually move branch/owner when the caller asked to AND it's a
+            // genuine change — an explicit newBranchId equal to the current one (or a
+            // newOwnerId equal to the current owner) shouldn't generate no-op history
+            // entries or a "reassigned" notification for nothing changing.
+            const movingBranch = !!newData.newBranchId && newData.newBranchId !== existingLead.branchId;
+            const movingOwner = !!newData.newOwnerId && newData.newOwnerId !== existingLead.assignedToId;
+
             // Update existing lead with latest contact info if provided
             const updatedLead = await prisma.lead.update({
                 where: { id: existingLead.id },
@@ -199,6 +214,8 @@ export const DuplicateLeadService = {
                     status: newStatus,
                     stage: newData.stage || existingLead.stage,
                     isReEnquiry: true,
+                    ...(movingBranch ? { branchId: newData.newBranchId } : {}),
+                    ...(movingOwner ? { assignedToId: newData.newOwnerId, previousOwnerId: existingLead.assignedToId } : {}),
                     isDeleted: false, // Restore if it was deleted
                     reEnquiryCount: { increment: 1 },
                     lastEnquiryDate: now,
@@ -259,8 +276,34 @@ export const DuplicateLeadService = {
                 }
             });
 
-            // Notify the assigned owner
-            if (updatedLead.assignedToId) {
+            // A branch/owner move gets its own explicit history entry, separate from the
+            // generic re-enquiry note above, so "why did this lead change hands" is
+            // answerable from the timeline alone.
+            if (movingOwner || movingBranch) {
+                await prisma.leadHistory.create({
+                    data: {
+                        leadId: existingLead.id,
+                        oldOwnerId: movingOwner ? existingLead.assignedToId : undefined,
+                        newOwnerId: movingOwner ? newData.newOwnerId : undefined,
+                        reason: `Re-enquiry moved to a different branch during import (${newData.source || 'import'})`,
+                        createdAt: now
+                    }
+                });
+            }
+
+            if (movingOwner) {
+                // Ownership actually changed — this reads as a fresh assignment to the new
+                // owner, not a "your old lead enquired again" alert (they don't own it anymore).
+                if (updatedLead.assignedToId) {
+                    const { NotificationService } = await import('./notificationService');
+                    await NotificationService.send(
+                        updatedLead.assignedToId,
+                        'New Lead Assigned',
+                        `${updatedLead.firstName} ${updatedLead.lastName || ''} (a re-enquiry, reassigned to your branch) has been assigned to you.`,
+                        'success'
+                    );
+                }
+            } else if (updatedLead.assignedToId) {
                 await this.notifyOwner(updatedLead, organisationId);
             }
 

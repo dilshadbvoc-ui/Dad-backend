@@ -312,13 +312,21 @@ export class ImportJobService {
                         delete leadData.ownerEmail;
                     }
 
-                    // Check for duplicates using DuplicateLeadService
+                    // Check for duplicates using DuplicateLeadService — org-wide, not scoped to
+                    // this row's branch. Branch-scoped detection is right for genuine
+                    // walk-ins, but an import routinely re-uploads the same contacts under a
+                    // different branch/source, so scoping the check would just let the same
+                    // person get re-created once per branch. `leadData.branchId` here is only
+                    // ever set from an explicit choice (job-level branchId or an ownerEmail
+                    // that resolved to a specific branch) — used below to decide whether this
+                    // row is actually asking to move an existing lead to a new branch.
                     const { DuplicateLeadService } = await import('./duplicateLeadService');
                     const duplicateCheck = await DuplicateLeadService.checkDuplicate(
                         leadData.phone,
                         leadData.email,
                         job.organisationId,
-                        branchId || undefined
+                        leadData.branchId || undefined,
+                        true // includeAllBranches
                     );
 
                     if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
@@ -328,9 +336,29 @@ export class ImportJobService {
                             continue;
                         }
 
+                        const existingLead = duplicateCheck.existingLead;
+                        // Only move branch/owner when this row explicitly named one AND it
+                        // genuinely differs from where the lead already sits — otherwise the
+                        // re-enquiry lands back with whoever already owns it, unchanged.
+                        const movingToNewBranch = !!leadData.branchId && leadData.branchId !== existingLead.branchId;
+
+                        let newOwnerId: string | undefined;
+                        if (movingToNewBranch) {
+                            newOwnerId = leadData.assignedToId || undefined;
+                            if (!newOwnerId) {
+                                const { DistributionService } = await import('./distributionService');
+                                newOwnerId = await DistributionService.assignLead(
+                                    { ...leadData, id: undefined },
+                                    job.organisationId,
+                                    undefined,
+                                    job.createdById
+                                ) || undefined;
+                            }
+                        }
+
                         // Default: Handle as re-enquiry instead of creating duplicate
                         await DuplicateLeadService.handleReEnquiry(
-                            duplicateCheck.existingLead,
+                            existingLead,
                             {
                                 firstName: leadData.firstName,
                                 lastName: leadData.lastName,
@@ -339,7 +367,8 @@ export class ImportJobService {
                                 company: leadData.company,
                                 stage: leadData.stage,
                                 source: 'import',
-                                sourceDetails: { importJobId: jobId }
+                                sourceDetails: { importJobId: jobId },
+                                ...(movingToNewBranch ? { newBranchId: leadData.branchId, newOwnerId } : {})
                             },
                             job.organisationId
                         );
