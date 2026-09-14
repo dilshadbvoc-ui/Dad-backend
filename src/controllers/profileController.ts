@@ -57,12 +57,41 @@ export const changePassword = async (req: Request, res: Response) => {
         const userId = (req as any).user.id;
         const { currentPassword, newPassword } = req.body;
 
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Current password and new password are required' });
+        }
+
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Current password is incorrect' });
+        }
+
+        // Was accepting any string here, including empty/trivial ones —
+        // registration enforces PasswordValidator (12+ chars, mixed case,
+        // number, special char, no common sequences) via authController.ts,
+        // but this endpoint let a user quietly downgrade to a weak password
+        // any time after signup. Same check, same response shape (message +
+        // errors + suggestions), so the mobile/web change-password forms can
+        // render it identically to the signup form's validation.
+        const { PasswordValidator } = await import('../utils/passwordValidator');
+        const passwordValidation = PasswordValidator.validate(newPassword, [
+            user.email || '',
+            user.firstName || '',
+            user.lastName || ''
+        ]);
+        if (!passwordValidation.isValid) {
+            return res.status(400).json({
+                message: 'Password does not meet security requirements',
+                errors: passwordValidation.errors,
+                suggestions: passwordValidation.suggestions
+            });
+        }
+
+        if (newPassword === currentPassword) {
+            return res.status(400).json({ message: 'New password must be different from your current password' });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
