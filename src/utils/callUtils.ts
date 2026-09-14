@@ -22,17 +22,27 @@ export function getAudioDuration(filePath: string): number {
 }
 
 /**
- * Utility to resolve the best duration for a call based on multiple sources.
- * Priority: Hardware (Carrier) > Recording (File) > Duration (Estimated)
- * 
+ * Utility to resolve the best duration for a call.
+ *
+ * Deliberately does NOT consider `recordingDuration` (how long the audio
+ * recorder happened to capture) at all — it's not a reliable proxy for how
+ * long the call actually lasted. The recorder can be killed/interrupted
+ * mid-call (battery optimization, storage full, silence auto-stop, a
+ * permission revoked mid-call, etc.), which previously made a completed
+ * 20-minute call whose recorder cut out at 9 minutes get reported as a
+ * 9-minute call. `duration` — sourced from the device's own
+ * `CallLog.DURATION` on both sync paths (`CallLogLookup.kt` for the
+ * real-time path, `CallLogReconciler.kt` for the periodic sweep, in
+ * Dad-call-recorder) — is the OS's own authoritative record of the real
+ * call length and is trusted on its own. `hardwareDuration`
+ * (carrier-verified) still wins outright when present, being a strictly
+ * more authoritative source than even the device's own CallLog.
+ *
  * @returns Duration in seconds
  */
 export function resolveBestDurationSeconds(interaction: Partial<Interaction> | any): number {
     if (interaction.hardwareDuration && interaction.hardwareDuration > 0) {
         return interaction.hardwareDuration;
-    }
-    if (interaction.recordingDuration && interaction.recordingDuration > 0) {
-        return interaction.recordingDuration;
     }
     if (interaction.duration && interaction.duration > 0) {
         return Math.round(interaction.duration * 60);
