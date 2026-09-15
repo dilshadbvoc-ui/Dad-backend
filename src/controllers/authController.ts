@@ -8,12 +8,16 @@ import bcrypt from 'bcryptjs';
 import { logAudit } from '../utils/auditLogger';
 import { EmailService } from '../services/emailService';
 import { validatePassword } from '../utils/passwordValidator';
+import { createSession, listSessions, revokeSessionById } from '../services/sessionService';
 
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
 export const authUser = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    // Optional — only the mobile app sends these (see AuthRepository.login
+    // in Dad-mobile). Absent on web logins, which is fine: `platform` just
+    // stays null and the Devices screen falls back to a generic label for it.
+    const { email, password, platform, deviceName, appVersion } = req.body;
     console.log('Login attempt for:', email);
 
     if (!email || !password) {
@@ -63,6 +67,12 @@ export const authUser = async (req: Request, res: Response) => {
                 });
             }
 
+            const sessionId = await createSession(user.id, user.organisationId, req, {
+                platform: platform || (req.headers['user-agent'] ? 'web' : undefined),
+                deviceName,
+                appVersion,
+            });
+
             res.json({
                 _id: user.id, // Keep _id for frontend compatibility if needed
                 id: user.id,
@@ -76,7 +86,7 @@ export const authUser = async (req: Request, res: Response) => {
                 isBranchManager,
                 organisation: user.organisation,
                 branchId: user.branchId,
-                token: generateToken(user.id, user.tokenVersion),
+                token: generateToken(user.id, user.tokenVersion, sessionId),
             });
         } else {
             console.log(`Login FAILED for: ${email}`);
@@ -192,6 +202,8 @@ export const registerUser = async (req: Request, res: Response) => {
                 details: { companyName, email }
             });
 
+            const sessionId = await createSession(user.id, org.id, req, { platform: 'web' });
+
             res.status(201).json({
                 _id: user.id,
                 id: user.id,
@@ -201,7 +213,7 @@ export const registerUser = async (req: Request, res: Response) => {
                 role: user.role,
                 organisationId: org.id,
                 branchId: user.branchId,
-                token: generateToken(user.id, user.tokenVersion),
+                token: generateToken(user.id, user.tokenVersion, sessionId),
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -394,6 +406,62 @@ export const getMe = async (req: Request, res: Response) => {
             organisation: user.organisation,
             branchId: user.branchId,
         });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * @desc    List every device/session this user is currently logged into
+ *          (Settings > Devices on mobile — "where all is my account
+ *          logged in")
+ * @route   GET /api/auth/sessions
+ * @access  Private
+ */
+export const getSessions = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const sessions = await listSessions(user.id);
+        res.json(
+            sessions.map((s) => ({
+                id: s.id,
+                platform: s.platform,
+                deviceName: s.deviceName,
+                appVersion: s.appVersion,
+                ipAddress: s.ipAddress,
+                createdAt: s.createdAt,
+                lastActiveAt: s.lastActiveAt,
+                isCurrentDevice: s.id === user.sessionId,
+            }))
+        );
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * @desc    Remotely sign out one device — the session's token 401s on its
+ *          very next request (see `protect`), which every client already
+ *          treats as "log me out" (Dad-mobile's Dio interceptor calls
+ *          `forceLogout()` on any 401).
+ * @route   DELETE /api/auth/sessions/:id
+ * @access  Private
+ */
+export const revokeSession = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        const { id } = req.params;
+
+        // Ownership check — a user must never be able to revoke someone
+        // else's session by guessing/enumerating an id.
+        const session = await prisma.userSession.findUnique({ where: { id } });
+        if (!session || session.userId !== user.id) {
+            res.status(404).json({ message: 'Session not found' });
+            return;
+        }
+
+        await revokeSessionById(id);
+        res.json({ message: 'Signed out', wasCurrentDevice: id === user.sessionId });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

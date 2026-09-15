@@ -133,6 +133,7 @@ model User {
   assignedCases               Case[]                 @relation("CaseAssignee")
   createdCases                Case[]                 @relation("CaseCreator")
   checkIns                    CheckIn[]
+  sessions                    UserSession[]
   ownedContacts               Contact[]              @relation("ContactOwner")
   createdCustomFields         CustomField[]          @relation("CustomFieldCreator")
   createdDocTemplates         DocumentTemplate[]     @relation("DocTemplateCreator")
@@ -248,6 +249,40 @@ model Notification {
   @@index([recipientId, createdAt])
   @@index([recipientId, isRead, createdAt])
   @@index([recipientId, isRead, organisationId])
+}
+
+// One row per login — backs the mobile app's Settings > Devices screen
+// ("where all is my account logged in") and lets a user remotely sign out
+// one specific device instead of only the existing all-or-nothing
+// `User.tokenVersion` bump (password change). A JWT issued at login embeds
+// this row's `id` as `sessionId`; `protect` (authMiddleware.ts) checks it
+// alongside `tokenVersion` on every request, so setting `revokedAt` here
+// takes effect on that device's very next API call. Nullable/absent
+// `sessionId` on older tokens (issued before this model existed) is treated
+// as "not session-tracked" rather than rejected — see `protect`'s comment.
+model UserSession {
+  id             String    @id @default(uuid())
+  userId         String
+  organisationId String?
+  // "android" | "ios" | "web" — whatever the client sends at login;
+  // free-form rather than an enum since a new client type shouldn't need
+  // a migration to identify itself.
+  platform       String?
+  // Human-readable device label the client builds itself (e.g. "Redmi
+  // Note 12" from device_info_plus, or a browser+OS string for web) —
+  // there's no reliable server-side way to derive this from a bare
+  // User-Agent for native apps, so it's client-supplied, same as `platform`.
+  deviceName     String?
+  appVersion     String?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime  @default(now())
+  lastActiveAt   DateTime  @default(now())
+  revokedAt      DateTime?
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, revokedAt])
 }
 
 model Lead {

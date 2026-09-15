@@ -1,5 +1,5 @@
 import express from 'express';
-import { authUser, registerUser, forgotPassword, resetPassword, getMe } from '../controllers/authController';
+import { authUser, registerUser, forgotPassword, resetPassword, getMe, getSessions, revokeSession } from '../controllers/authController';
 import { protect } from '../middleware/authMiddleware';
 
 const router = express.Router();
@@ -11,6 +11,8 @@ router.post('/register', authLimiter, registerUser);
 router.post('/forgot-password', authLimiter, forgotPassword);
 router.put('/reset-password/:resetToken', resetPassword);
 router.get('/me', protect, getMe);
+router.get('/sessions', protect, getSessions);
+router.delete('/sessions/:id', protect, revokeSession);
 
 import { initSSO, ssoLogin, ssoCallback } from '../controllers/ssoController';
 

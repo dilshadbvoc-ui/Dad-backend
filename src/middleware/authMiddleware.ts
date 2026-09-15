@@ -4,6 +4,7 @@ import prisma from '../config/prisma';
 import crypto from 'crypto';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { isSuperAdmin as checkSuperAdmin, normalizeRole } from '../utils/roleUtils';
+import { touchSessionLastActive } from '../services/sessionService';
 
 export interface AuthRequest extends Request {
     user?: any; // Ideally this should be the Prisma User type, using any for quick migration
@@ -43,6 +44,24 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
                 return;
             }
 
+            // Per-device sign-out (Settings > Devices, mobile) — see the
+            // UserSession model's doc comment in schema.prisma. Tokens
+            // issued before this feature existed carry no `sessionId`
+            // claim at all; those are NOT rejected here (same
+            // backward-compat approach as tokenVersion above) — only a
+            // token that DOES carry a sessionId gets checked against the
+            // live UserSession row, so a user can be remotely signed out.
+            const sessionId = typeof decoded.sessionId === 'string' ? decoded.sessionId : null;
+            if (sessionId) {
+                const session = await prisma.userSession.findUnique({ where: { id: sessionId } });
+                if (!session || session.revokedAt) {
+                    console.warn(`[AuthDebug] Revoked/missing session ${sessionId} for user ${user.email}`);
+                    res.status(401).json({ message: 'Not authorized, token failed' });
+                    return;
+                }
+                touchSessionLastActive(sessionId, req.ip || null);
+            }
+
             console.log(`[AuthDebug] Authenticated user: ${user.email} (Role: ${user.role})`);
 
             // Exclude password from the object attached to request
@@ -58,7 +77,11 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
             req.user = {
                 ...userWithoutPassword,
                 isSuperAdmin: checkSuperAdmin(user),
-                isBranchManager: !!branchManaged
+                isBranchManager: !!branchManaged,
+                // Lets `getSessions` mark which row in the Devices list is
+                // "this device" — null for a pre-this-feature token, same
+                // as everywhere else sessionId is handled.
+                sessionId
             };
 
             // console.log(`[AuthMiddleware] Authenticated user: ${ user.email } `); 

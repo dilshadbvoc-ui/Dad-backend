@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 import prisma from '../config/prisma';
 import generateToken from '../utils/generateToken';
+import { createSession } from '../services/sessionService';
 
 // @desc    Initialize SSO Login
 // @route   POST /api/auth/sso/init
@@ -66,7 +67,8 @@ export const ssoCallback = (req: Request, res: Response, next: NextFunction) => 
         }
 
         // Generate JWT
-        const token = generateToken(user.id, user.tokenVersion);
+        const sessionId = await createSession(user.id, user.organisationId, req, { platform: 'web' });
+        const token = generateToken(user.id, user.tokenVersion, sessionId);
 
         // Audit Log
         await logAudit({
