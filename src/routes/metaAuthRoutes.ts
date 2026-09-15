@@ -24,6 +24,8 @@ const OAUTH_SCOPES = [
     'pages_manage_ads',
     'pages_manage_metadata', // Required for webhook subscription
     'leads_retrieval',
+    'whatsapp_business_management', // Required to read owned_whatsapp_business_accounts
+    'whatsapp_business_messaging', // Required to send/receive on the connected number
     'email',
     'public_profile'
 ].join(',');
@@ -45,11 +47,17 @@ router.get('/auth', protect, (req: AuthRequest, res: Response) => {
         });
     }
 
+    // 'meta' (default) = Facebook Leads/Ads connect flow; 'whatsapp' = WhatsApp-only
+    // connect flow. Threaded through state so the callback knows which integration
+    // the user actually intended to connect, and doesn't touch the other one.
+    const connectType = req.query.type === 'whatsapp' ? 'whatsapp' : 'meta';
+
     // Store org ID in state parameter for the callback
     const state = Buffer.from(JSON.stringify({
         orgId: req.user?.organisationId,
         userId: req.user?.id,
-        returnUrl: `${clientUrl}/settings/integrations`
+        returnUrl: `${clientUrl}/settings/integrations`,
+        connectType
     })).toString('base64');
 
     const redirectUri = `${serverUrl}/api/meta/callback`;
@@ -105,7 +113,7 @@ router.get('/callback', async (req, res) => {
     const { code, state, error, error_description } = req.query;
 
     // Decode state to get org info
-    let stateData: { orgId: string; userId: string; returnUrl: string };
+    let stateData: { orgId: string; userId: string; returnUrl: string; connectType?: 'meta' | 'whatsapp' };
     try {
         stateData = JSON.parse(Buffer.from(state as string, 'base64').toString());
     } catch {
@@ -113,6 +121,9 @@ router.get('/callback', async (req, res) => {
     }
 
     const { orgId, returnUrl } = stateData;
+    // Older links (or anything that predates this param) default to 'meta' so the
+    // existing Facebook Leads flow behaves exactly as it did before this change.
+    const connectType = stateData.connectType === 'whatsapp' ? 'whatsapp' : 'meta';
 
     // Handle OAuth errors
     if (error) {
@@ -298,93 +309,120 @@ router.get('/callback', async (req, res) => {
 
         // Update organisation with Meta integration data
         const currentIntegrations = (org.integrations as any) || {};
-        let metaAccounts = Array.isArray(currentIntegrations.metaAccounts) ? [...currentIntegrations.metaAccounts] : [];
 
-        // 5. Prepare all account objects.
-        // Only auto-assign the ad account when there's exactly one candidate — that's the only
-        // case where there's no real choice to make. With 2+ ad accounts (common when the
-        // connecting Facebook user manages several businesses/clients), silently guessing
-        // adAccounts[0] has no relation to which one this org actually meant — flag it as
-        // needing an explicit selection instead of guessing wrong.
-        const unambiguousAdAccount = adAccounts.length === 1 ? adAccounts[0] : null;
-        const needsAdAccountSelection = adAccounts.length > 1;
-        const newAccounts = pages.map((page: any, index: number) => ({
-            connected: index === 0, // Only connected by default for the primary page
-            accessToken: page.access_token,
-            userAccessToken: longLivedToken,
-            tokenExpiresAt: tokenExpiresAt,
-            adAccountId: unambiguousAdAccount?.id || null,
-            adAccountName: unambiguousAdAccount?.name || null,
-            needsAdAccountSelection,
-            pageId: page.id,
-            pageName: page.name,
+        const whatsappIntegration = {
+            connected: !!wabaId && !!phoneNumberId,
+            accessToken: encrypt(longLivedToken),
+            wabaId: wabaId,
+            phoneNumberId: phoneNumberId,
             appId: appId,
-            connectedAt: new Date().toISOString()
-        }));
-
-        // Merge new accounts into metaAccounts
-        for (const newAcc of newAccounts) {
-            const existingIndex = metaAccounts.findIndex((acc: any) => acc.pageId === newAcc.pageId);
-            if (existingIndex >= 0) {
-                metaAccounts[existingIndex] = { ...metaAccounts[existingIndex], ...newAcc };
-            } else {
-                metaAccounts.push(newAcc);
-            }
-        }
-
-        const primaryAccount = newAccounts[0] || {
-            connected: true,
-            accessToken: longLivedToken,
-            userAccessToken: longLivedToken,
-            tokenExpiresAt: tokenExpiresAt,
-            adAccountId: unambiguousAdAccount?.id || null,
-            adAccountName: unambiguousAdAccount?.name || null,
-            needsAdAccountSelection,
-            appId: appId,
-            connectedAt: new Date().toISOString()
+            connectedAt: wabaId ? new Date().toISOString() : null
         };
 
-        await prisma.organisation.update({
-            where: { id: orgId },
-            data: {
-                integrations: {
-                    ...currentIntegrations,
-                    meta: {
-                        ...primaryAccount,
-                        // Business(es) actually granted during login — used to scope the
-                        // Ads Manager ad-account dropdown instead of showing every ad
-                        // account the token can technically see.
-                        businessIds,
-                        accessToken: encrypt(primaryAccount.accessToken)
-                    },
-                    metaAccounts: metaAccounts.map((acc: any) => ({
-                        ...acc,
-                        accessToken: typeof acc.accessToken === 'string' && !acc.accessToken.includes(':') 
-                            ? encrypt(acc.accessToken) 
-                            : acc.accessToken
-                    })),
-                    whatsapp: {
-                        connected: !!wabaId && !!phoneNumberId,
-                        accessToken: encrypt(longLivedToken),
-                        wabaId: wabaId,
-                        phoneNumberId: phoneNumberId,
-                        appId: appId,
-                        connectedAt: wabaId ? new Date().toISOString() : null
+        let needsAdAccountSelection = false;
+
+        if (connectType === 'whatsapp') {
+            // WhatsApp-only connect: write nothing but integrations.whatsapp. Do NOT
+            // touch integrations.meta/metaAccounts or subscribe any Page to the
+            // webhook - those belong exclusively to the Facebook Leads/Ads flow below,
+            // and this login was not an intent to connect ads.
+            await prisma.organisation.update({
+                where: { id: orgId },
+                data: {
+                    integrations: {
+                        ...currentIntegrations,
+                        whatsapp: whatsappIntegration
                     }
                 }
-            }
-        });
+            });
+        } else {
+            let metaAccounts = Array.isArray(currentIntegrations.metaAccounts) ? [...currentIntegrations.metaAccounts] : [];
 
-        // 6. AUTOMATIC WEBHOOK SUBSCRIPTION
-        // Loop through all retrieved pages and subscribe them to the app
-        const { metaService } = await import('../services/metaService');
-        for (const page of pages) {
-            if (page.id && page.access_token) {
-                await metaService.subscribePageToApp(page.id, page.access_token);
+            // 5. Prepare all account objects.
+            // Only auto-assign the ad account when there's exactly one candidate — that's the only
+            // case where there's no real choice to make. With 2+ ad accounts (common when the
+            // connecting Facebook user manages several businesses/clients), silently guessing
+            // adAccounts[0] has no relation to which one this org actually meant — flag it as
+            // needing an explicit selection instead of guessing wrong.
+            const unambiguousAdAccount = adAccounts.length === 1 ? adAccounts[0] : null;
+            needsAdAccountSelection = adAccounts.length > 1;
+            const newAccounts = pages.map((page: any, index: number) => ({
+                connected: index === 0, // Only connected by default for the primary page
+                accessToken: page.access_token,
+                userAccessToken: longLivedToken,
+                tokenExpiresAt: tokenExpiresAt,
+                adAccountId: unambiguousAdAccount?.id || null,
+                adAccountName: unambiguousAdAccount?.name || null,
+                needsAdAccountSelection,
+                pageId: page.id,
+                pageName: page.name,
+                appId: appId,
+                connectedAt: new Date().toISOString()
+            }));
+
+            // Merge new accounts into metaAccounts
+            for (const newAcc of newAccounts) {
+                const existingIndex = metaAccounts.findIndex((acc: any) => acc.pageId === newAcc.pageId);
+                if (existingIndex >= 0) {
+                    metaAccounts[existingIndex] = { ...metaAccounts[existingIndex], ...newAcc };
+                } else {
+                    metaAccounts.push(newAcc);
+                }
+            }
+
+            const primaryAccount = newAccounts[0] || {
+                connected: true,
+                accessToken: longLivedToken,
+                userAccessToken: longLivedToken,
+                tokenExpiresAt: tokenExpiresAt,
+                adAccountId: unambiguousAdAccount?.id || null,
+                adAccountName: unambiguousAdAccount?.name || null,
+                needsAdAccountSelection,
+                appId: appId,
+                connectedAt: new Date().toISOString()
+            };
+
+            await prisma.organisation.update({
+                where: { id: orgId },
+                data: {
+                    integrations: {
+                        ...currentIntegrations,
+                        meta: {
+                            ...primaryAccount,
+                            // Business(es) actually granted during login — used to scope the
+                            // Ads Manager ad-account dropdown instead of showing every ad
+                            // account the token can technically see.
+                            businessIds,
+                            accessToken: encrypt(primaryAccount.accessToken)
+                        },
+                        metaAccounts: metaAccounts.map((acc: any) => ({
+                            ...acc,
+                            accessToken: typeof acc.accessToken === 'string' && !acc.accessToken.includes(':')
+                                ? encrypt(acc.accessToken)
+                                : acc.accessToken
+                        })),
+                        // Opportunistic: keep populating whatsapp from the ads flow too,
+                        // same as before this change, for orgs that happen to grant both
+                        // in one login. A dedicated WhatsApp connect (above) is now the
+                        // reliable path, but this doesn't regress the old behavior.
+                        whatsapp: whatsappIntegration
+                    }
+                }
+            });
+
+            // 6. AUTOMATIC WEBHOOK SUBSCRIPTION
+            // Loop through all retrieved pages and subscribe them to the app
+            const { metaService } = await import('../services/metaService');
+            for (const page of pages) {
+                if (page.id && page.access_token) {
+                    await metaService.subscribePageToApp(page.id, page.access_token);
+                }
             }
         }
 
-        const finalRedirectUrl = `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}${needsAdAccountSelection ? '&needsAdAccountSelection=true' : ''}`;
+        const finalRedirectUrl = connectType === 'whatsapp'
+            ? `${returnUrl}?success=true&whatsapp=${wabaId ? 'connected' : 'no_account_found'}`
+            : `${returnUrl}?success=true&meta=connected${wabaId ? '&whatsapp=connected' : ''}${needsAdAccountSelection ? '&needsAdAccountSelection=true' : ''}`;
         console.log(`[Meta OAuth] Redirecting to: ${finalRedirectUrl}`);
 
         // Set headers for no-cache to ensure redirect is followed and not stalled by Service Worker
