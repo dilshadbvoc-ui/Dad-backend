@@ -98,14 +98,19 @@ export const WhatsAppIntegrationService = {
     async processMetaMessage(value: any, message: any) {
         const { metadata, contacts } = value;
         
-        // Find organisation
+        // Find organisation - checks the legacy single-number fields plus the
+        // whatsappAccounts array, so an org with multiple connected numbers routes
+        // each inbound message to the right org regardless of which of its numbers
+        // received it.
         const orgs = await prisma.organisation.findMany({
             select: { id: true, integrations: true }
         }).then(orgs => {
             return orgs.filter(org => {
                 const integrations = org.integrations as any;
+                const accounts: any[] = Array.isArray(integrations?.whatsappAccounts) ? integrations.whatsappAccounts : [];
                 return (integrations?.whatsapp?.phoneNumberId === metadata.phone_number_id) ||
-                    (integrations?.meta?.phoneNumberId === metadata.phone_number_id);
+                    (integrations?.meta?.phoneNumberId === metadata.phone_number_id) ||
+                    accounts.some((a: any) => a.phoneNumberId === metadata.phone_number_id);
             });
         });
 

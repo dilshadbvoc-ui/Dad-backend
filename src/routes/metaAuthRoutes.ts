@@ -5,7 +5,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 import { MetaLeadService } from '../services/metaLeadService'; // Service for handling Meta leads
 import { MetaIntegrationService } from '../services/metaIntegrationService';
-import { encrypt } from '../utils/encryption';
+import { encrypt, decrypt } from '../utils/encryption';
 import { MetaLeadGuard } from '../services/metaLeadGuard';
 
 const router = Router();
@@ -269,30 +269,45 @@ router.get('/callback', async (req, res) => {
             console.log('[Meta OAuth] Could not fetch pages (fallback):', pageError.response?.data || pageError.message);
         }
 
-        // Try to get WhatsApp Business Account (reuses the `businesses` list fetched above)
-        let wabaId = null;
-        let phoneNumberId = null;
+        // Try to get WhatsApp Business Account(s) (reuses the `businesses` list fetched
+        // above). Collects EVERY phone number across every WABA this login can see -
+        // not just the first - so an org can connect multiple numbers (whether from one
+        // WABA with several numbers, or by repeating this login with a different
+        // Facebook account/business each time).
+        let wabaId = null; // kept for backward-compat (first WABA found)
+        let phoneNumberId = null; // kept for backward-compat (first phone found)
+        const discoveredNumbers: Array<{ wabaId: string; phoneNumberId: string; displayPhoneNumber: string | null; verifiedName: string | null }> = [];
 
         try {
             for (const business of businesses) {
                 const wabas = business.owned_whatsapp_business_accounts?.data || [];
-                if (wabas.length > 0) {
-                    wabaId = wabas[0].id;
+                for (const waba of wabas) {
+                    try {
+                        const phoneResponse = await axios.get(`${META_GRAPH_URL}/${waba.id}/phone_numbers`, {
+                            params: {
+                                access_token: longLivedToken,
+                                fields: 'id,display_phone_number,verified_name'
+                            }
+                        });
 
-                    // Get phone numbers for this WABA
-                    const phoneResponse = await axios.get(`${META_GRAPH_URL}/${wabaId}/phone_numbers`, {
-                        params: {
-                            access_token: longLivedToken,
-                            fields: 'id,display_phone_number,verified_name'
+                        const phones = phoneResponse.data.data || [];
+                        for (const phone of phones) {
+                            discoveredNumbers.push({
+                                wabaId: waba.id,
+                                phoneNumberId: phone.id,
+                                displayPhoneNumber: phone.display_phone_number || null,
+                                verifiedName: phone.verified_name || null
+                            });
                         }
-                    });
-
-                    const phones = phoneResponse.data.data || [];
-                    if (phones.length > 0) {
-                        phoneNumberId = phones[0].id;
+                    } catch (phoneError: any) {
+                        console.log(`[Meta OAuth] Could not fetch phone numbers for WABA ${waba.id}:`, phoneError.response?.data || phoneError.message);
                     }
-                    break;
                 }
+            }
+
+            if (discoveredNumbers.length > 0) {
+                wabaId = discoveredNumbers[0].wabaId;
+                phoneNumberId = discoveredNumbers[0].phoneNumberId;
             }
         } catch (wabaError) {
             console.log('[Meta OAuth] No WhatsApp Business Account found (this is okay):', (wabaError as any).message);
@@ -322,16 +337,50 @@ router.get('/callback', async (req, res) => {
         let needsAdAccountSelection = false;
 
         if (connectType === 'whatsapp') {
-            // WhatsApp-only connect: write nothing but integrations.whatsapp. Do NOT
-            // touch integrations.meta/metaAccounts or subscribe any Page to the
-            // webhook - those belong exclusively to the Facebook Leads/Ads flow below,
-            // and this login was not an intent to connect ads.
+            // WhatsApp-only connect: write nothing but integrations.whatsapp/
+            // whatsappAccounts. Do NOT touch integrations.meta/metaAccounts or
+            // subscribe any Page to the webhook - those belong exclusively to the
+            // Facebook Leads/Ads flow below, and this login was not an intent to
+            // connect ads.
+            //
+            // Multiple numbers, from one WABA or repeated logins with different
+            // Facebook accounts, are supported by MERGING into an array (mirrors
+            // integrations.metaAccounts below) rather than overwriting - a second
+            // "Add Another Number" connect no longer destroys the first one.
+            const existingAccounts: any[] = Array.isArray(currentIntegrations.whatsappAccounts) ? [...currentIntegrations.whatsappAccounts] : [];
+            const encryptedUserToken = encrypt(longLivedToken);
+
+            for (const num of discoveredNumbers) {
+                const entry = {
+                    connected: true,
+                    accessToken: encryptedUserToken,
+                    wabaId: num.wabaId,
+                    phoneNumberId: num.phoneNumberId,
+                    displayPhoneNumber: num.displayPhoneNumber,
+                    verifiedName: num.verifiedName,
+                    appId: appId,
+                    connectedAt: new Date().toISOString()
+                };
+                const existingIndex = existingAccounts.findIndex((a: any) => a.phoneNumberId === num.phoneNumberId);
+                if (existingIndex >= 0) {
+                    existingAccounts[existingIndex] = { ...existingAccounts[existingIndex], ...entry };
+                } else {
+                    existingAccounts.push(entry);
+                }
+            }
+
+            // Keep integrations.whatsapp as an alias for the primary (first) number,
+            // for backward compatibility with code that hasn't been updated to read
+            // the array yet (e.g. sendMessage's getWhatsAppConfig).
+            const primaryWhatsapp = existingAccounts[0] || whatsappIntegration;
+
             await prisma.organisation.update({
                 where: { id: orgId },
                 data: {
                     integrations: {
                         ...currentIntegrations,
-                        whatsapp: whatsappIntegration
+                        whatsapp: primaryWhatsapp,
+                        whatsappAccounts: existingAccounts
                     }
                 }
             });
@@ -339,16 +388,17 @@ router.get('/callback', async (req, res) => {
             // CRITICAL: registering/reading a WABA via OAuth does NOT by itself tell
             // Meta to deliver that WABA's webhook events to this app ("shadow
             // delivery" - a well-documented Cloud API gotcha). The app must be
-            // explicitly subscribed to the WABA, mirroring the Page subscription done
-            // for the ads flow below.
-            if (wabaId) {
+            // explicitly subscribed to EVERY WABA discovered, mirroring the Page
+            // subscription done for the ads flow below.
+            const uniqueWabaIds = [...new Set(discoveredNumbers.map(n => n.wabaId))];
+            for (const waba of uniqueWabaIds) {
                 try {
-                    await axios.post(`${META_GRAPH_URL}/${wabaId}/subscribed_apps`, null, {
+                    await axios.post(`${META_GRAPH_URL}/${waba}/subscribed_apps`, null, {
                         params: { access_token: longLivedToken }
                     });
-                    console.log(`[Meta OAuth] Subscribed app to WABA ${wabaId} webhooks`);
+                    console.log(`[Meta OAuth] Subscribed app to WABA ${waba} webhooks`);
                 } catch (subError: any) {
-                    console.error(`[Meta OAuth] Failed to subscribe app to WABA ${wabaId}:`, subError.response?.data || subError.message);
+                    console.error(`[Meta OAuth] Failed to subscribe app to WABA ${waba}:`, subError.response?.data || subError.message);
                 }
             }
         } else {
@@ -560,10 +610,59 @@ router.post('/disconnect', protect, async (req: AuthRequest, res: Response) => {
         }
 
         if (type === 'whatsapp' || type === 'both') {
-            currentIntegrations.whatsapp = {
-                connected: false,
-                disconnectedAt: new Date().toISOString()
+            const phoneNumberIdToRemove = req.body.phoneNumberId;
+            const existingAccounts: any[] = Array.isArray(currentIntegrations.whatsappAccounts) ? [...currentIntegrations.whatsappAccounts] : [];
+
+            // Unsubscribing the app from Meta is what actually stops messages from
+            // being delivered - clearing our own DB flag alone leaves the WABA still
+            // wired to send this app webhook events, they'd just be silently dropped
+            // (no matching org) instead of properly disconnected.
+            const unsubscribeWaba = async (wabaId: string, accessToken: string) => {
+                try {
+                    await axios.delete(`${META_GRAPH_URL}/${wabaId}/subscribed_apps`, {
+                        params: { access_token: accessToken }
+                    });
+                    console.log(`[Meta Disconnect] Unsubscribed app from WABA ${wabaId}`);
+                } catch (unsubError: any) {
+                    console.error(`[Meta Disconnect] Failed to unsubscribe WABA ${wabaId}:`, unsubError.response?.data || unsubError.message);
+                }
             };
+
+            if (phoneNumberIdToRemove) {
+                // Remove a specific connected number
+                const target = existingAccounts.find((a: any) => a.phoneNumberId === phoneNumberIdToRemove);
+                const stillUsesWaba = target && existingAccounts.some((a: any) => a.phoneNumberId !== phoneNumberIdToRemove && a.wabaId === target.wabaId);
+                if (target && !stillUsesWaba) {
+                    // Only unsubscribe the WABA if no other connected number still relies on it
+                    await unsubscribeWaba(target.wabaId, decrypt(target.accessToken));
+                }
+
+                currentIntegrations.whatsappAccounts = existingAccounts.filter((a: any) => a.phoneNumberId !== phoneNumberIdToRemove);
+                if (currentIntegrations.whatsapp?.phoneNumberId === phoneNumberIdToRemove) {
+                    currentIntegrations.whatsapp = currentIntegrations.whatsappAccounts[0] || {
+                        connected: false,
+                        disconnectedAt: new Date().toISOString()
+                    };
+                }
+            } else {
+                // Disconnect ALL numbers
+                const uniqueWabas = new Map<string, string>(); // wabaId -> accessToken
+                for (const acc of existingAccounts) {
+                    if (acc.wabaId && acc.accessToken) uniqueWabas.set(acc.wabaId, acc.accessToken);
+                }
+                if (currentIntegrations.whatsapp?.wabaId && currentIntegrations.whatsapp?.accessToken) {
+                    uniqueWabas.set(currentIntegrations.whatsapp.wabaId, currentIntegrations.whatsapp.accessToken);
+                }
+                for (const [wabaId, encryptedToken] of uniqueWabas) {
+                    await unsubscribeWaba(wabaId, decrypt(encryptedToken));
+                }
+
+                currentIntegrations.whatsapp = {
+                    connected: false,
+                    disconnectedAt: new Date().toISOString()
+                };
+                currentIntegrations.whatsappAccounts = [];
+            }
         }
 
         await prisma.organisation.update({
