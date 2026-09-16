@@ -335,6 +335,22 @@ router.get('/callback', async (req, res) => {
                     }
                 }
             });
+
+            // CRITICAL: registering/reading a WABA via OAuth does NOT by itself tell
+            // Meta to deliver that WABA's webhook events to this app ("shadow
+            // delivery" - a well-documented Cloud API gotcha). The app must be
+            // explicitly subscribed to the WABA, mirroring the Page subscription done
+            // for the ads flow below.
+            if (wabaId) {
+                try {
+                    await axios.post(`${META_GRAPH_URL}/${wabaId}/subscribed_apps`, null, {
+                        params: { access_token: longLivedToken }
+                    });
+                    console.log(`[Meta OAuth] Subscribed app to WABA ${wabaId} webhooks`);
+                } catch (subError: any) {
+                    console.error(`[Meta OAuth] Failed to subscribe app to WABA ${wabaId}:`, subError.response?.data || subError.message);
+                }
+            }
         } else {
             let metaAccounts = Array.isArray(currentIntegrations.metaAccounts) ? [...currentIntegrations.metaAccounts] : [];
 
