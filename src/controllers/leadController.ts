@@ -688,8 +688,14 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
             
             updates.phone = cleanPhone.replace(/\D/g, '');
 
-            // Detect country if not provided or explicitly requested
-            if (!updates.country || !updates.countryCode) {
+            // Detect country if not provided or explicitly requested.
+            // A client sending phoneCountryCode explicitly (mobile/web's
+            // country picker) already knows the right answer — don't let the
+            // digits-only heuristic below (which just guesses India for any
+            // bare 10-digit 6-9-leading number) clobber it for every other
+            // country's leads just because country/countryCode weren't also
+            // sent (neither client sends those separately today).
+            if (!updates.phoneCountryCode && (!updates.country || !updates.countryCode)) {
                 const geoData = GeoLocationService.detectCountryFromPhone(updates.phone);
                 if (geoData) {
                     updates.country = geoData.country;
