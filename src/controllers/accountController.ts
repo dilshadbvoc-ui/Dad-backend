@@ -30,6 +30,12 @@ export const getAccounts = async (req: Request, res: Response) => {
             where.ownerId = { in: visibleUserIds };
         }
 
+        // Lightweight count-only mode for the web app's "Showing X of Y" indicator.
+        if (req.query.countOnly === 'true') {
+            const defaultTotal = await prisma.account.count({ where });
+            return res.json({ total: defaultTotal });
+        }
+
         // Filters
         if (req.query.type) where.type = String(req.query.type);
         if (req.query.industry) where.industry = String(req.query.industry);

@@ -33,6 +33,13 @@ export const getProducts = async (req: Request, res: Response) => {
             }
         }
 
+        // Lightweight count-only mode for the web app's "Showing X of Y" indicator —
+        // same org/branch scoping as above, before the search filter below.
+        if (req.query.countOnly === 'true') {
+            const defaultTotal = await prisma.product.count({ where });
+            return res.json({ total: defaultTotal });
+        }
+
         if (search) {
             where.OR = [
                 { name: { contains: search, mode: 'insensitive' } },

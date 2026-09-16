@@ -33,6 +33,12 @@ export const getContacts = async (req: Request, res: Response) => {
             where.ownerId = { in: visibleUserIds };
         }
 
+        // Lightweight count-only mode for the web app's "Showing X of Y" indicator.
+        if (req.query.countOnly === 'true') {
+            const defaultTotal = await prisma.contact.count({ where });
+            return res.json({ total: defaultTotal });
+        }
+
         // Filter: Account
         if (req.query.account) {
             where.accountId = String(req.query.account);

@@ -95,6 +95,16 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             andConditions.push({ OR: orConditions });
         }
 
+        // Lightweight count-only mode for the web app's "Showing X of Y" indicator —
+        // same org/visibility scoping as the full list above, but none of the query
+        // filters below (status/source/search/date/etc.), and skips findMany entirely
+        // so it stays cheap even though it's fired alongside the filtered request.
+        if (req.query.countOnly === 'true') {
+            const defaultWhere = andConditions.length > 0 ? { ...where, AND: andConditions } : where;
+            const defaultTotal = await prisma.lead.count({ where: defaultWhere });
+            return res.json({ total: defaultTotal });
+        }
+
         // Filter: Status
         if (req.query.status) {
             where.status = req.query.status as string;

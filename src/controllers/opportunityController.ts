@@ -40,6 +40,14 @@ export const getOpportunities = async (req: Request, res: Response) => {
             where.ownerId = String(req.query.ownerId);
         }
 
+        // Lightweight count-only mode for the web app's "Showing X of Y" indicator —
+        // same org/visibility scoping as the full list above, none of the dynamic
+        // filters below, and skips findMany entirely.
+        if (req.query.countOnly === 'true') {
+            const defaultTotal = await prisma.opportunity.count({ where });
+            return res.json({ total: defaultTotal });
+        }
+
         // 3. Dynamic Filters
         if (req.query.stage && req.query.stage !== 'all') {
             if (req.query.stage === 'expected') {
