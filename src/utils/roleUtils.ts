@@ -44,6 +44,19 @@ export function isAdmin(user: any): boolean {
 }
 
 /**
+ * Roles that see/report on the WHOLE organisation's leads/opportunities
+ * rather than a reporting-chain-scoped subset — admin, super_admin, and
+ * Operation Executive (an org-wide interaction role with none of admin's
+ * settings/user-management permissions — those are governed separately by
+ * the Role.permissions array, not this check). Deliberately NOT folded into
+ * `isAdmin()`, since that helper also gates settings/permission short-circuits
+ * elsewhere (see `hasUserPermission`) that Operation Executive must not get.
+ */
+export function hasOrgWideVisibility(user: any): boolean {
+    return checkRole(user, ['admin', 'super_admin', 'operation_executive']);
+}
+
+/**
  * Helper for Org Admin check (includes Admin and Super Admin)
  */
 export function isOrgAdmin(user: any): boolean {

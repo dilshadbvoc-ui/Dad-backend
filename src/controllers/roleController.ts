@@ -43,6 +43,13 @@ const SYSTEM_ROLES = [
         description: 'Manage campaigns and email lists',
         permissions: ['leads:read', 'contacts:read', 'campaigns:*', 'email-lists:*', 'reports:read'],
         isSystemRole: true
+    },
+    {
+        roleKey: 'operation_executive',
+        name: 'Operation Executive',
+        description: 'Org-wide access to interact with and update every lead, opportunity, and product regardless of reporting hierarchy or assignment; read-only on reports. No user management or settings access.',
+        permissions: ['leads:*', 'contacts:*', 'accounts:*', 'opportunities:*', 'products:*', 'reports:read'],
+        isSystemRole: true
     }
 ];
 

@@ -169,7 +169,12 @@ export const getOrgId = (user: any): string | null => {
 };
 
 export const getLeadVisibilityFilter = async (user: any, isSuperAdmin: boolean = false) => {
-    if (isSuperAdmin || user.role === 'super_admin' || user.role === 'admin') {
+    // Operation Executive is an org-wide role by design (not reporting-chain
+    // scoped like manager/sales_rep) — it needs the same full-visibility
+    // bypass as admin here, but does NOT get admin's settings/user-management
+    // permissions (that's governed separately by the Role.permissions array,
+    // see roleController.ts's SYSTEM_ROLES).
+    if (isSuperAdmin || user.role === 'super_admin' || user.role === 'admin' || user.role === 'operation_executive') {
         return {};
     }
 
@@ -205,7 +210,7 @@ export const getLeadVisibilityFilter = async (user: any, isSuperAdmin: boolean =
 };
 
 export const getOppVisibilityFilter = async (user: any, isSuperAdmin: boolean = false) => {
-    if (isSuperAdmin || user.role === 'super_admin' || user.role === 'admin') {
+    if (isSuperAdmin || user.role === 'super_admin' || user.role === 'admin' || user.role === 'operation_executive') {
         return {};
     }
 

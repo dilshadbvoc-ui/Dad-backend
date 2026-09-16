@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { getOrgId, getVisibleUserIds, getLeadVisibilityFilter, getOppVisibilityFilter } from '../utils/hierarchyUtils';
-import { isSuperAdmin as checkSuperAdmin } from '../utils/roleUtils';
+import { isSuperAdmin as checkSuperAdmin, hasOrgWideVisibility } from '../utils/roleUtils';
 import fs from 'fs';
 import path from 'path';
 
@@ -144,7 +144,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         } : {};
 
         // Follow-up Visibility Filter matching followUpController.ts
-        const followUpVisibilityFilter = !isSuperAdmin && user.role !== 'admin' ? {
+        const followUpVisibilityFilter = !hasOrgWideVisibility(user) ? {
             OR: [
                 { assignedToId: { in: visibleUserIds } },
                 { createdById: { in: visibleUserIds } },
@@ -202,10 +202,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
             // Contacts/Accounts
             prisma.contact.count({
-                where: { ...combinedFilter, isDeleted: false, ...(!isSuperAdmin && user.role !== 'admin' ? { ownerId: { in: visibleUserIds } } : {}) }
+                where: { ...combinedFilter, isDeleted: false, ...(!hasOrgWideVisibility(user) ? { ownerId: { in: visibleUserIds } } : {}) }
             }),
             prisma.account.count({
-                where: { ...combinedFilter, isDeleted: false, ...(!isSuperAdmin && user.role !== 'admin' ? { ownerId: { in: visibleUserIds } } : {}) }
+                where: { ...combinedFilter, isDeleted: false, ...(!hasOrgWideVisibility(user) ? { ownerId: { in: visibleUserIds } } : {}) }
             }),
 
             // Previous Month Stats for Trends (Leads)
@@ -387,7 +387,7 @@ export const getSalesChartData = async (req: Request, res: Response) => {
 
         // Visibility & User Filtering
         const visibilityFilter: any = {};
-        if (user.role !== 'admin' && !isSuperAdmin) {
+        if (!hasOrgWideVisibility(user)) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
             
@@ -478,7 +478,7 @@ export const getTopLeads = async (req: Request, res: Response) => {
 
         // Visibility
         const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.assignedToId = { in: visibleUserIds };
@@ -533,7 +533,7 @@ export const getSalesForecast = async (req: Request, res: Response) => {
 
         // Visibility
         const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.ownerId = { in: visibleUserIds };
@@ -597,7 +597,7 @@ export const getExpectedRevenueReport = async (req: Request, res: Response) => {
         const combinedFilter = { ...orgFilter, ...branchFilter };
 
         const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.ownerId = { in: visibleUserIds };
@@ -759,7 +759,7 @@ export const getAiInsights = async (req: Request, res: Response) => {
         // Visibility Filters for Insights
         const visibilityFilter: any = {};
         const oppVisibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.assignedToId = { in: visibleUserIds };
             oppVisibilityFilter.ownerId = { in: visibleUserIds };
@@ -883,7 +883,7 @@ export const getTopPerformers = async (req: Request, res: Response) => {
 
         // Hierarchy Visibility for Top Performers
         const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.id = { in: visibleUserIds };
         }
@@ -955,7 +955,7 @@ export const getSalesBook = async (req: Request, res: Response) => {
 
         // Visibility
         const visibilityFilter: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             const visibleUserIds = await getVisibleUserIds(user.id);
             visibilityFilter.ownerId = { in: visibleUserIds };
@@ -1084,7 +1084,7 @@ export const getUserWiseSales = async (req: Request, res: Response) => {
 
         // Determine scope of users to report on
         let userIdsToReport: string[] = [];
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const { getVisibleUserIds } = await import('../utils/hierarchyUtils');
             userIdsToReport = await getVisibleUserIds(user.id);
         } else {
@@ -1308,7 +1308,7 @@ export const getCallActivityTrend = async (req: Request, res: Response) => {
             ...(branchFilter.branchId ? { lead: { branchId: branchFilter.branchId } } : {}),
         };
 
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             where.OR = [
                 { createdById: { in: visibleUserIds } },
@@ -1352,7 +1352,7 @@ export const getTaskFollowUpCompletion = async (req: Request, res: Response) => 
 
         const isSuperAdmin = checkSuperAdmin(user);
         const branchFilter = getBranchFilter(req);
-        const visibleUserIds = !isSuperAdmin && user.role !== 'admin' ? await getVisibleUserIds(user.id) : null;
+        const visibleUserIds = !hasOrgWideVisibility(user) ? await getVisibleUserIds(user.id) : null;
 
         const visibilityWhere = visibleUserIds
             ? { OR: [{ assignedToId: { in: visibleUserIds } }, { createdById: { in: visibleUserIds } }] }
@@ -1498,7 +1498,7 @@ export const getUserTrendsSummary = async (req: Request, res: Response) => {
         const leadVisibility = await getLeadVisibilityFilter(user, isSuperAdmin);
 
         let callUserWhere: any = {};
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             callUserWhere = { createdById: { in: visibleUserIds } };
         }
@@ -1577,7 +1577,7 @@ export const getUserDealRanking = async (req: Request, res: Response) => {
         const visibilityFilter = await getOppVisibilityFilter(user, isSuperAdmin);
 
         let userWhere: any = { organisationId: orgId, isActive: true };
-        if (!isSuperAdmin && user.role !== 'admin') {
+        if (!hasOrgWideVisibility(user)) {
             const visibleUserIds = await getVisibleUserIds(user.id);
             userWhere.id = { in: visibleUserIds };
         }
