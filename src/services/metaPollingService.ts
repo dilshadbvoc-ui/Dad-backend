@@ -10,6 +10,10 @@ let isPolling = false;
 const rateLimitCooldown = new Map<string, number>();
 const RATE_LIMIT_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
 
+// Org-admin alert cooldown map: orgId -> timestamp of last in-app alert sent
+const orgAdminAlertCooldown = new Map<string, number>();
+const ORG_ADMIN_ALERT_COOLDOWN_MS = 12 * 60 * 60 * 1000; // 12 hours
+
 function isRateLimited(pageId: string): boolean {
     const expiresAt = rateLimitCooldown.get(pageId);
     if (!expiresAt) return false;
@@ -201,11 +205,45 @@ export const MetaPollingService = {
                     <p style="font-size: 12px; color: #777;">This is an automated security alert from CRM Meta Service.</p>
                 </div>
             `;
-            
+
             await EmailService.sendEmail('hostixpro@gmail.com', subject, html);
             logger.info(`Sent polling alert email to hostixpro@gmail.com for ${orgName}`, 'MetaPolling');
         } catch (e) {
             logger.error('Failed to send Meta alert email:', e, 'MetaPolling');
+        }
+
+        // Also alert the tenant's own admins — the internal inbox above is easy to miss,
+        // and until this the org itself had zero signal that its Meta leads had stopped
+        // flowing (this is what let edufolio's outage go unnoticed for weeks).
+        await this.notifyOrgAdmins(orgId, orgName, errorMsg);
+    },
+
+    /**
+     * In-app notification to the org's own admins when their Meta integration breaks.
+     * Throttled per org so a page stuck in a broken state doesn't spam a notification
+     * every 30 minutes forever.
+     */
+    async notifyOrgAdmins(orgId: string, orgName: string, errorMsg: string) {
+        try {
+            const lastAlertAt = orgAdminAlertCooldown.get(orgId);
+            if (lastAlertAt && Date.now() - lastAlertAt < ORG_ADMIN_ALERT_COOLDOWN_MS) return;
+            orgAdminAlertCooldown.set(orgId, Date.now());
+
+            const { NotificationService } = await import('./notificationService');
+            const admins = await prisma.user.findMany({
+                where: { organisationId: orgId, role: { in: ['admin', 'super_admin'] }, isActive: true },
+                select: { id: true }
+            });
+            for (const admin of admins) {
+                await NotificationService.send(
+                    admin.id,
+                    'Meta Lead Sync Broken',
+                    `We stopped receiving Facebook/Instagram leads for ${orgName} — the Meta integration needs to be reconnected in Settings → Integrations.`,
+                    'error'
+                );
+            }
+        } catch (e) {
+            logger.error('Failed to notify org admins of Meta failure:', e, 'MetaPolling');
         }
     },
 

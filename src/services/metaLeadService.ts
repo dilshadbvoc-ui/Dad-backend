@@ -98,6 +98,18 @@ export const MetaLeadService = {
                     this.addToQueue(leadgenId, pageId, adId, formId);
                 } else {
                     console.error(`[MetaLeadService] Failed to fetch lead data from Meta for lead ${leadgenId}: ${errorMsg}`);
+
+                    // An auth/token failure here means the webhook path drops this lead with
+                    // zero visibility to the tenant. The 30-min polling fallback alerts on the
+                    // same class of error, but a webhook-only failure between polls previously
+                    // had no alert at all — surface it to org admins the same way polling does.
+                    const isAuthError = errorMsg?.includes('OAuthException') || errorMsg?.includes('access token') || errorMsg?.includes('Error validating');
+                    if (isAuthError) {
+                        const { MetaPollingService } = await import('./metaPollingService');
+                        for (const candidate of allCandidates) {
+                            await MetaPollingService.notifyOrgAdmins(candidate.id, candidate.name, errorMsg);
+                        }
+                    }
                 }
                 return;
             }
