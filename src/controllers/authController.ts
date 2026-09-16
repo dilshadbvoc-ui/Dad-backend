@@ -54,6 +54,18 @@ export const authUser = async (req: Request, res: Response) => {
                 return;
             }
 
+            // A user with no linked organisation (e.g. the org row was deleted,
+            // which SetNulls User.organisationId per schema.prisma) would otherwise
+            // pass through with `organisation: null` in a 200 response — every
+            // client (mobile's UserSession, web) requires organisation to be
+            // present, so that shape mismatch surfaces as an opaque parse failure
+            // client-side instead of a clear login error. Fail loudly here instead.
+            if (!user.organisationId || !user.organisation) {
+                console.log(`Login failed: user ${email} has no linked organisation`);
+                res.status(403).json({ message: 'Your account is not linked to an active organisation. Please contact support.' });
+                return;
+            }
+
             if (user.organisationId) {
                 // Fire and forget audit log
                 logAudit({
