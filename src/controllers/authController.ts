@@ -9,6 +9,7 @@ import { logAudit } from '../utils/auditLogger';
 import { EmailService } from '../services/emailService';
 import { validatePassword } from '../utils/passwordValidator';
 import { createSession, listSessions, revokeSessionById } from '../services/sessionService';
+import { isSuperAdmin } from '../utils/roleUtils';
 
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
@@ -60,7 +61,9 @@ export const authUser = async (req: Request, res: Response) => {
             // client (mobile's UserSession, web) requires organisation to be
             // present, so that shape mismatch surfaces as an opaque parse failure
             // client-side instead of a clear login error. Fail loudly here instead.
-            if (!user.organisationId || !user.organisation) {
+            // Super Admins are platform-level and legitimately have no organisation
+            // at all, so they're exempt from this check.
+            if ((!user.organisationId || !user.organisation) && !isSuperAdmin(user)) {
                 console.log(`Login failed: user ${email} has no linked organisation`);
                 res.status(403).json({ message: 'Your account is not linked to an active organisation. Please contact support.' });
                 return;
