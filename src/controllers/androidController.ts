@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import fs from 'fs';
 import path from 'path';
-import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration, getAudioDuration } from '../utils/callUtils';
+import { synchronizeDurations, resolveBestDurationSeconds, formatCallDurationDescription, normalizeDuration, getAudioDuration, transcodeToPlayableAudio } from '../utils/callUtils';
 
 // In-memory locks to serialize concurrent call uploads and prevent parallel race condition duplicates
 const activeSyncLocks = new Set<string>();
@@ -171,6 +171,25 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
              console.warn('[AndroidUpload] WARNING: Found audio in body but NOT as req.file. Possible field name mismatch? Expected "audio".');
         }
 
+        // Re-encode to AAC/.m4a so this recording is guaranteed playable in
+        // the web app's plain <audio> element regardless of what codec the
+        // source device's native recorder used (see transcodeToPlayableAudio's
+        // doc comment) -- falls back to the original file untouched on any
+        // transcode failure, so this can never turn a successful upload into
+        // a failed one.
+        let storedFilePath = file?.path;
+        let storedFilename = file?.filename;
+        if (file) {
+            const transcodedFilename = transcodeToPlayableAudio(file.path);
+            if (transcodedFilename) {
+                storedFilename = transcodedFilename;
+                storedFilePath = path.join(path.dirname(file.path), transcodedFilename);
+                console.log(`[AndroidUpload] Transcoded recording to ${transcodedFilename}`);
+            } else {
+                console.warn('[AndroidUpload] Transcode failed or skipped -- storing original file as-is');
+            }
+        }
+
         const phoneDigits = String(phoneNumber || "").replace(/[^0-9]/g, "");
         const phoneSuffix = phoneDigits.slice(-10);
         const lockKey = (phoneSuffix && timestamp) ? `${user.id}-${phoneSuffix}-${timestamp}` : null;
@@ -291,8 +310,8 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
         const carrierDurationSecs = hardwareDuration ? parseInt(hardwareDuration, 10) : null;
 
         // HEAL ZERO DURATION: If client sends 0 duration but has a physical file, parse the true duration using ffprobe
-        if (file && (durationSecs === 0 || !durationSecs)) {
-            const fileDuration = getAudioDuration(file.path);
+        if (storedFilePath && (durationSecs === 0 || !durationSecs)) {
+            const fileDuration = getAudioDuration(storedFilePath);
             if (fileDuration > 0) {
                 console.log(`[AndroidUpload] Extracted real duration from file via ffprobe: ${fileDuration}s (client sent: ${duration}s)`);
                 durationSecs = fileDuration;
@@ -306,7 +325,7 @@ export const uploadCallRecording = async (req: Request, res: Response) => {
                 leadId: targetLeadId,
                 duration: durationSecs,
                 hardwareDuration: carrierDurationSecs,
-                fileUrl: file ? `/uploads/recordings/${file.filename}` : '',
+                fileUrl: storedFilename ? `/uploads/recordings/${storedFilename}` : '',
                 callType: callType || 'UNKNOWN',
                 timestamp: timestamp ? new Date(parseInt(timestamp, 10)) : new Date(),
             }

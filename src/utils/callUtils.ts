@@ -1,6 +1,7 @@
 
-import { execSync } from 'child_process';
+import { execFileSync, execSync } from 'child_process';
 import fs from 'fs';
+import path from 'path';
 import { Interaction } from '../generated/client';
 
 /**
@@ -18,6 +19,54 @@ export function getAudioDuration(filePath: string): number {
     } catch (err) {
         console.error('[CallUtils] Error getting audio duration via ffprobe:', err);
         return 0;
+    }
+}
+
+/**
+ * Re-encodes an uploaded call recording to AAC/.m4a so every stored
+ * recording is actually playable in the web app's plain HTML5 `<audio>`
+ * element (CallRecordingPlayer.tsx), regardless of what codec the source
+ * device used. OEM native call recorders (budget Android/ColorOS devices
+ * especially) commonly save in AMR or other codecs no major browser
+ * decodes at all -- the upload/CRM pipeline otherwise stores and serves
+ * whatever bytes it received untouched, so a recording can be genuinely
+ * fetched and non-empty yet be silent in every browser that opens it.
+ *
+ * Uses execFileSync (not execSync/a shell string) specifically because
+ * `inputPath` is built from a client-uploaded original filename (via
+ * multer's `path.extname(file.originalname)`) -- passing that through a
+ * shell string would be a command-injection vector, so this never goes
+ * through a shell at all.
+ *
+ * Returns the new file's basename (same directory as `inputPath`) on
+ * success, or null on failure/timeout/missing ffmpeg -- callers must fall
+ * back to the original file rather than losing the upload, since a failed
+ * transcode is not the caller's fault and an awkward-to-play original is
+ * still better than no recording at all.
+ */
+export function transcodeToPlayableAudio(inputPath: string): string | null {
+    if (!inputPath || !fs.existsSync(inputPath)) return null;
+    const dir = path.dirname(inputPath);
+    const base = path.basename(inputPath, path.extname(inputPath));
+    const finalFilename = `${base}.m4a`;
+    const finalPath = path.join(dir, finalFilename);
+    const tempPath = path.join(dir, `${base}.transcoding.m4a`);
+    try {
+        execFileSync(
+            'ffmpeg',
+            ['-y', '-i', inputPath, '-vn', '-c:a', 'aac', '-b:a', '96k', tempPath],
+            { timeout: 60_000, stdio: ['ignore', 'ignore', 'pipe'] }
+        );
+        if (!fs.existsSync(tempPath) || fs.statSync(tempPath).size === 0) return null;
+        if (inputPath !== finalPath) {
+            try { fs.unlinkSync(inputPath); } catch { /* best-effort cleanup */ }
+        }
+        fs.renameSync(tempPath, finalPath);
+        return finalFilename;
+    } catch (err) {
+        console.error('[CallUtils] Audio transcode failed, keeping original file as-is:', err);
+        try { if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath); } catch { /* best-effort cleanup */ }
+        return null;
     }
 }
 
