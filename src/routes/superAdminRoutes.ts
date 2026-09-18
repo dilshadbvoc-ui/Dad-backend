@@ -27,6 +27,12 @@ import {
     updateFAQ,
     deleteFAQ
 } from '../controllers/siteFAQController';
+import {
+    getAllTrainingVideos,
+    createTrainingVideo,
+    updateTrainingVideo,
+    deleteTrainingVideo
+} from '../controllers/trainingVideoController';
 
 const router = express.Router();
 
@@ -64,6 +70,11 @@ router.get('/faqs', protect, getAllFAQs);
 router.post('/faqs', protect, createFAQ);
 router.put('/faqs/:id', protect, updateFAQ);
 router.delete('/faqs/:id', protect, deleteFAQ);
+
+router.get('/training-videos', protect, getAllTrainingVideos);
+router.post('/training-videos', protect, createTrainingVideo);
+router.put('/training-videos/:id', protect, updateTrainingVideo);
+router.delete('/training-videos/:id', protect, deleteTrainingVideo);
 
 // User Management (Cross-Organisation)
 router.post('/users/reset-password', protect, resetUserPassword);

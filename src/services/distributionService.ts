@@ -671,8 +671,21 @@ export const DistributionService = {
                 }
             });
 
-            // Preserve the original order defined in the rule
-            const orderedUsers = userIds.map(id => users.find(u => u.id === id)).filter(Boolean);
+            // Preserve the original order defined in the rule, but only keep users who
+            // actually belong to the rule's branch. assignTo.users is a manually curated
+            // list and can drift out of sync with the branch the rule was scoped to (e.g.
+            // a user added before a branch reassignment, or before the rule's branch was
+            // changed) - without this check a stale entry silently receives leads outside
+            // its intended branch.
+            const orderedUsers = userIds
+                .map(id => users.find(u => u.id === id))
+                .filter(Boolean)
+                .filter((u: any) => !rule.branchId || u.branchId === rule.branchId);
+
+            if (orderedUsers.length === 0) {
+                console.warn(`[DistributionService] Campaign rule ${rule.name} has no eligible users in branch ${rule.branchId}`);
+                return null;
+            }
 
             let startIndex = 0;
             if (rule.lastAssignedUserId) {

@@ -1940,3 +1940,20 @@ model SiteFAQ {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Training/Help Center video guides, managed by Super Admin and shown on the
+// in-app Training page (Dad-frontend's /training). Global/platform content,
+// not tenant-scoped — same pattern as SiteFAQ above.
+model TrainingVideo {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  videoUrl    String
+  thumbnailUrl String?
+  category    String? // free-form label matching a Training page module, e.g. "Lead Management"
+  duration    String? // display string, e.g. "4:32" — not enforced/parsed
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

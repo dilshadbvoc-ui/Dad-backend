@@ -3,6 +3,7 @@ import express from 'express';
 import { submitWebForm } from '../controllers/webFormController';
 import { MetaIntegrationService } from '../services/metaIntegrationService';
 import { getPublicFAQs } from '../controllers/siteFAQController';
+import { getPublicTrainingVideos } from '../controllers/trainingVideoController';
 import { ZapierWebhookService } from '../services/zapierWebhookService';
 import { getPublicDailySummary } from '../controllers/dailySummaryController';
 
@@ -40,6 +41,12 @@ router.post('/meta/webhook', (req, res) => {
  * @desc Get active FAQs for landing page
  */
 router.get('/faqs', getPublicFAQs);
+
+/**
+ * @route GET /api/public/training-videos
+ * @desc Get active training video guides for the in-app Training page
+ */
+router.get('/training-videos', getPublicTrainingVideos);
 
 /**
  * @route GET /api/public/daily-summary/:token
