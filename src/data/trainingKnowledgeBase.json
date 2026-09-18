@@ -1,0 +1,283 @@
+{
+  "product": {
+    "name": "PypeCRM",
+    "summary": "PypeCRM is a multi-tenant CRM for sales teams to capture, route, and close leads, run marketing campaigns, track calls/WhatsApp/email activity, manage the sales pipeline (quotes, EMI payments, commissions), and report on performance. It has a web dashboard and a native Android app for field reps (call recording, offline sync, push notifications).",
+    "tenancy": "Every customer is a separate Organisation. Data is isolated per organisation; users only ever see their own org's data (except the platform-level Super Admin console, which is cross-tenant and used only by PypeCRM's own team)."
+  },
+
+  "modules": [
+    {
+      "name": "Dashboard",
+      "description": "Home screen after login. Shows Expected Revenue, Pipeline value, Follow-ups due, Won/Lost deals, and Revenue for a selected Branch and date range (This Month / Last Month / Custom). Every stat tile is clickable and drills into the underlying filtered list. Widgets include Sales Chart, Lead Sources breakdown, Top Performers, and more.",
+      "tips": [
+        "The Branch and Date Range filters at the top are global — they scope every widget on the page, not just one card.",
+        "The Dashboard counts closed deals by their actual close date, not creation date — compare filtered lists using the same date field to avoid mismatched numbers."
+      ]
+    },
+    {
+      "name": "Leads",
+      "description": "The primary inbound record. Leads can be created manually, bulk-imported via CSV/Excel with column mapping (Settings > Import), or arrive automatically from connected integrations (Meta/Facebook Lead Ads, WhatsApp, Web Forms, the public API, or Zapier).",
+      "features": [
+        "Lead Statuses: each organisation defines its own status list (Settings > Lead Statuses), e.g. New, Contacted, Interested, Follow-up, Not Responding, Invalid.",
+        "Duplicate Detection: new leads are automatically checked against existing ones by phone number + email + branch; a likely duplicate is flagged for review instead of silently creating a second copy.",
+        "Re-Enquiries: a lead that comes back after being closed is tracked separately as a Re-Enquiry so the original lead's full history isn't overwritten or lost.",
+        "Lead Scoring: leads accumulate an engagement/quality score from real activity (calls connected, replies, link clicks). High scorers are flagged as Hot Leads for priority follow-up.",
+        "Rotation Violation Tracking: if a lead is contacted out of the normal assignment order, the system can flag a rotation violation requiring an explanation from the rep and/or manager.",
+        "Assign To / Bulk Actions: leads can be bulk status-changed or bulk-assigned from the list view. The 'Assign To' picker on manual lead creation shows your direct reports (and their reports) based on the reporting hierarchy — if it's empty, the current user has no one reporting to them in the hierarchy."
+      ]
+    },
+    {
+      "name": "Lead Distribution & Assignment Rules",
+      "description": "Assignment Rules (Settings > Assignment Rules) route brand-new incoming leads automatically the moment they arrive — round-robin across selected users, by territory, or via a rotation pool.",
+      "adminOnly": true
+    },
+    {
+      "name": "Lead Shuffler",
+      "description": "A separate tool from Assignment Rules (Settings > Shuffler). The Shuffler periodically re-distributes EXISTING, aging leads (e.g. stuck in 'Not Responding') across the active team on a configured schedule, or on demand via 'Shuffle Now'. It only shuffles leads matching the configured statuses and minimum age, among currently active (not off-duty) users.",
+      "adminOnly": true
+    },
+    {
+      "name": "Contacts & Accounts",
+      "description": "Standard CRM entities. Converting a lead creates an Account (the company/customer), a Contact (the person), and an Opportunity (the deal) together in one action, preserving the lead's history."
+    },
+    {
+      "name": "Opportunities & Pipeline",
+      "description": "Deals move through a configurable pipeline (Settings > Pipelines) shown as a Kanban board or list. Drag a card between stages to update it.",
+      "features": [
+        "Closing Won/Lost must be done via the dedicated 'Closed Won' / 'Closed Lost' actions, not a plain status dropdown — these correctly capture payment details on a win or a required reason on a loss.",
+        "Opportunity type is either New Business or Upsale, used for sales-target scoping.",
+        "Close date is optional and set by whoever is working the deal — an open deal may or may not have one yet."
+      ]
+    },
+    {
+      "name": "Quotes & Products",
+      "description": "Build a Product catalog once (Products page, with category and active/inactive status), then generate a Quote directly from an Opportunity with line items pulled from that catalog instead of retyping them."
+    },
+    {
+      "name": "EMI & Payment Schedules",
+      "description": "For deals paid in installments, set up an EMI schedule with due dates and amounts per installment. Each installment independently tracks paid/pending/overdue/cancelled/missed status, and partial or full payments are recorded against the running total. This is separate from the simpler pending/partial/paid summary field on the Opportunity itself — the two aren't always in sync."
+    },
+    {
+      "name": "Sales Targets & Commissions",
+      "description": "Admins set individual or team sales targets (Sales Targets page, tree/hierarchy view). The Commissions module tracks payout amounts owed to each rep, tied to their closed deals.",
+      "adminOnly": true
+    },
+    {
+      "name": "Calls",
+      "description": "Calls made from the Android app are automatically logged and, if the org's Call Settings enable it, recorded — the recording attaches to that lead's activity timeline for playback. Calls can also be made via the Twilio Cloud VoIP integration directly from the browser if configured."
+    },
+    {
+      "name": "WhatsApp Inbox",
+      "description": "A live, threaded WhatsApp conversation view per lead/contact. Backed by either the official Meta WhatsApp Cloud API, or an alternate provider (Gallabox or Gupshup) if the org has that configured instead. Incoming messages from unrecognized numbers can automatically create a new lead so first contact is never lost.",
+      "features": [
+        "Business-initiated messages (the org messaging a customer first, e.g. a campaign) always require a pre-approved WhatsApp template.",
+        "Free-form replies only work within the 24-hour 'customer service window' after the customer's last message.",
+        "Messages are deduplicated by their provider message ID so the same message never appears twice even if a webhook fires more than once."
+      ]
+    },
+    {
+      "name": "Follow-ups, Tasks & Calendar",
+      "description": "Set follow-up reminders and tasks tied to any lead, and schedule meetings on the shared Calendar. Overdue and due-today items surface automatically on the Follow-ups page and Dashboard. Reminders are sent both 30 minutes before and exactly at the due time."
+    },
+    {
+      "name": "Activity Timeline",
+      "description": "Every call, note, email, WhatsApp message, and status change appears in one chronological timeline per lead/contact — the single source of truth for what happened with that person, and who did it."
+    },
+    {
+      "name": "Marketing Suite",
+      "description": "Multichannel campaign tools: Meta Ads Manager (see Integrations), Web Forms & Landing Pages (built visually, no code, submissions flow straight into Leads), Email Campaigns & Lists (tracked opens/clicks), WhatsApp & SMS Campaigns (templated bulk sends to a filtered segment).",
+      "adminOnly": true
+    },
+    {
+      "name": "Reports & Analytics",
+      "description": "A dedicated report for every angle: Sales Book (every closed transaction), Expected Revenue (open pipeline, including deals carried forward from prior months whose expected close date has already passed), User Sales / User Total (per-rep leaderboards), Call Analytics, Daily Report, Lead Reports, Follow-up Reports, Lead Distribution, Field Force Activity, and Audit Logs.",
+      "features": [
+        "Automated Daily Reports: configure a daily report time in Settings > Organisation to have call/lead summaries sent automatically to admins via WhatsApp and/or email every day."
+      ]
+    },
+    {
+      "name": "Field Operations",
+      "description": "Field reps check in with their live location when visiting a lead/customer, building a verifiable visit history on a map (Field Force page). Optionally organise the team by Territory in addition to Branch for geographically scoped leads and reporting."
+    },
+    {
+      "name": "Workflow Automation",
+      "description": "Build 'If This, Then That' automations (Automation / Workflow Builder) — e.g. auto-create a task when a lead hits a certain status, or send a notification the moment a lead is assigned. Workflow steps can run immediately or after a configured delay; delayed steps are picked up by a background queue that runs every minute.",
+      "adminOnly": true
+    },
+    {
+      "name": "Roles, Hierarchy & Permissions",
+      "description": "Users report up a management chain (reportsTo). A manager sees their own records plus everyone who reports to them (directly or through the full chain), plus anyone in a team or branch they manage. Admins and Super Admins see the entire organisation, bypassing the reporting hierarchy. Custom roles can grant granular per-module, per-action permissions (view/edit/delete/export independently), not just a blanket admin-vs-rep toggle.",
+      "systemRoles": [
+        { "role": "Rep / Team Member", "visibility": "Own records only, unless also a team/branch manager." },
+        { "role": "Manager", "visibility": "Own records plus their full reporting chain, plus any team/branch they manage." },
+        { "role": "Operation Executive", "visibility": "Organisation-wide read/write access to Leads, Contacts, Accounts, Opportunities, and Products, bypassing the reporting hierarchy, plus read-only Reports access. Deliberately excludes Settings and User Management — it cannot manage users, roles, or org configuration. Any action it takes is still attributed to that specific user in the history, not to 'Admin'." },
+        { "role": "Admin", "visibility": "Full organisation-wide access including Settings, integrations, and user management." },
+        { "role": "Super Admin", "visibility": "Platform-level, cross-tenant. Can create/suspend/restore any organisation, assign licenses, broadcast notifications platform-wide, and manage global content like FAQs and Training videos. Regular org admins never see this console." }
+      ]
+    },
+    {
+      "name": "Trash & Recovery",
+      "description": "Deleted records aren't gone immediately — they sit in Settings > Trash for 7 days and can be restored, after which they're permanently and automatically purged by a nightly cleanup job."
+    },
+    {
+      "name": "Audit Logs",
+      "description": "Every significant change (status updates, reassignments, deletions) is logged with who did it and when, reviewable in Reports > Audit Logs. Audit logs older than 90 days are automatically cleaned up."
+    },
+    {
+      "name": "Custom Fields",
+      "description": "Add org-specific fields to Leads, Contacts, Accounts, and Opportunities from Settings > Custom Fields — no developer needed."
+    },
+    {
+      "name": "Mobile / Android App",
+      "description": "A native Android app (not a wrapped web page in the usual sense — it embeds the web dashboard but adds real native capabilities) that mirrors leads for field reps and adds: automatic call recording and call-log sync, offline queuing with background sync, native push notifications, live location capture for check-ins, and WhatsApp notification listening. Logging in on a new device does not affect the web session."
+    }
+  ],
+
+  "integrations": [
+    {
+      "name": "Meta (Facebook & Instagram) Lead Ads",
+      "connectVia": "Settings > Integrations > Meta — 'Connect' starts a Facebook OAuth flow requesting permissions for pages, leads retrieval, and ads management.",
+      "howItWorks": [
+        "After connecting, you choose which Facebook Page(s) and/or ad account(s) to link to the CRM.",
+        "In Marketing > Ads Manager, you explicitly choose which individual CAMPAIGNS are allowed to sync leads into the CRM — connecting an account does NOT automatically pull in leads from every campaign on it, only the ones you've toggled on.",
+        "New leads normally arrive in near real-time via a Meta webhook. As a safety net in case a webhook is ever missed, a polling job also checks all connected Meta accounts on a schedule (roughly every 30 minutes) and backfills anything the webhook missed.",
+        "Meta access tokens expire periodically (Meta's own token lifetime, commonly around 60 days). The system checks token validity daily and proactively notifies org admins in-app about 7 days before expiry, and again if it actually expires, so leads don't silently stop syncing.",
+        "If a Facebook Page starts returning auth errors repeatedly, admins are notified in-app (throttled to at most once per 12 hours per organisation) rather than being spammed on every failed poll."
+      ],
+      "commonIssues": [
+        {
+          "symptom": "Leads from a campaign I don't recognize are showing up in my CRM.",
+          "explanation": "Meta routes leads by which Facebook PAGE an ad runs on, not by which ad account is connected in the CRM. If a different advertiser has permission to run lead ads on your connected Page, their leads can land in your CRM too. Check the Page's ad-permission list on Meta's own Business Settings."
+        },
+        {
+          "symptom": "Leads suddenly stopped syncing from Meta.",
+          "explanation": "Almost always an expired or revoked access token (check for the in-app expiry notification), a disconnected/removed Page, or the specific campaign's sync toggle being off in Ads Manager. Reconnecting the integration re-authorizes the token."
+        },
+        {
+          "symptom": "Meta Ads Manager stats show 0 or don't update.",
+          "explanation": "Stat tiles pull live data from Meta's own Insights API for the connected account — if the token has expired, insights calls fail silently and the UI should show a 'Token Expired' banner rather than fake zeros."
+        }
+      ]
+    },
+    {
+      "name": "WhatsApp Business",
+      "connectVia": "Settings > Integrations > WhatsApp Business — configure either the official Meta WhatsApp Cloud API credentials, or an alternate messaging provider (Gallabox or Gupshup) if that's what the organisation uses instead.",
+      "howItWorks": [
+        "Incoming messages arrive via a webhook (Meta Cloud API webhook, or the provider's own webhook for Gallabox/Gupshup) and populate the threaded WhatsApp Inbox per lead/contact.",
+        "An incoming message from a phone number that doesn't match any existing lead/contact can automatically create a new lead, so first contact is captured immediately.",
+        "Messages are deduplicated using the provider's own message ID, so a webhook retry never creates a duplicate message in the thread.",
+        "Sending a business-initiated message (the org reaching out first, including bulk WhatsApp Campaigns) requires a pre-approved message template — this is a WhatsApp platform rule, not a CRM limitation.",
+        "Free-form replies only work within 24 hours of the customer's last inbound message ('customer service window'); after that, only a template message can restart the conversation."
+      ],
+      "commonIssues": [
+        {
+          "symptom": "A WhatsApp campaign send failed or was rejected.",
+          "explanation": "Almost always because the message wasn't using an approved template, or the recipient hasn't messaged the business in the last 24 hours for a free-form send."
+        }
+      ]
+    },
+    {
+      "name": "Gmail",
+      "connectVia": "Settings > Integrations — Gmail connect uses OAuth2 so a user's own Gmail account can send email directly from the CRM (attributed to that person, not a shared address).",
+      "howItWorks": [
+        "Once connected, emails sent from a lead/contact's activity or from an Email Campaign go out through that user's actual Gmail account.",
+        "The OAuth token is refreshed automatically in the background; the user does not need to reconnect regularly under normal use."
+      ]
+    },
+    {
+      "name": "Twilio (Cloud VoIP)",
+      "connectVia": "Settings > Integrations > Twilio — requires a Twilio Account SID, Auth Token, and a Twilio phone number.",
+      "howItWorks": [
+        "Once configured, calls can be made and received directly from the browser/CRM using that Twilio number, in addition to (or instead of) calls made from the Android app's native dialer.",
+        "SMS can also be sent through the same Twilio configuration."
+      ]
+    },
+    {
+      "name": "Slack",
+      "connectVia": "Settings > Integrations > Slack — you can save a Slack webhook/connection so the org is configured to receive notifications in a chosen channel.",
+      "howItWorks": [
+        "The Slack card lets you save connection details for the integration; treat it as a configuration screen for notification delivery rather than a channel you should assume is already actively pushing every CRM event today — if a specific event isn't showing up in Slack, that's expected to be tightened over time rather than something to keep re-trying to fix on your own."
+      ]
+    },
+    {
+      "name": "Webhooks (Outbound)",
+      "connectVia": "Settings > Developer > Webhooks — configure any external URL to receive a JSON POST whenever a chosen event happens.",
+      "howItWorks": [
+        "Typical trigger events include: new lead created, lead status changed, and a deal marked Closed Won.",
+        "This is the general-purpose way to push CRM events into any external system that isn't natively integrated."
+      ]
+    },
+    {
+      "name": "Public API (v1) & API Keys",
+      "connectVia": "Settings > Developer > API Keys — generate a key (shown once, stored hashed) for use with the public, API-key-authenticated integration surface.",
+      "howItWorks": [
+        "Authenticate with the header X-API-KEY (or query param, depending on the endpoint) instead of a normal user login.",
+        "POST to the leads endpoint to create leads programmatically from any external website, custom app, or automation platform. The endpoint does heavy field normalization (multiple possible field name spellings are accepted) to make integration easier from varied external sources.",
+        "This is the general integration point for building a fully custom connector when no dedicated integration exists yet."
+      ]
+    },
+    {
+      "name": "Zapier",
+      "connectVia": "A dedicated Zapier webhook endpoint per organisation, authenticated with the same kind of API key from Settings > Developer.",
+      "howItWorks": [
+        "Zapier (or Make/similar tools) posts lead data to the org-specific webhook URL with the API key as a query parameter or header.",
+        "The CRM checks whether the incoming lead is a genuine re-enquiry of an existing closed lead and updates it accordingly instead of always creating a brand-new record, so history isn't fragmented."
+      ]
+    },
+    {
+      "name": "Direct Meta Payload Ingestion",
+      "connectVia": "An alternate, simpler direct-JSON ingestion endpoint for Meta-sourced leads, authenticated the same way as the Zapier endpoint (org-specific URL + API key).",
+      "howItWorks": [
+        "Used when a lead needs to be pushed in directly as JSON rather than through the full Meta OAuth + webhook integration flow — same re-enquiry detection applies."
+      ]
+    },
+    {
+      "name": "Single Sign-On (SSO / SAML)",
+      "connectVia": "An enterprise-tier, per-organisation SAML configuration (not shown on the standard Integrations page — set up with PypeCRM support for orgs that need it).",
+      "howItWorks": [
+        "Each organisation can have its own SAML identity provider configuration, allowing users to log in via their company's existing identity provider instead of a CRM-specific password.",
+        "This is separate from, and doesn't replace, normal email/password login unless the org specifically wants to enforce SSO-only login."
+      ]
+    }
+  ],
+
+  "faqs": [
+    { "category": "getting-started", "q": "What is the fastest way to find a specific lead, contact, or page?", "a": "Press Cmd+K (Mac) or Ctrl+K (Windows) anywhere in the app to open the Command Center — a global search that jumps straight to any lead, contact, account, opportunity, or settings page without touching the mouse." },
+    { "category": "getting-started", "q": "How do I change my profile details, password, or notification preferences?", "a": "Go to Settings > Profile. Password changes also sign you out of every other device/session as a security measure — you'll need to log back in there afterward." },
+    { "category": "getting-started", "q": "What does the mobile Android app do that the web app can't?", "a": "It records and auto-logs calls made from the phone, works with local sync when offline, sends native push notifications, and can capture the field rep's live location — none of which a browser can do on its own." },
+    { "category": "getting-started", "q": "Why did I get logged out of the app on all my devices?", "a": "Any password change — by you, an admin resetting it, or via Forgot Password — immediately invalidates every other active session as a security measure. Just log back in with the new password." },
+    { "category": "leads", "q": "Where do leads come from besides manual entry?", "a": "Leads flow in automatically from Meta/Facebook Lead Ads, inbound WhatsApp messages from unrecognized numbers, public web forms, the public API/Zapier, and bulk CSV/Excel import — all landing in the same Leads list." },
+    { "category": "leads", "q": "What's the difference between Assignment Rules and the Shuffler?", "a": "Assignment Rules route brand-new incoming leads the moment they arrive (round-robin, territory-based, or a rotation pool). The Shuffler is separate — it periodically re-distributes leads that already exist and have gone cold, so no single rep ends up permanently hoarding stale leads." },
+    { "category": "leads", "q": "Why is my lead score low?", "a": "Lead/engagement scores rise from real activity — calls connected, replies received, links clicked. Logging every interaction (not just dialing) is what moves the score." },
+    { "category": "leads", "q": "A lead came back after being closed — do I edit the old record?", "a": "No — mark it as a Re-Enquiry instead. This keeps the original lead's full history intact while tracking the new engagement separately." },
+    { "category": "leads", "q": "How does duplicate lead detection work?", "a": "New leads are automatically checked against existing ones by phone number, email, and branch. A likely duplicate is flagged for review rather than silently created as a second copy." },
+    { "category": "leads", "q": "Can I bulk-update or bulk-assign many leads at once?", "a": "Yes — select multiple leads in the list and use Bulk Status Change or Bulk Assign. Use it deliberately, since it's a fast path that bypasses the usual per-lead review." },
+    { "category": "sales", "q": "Why is a deal I closed still showing under Expected?", "a": "This usually happens when a lead was converted to a pipeline deal twice — once as an open deal, once directly to Closed Won/Lost. Always close an existing deal via its own Closed Won/Closed Lost action rather than converting the lead again." },
+    { "category": "sales", "q": "Why don't I see Won/Lost as options in the status dropdown anymore?", "a": "By design — those outcomes are only ever set through the real Closed Won/Closed Lost actions, which correctly capture payment details or a required loss reason." },
+    { "category": "sales", "q": "How do EMI / installment payments work?", "a": "When closing a deal as an installment sale, set up an EMI schedule with due dates and amounts per installment. Each installment tracks paid/pending/overdue independently, and partial payments are recorded against the running total." },
+    { "category": "sales", "q": "Where do Quotes and the Product catalog fit in?", "a": "Build your Product catalog once (Products page); then generate a Quote directly from any Opportunity, pulling line items from that catalog instead of retyping them each time." },
+    { "category": "sales", "q": "How are sales commissions calculated?", "a": "Each closed-won deal can be linked to a Commission record tracking the payout owed to the rep who closed it — reviewable per user in the Commissions module." },
+    { "category": "communication", "q": "Can I use WhatsApp for marketing messages?", "a": "Yes — use an approved WhatsApp template message for bulk sends once your WhatsApp Business number is connected in Settings > Integrations. Business-initiated messages always require an approved template; free-form replies only work within 24 hours of the customer's last message." },
+    { "category": "communication", "q": "Are my calls automatically recorded?", "a": "Calls made through the Android app are recorded and logged automatically if your organisation's Call Settings have recording enabled. Calls made via a connected Twilio number can also be tracked." },
+    { "category": "communication", "q": "What happens if someone messages a WhatsApp number that isn't linked to any lead yet?", "a": "An incoming WhatsApp message from an unrecognized number can automatically create a brand-new lead, so first contact never gets lost." },
+    { "category": "communication", "q": "Where can I see every interaction with a customer in one place?", "a": "Every call, note, email, WhatsApp message, and status change appears in a single chronological Activity Timeline on that lead/contact's page." },
+    { "category": "marketing", "q": "How does the Meta Ads integration decide which leads sync into the CRM?", "a": "You choose exactly which campaigns are allowed to sync in per connected ad account (Ads Manager > per-campaign toggle) — a connected account doesn't mean every campaign automatically feeds leads in." },
+    { "category": "marketing", "q": "Can I build a lead-capture form or landing page without a developer?", "a": "Yes — Web Forms and Landing Pages are both built visually inside the CRM; submissions flow directly into Leads with no code required." },
+    { "category": "marketing", "q": "How do I track whether an email campaign actually worked?", "a": "Email Campaigns report opens and clicks per recipient, scoped to whichever Email List segment you sent to." },
+    { "category": "marketing", "q": "How do I push leads in from a tool that isn't natively integrated, like a custom website or Zapier?", "a": "Generate an API key in Settings > Developer, then use the public API (or Zapier/Make with that same key) to create leads programmatically. There's also a dedicated Zapier webhook and a direct Meta-payload endpoint if you need those specific shapes." },
+    { "category": "reports", "q": "Why does the Dashboard's Won count differ from the filtered Opportunities list?", "a": "The Dashboard counts deals by their actual close date. Make sure any list you're comparing it to is also filtered by close date, not creation date." },
+    { "category": "reports", "q": "What does Carried Forward mean on the Expected Revenue report?", "a": "It flags an open deal whose expected close date has already passed into an earlier month but is still sitting open." },
+    { "category": "reports", "q": "Can I filter the Dashboard by branch and see it apply everywhere?", "a": "Yes — the Branch and Date Range filters at the top of the Dashboard are global and scope every widget on the page." },
+    { "category": "reports", "q": "Where do I get automated daily performance summaries?", "a": "Settings > Organisation lets you set a daily report time; call and lead summaries are then sent automatically to admins via WhatsApp and/or email every day." },
+    { "category": "automation", "q": "What can the Workflow Builder actually automate?", "a": "'If This, Then That' rules — e.g. auto-create a task when a lead reaches a certain status, or fire a notification the moment a lead is assigned. Steps can run immediately or after a configured delay." },
+    { "category": "automation", "q": "Can I add fields specific to my business that aren't built in?", "a": "Yes — Settings > Custom Fields lets you add org-specific fields to Leads, Contacts, Accounts, or Opportunities without any developer work." },
+    { "category": "automation", "q": "How do I recover a deleted lead, contact, or deal?", "a": "Deletion is never instant — go to Settings > Trash within 7 days to restore it. After 7 days it's permanently purged." },
+    { "category": "roles", "q": "Can a manager see their whole team's data, or just their own?", "a": "A manager sees their own records plus everyone who reports to them (directly or through the full chain), plus anyone in a team or branch they manage. Admins and Super Admins see the entire organisation." },
+    { "category": "roles", "q": "What does the Operation Executive role do?", "a": "It gets org-wide read/write access to Leads, Contacts, Accounts, Opportunities, and Products (bypassing the normal reporting hierarchy) plus read-only Reports — but it deliberately cannot touch Settings or User Management. Its actions are still attributed to that specific person in the history." },
+    { "category": "roles", "q": "What's the difference between an org Admin and the Super Admin console?", "a": "An Admin manages one organisation. Super Admin is platform-level and cross-tenant — it can suspend/restore any organisation, assign licenses, and broadcast notifications platform-wide. Regular org admins never see it." },
+    { "category": "troubleshooting", "q": "I made more calls today than the app is showing — why?", "a": "First compare against your phone's own native call log to confirm the gap is real. The most common cause is the mobile app's background sync failing silently — fully closing and reopening the app forces a fresh sync." },
+    { "category": "troubleshooting", "q": "Leads are showing up in my CRM from a campaign I don't recognize — is that a bug?", "a": "Usually not a bug: Meta routes leads by which Facebook Page an ad runs on, not by which ad account is connected in the CRM. Check your Page's ad-permission list on Meta's side." },
+    { "category": "troubleshooting", "q": "A lead's owner changed without anyone reassigning it — what happened?", "a": "Check whether Auto-Shuffle is on for your org (Settings > Shuffler) — even leads that look untouched can be periodically redistributed on schedule. A one-time manual Shuffle Now can also move leads while the automatic schedule is off." },
+    { "category": "troubleshooting", "q": "My Meta leads stopped syncing.", "a": "Almost always an expired/revoked access token, a removed Facebook Page, or the specific campaign's sync toggle being off in Ads Manager — reconnecting Meta re-authorizes the token." }
+  ]
+}

@@ -55,6 +55,7 @@ import licenseRoutes from './routes/licenseRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import superAdminRoutes from './routes/superAdminRoutes';
 import salesTargetRoutes from './routes/salesTargetRoutes';
+import trainingRoutes from './routes/trainingRoutes';
 import callRoutes from './routes/callRoutes';
 import callSettingsRoutes from './routes/callSettingsRoutes';
 import backupRoutes from './routes/backupRoutes';
@@ -400,6 +401,7 @@ app.use('/api/landing-pages', landingPageRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/android', androidRoutes);
 app.use('/api/sales-targets', salesTargetRoutes);
+app.use('/api/training', trainingRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/ads', adRoutes);
 
