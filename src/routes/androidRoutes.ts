@@ -2,39 +2,67 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { randomUUID } from 'crypto';
 import { getAndroidLeads, uploadCallRecording, syncCallLogs, uploadHelperLogs } from '../controllers/androidController';
 import { logExternalMessage } from '../controllers/whatsAppController';
 import { protect } from '../middleware/authMiddleware';
+import prisma from '../config/prisma';
 
-// In-memory rate limiter for bulk-sync: 1 request per user per 10 minutes
-// Prevents Android devices from hammering the server (each call loads all leads/contacts)
-const bulkSyncLastCall = new Map<string, number>();
-const BULK_SYNC_COOLDOWN_MS = 10 * 60 * 1000; // 10 minutes
+// Rate limiter for bulk-sync: 1 request per user per 30 seconds (was 10
+// minutes — shortened so a call syncs to the CRM almost immediately during
+// dialer testing; still bounded so a device can't hammer the server).
+//
+// DB-backed rather than an in-memory Map -- this backend runs as multiple
+// PM2-clustered processes (see cronService.ts's own NODE_APP_INSTANCE guard,
+// added specifically because cron jobs can't assume a single process), and a
+// per-process Map only rate-limits requests that happen to land on that same
+// worker. A user's requests can round-robin across workers behind the
+// load balancer and blow straight through an in-memory limit. Uses
+// SystemSetting as a lightweight per-user KV store (avoids a schema
+// migration for a single timestamp) and one atomic
+// `INSERT ... ON CONFLICT ... WHERE` so two concurrent requests from the
+// same user -- even on two different processes -- can never both pass:
+// only the request whose WHERE clause actually matches gets its UPDATE
+// applied and a row back; the other gets zero rows and is rate-limited.
+const BULK_SYNC_COOLDOWN_MS = 30 * 1000; // 30 seconds
 
-const bulkSyncRateLimiter = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const bulkSyncRateLimiter = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const userId = (req as any).user?.id;
     if (!userId) return next();
 
-    const now = Date.now();
-    const last = bulkSyncLastCall.get(userId) || 0;
-    const elapsed = now - last;
+    const key = `bulk_sync_last_call:${userId}`;
+    try {
+        const claimed = await prisma.$queryRaw<{ updatedAt: Date }[]>`
+            INSERT INTO "SystemSetting" (id, key, value, "group", "createdAt", "updatedAt")
+            VALUES (${randomUUID()}, ${key}, ${String(Date.now())}, 'rate_limit', now(), now())
+            ON CONFLICT (key) DO UPDATE
+                SET value = EXCLUDED.value, "updatedAt" = now()
+                WHERE (EXTRACT(EPOCH FROM (now() - "SystemSetting"."updatedAt")) * 1000) >= ${BULK_SYNC_COOLDOWN_MS}
+            RETURNING "updatedAt"
+        `;
 
-    if (elapsed < BULK_SYNC_COOLDOWN_MS) {
-        const waitSecs = Math.ceil((BULK_SYNC_COOLDOWN_MS - elapsed) / 1000);
-        console.log(`[BulkSync] Rate limited user ${userId} — try again in ${waitSecs}s`);
-        return res.status(429).json({ 
-            message: `Too many bulk-sync requests. Please wait ${waitSecs} seconds.`,
-            retryAfterSeconds: waitSecs
-        });
-    }
+        if (claimed.length === 0) {
+            // Row exists and the cooldown hasn't elapsed yet -- read it back
+            // purely to compute an accurate wait time for the client.
+            const existing = await prisma.systemSetting.findUnique({ where: { key } });
+            const elapsed = existing ? Date.now() - existing.updatedAt.getTime() : BULK_SYNC_COOLDOWN_MS;
+            const waitSecs = Math.max(1, Math.ceil((BULK_SYNC_COOLDOWN_MS - elapsed) / 1000));
+            console.log(`[BulkSync] Rate limited user ${userId} — try again in ${waitSecs}s`);
+            return res.status(429).json({
+                message: `Too many bulk-sync requests. Please wait ${waitSecs} seconds.`,
+                retryAfterSeconds: waitSecs
+            });
+        }
 
-    bulkSyncLastCall.set(userId, now);
-    // Cleanup old entries every 1000 calls to prevent memory leak
-    if (bulkSyncLastCall.size > 1000) {
-        const cutoff = now - BULK_SYNC_COOLDOWN_MS;
-        bulkSyncLastCall.forEach((ts, uid) => { if (ts < cutoff) bulkSyncLastCall.delete(uid); });
+        next();
+    } catch (err) {
+        // Fail open -- never let the rate-limit mechanism itself block a
+        // sync. If the DB is genuinely unreachable, the actual sync work
+        // below will fail on its own and surface that properly instead of
+        // this middleware masking it as a rate-limit response.
+        console.error('[BulkSync] Rate limiter check failed, allowing request through:', err);
+        next();
     }
-    next();
 };
 
 const router = express.Router();
