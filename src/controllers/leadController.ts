@@ -273,7 +273,7 @@ export const createLead = async (req: express.Request, res: express.Response) =>
         const { firstName, lastName, source, sourceDetails, company, enquiryAbout } = req.body;
 
         // Check for duplicates using DuplicateLeadService (Strictly isolated by branch)
-        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, targetBranchId || undefined);
+        const duplicateCheck = await DuplicateLeadService.checkDuplicate(cleanPhone, email, orgId, targetBranchId || undefined, false, req.body.phoneCountryCode);
 
         if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
             // Handle as re-enquiry
@@ -282,6 +282,9 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                 lastName: lastName,
                 email: email,
                 phone: cleanPhone,
+                phoneCountryCode: req.body.phoneCountryCode,
+                country: req.body.country,
+                countryCode: req.body.countryCode,
                 company: company,
                 enquiryAbout: enquiryAbout,
                 source: source,
@@ -711,7 +714,9 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
                 updates.phone || currentLead.phone,
                 updates.email || currentLead.email,
                 currentLead.organisationId,
-                currentLead.branchId || undefined
+                currentLead.branchId || undefined,
+                false,
+                updates.phoneCountryCode || currentLead.phoneCountryCode
             );
             
             if (duplicateCheck.isDuplicate && duplicateCheck.existingLead && duplicateCheck.existingLead.id !== currentLead.id) {
@@ -1186,7 +1191,8 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                     l.email,
                     orgId,
                     targetBranchId || undefined,
-                    true // includeAllBranches
+                    true, // includeAllBranches
+                    l.phoneCountryCode
                 );
 
                 if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
@@ -1222,6 +1228,9 @@ export const createBulkLeads = async (req: express.Request, res: express.Respons
                             lastName: l.lastName || '',
                             email: l.email,
                             phone: cleanPhone,
+                            phoneCountryCode: l.phoneCountryCode,
+                            country: l.country,
+                            countryCode: l.countryCode,
                             company: l.company,
                             enquiryAbout: l.enquiryAbout,
                             source: l.source || 'import',

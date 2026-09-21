@@ -12,6 +12,9 @@ interface ReEnquiryData {
     lastName: string;
     email?: string;
     phone: string;
+    phoneCountryCode?: string;
+    country?: string;
+    countryCode?: string;
     company?: string;
     enquiryAbout?: string;
     stage?: string;
@@ -38,7 +41,8 @@ export const DuplicateLeadService = {
         email: string | null | undefined,
         organisationId: string,
         branchId?: string | null,
-        includeAllBranches: boolean = false // Default to false: isolate by branch
+        includeAllBranches: boolean = false, // Default to false: isolate by branch
+        newPhoneCountryCode?: string | null
     ): Promise<DuplicateCheckResult> {
         try {
             // Sanitize phone
@@ -142,6 +146,31 @@ export const DuplicateLeadService = {
                 }
             });
 
+            // The "last 10 digits" / "contains" conditions above are deliberately loose
+            // to catch same-number variations (with/without +91, leading 0, etc.), but
+            // that looseness means a brand-new international number (e.g. a Gulf
+            // country lead) can coincidentally share its last 10 digits with an
+            // unrelated existing lead - most often an Indian one, since the hardcoded
+            // 91/1 variants above bias toward those. If the new submission explicitly
+            // names a country code that conflicts with the matched lead's own stored
+            // country code, this isn't a re-enquiry from the same person - it's a
+            // different real number that happened to collide on digits. Without this
+            // guard, treating it as a duplicate would silently attach the new
+            // enquiry's details to the wrong lead and never update phone/country data
+            // at all (handleReEnquiry doesn't touch those fields), leaving the org
+            // admin looking at a "+91" number they never entered.
+            if (existingLead && newPhoneCountryCode && existingLead.phoneCountryCode) {
+                const normalize = (cc: string) => cc.replace(/\D/g, '');
+                if (normalize(newPhoneCountryCode) !== normalize(existingLead.phoneCountryCode)) {
+                    console.log('[DuplicateLeadService] Digit match found but country codes conflict - not a duplicate:', {
+                        newPhoneCountryCode,
+                        existingCountryCode: existingLead.phoneCountryCode,
+                        existingLeadId: existingLead.id
+                    });
+                    return { isDuplicate: false };
+                }
+            }
+
             if (existingLead) {
                 // Determine what matched
                 let matchedBy: 'phone' | 'email' | 'whatsapp' = 'phone';
@@ -210,6 +239,13 @@ export const DuplicateLeadService = {
                     firstName: newData.firstName || existingLead.firstName,
                     lastName: newData.lastName || existingLead.lastName,
                     email: (newData.email && newData.email.trim() !== '') ? newData.email.trim() : existingLead.email,
+                    // checkDuplicate already vetoes a country-code conflict as "not a
+                    // duplicate" at all, so reaching here means either no conflict or the
+                    // existing lead simply never had one recorded - fill it in from this
+                    // submission rather than leaving it permanently blank/wrong.
+                    ...(newData.phoneCountryCode ? { phoneCountryCode: newData.phoneCountryCode } : {}),
+                    ...(newData.country ? { country: newData.country } : {}),
+                    ...(newData.countryCode ? { countryCode: newData.countryCode } : {}),
                     company: newData.company || existingLead.company,
                     status: newStatus,
                     stage: newData.stage || existingLead.stage,
