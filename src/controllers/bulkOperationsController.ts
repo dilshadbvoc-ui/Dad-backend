@@ -286,6 +286,25 @@ export const bulkLeadOperations = async (req: Request, res: Response) => {
           }
         });
 
+        // Cascade to entities converted from these leads, matching the single-lead
+        // delete path (leadController.deleteLead) - otherwise a lead's converted
+        // Contact/Account/Opportunity stay active and visible after the lead is gone.
+        const cascadeDeletedAt = new Date();
+        await Promise.all([
+          prisma.contact.updateMany({
+            where: { leadId: { in: leadIds } },
+            data: { isDeleted: true, deletedAt: cascadeDeletedAt }
+          }),
+          prisma.account.updateMany({
+            where: { leadId: { in: leadIds } },
+            data: { isDeleted: true, deletedAt: cascadeDeletedAt }
+          }),
+          prisma.opportunity.updateMany({
+            where: { leadId: { in: leadIds } },
+            data: { isDeleted: true, deletedAt: cascadeDeletedAt }
+          })
+        ]);
+
         await logAudit({
           organisationId,
           actorId: userId,

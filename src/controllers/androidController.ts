@@ -153,6 +153,53 @@ export const getAndroidLeads = async (req: Request, res: Response) => {
     }
 };
 
+// GET /api/android/leads/:leadId/last-note
+// On-demand, single-lead lookup -- deliberately NOT folded into
+// getAndroidLeads' bulk response above, which syncs every visible lead for
+// offline caching. A note is only ever needed for the ONE lead a call is
+// currently ringing for, so batching it into every lead in every bulk sync
+// would mean fetching (and the client storing) data that's used maybe once
+// per lead ever, for every lead whether a call happens or not.
+export const getLeadLastNote = async (req: Request, res: Response) => {
+    try {
+        const user = (req as any).user;
+        if (!user || !user.organisationId) {
+            return res.status(401).json({ error: 'Unauthorized. Organisation ID missing.' });
+        }
+
+        const { leadId } = req.params;
+        if (!leadId) {
+            return res.status(400).json({ error: 'leadId is required' });
+        }
+
+        // organisationId is part of the WHERE clause itself (not just the
+        // auth check above) so a leadId from another org can never leak a
+        // note back, even if this endpoint is called with a guessed/stale id.
+        const note = await prisma.interaction.findFirst({
+            where: {
+                leadId,
+                organisationId: user.organisationId,
+                type: 'note',
+                isDeleted: false,
+            },
+            orderBy: { date: 'desc' },
+            select: { description: true, subject: true, date: true },
+        });
+
+        if (!note) {
+            return res.status(200).json({ note: null });
+        }
+
+        res.status(200).json({
+            note: note.description?.trim() || note.subject || null,
+            date: note.date,
+        });
+    } catch (error) {
+        console.error('Error fetching lead last note:', error);
+        res.status(500).json({ error: 'Failed to fetch last note' });
+    }
+};
+
 // POST /api/android/recordings
 // Handles multipart/form-data with 'audio' file and metadata fields
 export const uploadCallRecording = async (req: Request, res: Response) => {
