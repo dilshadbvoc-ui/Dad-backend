@@ -38,7 +38,7 @@ export const createWhatsAppCampaign = async (req: AuthenticatedRequest, res: Res
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'No organisation found' });
 
-        const { recipients, testNumber, ...campaignData } = req.body;
+        const { recipients, testNumber, whatsappAccountId, ...campaignData } = req.body;
 
         // Validate that we have either recipients or testNumber
         if (!recipients && !testNumber) {
@@ -59,6 +59,7 @@ export const createWhatsAppCampaign = async (req: AuthenticatedRequest, res: Res
         const campaign = await prisma.whatsAppCampaign.create({
             data: {
                 ...campaignData,
+                whatsappAccountId,
                 recipients: recipients || [],
                 testNumber,
                 organisationId: orgId as string, // Type assertion since we've validated orgId is not null

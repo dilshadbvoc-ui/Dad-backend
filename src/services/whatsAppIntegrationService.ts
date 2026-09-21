@@ -85,7 +85,11 @@ export const WhatsAppIntegrationService = {
                 senderName: data.senderName || data.phoneNumber
             };
 
-            await this.saveIncomingMessage(organisationId, normalizedMessage, 'gallabox');
+            const account = await prisma.whatsAppAccount.findFirst({
+                where: { organisationId, phoneNumberId: channelId, isDeleted: false }
+            });
+
+            await this.saveIncomingMessage(organisationId, normalizedMessage, 'gallabox', account?.id);
 
         } catch (error) {
             console.error('[GallaboxWebhook] Error processing Gallabox webhook:', error);
@@ -134,13 +138,17 @@ export const WhatsAppIntegrationService = {
             metaLocation: message.location
         };
 
-        await this.saveIncomingMessage(org.id, normalizedMessage, 'meta');
+        const account = await prisma.whatsAppAccount.findFirst({
+            where: { organisationId: org.id, phoneNumberId: metadata.phone_number_id, isDeleted: false }
+        });
+
+        await this.saveIncomingMessage(org.id, normalizedMessage, 'meta', account?.id);
     },
 
     /**
      * Unified logic for saving messages and creating leads
      */
-    async saveIncomingMessage(organisationId: string, message: any, provider: string) {
+    async saveIncomingMessage(organisationId: string, message: any, provider: string, whatsappAccountId?: string) {
         try {
             const normalizedPhone = message.from.replace(/\D/g, '');
             const { DuplicateLeadService } = await import('./duplicateLeadService');
@@ -218,6 +226,7 @@ export const WhatsAppIntegrationService = {
                         organisationId,
                         leadId: lead?.id,
                         contactId: contactId,
+                        whatsappAccountId,
                         isReadByAgent: false
                     }
                 });

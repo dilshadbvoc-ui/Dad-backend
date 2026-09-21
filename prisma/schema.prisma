@@ -73,6 +73,8 @@ model Organisation {
   smsCampaigns      SMSCampaign[]
   whatsAppCampaigns WhatsAppCampaign[]
   whatsAppMessages  WhatsAppMessage[]
+  whatsAppAccounts  WhatsAppAccount[]
+  whatsAppAssignmentRules WhatsAppAssignmentRule[]
   commissions       Commission[]
   landingPages      LandingPage[]
   auditLogs         AuditLog[]
@@ -183,6 +185,8 @@ model User {
   createdSMSCampaigns         SMSCampaign[]          @relation("SMSCampaignCreator")
   createdWhatsAppCampaigns    WhatsAppCampaign[]     @relation("WhatsAppCampaignCreator")
   whatsAppMessages            WhatsAppMessage[]      @relation("WhatsAppMessageAgent")
+  createdWhatsAppAccounts     WhatsAppAccount[]      @relation("WhatsAppAccountCreator")
+  createdWhatsAppAssignmentRules WhatsAppAssignmentRule[] @relation("WhatsAppRuleCreator")
   commissions                 Commission[]           @relation("UserCommission")
   createdCommissions          Commission[]           @relation("CommissionCreator")
   createdLandingPages         LandingPage[]          @relation("LandingPageCreator")
@@ -226,6 +230,7 @@ model Team {
   createdBy      User         @relation("TeamCreator", fields: [createdById], references: [id])
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   salesTargets   SalesTarget[]
+  whatsAppAssignmentRules WhatsAppAssignmentRule[]
 
   @@index([organisationId])
 }
@@ -1583,11 +1588,15 @@ model WhatsAppCampaign {
   updatedAt      DateTime  @updatedAt
   isDeleted      Boolean   @default(false)
 
+  whatsappAccountId String?
+
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   createdBy      User?        @relation("WhatsAppCampaignCreator", fields: [createdById], references: [id])
+  whatsappAccount WhatsAppAccount? @relation(fields: [whatsappAccountId], references: [id])
   messages       WhatsAppMessage[]
 
   @@index([organisationId])
+  @@index([whatsappAccountId])
 }
 
 model WhatsAppMessage {
@@ -1609,6 +1618,7 @@ model WhatsAppMessage {
   contactId      String?
   agentId        String?
   campaignId     String?
+  whatsappAccountId String?
   isReadByAgent  Boolean   @default(true)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -1619,6 +1629,7 @@ model WhatsAppMessage {
   contact        Contact?     @relation(fields: [contactId], references: [id])
   agent          User?        @relation("WhatsAppMessageAgent", fields: [agentId], references: [id])
   campaign       WhatsAppCampaign? @relation(fields: [campaignId], references: [id])
+  whatsappAccount WhatsAppAccount? @relation(fields: [whatsappAccountId], references: [id])
 
   @@unique([organisationId, waMessageId])
   @@index([conversationId, createdAt])
@@ -1626,6 +1637,55 @@ model WhatsAppMessage {
   @@index([phoneNumber])
   @@index([organisationId])
   @@index([organisationId, isDeleted, createdAt])
+  @@index([whatsappAccountId])
+}
+
+model WhatsAppAccount {
+  id             String    @id @default(uuid())
+  organisationId String
+  phoneNumber    String
+  displayName    String?
+  provider       String    @default("meta") // meta | gallabox | wati | doubletick | wabis | happilee
+  phoneNumberId  String?   // Meta phone_number_id (or provider's channel id)
+  wabaId         String?
+  accessToken    String?   // stored encrypted via utils/encryption.ts
+  status         String    @default("active") // active | inactive
+  isDefault      Boolean   @default(false)
+  createdById    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  isDeleted      Boolean   @default(false)
+
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy      User?        @relation("WhatsAppAccountCreator", fields: [createdById], references: [id])
+  assignmentRules WhatsAppAssignmentRule[]
+  campaigns      WhatsAppCampaign[]
+  messages       WhatsAppMessage[]
+
+  @@index([organisationId])
+}
+
+model WhatsAppAssignmentRule {
+  id                 String   @id @default(uuid())
+  organisationId     String
+  whatsappAccountId  String
+  distributionType   String   @default("specific_user") // specific_user | round_robin | team
+  assignedUserIds    String[]
+  targetTeamId       String?
+  lastAssignedUserId String?
+  isActive           Boolean  @default(true)
+  createdById        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  isDeleted          Boolean  @default(false)
+
+  organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  whatsappAccount WhatsAppAccount  @relation(fields: [whatsappAccountId], references: [id], onDelete: Cascade)
+  targetTeam      Team?            @relation(fields: [targetTeamId], references: [id])
+  createdBy       User?            @relation("WhatsAppRuleCreator", fields: [createdById], references: [id])
+
+  @@index([organisationId])
+  @@index([whatsappAccountId])
 }
 
 model Commission {
