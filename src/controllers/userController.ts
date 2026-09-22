@@ -77,9 +77,16 @@ export const getUserStats = async (req: Request, res: Response) => {
                 return res.status(403).json({ message: 'Not authorized to view stats for this user' });
             }
 
-            // Further role checks (if not admin/super_access, must be self or manager)
+            // Further role checks (if not admin/super_access, must be self or a manager
+            // anywhere up the reporting chain - not just a *direct* manager. This only
+            // checked targetUser.reportsToId === currentUser.id before, which meant a
+            // manager could see stats for their direct reports but not their reports'
+            // reports, even though getVisibleUserIds (used by the leads list on this
+            // same profile page) already walks the full chain - so the page's leads
+            // table would populate while its stats cards silently 403'd.
             if (currentUser.role !== 'admin' && currentUser.id !== userId) {
-                if (targetUser.reportsToId !== currentUser.id) {
+                const visibleIds = await getVisibleUserIds(currentUser.id);
+                if (!visibleIds.includes(userId)) {
                     return res.status(403).json({ message: 'Not authorized to view stats' });
                 }
             }
