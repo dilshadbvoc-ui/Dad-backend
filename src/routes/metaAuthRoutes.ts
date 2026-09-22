@@ -52,11 +52,18 @@ router.get('/auth', protect, (req: AuthRequest, res: Response) => {
     // the user actually intended to connect, and doesn't touch the other one.
     const connectType = req.query.type === 'whatsapp' ? 'whatsapp' : 'meta';
 
+    // Optional override so callers other than the Integrations page (e.g. the
+    // WhatsApp Accounts settings page) can be returned to after the OAuth
+    // round-trip instead of always landing back on /settings/integrations.
+    const returnPath = typeof req.query.returnPath === 'string' && req.query.returnPath.startsWith('/')
+        ? req.query.returnPath
+        : '/settings/integrations';
+
     // Store org ID in state parameter for the callback
     const state = Buffer.from(JSON.stringify({
         orgId: req.user?.organisationId,
         userId: req.user?.id,
-        returnUrl: `${clientUrl}/settings/integrations`,
+        returnUrl: `${clientUrl}${returnPath}`,
         connectType
     })).toString('base64');
 
@@ -120,7 +127,7 @@ router.get('/callback', async (req, res) => {
         return res.redirect(`${process.env.CLIENT_URL}/settings/integrations?error=invalid_state`);
     }
 
-    const { orgId, returnUrl } = stateData;
+    const { orgId, userId, returnUrl } = stateData;
     // Older links (or anything that predates this param) default to 'meta' so the
     // existing Facebook Leads flow behaves exactly as it did before this change.
     const connectType = stateData.connectType === 'whatsapp' ? 'whatsapp' : 'meta';
@@ -384,6 +391,49 @@ router.get('/callback', async (req, res) => {
                     }
                 }
             });
+
+            // Additive: also mirror every discovered number into the relational
+            // WhatsAppAccount table, so numbers connected via this OAuth flow are
+            // just as usable for assignment rules / automations as numbers added
+            // through the manual "Add Account" form. Does not change anything
+            // about the JSON write above or the webhook subscription below.
+            for (const num of discoveredNumbers) {
+                try {
+                    const existingRow = await prisma.whatsAppAccount.findFirst({
+                        where: { organisationId: orgId, phoneNumberId: num.phoneNumberId }
+                    });
+
+                    if (existingRow) {
+                        await prisma.whatsAppAccount.update({
+                            where: { id: existingRow.id },
+                            data: {
+                                phoneNumber: num.displayPhoneNumber || existingRow.phoneNumber,
+                                displayName: num.verifiedName || existingRow.displayName,
+                                wabaId: num.wabaId,
+                                accessToken: encryptedUserToken,
+                                status: 'active',
+                                isDeleted: false
+                            }
+                        });
+                    } else {
+                        await prisma.whatsAppAccount.create({
+                            data: {
+                                organisationId: orgId,
+                                phoneNumber: num.displayPhoneNumber || num.phoneNumberId,
+                                displayName: num.verifiedName,
+                                provider: 'meta',
+                                phoneNumberId: num.phoneNumberId,
+                                wabaId: num.wabaId,
+                                accessToken: encryptedUserToken,
+                                status: 'active',
+                                createdById: userId
+                            }
+                        });
+                    }
+                } catch (accountRowError) {
+                    console.error(`[Meta OAuth] Failed to upsert WhatsAppAccount row for ${num.phoneNumberId}:`, accountRowError);
+                }
+            }
 
             // CRITICAL: registering/reading a WABA via OAuth does NOT by itself tell
             // Meta to deliver that WABA's webhook events to this app ("shadow
@@ -662,6 +712,24 @@ router.post('/disconnect', protect, async (req: AuthRequest, res: Response) => {
                     disconnectedAt: new Date().toISOString()
                 };
                 currentIntegrations.whatsappAccounts = [];
+            }
+
+            // Additive: keep the relational WhatsAppAccount table (used by
+            // assignment rules / automations) in sync with the JSON disconnect
+            // above, so a disconnected number doesn't keep dangling rules/bots.
+            try {
+                const rowsWhere = phoneNumberIdToRemove
+                    ? { organisationId: orgId, phoneNumberId: phoneNumberIdToRemove, isDeleted: false }
+                    : { organisationId: orgId, provider: 'meta', isDeleted: false };
+
+                const rowsToRemove = await prisma.whatsAppAccount.findMany({ where: rowsWhere, select: { id: true } });
+                if (rowsToRemove.length > 0) {
+                    const rowIds = rowsToRemove.map(r => r.id);
+                    await prisma.whatsAppAccount.updateMany({ where: { id: { in: rowIds } }, data: { isDeleted: true } });
+                    await prisma.whatsAppAssignmentRule.updateMany({ where: { whatsappAccountId: { in: rowIds } }, data: { isDeleted: true } });
+                }
+            } catch (cleanupError) {
+                console.error('[Meta Disconnect] Failed to clean up WhatsAppAccount rows:', cleanupError);
             }
         }
 
