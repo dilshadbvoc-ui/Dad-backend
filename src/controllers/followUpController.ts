@@ -43,8 +43,16 @@ export const getFollowUps = async (req: Request, res: Response) => {
             where.OR = [
                 // Follow-ups assigned to user or subordinates
                 { assignedToId: { in: visibleUserIds } },
-                // Follow-ups created by user or subordinates
-                { createdById: { in: visibleUserIds } },
+                // Follow-ups created by user or subordinates, but ONLY while still
+                // unassigned - once a follow-up is handed to someone else (shuffler
+                // reassignment, manual reassign, etc.), the creator shouldn't keep
+                // seeing it in their own list forever. If the new assignee happens to
+                // be a subordinate, the `assignedToId` branch above already covers it;
+                // this branch existing without the assignedToId:null guard is what let
+                // a creator and a later assignee both see the same "due today" entry
+                // and both independently contact the lead (reported for Musadhiq at
+                // Edufolio, reassigned from Jasna to Swathi via the shuffler).
+                { createdById: { in: visibleUserIds }, assignedToId: null },
                 // Follow-ups related to leads assigned to user or subordinates
                 { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
                 // Follow-ups related to contacts owned by user or subordinates
