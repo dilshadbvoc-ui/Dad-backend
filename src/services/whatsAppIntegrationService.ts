@@ -334,6 +334,24 @@ export const WhatsAppIntegrationService = {
                     phoneNumber: message.from
                 });
             }
+
+            // Fire any WhatsApp automation ("bot") workflows configured for this
+            // account/keyword. Additive hook into the existing generic automation
+            // engine - failures here must never break message ingestion above.
+            try {
+                const { WorkflowEngine } = await import('./workflowEngine');
+                await WorkflowEngine.evaluate('WhatsAppMessage', 'received', {
+                    id: messageRecord.id,
+                    body: message.body,
+                    phoneNumber: message.from,
+                    whatsappAccountId,
+                    leadId: messageRecord.leadId,
+                    conversationId: messageRecord.conversationId,
+                    organisationId
+                }, organisationId);
+            } catch (workflowError) {
+                console.error('[WhatsAppWebhook] WorkflowEngine trigger failed:', workflowError);
+            }
         } catch (error) {
             console.error('[WhatsAppWebhook] Error in saveIncomingMessage:', error);
         }

@@ -61,6 +61,15 @@ export const WorkflowEngine = {
                 case 'contains':
                     if (!String(val).includes(target)) return false;
                     break;
+                case 'contains_any': {
+                    // target is an array of keywords; matches if the field contains ANY of them
+                    // (case-insensitive) - lets a single condition express OR-of-keywords without
+                    // changing the AND semantics between separate condition entries.
+                    const haystack = String(val || '').toLowerCase();
+                    const keywords: string[] = Array.isArray(target) ? target : [target];
+                    if (!keywords.some(kw => haystack.includes(String(kw).toLowerCase()))) return false;
+                    break;
+                }
                 case 'greater_than':
                     if (val <= target) return false;
                     break;
@@ -311,6 +320,80 @@ export const WorkflowEngine = {
                                 }
                             });
                         }
+                        break;
+                    }
+
+                    case 'send_whatsapp_reply': {
+                        // Like 'send_whatsapp', but for replying to an inbound WhatsApp
+                        // message (data.phoneNumber is the sender) and logs a real
+                        // WhatsAppMessage row so the reply shows up in the /whatsapp/inbox
+                        // UI, not just an Interaction audit entry.
+                        const phone = action.config?.phone || data.phoneNumber || data.phone;
+                        if (!phone) break;
+
+                        const waClient = await WhatsAppService.getClientForOrg(organisationId);
+                        if (!waClient) {
+                            console.warn(`[WorkflowEngine] WhatsApp not connected for org ${organisationId}`);
+                            break;
+                        }
+
+                        const bodyText = this.parseTemplate(action.config?.message || '', data);
+                        if (!bodyText) break;
+
+                        console.log(`[WorkflowEngine] Action: Sending WhatsApp Auto-Reply to ${phone}`);
+                        const sendResult = await waClient.sendTextMessage(phone, bodyText);
+
+                        await prisma.whatsAppMessage.create({
+                            data: {
+                                conversationId: data.conversationId || `${phone}_${organisationId}`,
+                                phoneNumber: phone,
+                                direction: 'outgoing',
+                                messageType: 'text',
+                                content: { text: bodyText },
+                                status: 'sent',
+                                waMessageId: sendResult?.messages?.[0]?.id,
+                                sentAt: new Date(),
+                                organisationId,
+                                leadId: data.leadId || undefined,
+                                whatsappAccountId: data.whatsappAccountId || undefined,
+                                isReadByAgent: true
+                            }
+                        });
+                        break;
+                    }
+
+                    case 'escalate_to_agent': {
+                        if (!effectiveEntityId && workflow.triggerEntity !== 'WhatsAppMessage') break;
+
+                        const { WhatsAppAssignmentService } = await import('./whatsAppAssignmentService');
+                        const agentId = await WhatsAppAssignmentService.resolveAgent(data.whatsappAccountId, organisationId);
+                        if (!agentId) {
+                            console.log('[WorkflowEngine] Action: escalate_to_agent - no assignment rule/agent found, skipping');
+                            break;
+                        }
+
+                        console.log(`[WorkflowEngine] Action: Escalating WhatsApp conversation to agent ${agentId}`);
+
+                        if (data.id) {
+                            await prisma.whatsAppMessage.update({
+                                where: { id: data.id },
+                                data: { agentId }
+                            }).catch(() => undefined);
+                        }
+
+                        if (data.leadId) {
+                            const lead = await prisma.lead.findUnique({ where: { id: data.leadId }, select: { assignedToId: true } });
+                            if (lead && !lead.assignedToId) {
+                                await prisma.lead.update({ where: { id: data.leadId }, data: { assignedToId: agentId } });
+                            }
+                        }
+
+                        await NotificationService.send(
+                            agentId,
+                            'WhatsApp conversation assigned to you',
+                            `A WhatsApp conversation from ${data.phoneNumber || 'a contact'} has been escalated to you.`,
+                            'info'
+                        );
                         break;
                     }
 
