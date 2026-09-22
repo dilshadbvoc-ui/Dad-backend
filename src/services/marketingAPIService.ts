@@ -19,6 +19,30 @@ interface Campaign {
     lifetime_budget?: string;
 }
 
+interface AdSet {
+    id: string;
+    name: string;
+    status: string;
+    effective_status?: string;
+    daily_budget?: string;
+    lifetime_budget?: string;
+    start_time?: string;
+}
+
+interface Ad {
+    id: string;
+    name: string;
+    status: string;
+    effective_status?: string;
+    creative?: {
+        id: string;
+        thumbnail_url?: string;
+        image_url?: string;
+        body?: string;
+        title?: string;
+    };
+}
+
 class MarketingAPIService {
     private customAxios: any;
     private apiVersion = 'v19.0';
@@ -125,6 +149,77 @@ class MarketingAPIService {
         } catch (error: any) {
             this.handleError(error, `creating campaign for ${adAccountId}`);
             throw error; // redundant but clear
+        }
+    }
+
+    /**
+     * Fetch Ad Sets belonging to a specific Campaign (scoped via the campaign edge
+     * rather than the whole ad account, so callers drilling into one campaign don't
+     * have to fetch and then filter every ad set in the account).
+     */
+    async getAdSets(campaignId: string, fields = 'id,name,status,effective_status,daily_budget,lifetime_budget,start_time'): Promise<AdSet[]> {
+        try {
+            const response = await this.customAxios.get(`/${campaignId}/adsets`, {
+                params: { fields, limit: 100 },
+            });
+            return response.data.data || [];
+        } catch (error: any) {
+            this.handleError(error, `fetching ad sets for campaign ${campaignId}`);
+            return [];
+        }
+    }
+
+    /**
+     * Fetch Ads (with creative preview data) belonging to a specific Campaign.
+     */
+    async getAds(campaignId: string, fields = 'id,name,status,effective_status,creative{id,thumbnail_url,image_url,body,title}'): Promise<Ad[]> {
+        try {
+            const response = await this.customAxios.get(`/${campaignId}/ads`, {
+                params: { fields, limit: 100 },
+            });
+            return response.data.data || [];
+        } catch (error: any) {
+            this.handleError(error, `fetching ads for campaign ${campaignId}`);
+            return [];
+        }
+    }
+
+    /**
+     * Pause or resume a Campaign.
+     */
+    async updateCampaignStatus(campaignId: string, status: 'ACTIVE' | 'PAUSED'): Promise<void> {
+        try {
+            await this.customAxios.post(`/${campaignId}`, { status });
+        } catch (error: any) {
+            this.handleError(error, `updating status for campaign ${campaignId}`);
+        }
+    }
+
+    /**
+     * Pause or resume an Ad Set.
+     */
+    async updateAdSetStatus(adSetId: string, status: 'ACTIVE' | 'PAUSED'): Promise<void> {
+        try {
+            await this.customAxios.post(`/${adSetId}`, { status });
+        } catch (error: any) {
+            this.handleError(error, `updating status for ad set ${adSetId}`);
+        }
+    }
+
+    /**
+     * Update an Ad Set's budget. Meta takes budgets as minor currency units (e.g.
+     * paise, cents) as a string - callers pass whole-currency amounts and this
+     * converts, matching how daily_budget/lifetime_budget are already displayed
+     * elsewhere in this app (divided by 100).
+     */
+    async updateAdSetBudget(adSetId: string, budget: { dailyBudget?: number; lifetimeBudget?: number }): Promise<void> {
+        try {
+            const data: Record<string, string> = {};
+            if (budget.dailyBudget != null) data.daily_budget = String(Math.round(budget.dailyBudget * 100));
+            if (budget.lifetimeBudget != null) data.lifetime_budget = String(Math.round(budget.lifetimeBudget * 100));
+            await this.customAxios.post(`/${adSetId}`, data);
+        } catch (error: any) {
+            this.handleError(error, `updating budget for ad set ${adSetId}`);
         }
     }
 

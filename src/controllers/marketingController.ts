@@ -182,11 +182,129 @@ export const createCampaign = async (req: AuthRequest, res: Response) => {
     } catch (error: any) {
         const status = error.status || 500;
         console.error('[MarketingController] Create Campaign Error:', error.message);
-        res.status(status).json({ 
+        res.status(status).json({
             success: false,
             message: error.message,
             code: status === 401 ? 'META_TOKEN_EXPIRED' : 'META_API_ERROR'
         });
+    }
+};
+
+// Shared by every route below: resolves the token for adAccountId, or sends the
+// standard META_NOT_CONNECTED response and returns null so the caller can bail out.
+const getTokenOrRespond = async (req: AuthRequest, res: Response): Promise<string | null> => {
+    const { adAccountId } = req.params;
+    const orgId = getOrgId(req.user);
+    const accessToken = orgId ? await resolveMetaTokenForAdAccount(orgId, adAccountId) : null;
+
+    if (!accessToken) {
+        res.status(200).json({
+            success: false,
+            code: 'META_NOT_CONNECTED',
+            message: 'No connected Meta account has access to this ad account. Please reconnect in Settings → Integrations.'
+        });
+        return null;
+    }
+    return accessToken;
+};
+
+const handleMetaError = (res: Response, error: any, action: string) => {
+    const status = error.status || 500;
+    console.error(`[MarketingController] ${action} Error:`, error.message);
+    res.status(status).json({
+        success: false,
+        message: error.message,
+        code: status === 401 ? 'META_TOKEN_EXPIRED' : 'META_API_ERROR'
+    });
+};
+
+export const getAdSets = async (req: AuthRequest, res: Response) => {
+    try {
+        const accessToken = await getTokenOrRespond(req, res);
+        if (!accessToken) return;
+
+        const { campaignId } = req.params;
+        const marketingService = new MarketingAPIService(accessToken);
+        const adSets = await marketingService.getAdSets(campaignId);
+
+        res.status(200).json({ success: true, count: adSets.length, data: adSets });
+    } catch (error: any) {
+        handleMetaError(res, error, 'Get Ad Sets');
+    }
+};
+
+export const getAds = async (req: AuthRequest, res: Response) => {
+    try {
+        const accessToken = await getTokenOrRespond(req, res);
+        if (!accessToken) return;
+
+        const { campaignId } = req.params;
+        const marketingService = new MarketingAPIService(accessToken);
+        const ads = await marketingService.getAds(campaignId);
+
+        res.status(200).json({ success: true, count: ads.length, data: ads });
+    } catch (error: any) {
+        handleMetaError(res, error, 'Get Ads');
+    }
+};
+
+export const updateCampaignStatus = async (req: AuthRequest, res: Response) => {
+    try {
+        const accessToken = await getTokenOrRespond(req, res);
+        if (!accessToken) return;
+
+        const { campaignId } = req.params;
+        const { status } = req.body;
+        if (status !== 'ACTIVE' && status !== 'PAUSED') {
+            return res.status(400).json({ success: false, message: 'status must be ACTIVE or PAUSED' });
+        }
+
+        const marketingService = new MarketingAPIService(accessToken);
+        await marketingService.updateCampaignStatus(campaignId, status);
+
+        res.status(200).json({ success: true });
+    } catch (error: any) {
+        handleMetaError(res, error, 'Update Campaign Status');
+    }
+};
+
+export const updateAdSetStatus = async (req: AuthRequest, res: Response) => {
+    try {
+        const accessToken = await getTokenOrRespond(req, res);
+        if (!accessToken) return;
+
+        const { adSetId } = req.params;
+        const { status } = req.body;
+        if (status !== 'ACTIVE' && status !== 'PAUSED') {
+            return res.status(400).json({ success: false, message: 'status must be ACTIVE or PAUSED' });
+        }
+
+        const marketingService = new MarketingAPIService(accessToken);
+        await marketingService.updateAdSetStatus(adSetId, status);
+
+        res.status(200).json({ success: true });
+    } catch (error: any) {
+        handleMetaError(res, error, 'Update Ad Set Status');
+    }
+};
+
+export const updateAdSetBudget = async (req: AuthRequest, res: Response) => {
+    try {
+        const accessToken = await getTokenOrRespond(req, res);
+        if (!accessToken) return;
+
+        const { adSetId } = req.params;
+        const { dailyBudget, lifetimeBudget } = req.body;
+        if (dailyBudget == null && lifetimeBudget == null) {
+            return res.status(400).json({ success: false, message: 'dailyBudget or lifetimeBudget is required' });
+        }
+
+        const marketingService = new MarketingAPIService(accessToken);
+        await marketingService.updateAdSetBudget(adSetId, { dailyBudget, lifetimeBudget });
+
+        res.status(200).json({ success: true });
+    } catch (error: any) {
+        handleMetaError(res, error, 'Update Ad Set Budget');
     }
 };
 
