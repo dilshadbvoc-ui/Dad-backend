@@ -494,7 +494,7 @@ export const createLead = async (req: express.Request, res: express.Response) =>
                         externalId: lead.id
                     },
                     actionSource: 'system_generated' // or website if we knew source url
-                }).catch(console.error);
+                }, lead.branchId).catch(console.error);
             });
             // Gallabox Sync
             GallaboxService.getClientForOrg(orgId).then(gallabox => {

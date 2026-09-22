@@ -1,5 +1,6 @@
 import axios from 'axios';
 import prisma from '../config/prisma';
+import { decrypt } from '../utils/encryption';
 
 interface ConversionEvent {
     eventName: string;
@@ -19,11 +20,39 @@ interface ConversionEvent {
     eventTime?: number;
 }
 
+/**
+ * Picks which connected Meta account's Pixel ID/token to send Conversions API
+ * events through. Orgs can have several connected accounts (`integrations.metaAccounts`)
+ * on top of the older single-account `integrations.meta` — prefer whichever account
+ * matches the event's branch (so a multi-branch org's CAPI events attribute to the
+ * right ad account/pixel), then fall back to the legacy single `meta` object, then
+ * to the first connected account that actually has a Pixel ID configured.
+ */
+function resolveMetaCapiConfig(integrations: any, branchId?: string | null): { pixelId?: string; accessToken?: string } {
+    const legacy = integrations?.meta;
+    const accounts: any[] = Array.isArray(integrations?.metaAccounts) ? integrations.metaAccounts : [];
+
+    if (branchId) {
+        const branchMatch = accounts.find((a) => a.branchId === branchId && a.pixelId);
+        if (branchMatch) return { pixelId: branchMatch.pixelId, accessToken: branchMatch.accessToken };
+        if (legacy?.branchId === branchId && legacy?.pixelId) {
+            return { pixelId: legacy.pixelId, accessToken: legacy.accessToken };
+        }
+    }
+
+    if (legacy?.pixelId) return { pixelId: legacy.pixelId, accessToken: legacy.accessToken };
+
+    const anyMatch = accounts.find((a) => a.pixelId);
+    if (anyMatch) return { pixelId: anyMatch.pixelId, accessToken: anyMatch.accessToken };
+
+    return {};
+}
+
 export const MetaConversionService = {
     /**
      * Send an event to Meta Conversions API
      */
-    async sendEvent(organisationId: string, event: ConversionEvent | ConversionEvent[]) {
+    async sendEvent(organisationId: string, event: ConversionEvent | ConversionEvent[], branchId?: string | null) {
         try {
             // 1. Get Meta Config (Pixel ID & Access Token)
             const org = await prisma.organisation.findUnique({
@@ -33,17 +62,19 @@ export const MetaConversionService = {
 
             if (!org) return;
 
-            const metaConfig = (org.integrations as any)?.meta;
-            const pixelId = metaConfig?.pixelId;
-            const accessToken = metaConfig?.accessToken;
+            const { pixelId, accessToken: encryptedAccessToken } = resolveMetaCapiConfig(org.integrations, branchId);
 
-            if (!pixelId || !accessToken) {
+            if (!pixelId || !encryptedAccessToken) {
                 console.warn(`[MetaConversions] Org ${organisationId} missing Pixel ID or Access Token`);
                 return;
             }
 
+            // Stored tokens are encrypted at rest (see metaLeadService's identical decrypt
+            // step) - sending the raw encrypted blob to Graph API would just fail auth.
+            const accessToken = decrypt(encryptedAccessToken);
+
             const events = Array.isArray(event) ? event : [event];
-            
+
             // 2. Map and Hash Events
             const data = events.map(evt => {
                 const userData: any = {
@@ -95,11 +126,11 @@ import crypto from 'crypto';
 function hash(value: string): string {
     if (!value) return '';
     const trimmed = value.trim().toLowerCase();
-    
+
     // If it's already a 64-char hex string (SHA256 format), return it as is
     if (/^[a-f0-9]{64}$/.test(trimmed)) {
         return trimmed;
     }
-    
+
     return crypto.createHash('sha256').update(trimmed).digest('hex');
 }
