@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import prisma from '../config/prisma';
 import { InteractionType, InteractionDirection } from '../generated/client';
 import { GmailService } from './gmailService';
+import { CustomEmailService } from './customEmailService';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.ethereal.email',
@@ -15,7 +16,10 @@ const transporter = nodemailer.createTransport({
 
 export const EmailService = {
     /**
-     * Send an email — prefers user's Gmail if connected, falls back to SMTP
+     * Send an email — prefers the sender's own connected mailbox (Gmail OAuth,
+     * then a generic SMTP account for anyone not on Gmail - Zoho, Outlook,
+     * a custom domain, etc., since our own domain runs on Zoho, not Gmail),
+     * falling back to the org's shared SMTP sender if neither is connected.
      */
     async sendEmail(
         to: string,
@@ -29,6 +33,7 @@ export const EmailService = {
             console.log(`[EmailService] Sending email to ${to} | Subject: ${subject}`);
 
             let sentViaGmail = false;
+            let sentViaCustom = false;
 
             // Try Gmail first if user is specified
             if (createdById) {
@@ -40,12 +45,26 @@ export const EmailService = {
                         console.log('[EmailService] Sent via Gmail API');
                     }
                 } catch (gmailErr) {
-                    console.warn('[EmailService] Gmail send failed, falling back to SMTP:', gmailErr);
+                    console.warn('[EmailService] Gmail send failed, falling back:', gmailErr);
                 }
             }
 
-            // Fallback to SMTP
-            if (!sentViaGmail) {
+            // Then a connected custom SMTP account (any other provider)
+            if (!sentViaGmail && createdById) {
+                try {
+                    const isCustomConnected = await CustomEmailService.isConnected(createdById);
+                    if (isCustomConnected) {
+                        await CustomEmailService.sendEmail(createdById, { to, subject, html });
+                        sentViaCustom = true;
+                        console.log('[EmailService] Sent via connected custom email account');
+                    }
+                } catch (customErr) {
+                    console.warn('[EmailService] Custom email send failed, falling back to SMTP:', customErr);
+                }
+            }
+
+            // Fallback to the org's shared SMTP sender
+            if (!sentViaGmail && !sentViaCustom) {
                 const info = await transporter.sendMail({
                     from: process.env.MAIL_FROM || process.env.SMTP_USER || '"PYPE" <no-reply@pype.com>',
                     to,

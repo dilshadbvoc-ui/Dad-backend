@@ -344,6 +344,8 @@ app.use('/api/ai', aiRoutes); // Remove CSRF - already protected by auth
 app.use('/api/email', verifyCSRFToken, emailRoutes);
 import gmailRoutes from './routes/gmailRoutes';
 app.use('/api/gmail', gmailRoutes);
+import customEmailRoutes from './routes/customEmailRoutes';
+app.use('/api/email-account', customEmailRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/search', searchRoutes);
 
@@ -365,9 +367,11 @@ app.use('/api/marketing/lists', emailListRoutes);
 // Communications
 app.use('/api/interactions', interactionRoutes);
 import telephonyRoutes from './routes/telephonyRoutes';
+import telephonyBridgeRoutes from './routes/telephonyBridgeRoutes';
 app.use('/api/calls', callRoutes);
 app.use('/api/call-settings', callSettingsRoutes);
 app.use('/api/telephony', telephonyRoutes);
+app.use('/api/telephony/bridge', telephonyBridgeRoutes);
 
 
 
