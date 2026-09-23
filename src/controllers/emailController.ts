@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ResponseHandler } from '../utils/apiResponse';
 import { EmailService } from '../services/emailService';
+import { GmailService } from '../services/gmailService';
 import prisma from '../config/prisma';
 import { getOrgId } from '../utils/hierarchyUtils';
 import { InteractionType } from '../generated/client';
@@ -28,8 +29,21 @@ export const sendOneOffEmail = async (req: Request, res: Response) => {
             return ResponseHandler.notFound(res, 'Lead not found');
         }
 
-        // Send Email
-        const sent = await EmailService.sendEmail(
+        // Send Email - through the sender's own connected Gmail account when they have
+        // one, so it actually delivers from their real address (the whole point of
+        // that integration - previously connecting Gmail only ever updated a status
+        // badge in Settings; every compose flow in the app hit this same endpoint,
+        // which only ever called the generic org-wide EmailService, so a connected
+        // Gmail account was never actually used to send anything).
+        const gmailConnected = await GmailService.isConnected(user.id);
+        const sent = gmailConnected
+            ? await GmailService.sendEmail(user.id, { to, subject, html: body }).then(() => true).catch((err) => {
+                console.error('sendOneOffEmail: Gmail send failed, falling back to default sender:', err);
+                return false;
+            })
+            : false;
+
+        const finalSent = sent || await EmailService.sendEmail(
             to,
             subject,
             body,
@@ -38,7 +52,7 @@ export const sendOneOffEmail = async (req: Request, res: Response) => {
             { leadId }
         );
 
-        if (!sent) {
+        if (!finalSent) {
             return ResponseHandler.serverError(res, 'Failed to send email');
         }
 
