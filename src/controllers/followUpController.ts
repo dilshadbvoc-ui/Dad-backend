@@ -37,31 +37,54 @@ export const getFollowUps = async (req: Request, res: Response) => {
         // - Assigned to user or subordinates
         // - Created by user or subordinates
         // - Related to leads/contacts/accounts/opportunities owned by user or subordinates
-        if (user.role !== 'super_admin' && user.role !== 'admin') {
+        const isAdmin = user.role === 'super_admin' || user.role === 'admin';
+        const requestedUserId = req.query.userId as string;
+        const isFilteringByUser = requestedUserId && requestedUserId !== 'all';
+
+        if (!isAdmin) {
             const visibleUserIds = await getVisibleUserIds(user.id);
 
-            where.OR = [
-                // Follow-ups assigned to user or subordinates
-                { assignedToId: { in: visibleUserIds } },
-                // Follow-ups created by user or subordinates, but ONLY while still
-                // unassigned - once a follow-up is handed to someone else (shuffler
-                // reassignment, manual reassign, etc.), the creator shouldn't keep
-                // seeing it in their own list forever. If the new assignee happens to
-                // be a subordinate, the `assignedToId` branch above already covers it;
-                // this branch existing without the assignedToId:null guard is what let
-                // a creator and a later assignee both see the same "due today" entry
-                // and both independently contact the lead (reported for Musadhiq at
-                // Edufolio, reassigned from Jasna to Swathi via the shuffler).
-                { createdById: { in: visibleUserIds }, assignedToId: null },
-                // Follow-ups related to leads assigned to user or subordinates
-                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
-                // Follow-ups related to contacts owned by user or subordinates
-                { contact: { ownerId: { in: visibleUserIds } } },
-                // Follow-ups related to accounts owned by user or subordinates
-                { account: { ownerId: { in: visibleUserIds } } },
-                // Follow-ups related to opportunities owned by user or subordinates
-                { opportunity: { ownerId: { in: visibleUserIds } } }
-            ];
+            if (isFilteringByUser) {
+                // A specific-user filter (e.g. a manager picking a report from the
+                // "Assigned To" dropdown) used to be applied by ANDing
+                // `assignedToId: requestedUserId` on top of the caller's own broad
+                // visibility OR-block below. That silently undercounted: if the
+                // target user wasn't in the caller's own `assignedToId`/`createdById`
+                // branches (e.g. a multi-level report several links down the
+                // reportsTo chain didn't resolve as expected, or they were only
+                // reachable via team/branch), only follow-ups that ALSO happened to
+                // match an unrelated branch (lead/contact/account/opportunity
+                // ownership) survived - reported as a manager filtering by "Ajeena"
+                // seeing 10 overdue instead of her true 27. Once the target user is
+                // confirmed visible, filter directly by their assignedToId instead of
+                // re-deriving visibility through the caller's own OR conditions.
+                if (!visibleUserIds.includes(requestedUserId)) {
+                    return res.status(403).json({ message: 'You do not have visibility into this user\'s follow-ups' });
+                }
+            } else {
+                where.OR = [
+                    // Follow-ups assigned to user or subordinates
+                    { assignedToId: { in: visibleUserIds } },
+                    // Follow-ups created by user or subordinates, but ONLY while still
+                    // unassigned - once a follow-up is handed to someone else (shuffler
+                    // reassignment, manual reassign, etc.), the creator shouldn't keep
+                    // seeing it in their own list forever. If the new assignee happens to
+                    // be a subordinate, the `assignedToId` branch above already covers it;
+                    // this branch existing without the assignedToId:null guard is what let
+                    // a creator and a later assignee both see the same "due today" entry
+                    // and both independently contact the lead (reported for Musadhiq at
+                    // Edufolio, reassigned from Jasna to Swathi via the shuffler).
+                    { createdById: { in: visibleUserIds }, assignedToId: null },
+                    // Follow-ups related to leads assigned to user or subordinates
+                    { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
+                    // Follow-ups related to contacts owned by user or subordinates
+                    { contact: { ownerId: { in: visibleUserIds } } },
+                    // Follow-ups related to accounts owned by user or subordinates
+                    { account: { ownerId: { in: visibleUserIds } } },
+                    // Follow-ups related to opportunities owned by user or subordinates
+                    { opportunity: { ownerId: { in: visibleUserIds } } }
+                ];
+            }
         }
 
         if (search) {
@@ -106,9 +129,8 @@ export const getFollowUps = async (req: Request, res: Response) => {
             });
         }
 
-        const userId = req.query.userId as string;
-        if (userId && userId !== 'all') {
-            where.assignedToId = userId;
+        if (isFilteringByUser) {
+            where.assignedToId = requestedUserId;
         }
 
         console.log('[getFollowUps] Final query where:', JSON.stringify(where, null, 2));
