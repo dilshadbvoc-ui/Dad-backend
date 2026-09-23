@@ -1527,11 +1527,22 @@ export const convertLead = async (req: express.Request, res: express.Response) =
         // (Organisation.leadStatuses), completely independent of ever actually converting this
         // lead into an Opportunity. The only real signal that conversion already happened is an
         // existing Opportunity linked to this lead.
-        const existingOpportunity = await prisma.opportunity.findFirst({
-            where: { leadId, isDeleted: false },
+        //
+        // But "already converted" shouldn't mean "can never convert again" - a lead that came
+        // back after its deal was fully closed (won or lost) and is now closing a genuinely new
+        // deal needs somewhere to record it. Only block when an existing opportunity is still
+        // OPEN (actively being worked) - that's the real "don't create a duplicate in-progress
+        // deal" case this check exists for. Once every prior opportunity is closed_won/
+        // closed_lost, allow a fresh one regardless of whether the lead was reset via the
+        // system's own re-enquiry detection or just a manual status change by a rep (reported
+        // case: MUHAMMAD RAZAN K at Edufolio - won in May, lost, manually reset and reassigned,
+        // then won again in September for a different amount - isReEnquiry/reEnquiryCount were
+        // never set on it, so gating purely on those would have kept blocking this exact case).
+        const existingOpenOpportunity = await prisma.opportunity.findFirst({
+            where: { leadId, isDeleted: false, stage: { notIn: ['closed_won', 'closed_lost'] } },
             select: { id: true }
         });
-        if (existingOpportunity) {
+        if (existingOpenOpportunity) {
             return res.status(400).json({ message: 'Lead already converted' });
         }
 
