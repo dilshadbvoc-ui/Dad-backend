@@ -33,10 +33,17 @@ export const getFollowUps = async (req: Request, res: Response) => {
             where.organisationId = orgId;
         }
 
-        // 2. Hierarchy Visibility - Show follow-ups if:
-        // - Assigned to user or subordinates
-        // - Created by user or subordinates
-        // - Related to leads/contacts/accounts/opportunities owned by user or subordinates
+        // 2. Hierarchy Visibility - a follow-up "belongs to" whoever it's
+        // ASSIGNED to, full stop - not whoever owns the related lead/contact/
+        // account/opportunity. That used to also be a source of visibility
+        // (see git history on this block), which meant a rep with no
+        // subordinates could see OTHER people's follow-up tasks just because
+        // they happened to sit on a lead assigned to her - Ajeena's own "My
+        // Day" dashboard was showing 24 overdue items (14 of them literally
+        // assigned to other reps) instead of the 10 actually hers, while a
+        // manager filtering the list by her name correctly showed 10. Both
+        // views now agree: assignedTo (plus your own not-yet-assigned
+        // creations) is the one definition of "your follow-ups", everywhere.
         const isAdmin = user.role === 'super_admin' || user.role === 'admin';
         const requestedUserId = req.query.userId as string;
         const isFilteringByUser = requestedUserId && requestedUserId !== 'all';
@@ -46,18 +53,11 @@ export const getFollowUps = async (req: Request, res: Response) => {
 
             if (isFilteringByUser) {
                 // A specific-user filter (e.g. a manager picking a report from the
-                // "Assigned To" dropdown) used to be applied by ANDing
-                // `assignedToId: requestedUserId` on top of the caller's own broad
-                // visibility OR-block below. That silently undercounted: if the
-                // target user wasn't in the caller's own `assignedToId`/`createdById`
-                // branches (e.g. a multi-level report several links down the
-                // reportsTo chain didn't resolve as expected, or they were only
-                // reachable via team/branch), only follow-ups that ALSO happened to
-                // match an unrelated branch (lead/contact/account/opportunity
-                // ownership) survived - reported as a manager filtering by "Ajeena"
-                // seeing 10 overdue instead of her true 27. Once the target user is
-                // confirmed visible, filter directly by their assignedToId instead of
-                // re-deriving visibility through the caller's own OR conditions.
+                // "Assigned To" dropdown): confirm the target is someone the caller
+                // can see, then filter directly by their assignedToId - not ANDed
+                // on top of the caller's own OR-block below, which would otherwise
+                // re-derive (and potentially distort) visibility through the
+                // caller's own conditions instead of the target user's.
                 if (!visibleUserIds.includes(requestedUserId)) {
                     return res.status(403).json({ message: 'You do not have visibility into this user\'s follow-ups' });
                 }
@@ -74,15 +74,7 @@ export const getFollowUps = async (req: Request, res: Response) => {
                     // a creator and a later assignee both see the same "due today" entry
                     // and both independently contact the lead (reported for Musadhiq at
                     // Edufolio, reassigned from Jasna to Swathi via the shuffler).
-                    { createdById: { in: visibleUserIds }, assignedToId: null },
-                    // Follow-ups related to leads assigned to user or subordinates
-                    { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
-                    // Follow-ups related to contacts owned by user or subordinates
-                    { contact: { ownerId: { in: visibleUserIds } } },
-                    // Follow-ups related to accounts owned by user or subordinates
-                    { account: { ownerId: { in: visibleUserIds } } },
-                    // Follow-ups related to opportunities owned by user or subordinates
-                    { opportunity: { ownerId: { in: visibleUserIds } } }
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
                 ];
             }
         }
