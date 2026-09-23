@@ -232,12 +232,28 @@ export const DuplicateLeadService = {
             const movingBranch = !!newData.newBranchId && newData.newBranchId !== existingLead.branchId;
             const movingOwner = !!newData.newOwnerId && newData.newOwnerId !== existingLead.assignedToId;
 
+            // A re-enquiry is matched purely by phone number (see checkDuplicate) - the
+            // same number can genuinely belong to a different person re-enquiring later
+            // (family member, shared/office line, a data-entry mix-up on either
+            // submission, etc.), and blindly overwriting the name here silently renamed
+            // an unrelated person's lead to whoever submitted the new form (reported:
+            // "Athira" at Edufolio became "Arun Kumar" after a same-phone, different-name
+            // re-enquiry from an unrelated ad campaign). Only take the new name when the
+            // existing one looks like a placeholder (blank) or the names actually match -
+            // otherwise keep the original identity untouched. The incoming name/details
+            // are never lost either way - they're already captured in full under
+            // sourceDetails.reEnquiries[].details below, so nothing needs inventing here,
+            // just not clobbering.
+            const namesMatch = (a?: string | null, b?: string | null) =>
+                (a || '').trim().toLowerCase() === (b || '').trim().toLowerCase();
+            const keepExistingName = !!existingLead.firstName?.trim() && !namesMatch(newData.firstName, existingLead.firstName);
+
             // Update existing lead with latest contact info if provided
             const updatedLead = await prisma.lead.update({
                 where: { id: existingLead.id },
                 data: {
-                    firstName: newData.firstName || existingLead.firstName,
-                    lastName: newData.lastName || existingLead.lastName,
+                    firstName: keepExistingName ? existingLead.firstName : (newData.firstName || existingLead.firstName),
+                    lastName: keepExistingName ? existingLead.lastName : (newData.lastName || existingLead.lastName),
                     email: (newData.email && newData.email.trim() !== '') ? newData.email.trim() : existingLead.email,
                     // checkDuplicate already vetoes a country-code conflict as "not a
                     // duplicate" at all, so reaching here means either no conflict or the
