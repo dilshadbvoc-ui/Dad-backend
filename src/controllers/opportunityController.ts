@@ -110,7 +110,16 @@ export const getOpportunities = async (req: Request, res: Response) => {
             }
             if (req.query.endDate) {
                 const end = new Date(String(req.query.endDate));
-                end.setHours(23, 59, 59, 999);
+                // UTC-explicit, matching analyticsController.ts's getDateFilter —
+                // this list is the tap-through target for the Dashboard's Won/Lost
+                // tiles, which compute their end-of-day boundary via setUTCHours.
+                // Using local setHours here made the two agree only by accident
+                // (only when the server process itself happens to run in UTC);
+                // on any other server TZ (or a dev machine running the backend
+                // locally in IST) it silently shifted this list's cutoff by the
+                // offset, so a deal counted by the tile could vanish from the
+                // list it links to.
+                end.setUTCHours(23, 59, 59, 999);
                 dateFilter.lte = end;
             }
             // For closed deals, "this month" means "closed this month" — matches the
