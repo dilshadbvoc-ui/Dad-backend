@@ -155,6 +155,16 @@ export const getQuoteById = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could view any other rep's quote by ID, including pricing/discount data.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
 
         const quote = await prisma.quote.findFirst({
@@ -191,7 +201,22 @@ export const updateQuote = async (req: Request, res: Response) => {
         if (requester.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could update any other rep's quote by ID. The transaction path below
+            // uses a bare `{ id }` (needed for the nested line-items write), so this
+            // check has to happen up front rather than in the where clause itself.
+            if (requester.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(requester.id);
+                whereObj.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
+
+        const accessibleQuote = await prisma.quote.findFirst({ where: whereObj, select: { id: true } });
+        if (!accessibleQuote) return res.status(404).json({ message: 'Quote not found' });
 
         // Simple update of Quote scalars
         const quoteUpdate = prisma.quote.update({
@@ -291,6 +316,16 @@ export const downloadQuotePdf = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could download any other rep's quote PDF by ID.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
 
         const quote = await prisma.quote.findFirst({
@@ -325,6 +360,16 @@ export const deleteQuote = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             where.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could delete any other rep's quote by ID.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
 
         const quote = await prisma.quote.findFirst({ where });

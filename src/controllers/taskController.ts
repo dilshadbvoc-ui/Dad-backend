@@ -63,8 +63,10 @@ export const getTasks = async (req: Request, res: Response) => {
             const visibilityConditions = [
                 // Tasks assigned to user or subordinates
                 { assignedToId: { in: visibleUserIds } },
-                // Tasks created by user
-                { createdById: user.id },
+                // Tasks created by user, but ONLY while still unassigned - once handed to
+                // someone else, this creator shouldn't keep permanent visibility/access
+                // (same fix already applied to followUpController.ts's getFollowUps).
+                { createdById: user.id, assignedToId: null },
                 // Tasks related to leads assigned to user or subordinates
                 { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
                 // Tasks related to contacts owned by user or subordinates
@@ -225,6 +227,18 @@ export const getTaskById = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could view any other rep's task by ID. Scope to the same visibility rule
+            // as the list endpoint (assigned to a visible user, or created by one and
+            // still unassigned).
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
 
         const task = await prisma.task.findFirst({
@@ -289,6 +303,16 @@ export const updateTask = async (req: Request, res: Response) => {
             const orgId = getOrgId(requester);
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could update any other rep's task by ID regardless of assignment.
+            if (requester.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(requester.id);
+                whereObj.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
 
         const task = await prisma.task.update({
@@ -327,6 +351,16 @@ export const deleteTask = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could delete any other rep's task by ID regardless of assignment.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: { in: visibleUserIds }, assignedToId: null }
+                ];
+            }
         }
 
         await prisma.task.update({

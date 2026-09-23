@@ -133,6 +133,16 @@ export const getAccountById = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
             if (user.branchId) where.branchId = user.branchId;
+
+            // Previously org(+branch) membership was the only gate here - any user in
+            // the org could view any other rep's account by ID regardless of ownership.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { ownerId: { in: visibleUserIds } },
+                    { ownerId: null }
+                ];
+            }
         }
 
         const account = await prisma.account.findFirst({
@@ -171,6 +181,16 @@ export const updateAccount = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
             if (requester.branchId) whereObj.branchId = requester.branchId;
+
+            // Previously org(+branch) membership was the only gate here - any user in
+            // the org could update any other rep's account by ID regardless of ownership.
+            if (requester.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(requester.id);
+                whereObj.OR = [
+                    { ownerId: { in: visibleUserIds } },
+                    { ownerId: null }
+                ];
+            }
         }
 
         // Get current account for validation

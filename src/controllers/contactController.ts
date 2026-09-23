@@ -178,6 +178,16 @@ export const getContactById = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
             if (user.branchId) where.branchId = user.branchId;
+
+            // Previously org(+branch) membership was the only gate here - any user in
+            // the org could view any other rep's contact by ID regardless of ownership.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { ownerId: { in: visibleUserIds } },
+                    { ownerId: null }
+                ];
+            }
         }
 
         const contact = await prisma.contact.findFirst({
@@ -229,6 +239,16 @@ export const updateContact = async (req: Request, res: Response) => {
             if (!orgId) return res.status(403).json({ message: 'No org' });
             whereObj.organisationId = orgId;
             if (requester.branchId) whereObj.branchId = requester.branchId;
+
+            // Previously org(+branch) membership was the only gate here - any user in
+            // the org could update any other rep's contact by ID regardless of ownership.
+            if (requester.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(requester.id);
+                whereObj.OR = [
+                    { ownerId: { in: visibleUserIds } },
+                    { ownerId: null }
+                ];
+            }
         }
 
         const contact = await prisma.contact.update({
@@ -271,6 +291,16 @@ export const deleteContact = async (req: Request, res: Response) => {
         if (user.role !== 'super_admin') {
             if (!orgId) return res.status(403).json({ message: 'User has no organisation' });
             where.organisationId = orgId;
+
+            // Previously org membership was the only gate here - any user in the org
+            // could delete any other rep's contact by ID regardless of ownership.
+            if (user.role !== 'admin') {
+                const visibleUserIds = await getVisibleUserIds(user.id);
+                where.OR = [
+                    { ownerId: { in: visibleUserIds } },
+                    { ownerId: null }
+                ];
+            }
         }
 
         await prisma.contact.update({

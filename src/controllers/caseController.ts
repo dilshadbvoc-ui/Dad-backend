@@ -21,21 +21,36 @@ export const getCases = async (req: Request, res: Response) => {
             isDeleted: false
         };
 
+        const andConditions: Prisma.CaseWhereInput[] = [];
+
         // 1. Hierarchy Visibility
         if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            // Show cases assigned to self OR visible subordinates/branches, AND cases created by the user
-            where.OR = [
-                { assignedToId: { in: visibleUserIds } },
-                { createdById: user.id }
-            ];
+            // Show cases assigned to self OR visible subordinates/branches, AND cases
+            // created by the user while still unassigned - once handed to someone
+            // else, the creator shouldn't keep permanent visibility/access.
+            andConditions.push({
+                OR: [
+                    { assignedToId: { in: visibleUserIds } },
+                    { createdById: user.id, assignedToId: null }
+                ]
+            });
         }
 
         if (search) {
-            where.OR = [
-                { subject: { contains: search, mode: 'insensitive' } },
-                { caseNumber: { contains: search, mode: 'insensitive' } }
-            ];
+            // Combined with AND, not assigned directly to where.OR - overwriting
+            // where.OR here used to silently remove the hierarchy scoping above
+            // entirely, letting any org member search up and access any case.
+            andConditions.push({
+                OR: [
+                    { subject: { contains: search, mode: 'insensitive' } },
+                    { caseNumber: { contains: search, mode: 'insensitive' } }
+                ]
+            });
+        }
+
+        if (andConditions.length > 0) {
+            where.AND = andConditions;
         }
 
         if (status && status !== 'all') {
@@ -200,10 +215,16 @@ export const getCaseById = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Case not found' });
         }
 
-        // Hierarchy check
-        if (user.role !== 'super_admin' && user.role !== 'admin' && supportCase.assignedToId !== user.id && supportCase.createdById !== user.id) {
+        // Hierarchy check. Note: createdById alone does NOT grant access once the case
+        // has been assigned to someone else - it only counts while still unassigned,
+        // same fix applied to the list endpoint above (a bare `createdById === user.id`
+        // bypass here would let the creator keep permanent access after reassignment).
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
             const visibleUserIds = await getVisibleUserIds(user.id);
-            if (!visibleUserIds.includes(supportCase.assignedToId || '')) {
+            const canAccess =
+                (supportCase.assignedToId && visibleUserIds.includes(supportCase.assignedToId)) ||
+                (!supportCase.assignedToId && supportCase.createdById && visibleUserIds.includes(supportCase.createdById));
+            if (!canAccess) {
                 return res.status(403).json({ message: 'Not authorized to view this case' });
             }
         }
@@ -243,11 +264,19 @@ export const updateCase = async (req: Request, res: Response) => {
             }
         });
 
+        const caseWhere: any = { id, organisationId: orgId };
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            // Previously org membership was the only gate here - any user in the org
+            // could update (including reassign) any other rep's case by ID.
+            caseWhere.OR = [
+                { assignedToId: { in: visibleUserIds } },
+                { createdById: { in: visibleUserIds }, assignedToId: null }
+            ];
+        }
+
         const supportCase = await prisma.case.update({
-            where: {
-                id,
-                organisationId: orgId
-            },
+            where: caseWhere,
             data: updates
         });
 
@@ -312,11 +341,19 @@ export const deleteCase = async (req: Request, res: Response) => {
         const orgId = getOrgId(user);
         if (!orgId) return res.status(400).json({ message: 'Organisation not found' });
 
+        const caseWhere: any = { id: req.params.id, organisationId: orgId };
+        if (user.role !== 'super_admin' && user.role !== 'admin') {
+            const visibleUserIds = await getVisibleUserIds(user.id);
+            // Previously org membership was the only gate here - any user in the org
+            // could delete any other rep's case by ID.
+            caseWhere.OR = [
+                { assignedToId: { in: visibleUserIds } },
+                { createdById: { in: visibleUserIds }, assignedToId: null }
+            ];
+        }
+
         await prisma.case.update({
-            where: {
-                id: req.params.id,
-                organisationId: orgId
-            },
+            where: caseWhere,
             data: { isDeleted: true, deletedAt: new Date() }
         });
 
