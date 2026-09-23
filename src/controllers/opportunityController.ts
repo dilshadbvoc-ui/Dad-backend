@@ -34,7 +34,35 @@ export const getOpportunities = async (req: Request, res: Response) => {
             if (req.query.ownerId && visibleUserIds.includes(String(req.query.ownerId))) {
                 where.ownerId = String(req.query.ownerId);
             } else {
-                where.ownerId = { in: visibleUserIds };
+                // Restricting on ownerId alone misses opportunities that are tagged to a
+                // branch this user manages but happen to be owned by someone outside
+                // their reporting chain (e.g. an org admin who entered/owns a deal
+                // directly, with no branchId of their own on their user record) -
+                // getVisibleUserIds only includes people whose OWN branchId matches a
+                // managed branch, which doesn't catch that case. A branch manager
+                // filtering their own branch should see every deal in it regardless of
+                // who owns it, same as Lead's manager-branch-orphan carve-out.
+                const managedBranches = await prisma.branch.findMany({
+                    where: { managerId: user.id, isDeleted: false },
+                    select: { id: true }
+                });
+                const managedBranchIds = managedBranches.map(b => b.id);
+
+                if (managedBranchIds.length > 0) {
+                    // AND-combined, not assigned to where.OR directly - the `search`
+                    // filter below also assigns to where.OR, which would otherwise
+                    // silently overwrite (not combine with) this visibility scoping,
+                    // the same bug already found and fixed in caseController.getCases.
+                    if (!where.AND) where.AND = [];
+                    (where.AND as any[]).push({
+                        OR: [
+                            { ownerId: { in: visibleUserIds } },
+                            { branchId: { in: managedBranchIds } }
+                        ]
+                    });
+                } else {
+                    where.ownerId = { in: visibleUserIds };
+                }
             }
         } else if (req.query.ownerId) {
             where.ownerId = String(req.query.ownerId);
@@ -60,10 +88,15 @@ export const getOpportunities = async (req: Request, res: Response) => {
             where.type = String(req.query.type) as any;
         }
         if (req.query.search) {
-            where.OR = [
-                { name: { contains: String(req.query.search), mode: 'insensitive' } },
-                { description: { contains: String(req.query.search), mode: 'insensitive' } }
-            ];
+            // AND-combined, not a direct where.OR assignment - see comment above on the
+            // hierarchy visibility block for why that matters.
+            if (!where.AND) where.AND = [];
+            (where.AND as any[]).push({
+                OR: [
+                    { name: { contains: String(req.query.search), mode: 'insensitive' } },
+                    { description: { contains: String(req.query.search), mode: 'insensitive' } }
+                ]
+            });
         }
         if (req.query.leadSource && req.query.leadSource !== 'all') {
             where.leadSource = String(req.query.leadSource);
