@@ -68,11 +68,19 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
 
             const orConditions: any[] = [
                 { assignedToId: { in: visibleUserIds } }, // Assigned to self or any subordinate/branch user
-                { createdById: user.id },                // Created by the user (always visible)
                 {
+                    // Created by self or a subordinate, but ONLY while still unassigned - once
+                    // it's handed to someone else, the `assignedToId` branch above already
+                    // covers it if the new owner is visible to this user, and if not, this user
+                    // shouldn't keep seeing (and un-officially working) a lead that's no longer
+                    // theirs. Unconditionally keeping every self-created lead visible forever
+                    // (regardless of reassignment) let a rep keep flipping a lead's status back
+                    // and forth against whoever it's actually assigned to now - reported for
+                    // "Abdul Nafih" at Edufolio, where the original creator and the current
+                    // owner kept alternately re-updating the same lead's status for months.
                     AND: [
-                        { createdById: { in: visibleUserIds } }, // Created by subordinate
-                        { assignedToId: null }    // But not reassigned to someone else (who might be outside visibility)
+                        { createdById: { in: visibleUserIds } },
+                        { assignedToId: null }
                     ]
                 }
             ];
@@ -625,6 +633,28 @@ export const updateLead = async (req: express.Request, res: express.Response) =>
         // Fetch current lead to check for ownership change
         const currentLead = await prisma.lead.findUnique({ where: { id: leadId } });
         if (!currentLead) return res.status(404).json({ message: 'Lead not found' });
+
+        // General access check: mirrors getLeads' own visibility rules - a non-admin
+        // may only modify a lead that's currently assigned to them/a subordinate, or
+        // was created by them/a subordinate and is still unassigned (plus a manager's
+        // branch-orphan carve-out, same as the list). Before this, org membership was
+        // the ONLY gate here, so any user in the org could PATCH any other lead's
+        // status by ID once they had it (e.g. a stale bookmark/cached lead from
+        // before it was reassigned) - exactly what let "Abdul Nafih" and "Musadhiq"
+        // at Edufolio get repeatedly flip-flopped in status by both their original
+        // creator and their current owner, neither aware of the other.
+        if (!requester.isSuperAdmin && !isSuperAdmin(requester) && !isAdmin(requester)) {
+            const visibleUserIds = await getVisibleUserIds(requester.id);
+            const isManagerBranchOrphan = requester.role === 'manager' && !currentLead.assignedToId &&
+                (!currentLead.branchId || currentLead.branchId === requester.branchId);
+            const canAccess =
+                (currentLead.assignedToId && visibleUserIds.includes(currentLead.assignedToId)) ||
+                (!currentLead.assignedToId && currentLead.createdById && visibleUserIds.includes(currentLead.createdById)) ||
+                isManagerBranchOrphan;
+            if (!canAccess) {
+                return res.status(403).json({ message: 'You do not have permission to update this lead.' });
+            }
+        }
 
         // Hierarchy Check
         if (updates.assignedToId || updates.assignedTo) { // Handle payload differences
