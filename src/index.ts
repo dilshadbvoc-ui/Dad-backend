@@ -72,9 +72,6 @@ import webFormRoutes from './routes/webFormRoutes';
 import smsCampaignRoutes from './routes/smsCampaignRoutes';
 import whatsAppCampaignRoutes from './routes/whatsAppCampaignRoutes';
 import whatsAppRoutes from './routes/whatsAppRoutes';
-import whatsAppAccountRoutes from './routes/whatsAppAccountRoutes';
-import whatsAppAssignmentRuleRoutes from './routes/whatsAppAssignmentRuleRoutes';
-import whatsAppFlowRoutes from './routes/whatsAppFlowRoutes';
 import commissionRoutes from './routes/commissionRoutes';
 import issueRoutes from './routes/issueRoutes';
 import landingPageRoutes from './routes/landingPageRoutes';
@@ -345,8 +342,6 @@ app.use('/api/ai', aiRoutes); // Remove CSRF - already protected by auth
 app.use('/api/email', verifyCSRFToken, emailRoutes);
 import gmailRoutes from './routes/gmailRoutes';
 app.use('/api/gmail', gmailRoutes);
-import customEmailRoutes from './routes/customEmailRoutes';
-app.use('/api/email-account', customEmailRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/search', searchRoutes);
 
@@ -368,11 +363,9 @@ app.use('/api/marketing/lists', emailListRoutes);
 // Communications
 app.use('/api/interactions', interactionRoutes);
 import telephonyRoutes from './routes/telephonyRoutes';
-import telephonyBridgeRoutes from './routes/telephonyBridgeRoutes';
 app.use('/api/calls', callRoutes);
 app.use('/api/call-settings', callSettingsRoutes);
 app.use('/api/telephony', telephonyRoutes);
-app.use('/api/telephony/bridge', telephonyBridgeRoutes);
 
 
 
@@ -402,9 +395,6 @@ app.use('/api/sms-campaigns', smsCampaignRoutes);
 // WhatsApp Campaigns (re-enabled after schema fix)
 app.use('/api/whatsapp-campaigns', whatsAppCampaignRoutes);
 app.use('/api/whatsapp', whatsAppRoutes);
-app.use('/api/whatsapp-accounts', whatsAppAccountRoutes);
-app.use('/api/whatsapp-assignment-rules', whatsAppAssignmentRuleRoutes);
-app.use('/api/whatsapp-flows', whatsAppFlowRoutes);
 app.use('/api/commissions', commissionRoutes);
 app.use('/api/issues', issueRoutes);
 app.use('/api/landing-pages', landingPageRoutes);
@@ -466,12 +456,12 @@ app.get('*', seoMiddleware, (req, res, next) => {
     if (req.path.startsWith('/api')) {
         return res.status(404).json({ message: 'API route not found' });
     }
-    
+
     // Explicitly handle robots and sitemap if they fell through
     if (req.path === '/robots.txt' || req.path === '/sitemap.xml') {
-        return next(); 
+        return next();
     }
-    
+
     const indexPath = path.join(clientDistPath, 'index.html');
     if (fs.existsSync(indexPath)) {
         // If seoMiddleware didn't already send the response (e.g. for non-marketing routes)
@@ -564,5 +554,3 @@ httpServer.listen(PORT, async () => {
 
 });
 // Forced restart v2
-// restart 
-

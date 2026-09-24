@@ -1486,7 +1486,7 @@ export const bulkAssignLeads = async (req: express.Request, res: express.Respons
                     data: { assignedToId: assignedTo }
                 }),
                 prisma.task.updateMany({
-                    where: { leadId: { in: leadIds }, isDeleted: false, status: { notIn: ['completed', 'cancelled'] } },
+                    where: { leadId: { in: leadIds }, isDeleted: false, status: { notIn: ['completed'] } },
                     data: { assignedToId: assignedTo }
                 })
             ]);
