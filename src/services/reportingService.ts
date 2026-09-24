@@ -357,7 +357,13 @@ _Powered by CRM Automation_`;
         const perUser = await Promise.all(users.map(async (u) => {
             const [totalCalls, connectedCalls, wonDeals] = await Promise.all([
                 prisma.interaction.count({ where: { createdById: u.id, type: 'call', callStatus: { not: 'initiated' }, date: { gte: day, lt: nextDay }, isDeleted: false } }),
-                prisma.interaction.count({ where: { createdById: u.id, type: 'call', callStatus: 'completed', duration: { gt: 0 }, date: { gte: day, lt: nextDay }, isDeleted: false } }),
+                // callStatus alone — matches callController's getCallStats/
+                // getUserCallAnalytics and analyticsController's trend
+                // endpoints; the extra duration>0 this used to require
+                // excluded genuinely-connected calls logged with a null/0
+                // duration (e.g. manually completed with no duration
+                // entered), undercounting relative to every other surface.
+                prisma.interaction.count({ where: { createdById: u.id, type: 'call', callStatus: 'completed', date: { gte: day, lt: nextDay }, isDeleted: false } }),
                 prisma.opportunity.count({ where: { ownerId: u.id, organisationId, stage: 'closed_won', closeDate: { gte: day, lt: nextDay } } })
             ]);
             return {
@@ -401,7 +407,9 @@ _Powered by CRM Automation_`;
                 leadsClosed: wonDealsToday.length,
                 revenue: totalRevenue,
                 totalCalls: callsToday.length,
-                connectedCalls: callsToday.filter(c => c.callStatus === 'completed' && (c.duration || 0) > 0).length
+                // callStatus alone, same reasoning as perUser's connectedCalls
+                // query above — do NOT also require duration>0.
+                connectedCalls: callsToday.filter(c => c.callStatus === 'completed').length
             },
             perUser
         };

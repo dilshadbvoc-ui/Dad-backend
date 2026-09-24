@@ -802,6 +802,15 @@ model Interaction {
   @@index([branchId])
   @@index([organisationId])
   @@index([organisationId, createdAt])
+  // Backs androidController.ts's `syncCallLogs` fuzzy-reconciliation
+  // fallback (both the 'initiated'-within-24h and the completed/missed/
+  // failed/rejected-within-1h findFirst queries) — both filter on exactly
+  // this column set (createdById equality, phoneNumber IN a small set of
+  // formatted variations, date as a range last). Without it, every Android
+  // sync call that doesn't exact-match by callSessionId/hardwareId forces
+  // a scan of the filtering org+user's whole call history; this matters
+  // more as more devices sync concurrently, not less.
+  @@index([organisationId, createdById, phoneNumber, date])
   // Backs the `interactions: { none: {...} } ` relational filter used by
   // the Dashboard's Lead Health tiles (`getLeadHealth` in
   // analyticsController.ts) and their click-through list endpoints

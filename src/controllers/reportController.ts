@@ -1236,13 +1236,21 @@ export const getDailyReport = async (req: Request, res: Response) => {
                         isDeleted: false
                     }
                 }),
-                // Total Connected
+                // Total Connected — callStatus alone, matching every other
+                // "connected calls" definition in the codebase (callController's
+                // getCallStats/getUserCallAnalytics, analyticsController's
+                // getCallActivityTrend/getUserTrendsSummary). The extra
+                // `duration: { gt: 0 }` this used to carry excluded any call
+                // marked 'completed' with a null/0 duration (e.g. a manually
+                // logged call via callController.completeCall where the user
+                // didn't enter a duration) — a real, genuinely-connected call
+                // that this report alone was undercounting relative to every
+                // other call-count surface in the app.
                 prisma.interaction.count({
                     where: {
                         createdById: u.id,
                         type: 'call',
                         callStatus: 'completed',
-                        duration: { gt: 0 },
                         date: { gte: startOfDay, lte: endOfDay },
                         isDeleted: false
                     }
