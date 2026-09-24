@@ -75,6 +75,73 @@ export const getCampaigns = async (req: AuthRequest, res: Response) => {
     }
 };
 
+// Powers the Leads list's campaign filter (shown once the Source filter is set
+// to Meta Ads). Lead has no campaign FK - only `sourceDetails` Json (see
+// analyticsController.ts's getLeadCampaigns, which does the same distinct-name
+// scan) - and only Meta's live API actually knows a campaign's current active/
+// paused status, so this cross-references the two: campaigns that have
+// actually produced leads for this org, filtered down to ones Meta currently
+// reports as ACTIVE.
+export const getActiveLeadCampaigns = async (req: AuthRequest, res: Response) => {
+    try {
+        const orgId = req.user?.organisationId;
+        if (!orgId) return res.status(400).json({ message: 'No organisation found' });
+
+        const leads = await prisma.lead.findMany({
+            where: {
+                organisationId: orgId,
+                isDeleted: false,
+                source: 'meta_leadgen' as any,
+                sourceDetails: { not: null as any }
+            },
+            select: { sourceDetails: true },
+            take: 2000,
+            orderBy: { createdAt: 'desc' }
+        });
+
+        const seenByCampaignId = new Map<string, string>();
+        leads.forEach(l => {
+            const details = l.sourceDetails as any;
+            const campaignId = details?.campaignId;
+            if (typeof campaignId === 'string' && campaignId.trim()) {
+                seenByCampaignId.set(campaignId, details?.campaignName || campaignId);
+            }
+        });
+
+        if (seenByCampaignId.size === 0) {
+            return res.json([]);
+        }
+
+        let liveCampaigns: any[] = [];
+        try {
+            const config = await getMetaConfig(req);
+            liveCampaigns = await metaService.getCampaigns(config) || [];
+        } catch (metaError: any) {
+            console.warn('[getActiveLeadCampaigns] Could not reach Meta for live status:', metaError.message);
+            // Fall back to listing every campaign seen on leads, unfiltered by
+            // status, rather than showing nothing just because the live call failed.
+            return res.json(
+                Array.from(seenByCampaignId.entries()).map(([id, name]) => ({ id, name }))
+            );
+        }
+
+        const activeIds = new Set(
+            liveCampaigns
+                .filter((c: any) => c.status === 'ACTIVE' || c.effective_status === 'ACTIVE')
+                .map((c: any) => c.id)
+        );
+
+        const active = Array.from(seenByCampaignId.entries())
+            .filter(([id]) => activeIds.has(id))
+            .map(([id, name]) => ({ id, name }));
+
+        res.json(active);
+    } catch (error: any) {
+        console.error('Error in getActiveLeadCampaigns:', error);
+        res.status(500).json({ message: error.message || 'Unable to fetch active campaigns' });
+    }
+};
+
 export const getAdSets = async (req: AuthRequest, res: Response) => {
     try {
         const config = await getMetaConfig(req);

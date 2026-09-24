@@ -2,6 +2,7 @@ import express from 'express';
 import { protect } from '../middleware/authMiddleware';
 import {
     getCampaigns,
+    getActiveLeadCampaigns,
     getAdSets,
     getAds,
     getInsights,
@@ -19,6 +20,7 @@ const router = express.Router();
 
 // Meta Ads API endpoints with rate limiting
 router.get('/meta/campaigns', protect, metaLimiter, getCampaigns as any);
+router.get('/meta/lead-campaigns', protect, metaLimiter, getActiveLeadCampaigns as any);
 router.get('/meta/adsets', protect, metaLimiter, getAdSets as any);
 router.get('/meta/ads', protect, metaLimiter, getAds as any);
 router.get('/meta/insights', protect, metaLimiter, getInsights as any);

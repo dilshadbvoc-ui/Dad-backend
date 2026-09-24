@@ -128,6 +128,13 @@ export const getLeads = async (req: express.Request, res: express.Response) => {
             where.source = req.query.source as LeadSource;
         }
 
+        // Filter: Meta Ads campaign (only meaningful alongside source=meta_leadgen).
+        // Lead has no campaign FK, only sourceDetails Json - same JSON-path
+        // filtering pattern analyticsController.ts's getLeadsByStage already uses.
+        if (req.query.campaignId) {
+            where.sourceDetails = { path: ['campaignId'], equals: req.query.campaignId as string };
+        }
+
         // Filter: Search (OR condition)
         if (req.query.search) {
             const search = String(req.query.search).trim();
