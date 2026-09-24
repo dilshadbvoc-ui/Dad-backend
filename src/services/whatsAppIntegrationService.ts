@@ -359,7 +359,12 @@ export const WhatsAppIntegrationService = {
                     });
                     handledByFlow = true;
                 } else {
-                    const matchingFlow = await WhatsAppFlowEngine.findMatchingFlow(whatsappAccountId, organisationId, message.body);
+                    // A reply to a specific campaign's broadcast takes priority over a
+                    // generic keyword/any_message flow - multiple campaigns can run on
+                    // the same number, each with its own dedicated reply flow, without
+                    // depending on the recipient using a particular keyword.
+                    const campaignFlow = await WhatsAppFlowEngine.findCampaignFlow(message.from, organisationId);
+                    const matchingFlow = campaignFlow || await WhatsAppFlowEngine.findMatchingFlow(whatsappAccountId, organisationId, message.body);
                     if (matchingFlow) {
                         await WhatsAppFlowEngine.startFlow(matchingFlow, message.from, whatsappAccountId, organisationId, messageRecord.leadId);
                         handledByFlow = true;

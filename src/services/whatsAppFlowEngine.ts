@@ -43,6 +43,29 @@ function nextNodeFrom(nodes: FlowNode[], edges: FlowEdge[], nodeId: string, hand
 }
 
 export const WhatsAppFlowEngine = {
+    /**
+     * If this contact's most recent outbound message on this number was part of
+     * a campaign that has a `flowId` set, that campaign's flow owns the reply -
+     * this is what lets multiple campaigns on the same number each run their own
+     * dedicated conversation, without relying on keyword matching.
+     */
+    async findCampaignFlow(phoneNumber: string, organisationId: string) {
+        const lastOutbound = await prisma.whatsAppMessage.findFirst({
+            where: {
+                phoneNumber,
+                organisationId,
+                direction: 'outgoing',
+                campaignId: { not: null }
+            },
+            orderBy: { createdAt: 'desc' },
+            include: { campaign: { include: { flow: true } } }
+        });
+
+        const flow = lastOutbound?.campaign?.flow;
+        if (!flow || !flow.isActive || flow.isDeleted) return null;
+        return flow;
+    },
+
     async findMatchingFlow(whatsappAccountId: string | null | undefined, organisationId: string, messageBody: string) {
         const flows = await prisma.whatsAppFlow.findMany({
             where: {

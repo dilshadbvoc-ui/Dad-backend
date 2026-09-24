@@ -1591,10 +1591,12 @@ model WhatsAppCampaign {
   isDeleted      Boolean   @default(false)
 
   whatsappAccountId String?
+  flowId            String? // Flow to start when a recipient replies to this campaign (reply-routing)
 
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   createdBy      User?        @relation("WhatsAppCampaignCreator", fields: [createdById], references: [id])
   whatsappAccount WhatsAppAccount? @relation(fields: [whatsappAccountId], references: [id])
+  flow            WhatsAppFlow?   @relation(fields: [flowId], references: [id])
   messages       WhatsAppMessage[]
 
   @@index([organisationId])
@@ -1711,6 +1713,7 @@ model WhatsAppFlow {
   whatsappAccount   WhatsAppAccount?      @relation(fields: [whatsappAccountId], references: [id])
   createdBy         User?                 @relation("WhatsAppFlowCreator", fields: [createdById], references: [id])
   sessions          WhatsAppFlowSession[]
+  campaigns         WhatsAppCampaign[]
 
   @@index([organisationId])
   @@index([whatsappAccountId])
