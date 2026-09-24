@@ -280,7 +280,16 @@ export const DuplicateLeadService = {
                             {
                                 date: now.toISOString(),
                                 source: newData.source,
-                                details: newData.sourceDetails
+                                details: newData.sourceDetails,
+                                // Snapshot of exactly what THIS submission carried, kept
+                                // separately from the merged lead's current fields above -
+                                // used by the "Re-Enquiry History" tab / "create as separate
+                                // lead" action so a rep can tell what a given re-enquiry
+                                // actually said, and split it off with real contact details
+                                // instead of just a name.
+                                submittedName: `${newData.firstName || ''} ${newData.lastName || ''}`.trim() || null,
+                                submittedPhone: newData.phone || null,
+                                submittedEmail: newData.email || null
                             }
                         ]
                     }

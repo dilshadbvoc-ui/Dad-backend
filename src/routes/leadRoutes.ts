@@ -1,5 +1,5 @@
 import express from 'express';
-import { getLeads, createLead, getLeadById, updateLead, deleteLead, createBulkLeads, bulkAssignLeads, convertLead, getViolations, submitExplanation, getLeadHistory, getPendingFollowUpsCount, generateAIResponse, suggestNextStep, getReEnquiryLeads, getDuplicateLeads, syncToGallabox, getUnattendedLeads, getNoActivityLeads } from '../controllers/leadController';
+import { getLeads, createLead, getLeadById, updateLead, deleteLead, createBulkLeads, bulkAssignLeads, convertLead, getViolations, submitExplanation, getLeadHistory, getPendingFollowUpsCount, generateAIResponse, suggestNextStep, getReEnquiryLeads, getDuplicateLeads, syncToGallabox, getUnattendedLeads, getNoActivityLeads, getReEnquiryHistory, splitReEnquiryIntoLead } from '../controllers/leadController';
 import { protect, admin, authorize } from '../middleware/authMiddleware';
 import { checkPlanLimits } from '../middleware/subscriptionMiddleware';
 
@@ -19,6 +19,8 @@ router.get('/', protect, getLeads as any);
 router.post('/', protect, checkPlanLimits('leads'), createLead as any);
 router.get('/:id', protect, getLeadById as any);
 router.get('/:id/history', protect, getLeadHistory as any);
+router.get('/:id/re-enquiry-history', protect, getReEnquiryHistory as any);
+router.post('/:id/re-enquiry-history/split', protect, splitReEnquiryIntoLead as any);
 router.put('/:id', protect, updateLead as any);
 router.post('/:id/generate-response', protect, generateAIResponse as any); // New
 router.post('/:id/suggest-next-step', protect, suggestNextStep as any);

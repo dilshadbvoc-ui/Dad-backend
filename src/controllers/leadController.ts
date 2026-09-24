@@ -1982,6 +1982,201 @@ export const getLeadHistory = async (req: express.Request, res: express.Response
     }
 };
 
+/**
+ * Full per-event re-enquiry history for a single lead - every time this phone
+ * number enquired again, not just the current merged state (which is all
+ * `GET /leads/re-enquiries` and the Lead record itself show). Backs the
+ * mobile app's "Re-Enquiry History" tab.
+ *
+ * Every event has an 'Re-Enquiry Received' Interaction (created since this
+ * feature's inception) and a matching entry (same index, both appended once
+ * per event in DuplicateLeadService.handleReEnquiry) in
+ * Lead.sourceDetails.reEnquiries[]. Events from before the richer snapshot
+ * fields (submittedName/submittedPhone/submittedEmail) were added only have
+ * a name, recovered from the interaction's logged text - older re-enquiries
+ * can still be viewed, just without phone/email to split off with.
+ */
+export const getReEnquiryHistory = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params;
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+
+        const lead = await prisma.lead.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                organisationId: true,
+                isDeleted: true,
+                sourceDetails: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+                email: true,
+                reEnquiryCount: true,
+                isReEnquiry: true
+            }
+        });
+
+        if (!lead || lead.isDeleted || (orgId && lead.organisationId !== orgId && user.role !== 'super_admin')) {
+            return res.status(404).json({ message: 'Lead not found' });
+        }
+
+        const reEnquiryInteractions = await prisma.interaction.findMany({
+            where: { leadId: id, subject: 'Re-Enquiry Received' },
+            select: { description: true, date: true, createdAt: true },
+            orderBy: { createdAt: 'asc' }
+        });
+
+        const snapshots: any[] = (lead.sourceDetails as any)?.reEnquiries || [];
+
+        const events = reEnquiryInteractions.map((interaction, index) => {
+            const snapshot = snapshots[index];
+            const nameMatch = (interaction.description || '').match(/^Lead (.+?) has enquired again/);
+            const nameAtReEnquiryTime = nameMatch ? nameMatch[1].trim() : null;
+
+            return {
+                eventIndex: index,
+                date: interaction.date,
+                name: snapshot?.submittedName || nameAtReEnquiryTime || null,
+                phone: snapshot?.submittedPhone || null,
+                email: snapshot?.submittedEmail || null,
+                source: snapshot?.source || null,
+                hasFullSnapshot: !!(snapshot?.submittedPhone || snapshot?.submittedEmail),
+                alreadySplitLeadId: snapshot?.splitIntoLeadId || null
+            };
+        }).reverse(); // most recent first
+
+        res.json({
+            leadId: lead.id,
+            currentName: `${lead.firstName || ''} ${lead.lastName || ''}`.trim(),
+            currentPhone: lead.phone,
+            currentEmail: lead.email,
+            reEnquiryCount: lead.reEnquiryCount,
+            events
+        });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+/**
+ * Manually splits one past re-enquiry event off into its own, separate Lead
+ * row - for when a rep looks at the re-enquiry history and recognizes it was
+ * actually a different person sharing (or mistyping into) the same phone
+ * number as the original lead, not the same customer.
+ *
+ * Deliberately requires `confirmed: true` from the caller - the frontend/
+ * mobile UI is expected to show an explicit warning first, since the new
+ * lead necessarily shares the original's phone number (or the event's own
+ * submitted phone, if one was captured) and could get matched back onto
+ * either lead on a future re-enquiry. This is a known, accepted tradeoff of
+ * a manual split, not something this endpoint can fully prevent.
+ */
+export const splitReEnquiryIntoLead = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params;
+        const { eventIndex, confirmed } = req.body;
+        const user = (req as any).user;
+        const orgId = getOrgId(user);
+
+        if (!confirmed) {
+            return res.status(400).json({
+                message: 'This action must be explicitly confirmed - it creates a lead sharing the same phone number as the original.'
+            });
+        }
+        if (typeof eventIndex !== 'number' || eventIndex < 0) {
+            return res.status(400).json({ message: 'A valid eventIndex is required' });
+        }
+
+        const lead = await prisma.lead.findUnique({ where: { id } });
+        if (!lead || lead.isDeleted || (orgId && lead.organisationId !== orgId && user.role !== 'super_admin')) {
+            return res.status(404).json({ message: 'Lead not found' });
+        }
+
+        const snapshots: any[] = (lead.sourceDetails as any)?.reEnquiries || [];
+        const snapshot = snapshots[eventIndex];
+
+        if (snapshot?.splitIntoLeadId) {
+            return res.status(400).json({
+                message: 'This re-enquiry has already been split into a separate lead',
+                leadId: snapshot.splitIntoLeadId
+            });
+        }
+
+        let recoveredName: string | null = snapshot?.submittedName || null;
+        if (!recoveredName) {
+            const interactions = await prisma.interaction.findMany({
+                where: { leadId: id, subject: 'Re-Enquiry Received' },
+                select: { description: true },
+                orderBy: { createdAt: 'asc' }
+            });
+            const match = (interactions[eventIndex]?.description || '').match(/^Lead (.+?) has enquired again/);
+            recoveredName = match ? match[1].trim() : null;
+        }
+        if (!recoveredName) {
+            return res.status(400).json({ message: 'No name could be recovered for this re-enquiry event' });
+        }
+
+        const parts = recoveredName.split(/\s+/);
+        const newLastName = parts.length > 1 ? parts.pop()! : null;
+        const newFirstName = parts.join(' ') || recoveredName;
+
+        // branchId is deliberately left null (unassigned) rather than copied
+        // from the original lead - Lead's [phone, organisationId, branchId]
+        // unique constraint would otherwise reject this insert outright,
+        // since this is by definition the same phone number as the original
+        // (that's exactly why a manual split was needed instead of just
+        // editing the name).
+        const newLead = await prisma.lead.create({
+            data: {
+                firstName: newFirstName,
+                lastName: newLastName,
+                phone: snapshot?.submittedPhone || lead.phone,
+                email: snapshot?.submittedEmail || null,
+                organisationId: lead.organisationId,
+                branchId: null,
+                assignedToId: lead.assignedToId,
+                createdById: user.id,
+                source: lead.source,
+                status: 'new',
+                originalLeadId: lead.id,
+                sourceDetails: {
+                    splitFromLeadId: lead.id,
+                    splitFromEventIndex: eventIndex,
+                    splitFromEventDate: snapshot?.date || null,
+                    note: `Manually split off from lead ${lead.id}'s re-enquiry history by user ${user.id} - flagged as a different person sharing the same phone number.`
+                }
+            }
+        });
+
+        if (snapshot) {
+            snapshots[eventIndex] = { ...snapshot, splitIntoLeadId: newLead.id };
+            await prisma.lead.update({
+                where: { id: lead.id },
+                data: { sourceDetails: { ...(lead.sourceDetails as any || {}), reEnquiries: snapshots } }
+            });
+        }
+
+        await prisma.interaction.create({
+            data: {
+                type: 'other',
+                direction: 'inbound',
+                subject: 'Re-Enquiry Split Into New Lead',
+                description: `Re-enquiry from "${recoveredName}" (event #${eventIndex + 1}) was split into a new lead (${newLead.id}) - flagged as a different person sharing this phone number.`,
+                date: new Date(),
+                leadId: lead.id,
+                createdById: user.id,
+                organisationId: lead.organisationId
+            }
+        });
+
+        res.status(201).json({ newLeadId: newLead.id });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 
 export const submitExplanation = async (req: express.Request, res: express.Response) => {
     try {
