@@ -265,13 +265,21 @@ export const getLeadWhatsAppMessages = async (req: AuthRequest, res: Response) =
             include: { agent: agentSelect }
         });
 
-        // 1b. Fetch by exact phone variants — uses WhatsAppMessage_phoneNumber_idx (fast B-Tree scan)
+        // 1b. Fetch by exact phone variants — uses WhatsAppMessage_phoneNumber_idx (fast B-Tree scan).
+        // The `OR` below guards against cross-lead/cross-contact leakage: the last-10-digit variant
+        // set can collide with a DIFFERENT lead's or contact's number (e.g. a data-entry typo that
+        // prepends an extra digit, or messy import formatting) — without this guard, a message
+        // already confidently attributed elsewhere (its own `leadId`/`contactId` set to someone
+        // else) would get pulled into THIS lead's conversation view too. Only pick up phone-matched
+        // messages that have no attribution yet, or that are already attributed to this same lead;
+        // never steal one that's already correctly linked to a different lead or contact.
         const byPhone = phoneVariantSet.size > 0
             ? await prisma.whatsAppMessage.findMany({
                 where: {
                     organisationId: orgId,
                     isDeleted: false,
-                    phoneNumber: { in: Array.from(phoneVariantSet) }
+                    phoneNumber: { in: Array.from(phoneVariantSet) },
+                    OR: [{ leadId: null, contactId: null }, { leadId }]
                 },
                 orderBy: { createdAt: 'desc' },
                 take: 100,
