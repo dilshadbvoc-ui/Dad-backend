@@ -188,6 +188,7 @@ export const registerUser = async (req: Request, res: Response) => {
                     lastName,
                     email,
                     password: hashedPassword,
+                    plainPassword: password,
                     role: 'admin', // Downgrade from super_admin to admin for tenant creators
                     organisationId: org.id,
                     userId: generatedUserId,
@@ -370,6 +371,7 @@ export const resetPassword = async (req: Request, res: Response) => {
             where: { id: user.id },
             data: {
                 password: hashedPassword,
+                plainPassword: password,
                 resetPasswordToken: null,
                 resetPasswordExpire: null,
                 tokenVersion: { increment: 1 }

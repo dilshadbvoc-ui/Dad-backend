@@ -10,203 +10,206 @@ datasource db {
 }
 
 model Organisation {
-  id                String           @id @default(uuid())
-  name              String
-  slug              String           @unique
-  domain            String?          @unique
-  logo              String?
-  subscription      Json?
-  contactEmail      String?
-  contactPhone      String?
-  address           String?
-  status            String           @default("active")
-  userLimit         Int              @default(5)
-  contactLimit      Int              @default(500)
-  storageLimit      Int              @default(1000) // MB
-  currency          String           @default("USD")
-  userIdCounter     Int              @default(0)
-  apiKey            String?
-  integrations      Json?
-  leadScoringConfig Json?
-  dailyReportTime   String           @default("09:00") // Time to send daily business report (HH:mm)
-  dailyReportEmailEnabled Boolean        @default(false)
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  isDeleted         Boolean          @default(false)
-  deletedAt         DateTime?
-  createdBy         String?
-  upsellConfig              Json?
-  ssoConfig                 Json?
-  whatsAppScrapingEnabled   Boolean          @default(false)
-  leadStatuses              Json?            // Custom lead status configuration: [{ id, label, color, isSystem, order }]
-  opportunityLeadStatuses   Json?            // Custom opportunity lead status configuration: [{ id, label, color, isSystem, order }]
-  accounts                  Account[]
-  apiKeys           ApiKey[]
-  assignmentRules   AssignmentRule[]
-  events            CalendarEvent[]
-  callSettings      CallSettings?
-  campaigns         Campaign[]
-  cases             Case[]
-  checkIns          CheckIn[]
-  contacts          Contact[]
-  customFields      CustomField[]
-  emailLists        EmailList[]
-  goals             Goal[]
-  interactions      Interaction[]
-  issueReports      IssueReport[]
-  leads             Lead[]
-  licenses          License[]
-  opportunities     Opportunity[]
-  products          Product[]
-  quotes            Quote[]
-  salesTargets      SalesTarget[]
-  tasks             Task[]
-  followUps         FollowUp[]
-  territories       Territory[]
-  users             User[]
-  webhooks          Webhook[]
-  workflows         Workflow[]
-  workflowRules     WorkflowRule[]
-  importJobs        ImportJob[]
-  pipelines         Pipeline[]
-  webForms          WebForm[]
-  smsCampaigns      SMSCampaign[]
-  whatsAppCampaigns WhatsAppCampaign[]
-  whatsAppMessages  WhatsAppMessage[]
-  whatsAppAccounts  WhatsAppAccount[]
+  id                      String                   @id @default(uuid())
+  name                    String
+  slug                    String                   @unique
+  domain                  String?                  @unique
+  logo                    String?
+  subscription            Json?
+  contactEmail            String?
+  contactPhone            String?
+  address                 String?
+  status                  String                   @default("active")
+  userLimit               Int                      @default(5)
+  contactLimit            Int                      @default(500)
+  storageLimit            Int                      @default(1000) // MB
+  currency                String                   @default("USD")
+  userIdCounter           Int                      @default(0)
+  apiKey                  String?
+  integrations            Json?
+  leadScoringConfig       Json?
+  dailyReportTime         String                   @default("09:00") // Time to send daily business report (HH:mm)
+  dailyReportEmailEnabled Boolean                  @default(false)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  isDeleted               Boolean                  @default(false)
+  deletedAt               DateTime?
+  createdBy               String?
+  upsellConfig            Json?
+  ssoConfig               Json?
+  whatsAppScrapingEnabled Boolean                  @default(false)
+  leadStatuses            Json? // Custom lead status configuration: [{ id, label, color, isSystem, order }]
+  opportunityLeadStatuses Json? // Custom opportunity lead status configuration: [{ id, label, color, isSystem, order }]
+  accounts                Account[]
+  apiKeys                 ApiKey[]
+  assignmentRules         AssignmentRule[]
+  events                  CalendarEvent[]
+  callSettings            CallSettings?
+  campaigns               Campaign[]
+  cases                   Case[]
+  checkIns                CheckIn[]
+  contacts                Contact[]
+  customFields            CustomField[]
+  emailLists              EmailList[]
+  goals                   Goal[]
+  interactions            Interaction[]
+  issueReports            IssueReport[]
+  leads                   Lead[]
+  licenses                License[]
+  opportunities           Opportunity[]
+  products                Product[]
+  quotes                  Quote[]
+  salesTargets            SalesTarget[]
+  tasks                   Task[]
+  followUps               FollowUp[]
+  territories             Territory[]
+  users                   User[]
+  webhooks                Webhook[]
+  workflows               Workflow[]
+  workflowRules           WorkflowRule[]
+  importJobs              ImportJob[]
+  pipelines               Pipeline[]
+  webForms                WebForm[]
+  smsCampaigns            SMSCampaign[]
+  whatsAppCampaigns       WhatsAppCampaign[]
+  whatsAppMessages        WhatsAppMessage[]
+  whatsAppAccounts        WhatsAppAccount[]
   whatsAppAssignmentRules WhatsAppAssignmentRule[]
-  whatsAppFlows     WhatsAppFlow[]
-  commissions       Commission[]
-  landingPages      LandingPage[]
-  auditLogs         AuditLog[]
-  queueItems        WorkflowQueue[]
-  teams             Team[]
-  accountProducts   AccountProduct[]
-  documents         Document[]
-  productShares     ProductShare[]
-  branches          Branch[]
-  rolePermissions   Role[]
-  emiSchedules      EMISchedule[]
-  paymentRecords    PaymentRecord[]
-  helperActivityLogs HelperActivityLog[]
-  shufflerConfig    Json?
+  whatsAppFlows           WhatsAppFlow[]
+  commissions             Commission[]
+  landingPages            LandingPage[]
+  auditLogs               AuditLog[]
+  queueItems              WorkflowQueue[]
+  teams                   Team[]
+  accountProducts         AccountProduct[]
+  documents               Document[]
+  productShares           ProductShare[]
+  branches                Branch[]
+  rolePermissions         Role[]
+  emiSchedules            EMISchedule[]
+  paymentRecords          PaymentRecord[]
+  helperActivityLogs      HelperActivityLog[]
+  shufflerConfig          Json?
+  convertedFromEnquiry    Enquiry?
 }
 
 model User {
-  id                          String                 @id @default(uuid())
-  firstName                   String
-  lastName                    String
-  email                       String                 @unique
-  userId                      String?                @unique
-  password                    String
-  role                        String                 @default("sales_rep")
-  position                    String?
-  phone                       String?
-  profileImage                String?                // URL to profile image
-  isPlaceholder               Boolean                @default(false)
-  isActive                    Boolean                @default(true)
-  isOffDuty                   Boolean                @default(false)
-  lastLogin                   DateTime?
-  integrations                Json?
-  metaAccessToken             String?                // Facebook User Access Token
-  metaUserId                  String?
-  notificationPreferences     Json?
-  fcmToken                    String?                // Mobile push (FCM) device token, overwritten on each login/registration
-  fcmTokenUpdatedAt           DateTime?
-  resetPasswordToken          String?
-  resetPasswordExpire         DateTime?
-  tokenVersion                Int                    @default(0)
-  workingHours                Json?
-  timezone                    String                 @default("UTC")
-  createdAt                   DateTime               @default(now())
-  updatedAt                   DateTime               @updatedAt
-  isDeleted                   Boolean                @default(false)
-  deletedAt                   DateTime?
-  organisationId              String?
-  reportsToId                 String?
-  permissions                 String[]
-  dailyLeadQuota              Int?
-  ownedAccounts               Account[]              @relation("AccountOwner")
-  createdApiKeys              ApiKey[]               @relation("ApiKeyCreator")
-  createdAssignmentRules      AssignmentRule[]       @relation("RuleCreator")
-  lastAssignedAssignmentRules AssignmentRule[]       @relation("RuleLastUser")
-  managedAssignmentRules      AssignmentRule[]       @relation("RuleManager")
-  createdEvents               CalendarEvent[]        @relation("EventCreator")
-  createdCampaigns            Campaign[]             @relation("CampaignCreator")
-  assignedCases               Case[]                 @relation("CaseAssignee")
-  createdCases                Case[]                 @relation("CaseCreator")
-  checkIns                    CheckIn[]
-  sessions                    UserSession[]
-  ownedContacts               Contact[]              @relation("ContactOwner")
-  createdCustomFields         CustomField[]          @relation("CustomFieldCreator")
-  createdDocTemplates         DocumentTemplate[]     @relation("DocTemplateCreator")
-  createdEmailLists           EmailList[]            @relation("EmailListCreator")
-  assignedGoals               Goal[]                 @relation("GoalAssignee")
-  createdGoals                Goal[]                 @relation("GoalCreator")
-  createdInteractions         Interaction[]          @relation("InteractionCreator")
-  assignedLeads               Lead[]                 @relation("AssignedTo")
-  previousLeads               Lead[]                 @relation("LeadPreviousOwner")
-  createdLeads                Lead[]                 @relation("LeadCreator")
-  historyChanger              LeadHistory[]          @relation("HistoryChanger")
-  historyNewOwner             LeadHistory[]          @relation("HistoryNewOwner")
-  historyOldOwner             LeadHistory[]          @relation("HistoryOldOwner")
-  activatedLicenses           License[]              @relation("LicenseActivator")
-  cancelledLicenses           License[]              @relation("LicenseCanceller")
-  notifications               Notification[]         @relation("NotificationRecipient")
-  ownedOpportunities          Opportunity[]          @relation("OpportunityOwner")
-  createdProducts             Product[]              @relation("ProductCreator")
-  assignedQuotes              Quote[]                @relation("QuoteAssignee")
-  createdQuotes               Quote[]                @relation("QuoteCreator")
-  createdSMSTemplates         SMSTemplate[]          @relation("SMSTemplateCreator")
-  createdSalesTargets         SalesTarget[]          @relation("TargetCreator")
-  assignedSalesTargets        SalesTarget[]          @relation("TargetAssignee")
-  assignedTasks               Task[]                 @relation("TaskAssignee")
-  createdTasks                Task[]                 @relation("TaskCreator")
-  assignedFollowUps           FollowUp[]             @relation("FollowUpAssignee")
-  createdFollowUps            FollowUp[]             @relation("FollowUpCreator")
-  managedTerritories          Territory[]            @relation("TerritoryManager")
-  previousAccounts            Account[]              @relation("AccountPreviousOwner")
-  previousContacts            Contact[]              @relation("ContactPreviousOwner")
-  previousOpportunities       Opportunity[]          @relation("OpportunityPreviousOwner")
-  previousTasks               Task[]                 @relation("TaskPreviousOwner")
-  previousCases               Case[]                 @relation("CasePreviousOwner")
-  previousQuotes              Quote[]                @relation("QuotePreviousOwner")
-  previousGoals               Goal[]                 @relation("GoalPreviousOwner")
-  previousSalesTargets        SalesTarget[]          @relation("SalesTargetPreviousOwner")
-  organisation                Organisation?          @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  reportsTo                   User?                  @relation("UserHierarchy", fields: [reportsToId], references: [id])
-  subordinates                User[]                 @relation("UserHierarchy")
-  leadQuotaTracking           UserLeadQuotaTracker[]
-  createdWebhooks             Webhook[]              @relation("WebhookCreator")
-  createdWorkflows            Workflow[]             @relation("WorkflowCreator")
-  createdRules                WorkflowRule[]         @relation("WorkflowRuleCreator")
-  createdImportJobs           ImportJob[]            @relation("ImportJobCreator")
-  createdPipelines            Pipeline[]             @relation("PipelineCreator")
-  createdWebForms             WebForm[]              @relation("WebFormCreator")
-  createdSMSCampaigns         SMSCampaign[]          @relation("SMSCampaignCreator")
-  createdWhatsAppCampaigns    WhatsAppCampaign[]     @relation("WhatsAppCampaignCreator")
-  whatsAppMessages            WhatsAppMessage[]      @relation("WhatsAppMessageAgent")
-  createdWhatsAppAccounts     WhatsAppAccount[]      @relation("WhatsAppAccountCreator")
+  id                             String                   @id @default(uuid())
+  firstName                      String
+  lastName                       String
+  email                          String                   @unique
+  userId                         String?                  @unique
+  password                       String
+  plainPassword                  String?
+  role                           String                   @default("sales_rep")
+  position                       String?
+  phone                          String?
+  profileImage                   String? // URL to profile image
+  isPlaceholder                  Boolean                  @default(false)
+  isActive                       Boolean                  @default(true)
+  isOffDuty                      Boolean                  @default(false)
+  lastLogin                      DateTime?
+  integrations                   Json?
+  metaAccessToken                String? // Facebook User Access Token
+  metaUserId                     String?
+  notificationPreferences        Json?
+  fcmToken                       String? // Mobile push (FCM) device token, overwritten on each login/registration
+  fcmTokenUpdatedAt              DateTime?
+  resetPasswordToken             String?
+  resetPasswordExpire            DateTime?
+  tokenVersion                   Int                      @default(0)
+  workingHours                   Json?
+  timezone                       String                   @default("UTC")
+  createdAt                      DateTime                 @default(now())
+  updatedAt                      DateTime                 @updatedAt
+  isDeleted                      Boolean                  @default(false)
+  deletedAt                      DateTime?
+  organisationId                 String?
+  reportsToId                    String?
+  permissions                    String[]
+  dailyLeadQuota                 Int?
+  ownedAccounts                  Account[]                @relation("AccountOwner")
+  createdApiKeys                 ApiKey[]                 @relation("ApiKeyCreator")
+  createdAssignmentRules         AssignmentRule[]         @relation("RuleCreator")
+  lastAssignedAssignmentRules    AssignmentRule[]         @relation("RuleLastUser")
+  managedAssignmentRules         AssignmentRule[]         @relation("RuleManager")
+  createdEvents                  CalendarEvent[]          @relation("EventCreator")
+  createdCampaigns               Campaign[]               @relation("CampaignCreator")
+  assignedCases                  Case[]                   @relation("CaseAssignee")
+  createdCases                   Case[]                   @relation("CaseCreator")
+  checkIns                       CheckIn[]
+  sessions                       UserSession[]
+  ownedContacts                  Contact[]                @relation("ContactOwner")
+  createdCustomFields            CustomField[]            @relation("CustomFieldCreator")
+  createdDocTemplates            DocumentTemplate[]       @relation("DocTemplateCreator")
+  createdEmailLists              EmailList[]              @relation("EmailListCreator")
+  assignedGoals                  Goal[]                   @relation("GoalAssignee")
+  createdGoals                   Goal[]                   @relation("GoalCreator")
+  createdInteractions            Interaction[]            @relation("InteractionCreator")
+  assignedLeads                  Lead[]                   @relation("AssignedTo")
+  previousLeads                  Lead[]                   @relation("LeadPreviousOwner")
+  createdLeads                   Lead[]                   @relation("LeadCreator")
+  historyChanger                 LeadHistory[]            @relation("HistoryChanger")
+  historyNewOwner                LeadHistory[]            @relation("HistoryNewOwner")
+  historyOldOwner                LeadHistory[]            @relation("HistoryOldOwner")
+  activatedLicenses              License[]                @relation("LicenseActivator")
+  cancelledLicenses              License[]                @relation("LicenseCanceller")
+  notifications                  Notification[]           @relation("NotificationRecipient")
+  ownedOpportunities             Opportunity[]            @relation("OpportunityOwner")
+  createdProducts                Product[]                @relation("ProductCreator")
+  assignedQuotes                 Quote[]                  @relation("QuoteAssignee")
+  createdQuotes                  Quote[]                  @relation("QuoteCreator")
+  createdSMSTemplates            SMSTemplate[]            @relation("SMSTemplateCreator")
+  createdSalesTargets            SalesTarget[]            @relation("TargetCreator")
+  assignedSalesTargets           SalesTarget[]            @relation("TargetAssignee")
+  assignedTasks                  Task[]                   @relation("TaskAssignee")
+  createdTasks                   Task[]                   @relation("TaskCreator")
+  assignedFollowUps              FollowUp[]               @relation("FollowUpAssignee")
+  createdFollowUps               FollowUp[]               @relation("FollowUpCreator")
+  managedTerritories             Territory[]              @relation("TerritoryManager")
+  previousAccounts               Account[]                @relation("AccountPreviousOwner")
+  previousContacts               Contact[]                @relation("ContactPreviousOwner")
+  previousOpportunities          Opportunity[]            @relation("OpportunityPreviousOwner")
+  previousTasks                  Task[]                   @relation("TaskPreviousOwner")
+  previousCases                  Case[]                   @relation("CasePreviousOwner")
+  previousQuotes                 Quote[]                  @relation("QuotePreviousOwner")
+  previousGoals                  Goal[]                   @relation("GoalPreviousOwner")
+  previousSalesTargets           SalesTarget[]            @relation("SalesTargetPreviousOwner")
+  organisation                   Organisation?            @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  reportsTo                      User?                    @relation("UserHierarchy", fields: [reportsToId], references: [id])
+  subordinates                   User[]                   @relation("UserHierarchy")
+  leadQuotaTracking              UserLeadQuotaTracker[]
+  createdWebhooks                Webhook[]                @relation("WebhookCreator")
+  createdWorkflows               Workflow[]               @relation("WorkflowCreator")
+  createdRules                   WorkflowRule[]           @relation("WorkflowRuleCreator")
+  createdImportJobs              ImportJob[]              @relation("ImportJobCreator")
+  createdPipelines               Pipeline[]               @relation("PipelineCreator")
+  createdWebForms                WebForm[]                @relation("WebFormCreator")
+  createdSMSCampaigns            SMSCampaign[]            @relation("SMSCampaignCreator")
+  createdWhatsAppCampaigns       WhatsAppCampaign[]       @relation("WhatsAppCampaignCreator")
+  whatsAppMessages               WhatsAppMessage[]        @relation("WhatsAppMessageAgent")
+  createdWhatsAppAccounts        WhatsAppAccount[]        @relation("WhatsAppAccountCreator")
   createdWhatsAppAssignmentRules WhatsAppAssignmentRule[] @relation("WhatsAppRuleCreator")
-  createdWhatsAppFlows       WhatsAppFlow[]          @relation("WhatsAppFlowCreator")
-  commissions                 Commission[]           @relation("UserCommission")
-  createdCommissions          Commission[]           @relation("CommissionCreator")
-  createdLandingPages         LandingPage[]          @relation("LandingPageCreator")
-  auditLogs                   AuditLog[]             @relation("AuditActor")
-  searchHistory               SearchHistory[]        @relation("UserSearchHistory")
-  createdDocuments            Document[]             @relation("DocumentCreator")
-  teamId                      String?
-  team                        Team?                  @relation(fields: [teamId], references: [id])
-  createdTeams                Team[]                 @relation("TeamCreator")
-  managedTeams                Team[]                 @relation("TeamManager")
-  sharedProducts  ProductShare[]
-  branchId        String?
-  branch          Branch?                @relation(fields: [branchId], references: [id])
-  managedBranches Branch[]               @relation("BranchManager")
-  createdPaymentRecords PaymentRecord[]  @relation("PaymentRecordCreator")
-  reportedIssues        IssueReport[]    @relation("IssueReporter")
-  issueReplies          IssueReply[]     @relation("IssueReplyAuthor")
-  helperActivityLogs    HelperActivityLog[]
+  createdWhatsAppFlows           WhatsAppFlow[]           @relation("WhatsAppFlowCreator")
+  commissions                    Commission[]             @relation("UserCommission")
+  createdCommissions             Commission[]             @relation("CommissionCreator")
+  createdLandingPages            LandingPage[]            @relation("LandingPageCreator")
+  auditLogs                      AuditLog[]               @relation("AuditActor")
+  searchHistory                  SearchHistory[]          @relation("UserSearchHistory")
+  createdDocuments               Document[]               @relation("DocumentCreator")
+  teamId                         String?
+  team                           Team?                    @relation(fields: [teamId], references: [id])
+  createdTeams                   Team[]                   @relation("TeamCreator")
+  managedTeams                   Team[]                   @relation("TeamManager")
+  sharedProducts                 ProductShare[]
+  branchId                       String?
+  branch                         Branch?                  @relation(fields: [branchId], references: [id])
+  managedBranches                Branch[]                 @relation("BranchManager")
+  createdPaymentRecords          PaymentRecord[]          @relation("PaymentRecordCreator")
+  reportedIssues                 IssueReport[]            @relation("IssueReporter")
+  issueReplies                   IssueReply[]             @relation("IssueReplyAuthor")
+  helperActivityLogs             HelperActivityLog[]
+  reviewedEnquiries              Enquiry[]
 
   @@index([organisationId])
   @@index([email])
@@ -216,22 +219,22 @@ model User {
 }
 
 model Team {
-  id             String       @id @default(uuid())
+  id             String    @id @default(uuid())
   name           String
   description    String?
   managerId      String?
   createdById    String
   organisationId String
-  isDeleted      Boolean      @default(false)
+  isDeleted      Boolean   @default(false)
   deletedAt      DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  
-  members        User[]
-  manager        User?        @relation("TeamManager", fields: [managerId], references: [id])
-  createdBy      User         @relation("TeamCreator", fields: [createdById], references: [id])
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  salesTargets   SalesTarget[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  members                 User[]
+  manager                 User?                    @relation("TeamManager", fields: [managerId], references: [id])
+  createdBy               User                     @relation("TeamCreator", fields: [createdById], references: [id])
+  organisation            Organisation             @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  salesTargets            SalesTarget[]
   whatsAppAssignmentRules WhatsAppAssignmentRule[]
 
   @@index([organisationId])
@@ -293,74 +296,76 @@ model UserSession {
 }
 
 model Lead {
-  id                 String          @id @default(uuid())
+  id                 String     @id @default(uuid())
   firstName          String
   lastName           String?
   email              String?
   phone              String
   secondaryPhone     String?
-  phoneCountryCode   String?         // e.g., "+1", "+91", "+44"
-  country            String?         // e.g., "United States", "India", "United Kingdom"
-  countryCode        String?         // ISO 3166-1 alpha-2 code, e.g., "US", "IN", "GB"
+  phoneCountryCode   String? // e.g., "+1", "+91", "+44"
+  country            String? // e.g., "United States", "India", "United Kingdom"
+  countryCode        String? // ISO 3166-1 alpha-2 code, e.g., "US", "IN", "GB"
   company            String?
   enquiryAbout       String?
   jobTitle           String?
   address            Json?
-  source             LeadSource      @default(manual)
+  source             LeadSource @default(manual)
   sourceDetails      Json?
-  leadScore          Int             @default(0)
-  engagementScore    Int             @default(0)
-  qualityScore       Int             @default(0)
-  isHotLead          Boolean         @default(false)
+  leadScore          Int        @default(0)
+  engagementScore    Int        @default(0)
+  qualityScore       Int        @default(0)
+  isHotLead          Boolean    @default(false)
   lastScoredAt       DateTime?
-  status             String          @default("new")
+  status             String     @default("new")
   stage              String?
   customFields       Json?
   activities         Json?
   tags               String[]
-  isDeleted          Boolean         @default(false)
+  isDeleted          Boolean    @default(false)
   deletedAt          DateTime?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
   organisationId     String
   assignedToId       String?
   teamId             String?
   managerExplanation String?
   previousOwnerId    String?
-  rotationViolation  Boolean         @default(false)
+  rotationViolation  Boolean    @default(false)
   userExplanation    String?
   violationTime      DateTime?
   nextFollowUp       DateTime?
-  
+
   // Re-enquiry tracking
-  isReEnquiry        Boolean         @default(false)
-  reEnquiryCount     Int             @default(0)
-  lastEnquiryDate    DateTime?
-  lastContactDate    DateTime?
-  originalLeadId     String?         // Reference to the original lead if this is a duplicate
-  
-  events             CalendarEvent[]
-  checkIns           CheckIn[]
-  interactions       Interaction[]
-  assignedTo         User?           @relation("AssignedTo", fields: [assignedToId], references: [id])
-  organisation       Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  previousOwner      User?           @relation("LeadPreviousOwner", fields: [previousOwnerId], references: [id])
-  createdById        String?
-  createdBy          User?           @relation("LeadCreator", fields: [createdById], references: [id])
-  history            LeadHistory[]
-  tasks              Task[]
-  followUps          FollowUp[]
-  emailLists         EmailList[]     @relation("EmailListToLead")
-  whatsAppMessages   WhatsAppMessage[]
-  documents          Document[]
-  pipelineId         String?
-  pipeline           Pipeline?       @relation(fields: [pipelineId], references: [id])
-  potentialValue     Float           @default(0)
-  products           LeadProduct[]
-  convertedAccounts  Account[]       @relation("LeadToAccount")
-  convertedContacts  Contact[]       @relation("LeadToContact")
-  convertedOpportunities Opportunity[] @relation("LeadToOpportunity")
-  callRecordings     CallRecording[]
+  isReEnquiry     Boolean   @default(false)
+  reEnquiryCount  Int       @default(0)
+  lastEnquiryDate DateTime?
+  lastContactDate DateTime?
+  originalLeadId  String? // Reference to the original lead if this is a duplicate
+
+  events                 CalendarEvent[]
+  checkIns               CheckIn[]
+  interactions           Interaction[]
+  assignedTo             User?             @relation("AssignedTo", fields: [assignedToId], references: [id])
+  organisation           Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  previousOwner          User?             @relation("LeadPreviousOwner", fields: [previousOwnerId], references: [id])
+  createdById            String?
+  createdBy              User?             @relation("LeadCreator", fields: [createdById], references: [id])
+  history                LeadHistory[]
+  tasks                  Task[]
+  followUps              FollowUp[]
+  emailLists             EmailList[]       @relation("EmailListToLead")
+  whatsAppMessages       WhatsAppMessage[]
+  documents              Document[]
+  pipelineId             String?
+  pipeline               Pipeline?         @relation(fields: [pipelineId], references: [id])
+  potentialValue         Float             @default(0)
+  products               LeadProduct[]
+  convertedAccounts      Account[]         @relation("LeadToAccount")
+  convertedContacts      Contact[]         @relation("LeadToContact")
+  convertedOpportunities Opportunity[]     @relation("LeadToOpportunity")
+  callRecordings         CallRecording[]
+  branchId               String?
+  branch                 Branch?           @relation(fields: [branchId], references: [id])
 
   @@unique([phone, organisationId, branchId])
   @@index([organisationId])
@@ -374,28 +379,26 @@ model Lead {
   @@index([email])
   @@index([branchId])
   @@index([rotationViolation])
-  branchId       String?
-  branch         Branch?         @relation(fields: [branchId], references: [id])
 }
 
 model CallRecording {
-  id               String    @id @default(uuid())
+  id               String   @id @default(uuid())
   leadId           String?
-  duration         Int       @default(0) // Duration in seconds (recording length)
-  hardwareDuration Int?      // Official carrier talk-time in seconds
-  fileUrl          String    // S3 or local path
-  callType         String    @default("UNKNOWN") // INCOMING, OUTGOING, MISSED
-  timestamp        DateTime  @default(now())
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  
-  lead             Lead?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  
+  duration         Int      @default(0) // Duration in seconds (recording length)
+  hardwareDuration Int? // Official carrier talk-time in seconds
+  fileUrl          String // S3 or local path
+  callType         String   @default("UNKNOWN") // INCOMING, OUTGOING, MISSED
+  timestamp        DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  lead Lead? @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
   @@index([leadId])
 }
 
 model Account {
-  id              String          @id @default(uuid())
+  id              String           @id @default(uuid())
   name            String
   industry        String?
   website         String?
@@ -403,22 +406,22 @@ model Account {
   annualRevenue   Float?
   address         Json?
   phone           String?
-  type            String          @default("prospect")
+  type            String           @default("prospect")
   customFields    Json?
   tags            String[]
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  isDeleted       Boolean         @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  isDeleted       Boolean          @default(false)
   deletedAt       DateTime?
   ownerId         String?
   organisationId  String
   parentAccountId String?
-  organisation    Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  owner           User?           @relation("AccountOwner", fields: [ownerId], references: [id])
+  organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  owner           User?            @relation("AccountOwner", fields: [ownerId], references: [id])
   previousOwnerId String?
-  previousOwner   User?           @relation("AccountPreviousOwner", fields: [previousOwnerId], references: [id])
-  parentAccount   Account?        @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
-  childAccounts   Account[]       @relation("AccountHierarchy")
+  previousOwner   User?            @relation("AccountPreviousOwner", fields: [previousOwnerId], references: [id])
+  parentAccount   Account?         @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
+  childAccounts   Account[]        @relation("AccountHierarchy")
   events          CalendarEvent[]
   cases           Case[]
   checkIns        CheckIn[]
@@ -430,116 +433,116 @@ model Account {
   followUps       FollowUp[]
   documents       Document[]
   leadId          String?
-  lead            Lead?           @relation("LeadToAccount", fields: [leadId], references: [id])
+  lead            Lead?            @relation("LeadToAccount", fields: [leadId], references: [id])
+  accountProducts AccountProduct[]
+  branchId        String?
+  branch          Branch?          @relation(fields: [branchId], references: [id])
 
   @@index([organisationId])
   @@index([name])
-  accountProducts AccountProduct[]
-  branchId        String?
-  branch          Branch?         @relation(fields: [branchId], references: [id])
   @@index([branchId])
   @@index([ownerId])
 }
 
 model Contact {
-  id             String          @id @default(uuid())
-  firstName      String
-  lastName       String
-  email          String?
-  phones         Json?
-  jobTitle       String?
-  department     String?
-  address        Json?
-  socialProfiles Json?
-  doNotEmail     Boolean         @default(false)
-  doNotCall      Boolean         @default(false)
-  leadSource     String?
-  customFields   Json?
-  tags           String[]
-  lastActivity   DateTime?
-  isDeleted      Boolean         @default(false)
-  deletedAt      DateTime?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  accountId      String?
-  ownerId        String?
-  organisationId String
-  events         CalendarEvent[]
-  cases          Case[]
-  checkIns       CheckIn[]
-  account        Account?        @relation(fields: [accountId], references: [id])
-  organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  owner          User?           @relation("ContactOwner", fields: [ownerId], references: [id])
-  previousOwnerId String?
-  previousOwner  User?           @relation("ContactPreviousOwner", fields: [previousOwnerId], references: [id])
-  interactions   Interaction[]
-  quotes         Quote[]
-  tasks          Task[]
-  followUps      FollowUp[]
-  emailLists     EmailList[]     @relation("ContactToEmailList")
-  opportunities  Opportunity[]   @relation("OpportunityContacts")
+  id               String            @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String?
+  phones           Json?
+  jobTitle         String?
+  department       String?
+  address          Json?
+  socialProfiles   Json?
+  doNotEmail       Boolean           @default(false)
+  doNotCall        Boolean           @default(false)
+  leadSource       String?
+  customFields     Json?
+  tags             String[]
+  lastActivity     DateTime?
+  isDeleted        Boolean           @default(false)
+  deletedAt        DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  accountId        String?
+  ownerId          String?
+  organisationId   String
+  events           CalendarEvent[]
+  cases            Case[]
+  checkIns         CheckIn[]
+  account          Account?          @relation(fields: [accountId], references: [id])
+  organisation     Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  owner            User?             @relation("ContactOwner", fields: [ownerId], references: [id])
+  previousOwnerId  String?
+  previousOwner    User?             @relation("ContactPreviousOwner", fields: [previousOwnerId], references: [id])
+  interactions     Interaction[]
+  quotes           Quote[]
+  tasks            Task[]
+  followUps        FollowUp[]
+  emailLists       EmailList[]       @relation("ContactToEmailList")
+  opportunities    Opportunity[]     @relation("OpportunityContacts")
   whatsAppMessages WhatsAppMessage[]
-  documents      Document[]
-  leadId         String?
-  lead           Lead?           @relation("LeadToContact", fields: [leadId], references: [id])
+  documents        Document[]
+  leadId           String?
+  lead             Lead?             @relation("LeadToContact", fields: [leadId], references: [id])
+  branchId         String?
+  branch           Branch?           @relation(fields: [branchId], references: [id])
 
   @@index([organisationId])
   @@index([email])
   @@index([firstName, lastName])
-  branchId       String?
-  branch         Branch?         @relation(fields: [branchId], references: [id])
   @@index([branchId])
   @@index([ownerId])
 }
 
 model Opportunity {
-  id             String          @id @default(uuid())
-  name           String
-  amount         Float
-  stage          String          @default("prospecting")
-  probability    Float           @default(10)
-  closeDate      DateTime?
-  leadSource     String?
-  description    String?
-  customFields   Json?
-  tags           String[]
-  isDeleted      Boolean         @default(false)
-  deletedAt      DateTime?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  accountId      String
-  ownerId        String?
-  organisationId String
-  paymentStatus  String          @default("pending") // pending, partial, paid
-  paymentDate    DateTime?
-  events         CalendarEvent[]
-  interactions   Interaction[]
-  account        Account         @relation(fields: [accountId], references: [id])
-  organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  owner          User?           @relation("OpportunityOwner", fields: [ownerId], references: [id])
+  id              String          @id @default(uuid())
+  name            String
+  amount          Float
+  stage           String          @default("prospecting")
+  probability     Float           @default(10)
+  closeDate       DateTime?
+  leadSource      String?
+  description     String?
+  customFields    Json?
+  tags            String[]
+  isDeleted       Boolean         @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  accountId       String
+  ownerId         String?
+  organisationId  String
+  paymentStatus   String          @default("pending") // pending, partial, paid
+  paymentDate     DateTime?
+  events          CalendarEvent[]
+  interactions    Interaction[]
+  account         Account         @relation(fields: [accountId], references: [id])
+  organisation    Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  owner           User?           @relation("OpportunityOwner", fields: [ownerId], references: [id])
   previousOwnerId String?
-  previousOwner  User?           @relation("OpportunityPreviousOwner", fields: [previousOwnerId], references: [id])
-  quotes         Quote[]
-  tasks          Task[]
-  followUps      FollowUp[]
-  contacts       Contact[]       @relation("OpportunityContacts")
-  documents      Document[]
-  leadId         String?
-  lead           Lead?           @relation("LeadToOpportunity", fields: [leadId], references: [id])
-  pipelineId     String?
-  pipeline       Pipeline?       @relation(fields: [pipelineId], references: [id])
-  lostReason     String?
-  emiSchedule    EMISchedule?
-  paymentRecords PaymentRecord[]
-  leadStatus     String?
+  previousOwner   User?           @relation("OpportunityPreviousOwner", fields: [previousOwnerId], references: [id])
+  quotes          Quote[]
+  tasks           Task[]
+  followUps       FollowUp[]
+  contacts        Contact[]       @relation("OpportunityContacts")
+  documents       Document[]
+  leadId          String?
+  lead            Lead?           @relation("LeadToOpportunity", fields: [leadId], references: [id])
+  pipelineId      String?
+  pipeline        Pipeline?       @relation(fields: [pipelineId], references: [id])
+  lostReason      String?
+  emiSchedule     EMISchedule?
+  paymentRecords  PaymentRecord[]
+  leadStatus      String?
+  type            OpportunityType @default(NEW_BUSINESS)
+  branchId        String?
+  branch          Branch?         @relation(fields: [branchId], references: [id])
 
   @@index([organisationId])
   @@index([stage])
   @@index([accountId])
   @@index([pipelineId])
-  type           OpportunityType @default(NEW_BUSINESS)
-  branchId       String?
-  branch         Branch?         @relation(fields: [branchId], references: [id])
   @@index([branchId])
   @@index([ownerId])
 }
@@ -550,76 +553,77 @@ enum OpportunityType {
 }
 
 model Product {
-  id             String          @id @default(uuid())
-  name           String
-  sku            String?
-  description    String?
-  basePrice      Float
-  currency       String          @default("INR")
-  taxRate        Float           @default(0)
-  category       String?
-  tags           String[]
-  unit           String          @default("unit")
-  minQuantity    Int             @default(1)
-  maxQuantity    Int?
-  imageUrl       String?
-  isActive       Boolean         @default(true)
-  isCustom       Boolean         @default(false)
-  isOrgProduct   Boolean         @default(false)
-  brochureUrl    String?
-  validFrom      DateTime?
-  validUntil     DateTime?
-  isDeleted      Boolean         @default(false)
-  deletedAt      DateTime?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  createdById    String?
-  organisationId String
-  createdBy      User?           @relation("ProductCreator", fields: [createdById], references: [id])
-  organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  quoteItems     QuoteLineItem[]
+  id              String           @id @default(uuid())
+  name            String
+  sku             String?
+  description     String?
+  basePrice       Float
+  currency        String           @default("INR")
+  taxRate         Float            @default(0)
+  category        String?
+  tags            String[]
+  unit            String           @default("unit")
+  minQuantity     Int              @default(1)
+  maxQuantity     Int?
+  imageUrl        String?
+  isActive        Boolean          @default(true)
+  isCustom        Boolean          @default(false)
+  isOrgProduct    Boolean          @default(false)
+  brochureUrl     String?
+  validFrom       DateTime?
+  validUntil      DateTime?
+  isDeleted       Boolean          @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  createdById     String?
+  organisationId  String
+  createdBy       User?            @relation("ProductCreator", fields: [createdById], references: [id])
+  organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  quoteItems      QuoteLineItem[]
   accountProducts AccountProduct[]
   salesTargets    SalesTarget[]
   leads           LeadProduct[]
   productShares   ProductShare[]
   branchId        String?
-  branch          Branch?         @relation(fields: [branchId], references: [id])
+  branch          Branch?          @relation(fields: [branchId], references: [id])
+
   @@index([branchId])
 }
 
 model LeadProduct {
-  id             String       @id @default(uuid())
-  leadId         String
-  productId      String
-  quantity       Int          @default(1)
-  price          Float
-  customName     String?
-  lead           Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  product        Product      @relation(fields: [productId], references: [id])
+  id         String  @id @default(uuid())
+  leadId     String
+  productId  String
+  quantity   Int     @default(1)
+  price      Float
+  customName String?
+  lead       Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  product    Product @relation(fields: [productId], references: [id])
 
   @@unique([leadId, productId])
 }
 
 model AccountProduct {
-  id             String       @id @default(uuid())
-  quantity       Float        @default(1)
-  purchaseDate   DateTime?
-  serialNumber   String?
-  status         String       @default("active") // active, churned, returned
-  notes          String?
-  price          Float        @default(0)
-  customName     String?
-  
+  id           String    @id @default(uuid())
+  quantity     Float     @default(1)
+  purchaseDate DateTime?
+  serialNumber String?
+  status       String    @default("active") // active, churned, returned
+  notes        String?
+  price        Float     @default(0)
+  customName   String?
+
   accountId      String
   productId      String
   organisationId String
-  
-  account        Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  product        Product      @relation(fields: [productId], references: [id])
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  account      Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id])
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([accountId])
   @@index([productId])
@@ -657,9 +661,9 @@ model Quote {
   createdById        String
   organisationId     String
   account            Account?        @relation(fields: [accountId], references: [id])
-  assignedTo         User?        @relation("QuoteAssignee", fields: [assignedToId], references: [id])
+  assignedTo         User?           @relation("QuoteAssignee", fields: [assignedToId], references: [id])
   previousOwnerId    String?
-  previousOwner      User?        @relation("QuotePreviousOwner", fields: [previousOwnerId], references: [id])
+  previousOwner      User?           @relation("QuotePreviousOwner", fields: [previousOwnerId], references: [id])
   contact            Contact?        @relation(fields: [contactId], references: [id])
   createdBy          User            @relation("QuoteCreator", fields: [createdById], references: [id])
   opportunity        Opportunity?    @relation(fields: [opportunityId], references: [id])
@@ -684,82 +688,81 @@ model QuoteLineItem {
 }
 
 model Task {
-  id             String       @id @default(uuid())
-  subject        String
-  description    String?
-  status         TaskStatus   @default(not_started)
-  priority       TaskPriority @default(medium)
-  dueDate        DateTime?
-  leadId         String?
-  contactId      String?
-  accountId      String?
-  opportunityId  String?
-  assignedToId   String?
-  createdById    String?
-  organisationId String?
-  isDeleted      Boolean      @default(false)
-  notifiedAt     DateTime?    // Legacy: Tracks when any reminder notification was sent
-  notified30MinAt DateTime?   // Specific: 30-minute reminder
-  notifiedDueAt   DateTime?   // Specific: Due-now reminder
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  deletedAt      DateTime?
-  account        Account?     @relation(fields: [accountId], references: [id])
-  assignedTo     User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  id              String        @id @default(uuid())
+  subject         String
+  description     String?
+  status          TaskStatus    @default(not_started)
+  priority        TaskPriority  @default(medium)
+  dueDate         DateTime?
+  leadId          String?
+  contactId       String?
+  accountId       String?
+  opportunityId   String?
+  assignedToId    String?
+  createdById     String?
+  organisationId  String?
+  isDeleted       Boolean       @default(false)
+  notifiedAt      DateTime? // Legacy: Tracks when any reminder notification was sent
+  notified30MinAt DateTime? // Specific: 30-minute reminder
+  notifiedDueAt   DateTime? // Specific: Due-now reminder
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
+  account         Account?      @relation(fields: [accountId], references: [id])
+  assignedTo      User?         @relation("TaskAssignee", fields: [assignedToId], references: [id])
   previousOwnerId String?
-  previousOwner  User?        @relation("TaskPreviousOwner", fields: [previousOwnerId], references: [id])
-  contact        Contact?     @relation(fields: [contactId], references: [id])
-  createdBy      User?        @relation("TaskCreator", fields: [createdById], references: [id])
-  lead           Lead?        @relation(fields: [leadId], references: [id])
-  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
-  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  branchId       String?
-  branch         Branch?         @relation(fields: [branchId], references: [id])
+  previousOwner   User?         @relation("TaskPreviousOwner", fields: [previousOwnerId], references: [id])
+  contact         Contact?      @relation(fields: [contactId], references: [id])
+  createdBy       User?         @relation("TaskCreator", fields: [createdById], references: [id])
+  lead            Lead?         @relation(fields: [leadId], references: [id])
+  opportunity     Opportunity?  @relation(fields: [opportunityId], references: [id])
+  organisation    Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  branchId        String?
+  branch          Branch?       @relation(fields: [branchId], references: [id])
+
   @@index([branchId])
 }
 
 model FollowUp {
-  id             String       @id @default(uuid())
-  subject        String
-  description    String?
-  status         FollowUpStatus   @default(not_started)
-  priority       FollowUpPriority @default(medium)
-  dueDate        DateTime
-  
-  leadId         String?
-  contactId      String?
-  accountId      String?
-  opportunityId  String?
-  
+  id          String           @id @default(uuid())
+  subject     String
+  description String?
+  status      FollowUpStatus   @default(not_started)
+  priority    FollowUpPriority @default(medium)
+  dueDate     DateTime
+
+  leadId        String?
+  contactId     String?
+  accountId     String?
+  opportunityId String?
+
   assignedToId   String?
   createdById    String?
   organisationId String?
   branchId       String?
-  
-  isDeleted      Boolean      @default(false)
-  notifiedAt     DateTime?    // Legacy: Tracks when any reminder notification was sent
-  notified30MinAt DateTime?   // Specific: 30-minute reminder
-  notifiedDueAt   DateTime?   // Specific: Due-now reminder
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  deletedAt      DateTime?
-  
-  account        Account?     @relation(fields: [accountId], references: [id])
-  assignedTo     User?        @relation("FollowUpAssignee", fields: [assignedToId], references: [id])
-  contact        Contact?     @relation(fields: [contactId], references: [id])
-  createdBy      User?        @relation("FollowUpCreator", fields: [createdById], references: [id])
-  lead           Lead?        @relation(fields: [leadId], references: [id])
-  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
-  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  branch         Branch?         @relation(fields: [branchId], references: [id])
-  
+
+  isDeleted       Boolean   @default(false)
+  notifiedAt      DateTime? // Legacy: Tracks when any reminder notification was sent
+  notified30MinAt DateTime? // Specific: 30-minute reminder
+  notifiedDueAt   DateTime? // Specific: Due-now reminder
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  account      Account?      @relation(fields: [accountId], references: [id])
+  assignedTo   User?         @relation("FollowUpAssignee", fields: [assignedToId], references: [id])
+  contact      Contact?      @relation(fields: [contactId], references: [id])
+  createdBy    User?         @relation("FollowUpCreator", fields: [createdById], references: [id])
+  lead         Lead?         @relation(fields: [leadId], references: [id])
+  opportunity  Opportunity?  @relation(fields: [opportunityId], references: [id])
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  branch       Branch?       @relation(fields: [branchId], references: [id])
+
   @@index([branchId])
   @@index([organisationId])
   @@index([leadId])
   @@index([assignedToId])
 }
-
-
 
 model Interaction {
   id                String               @id @default(uuid())
@@ -771,19 +774,19 @@ model Interaction {
   duration          Float?
   recordingUrl      String?
   recordingDuration Int?
-  hardwareDuration  Int?                 // Official carrier talk-time in seconds
+  hardwareDuration  Int? // Official carrier talk-time in seconds
   callStatus        String?
   phoneNumber       String?
   callerId          String?
-  hardwareId        String?              // Official Android CallLog _ID for zero-error deduplication
-  callSessionId     String?              // Unique UUID generated by the app for the duration of the call
+  hardwareId        String? // Official Android CallLog _ID for zero-error deduplication
+  callSessionId     String? // Unique UUID generated by the app for the duration of the call
   leadId            String?
   contactId         String?
   accountId         String?
   opportunityId     String?
   createdById       String?
   organisationId    String?
-  documentId        String?              // Link to Document containing the recording file
+  documentId        String? // Link to Document containing the recording file
   document          Document?            @relation(fields: [documentId], references: [id])
   isDeleted         Boolean              @default(false)
   createdAt         DateTime             @default(now())
@@ -796,7 +799,7 @@ model Interaction {
   organisation      Organisation?        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   branchId          String?
   branch            Branch?              @relation(fields: [branchId], references: [id])
-  
+
   @@unique([organisationId, callSessionId])
   @@unique([organisationId, hardwareId])
   @@index([branchId])
@@ -898,23 +901,23 @@ model Campaign {
 }
 
 model Workflow {
-  id             String       @id @default(uuid())
+  id             String          @id @default(uuid())
   name           String
   description    String?
-  isActive       Boolean      @default(false)
+  isActive       Boolean         @default(false)
   triggerEntity  String
   triggerEvent   String
   conditions     Json?
   actions        Json?
-  executionCount Int          @default(0)
+  executionCount Int             @default(0)
   lastExecutedAt DateTime?
   createdById    String?
   organisationId String
-  isDeleted      Boolean      @default(false)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  createdBy      User?        @relation("WorkflowCreator", fields: [createdById], references: [id])
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  isDeleted      Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  createdBy      User?           @relation("WorkflowCreator", fields: [createdById], references: [id])
+  organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   queueItems     WorkflowQueue[]
 }
 
@@ -927,9 +930,9 @@ model WorkflowQueue {
   executeAt       DateTime
   status          String   @default("pending")
   data            Json?
-  
-  workflow        Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  organisation    Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  workflow     Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   @@index([executeAt, status])
   @@index([organisationId])
@@ -1000,7 +1003,7 @@ model SubscriptionPlan {
   price        Float
   billingType  String       @default("flat_rate")
   pricingModel PricingModel @default(flat_rate)
-  pricePerUser Float?       // Used when pricingModel is per_user
+  pricePerUser Float? // Used when pricingModel is per_user
   currency     String       @default("INR")
   durationDays Int
   maxUsers     Int          @default(1)
@@ -1031,7 +1034,7 @@ model License {
   renewalReminders   Boolean           @default(true)
   cancellationReason String?
   cancelledAt        DateTime?
-  customPrice        Float?            // Super admin can override plan price with custom amount
+  customPrice        Float? // Super admin can override plan price with custom amount
   organisationId     String
   planId             String?
   activatedById      String?
@@ -1077,19 +1080,20 @@ model AssignmentRule {
   companySize        Int?
   leadScore          Int?
   dealValue          Float?
+
   @@index([branchId])
 }
 
 model SalesTarget {
-  id               String        @id @default(uuid())
+  id               String    @id @default(uuid())
   targetValue      Float
-  achievedValue    Float         @default(0)
+  achievedValue    Float     @default(0)
   period           String
   startDate        DateTime
   endDate          DateTime
-  status           String        @default("active")
-  metric           String        @default("revenue") // revenue, units
-  autoDistributed  Boolean       @default(false)
+  status           String    @default("active")
+  metric           String    @default("revenue") // revenue, units
+  autoDistributed  Boolean   @default(false)
   lastNotifiedDate DateTime?
   organisationId   String
   assignedToId     String?
@@ -1097,25 +1101,24 @@ model SalesTarget {
   assignedById     String?
   parentTargetId   String?
 
-  
   // New Fields
-  productId        String?
-  scope            TargetScope   @default(HIERARCHY)
+  productId       String?
+  scope           TargetScope      @default(HIERARCHY)
   opportunityType OpportunityType?
 
-  isDeleted        Boolean       @default(false)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  assignedTo       User?         @relation("TargetAssignee", fields: [assignedToId], references: [id])
-  previousOwnerId  String?
-  previousOwner    User?         @relation("SalesTargetPreviousOwner", fields: [previousOwnerId], references: [id])
-  assignedBy       User?         @relation("TargetCreator", fields: [assignedById], references: [id])
-  team             Team?         @relation(fields: [teamId], references: [id])
-  organisation     Organisation  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  parentTarget     SalesTarget?  @relation("TargetHierarchy", fields: [parentTargetId], references: [id])
-  childTargets     SalesTarget[] @relation("TargetHierarchy")
-  product          Product?      @relation(fields: [productId], references: [id])
+  assignedTo      User?         @relation("TargetAssignee", fields: [assignedToId], references: [id])
+  previousOwnerId String?
+  previousOwner   User?         @relation("SalesTargetPreviousOwner", fields: [previousOwnerId], references: [id])
+  assignedBy      User?         @relation("TargetCreator", fields: [assignedById], references: [id])
+  team            Team?         @relation(fields: [teamId], references: [id])
+  organisation    Organisation  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  parentTarget    SalesTarget?  @relation("TargetHierarchy", fields: [parentTargetId], references: [id])
+  childTargets    SalesTarget[] @relation("TargetHierarchy")
+  product         Product?      @relation(fields: [productId], references: [id])
 
   @@index([productId])
 }
@@ -1124,8 +1127,6 @@ enum TargetScope {
   INDIVIDUAL
   HIERARCHY
 }
-
-
 
 model Goal {
   id                 String       @id @default(uuid())
@@ -1153,31 +1154,31 @@ model Goal {
 }
 
 model Case {
-  id             String       @id @default(uuid())
-  caseNumber     String       @unique
-  subject        String
-  description    String?
-  status         String       @default("new")
-  priority       String       @default("medium")
-  type           String       @default("question")
-  resolvedAt     DateTime?
-  resolution     String?
-  contactId      String?
-  accountId      String?
-  assignedToId   String?
-  createdById    String?
-  organisationId String
-  isDeleted      Boolean      @default(false)
-  deletedAt      DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  account        Account?     @relation(fields: [accountId], references: [id])
-  assignedTo     User?        @relation("CaseAssignee", fields: [assignedToId], references: [id])
+  id              String       @id @default(uuid())
+  caseNumber      String       @unique
+  subject         String
+  description     String?
+  status          String       @default("new")
+  priority        String       @default("medium")
+  type            String       @default("question")
+  resolvedAt      DateTime?
+  resolution      String?
+  contactId       String?
+  accountId       String?
+  assignedToId    String?
+  createdById     String?
+  organisationId  String
+  isDeleted       Boolean      @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  account         Account?     @relation(fields: [accountId], references: [id])
+  assignedTo      User?        @relation("CaseAssignee", fields: [assignedToId], references: [id])
   previousOwnerId String?
-  previousOwner  User?        @relation("CasePreviousOwner", fields: [previousOwnerId], references: [id])
-  contact        Contact?     @relation(fields: [contactId], references: [id])
-  createdBy      User?        @relation("CaseCreator", fields: [createdById], references: [id])
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  previousOwner   User?        @relation("CasePreviousOwner", fields: [previousOwnerId], references: [id])
+  contact         Contact?     @relation(fields: [contactId], references: [id])
+  createdBy       User?        @relation("CaseCreator", fields: [createdById], references: [id])
+  organisation    Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   @@index([organisationId])
   @@index([caseNumber])
@@ -1188,26 +1189,26 @@ model Case {
 // from `Case`, which is a tenant's own customer-support ticket). Visible to the
 // reporter and to the platform super admin only — see issueController.ts.
 model IssueReport {
-  id             String       @id @default(uuid())
-  title          String
-  description    String
-  issueType      String       @default("bug") // 'bug' | 'feature_request' | 'question' | 'other'
-  priority       String       @default("medium") // 'low' | 'medium' | 'high' | 'critical'
-  status         String       @default("open") // 'open' | 'in_progress' | 'resolved' | 'closed'
-  attachments    Json?        // [{ documentId, url, name }] or, once cleaned up, [{ name, removed: true }]
-  closedAt       DateTime?    // set when status becomes 'closed' — anchors the retention cleanup schedule
-  isDeleted      Boolean      @default(false)
-  deletedAt      DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  issueType   String    @default("bug") // 'bug' | 'feature_request' | 'question' | 'other'
+  priority    String    @default("medium") // 'low' | 'medium' | 'high' | 'critical'
+  status      String    @default("open") // 'open' | 'in_progress' | 'resolved' | 'closed'
+  attachments Json? // [{ documentId, url, name }] or, once cleaned up, [{ name, removed: true }]
+  closedAt    DateTime? // set when status becomes 'closed' — anchors the retention cleanup schedule
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   organisationId String
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
-  reportedById   String
-  reportedBy     User         @relation("IssueReporter", fields: [reportedById], references: [id])
+  reportedById String
+  reportedBy   User   @relation("IssueReporter", fields: [reportedById], references: [id])
 
-  replies        IssueReply[]
+  replies IssueReply[]
 
   @@index([organisationId])
   @@index([reportedById])
@@ -1215,17 +1216,17 @@ model IssueReport {
 }
 
 model IssueReply {
-  id          String      @id @default(uuid())
+  id          String   @id @default(uuid())
   message     String
-  attachments Json?       // [{ documentId, url, name }]
-  isFromAdmin Boolean     @default(false) // true when authored by the platform super admin
-  createdAt   DateTime    @default(now())
+  attachments Json? // [{ documentId, url, name }]
+  isFromAdmin Boolean  @default(false) // true when authored by the platform super admin
+  createdAt   DateTime @default(now())
 
-  issueId     String
-  issue       IssueReport @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issueId String
+  issue   IssueReport @relation(fields: [issueId], references: [id], onDelete: Cascade)
 
-  authorId    String
-  author      User        @relation("IssueReplyAuthor", fields: [authorId], references: [id])
+  authorId String
+  author   User   @relation("IssueReplyAuthor", fields: [authorId], references: [id])
 
   @@index([issueId])
 }
@@ -1491,12 +1492,12 @@ enum InteractionDirection {
 }
 
 model ImportJob {
-  id             String    @id @default(uuid())
-  status         String    @default("pending")
-  progress       Int       @default(0)
-  total          Int       @default(0)
-  successCount   Int       @default(0)
-  failureCount   Int       @default(0)
+  id             String       @id @default(uuid())
+  status         String       @default("pending")
+  progress       Int          @default(0)
+  total          Int          @default(0)
+  successCount   Int          @default(0)
+  failureCount   Int          @default(0)
   errors         Json?
   fileUrl        String?
   mapping        Json?
@@ -1505,9 +1506,9 @@ model ImportJob {
   completedAt    DateTime?
   createdById    String
   organisationId String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  createdBy      User      @relation("ImportJobCreator", fields: [createdById], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  createdBy      User         @relation("ImportJobCreator", fields: [createdById], references: [id])
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   @@index([organisationId])
@@ -1526,13 +1527,13 @@ model Pipeline {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   isDeleted      Boolean  @default(false)
-  
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("PipelineCreator", fields: [createdById], references: [id])
-  
-  leads          Lead[]
-  opportunities  Opportunity[]
-  
+
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("PipelineCreator", fields: [createdById], references: [id])
+
+  leads         Lead[]
+  opportunities Opportunity[]
+
   @@index([organisationId])
 }
 
@@ -1546,16 +1547,16 @@ model WebForm {
   submitAction   String   @default("message") // 'message', 'redirect'
   submitMessage  String?
   redirectUrl    String?
-  status         String   @default("active")  // 'active', 'inactive'
+  status         String   @default("active") // 'active', 'inactive'
   isActive       Boolean  @default(true)
   organisationId String
   createdById    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   isDeleted      Boolean  @default(false)
-  
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("WebFormCreator", fields: [createdById], references: [id])
+
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("WebFormCreator", fields: [createdById], references: [id])
 
   @@index([organisationId])
 }
@@ -1575,8 +1576,8 @@ model SMSCampaign {
   updatedAt      DateTime  @updatedAt
   isDeleted      Boolean   @default(false)
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("SMSCampaignCreator", fields: [createdById], references: [id])
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("SMSCampaignCreator", fields: [createdById], references: [id])
 
   @@index([organisationId])
 }
@@ -1602,47 +1603,47 @@ model WhatsAppCampaign {
   whatsappAccountId String?
   flowId            String? // Flow to start when a recipient replies to this campaign (reply-routing)
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("WhatsAppCampaignCreator", fields: [createdById], references: [id])
-  whatsappAccount WhatsAppAccount? @relation(fields: [whatsappAccountId], references: [id])
-  flow            WhatsAppFlow?   @relation(fields: [flowId], references: [id])
-  messages       WhatsAppMessage[]
+  organisation    Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy       User?             @relation("WhatsAppCampaignCreator", fields: [createdById], references: [id])
+  whatsappAccount WhatsAppAccount?  @relation(fields: [whatsappAccountId], references: [id])
+  flow            WhatsAppFlow?     @relation(fields: [flowId], references: [id])
+  messages        WhatsAppMessage[]
 
   @@index([organisationId])
   @@index([whatsappAccountId])
 }
 
 model WhatsAppMessage {
-  id             String    @id @default(uuid())
-  conversationId String
-  phoneNumber    String
-  direction      String    // 'incoming' or 'outgoing'
-  messageType    String    @default("text") // 'text', 'image', 'document', 'audio', 'video', 'location', 'template', 'interactive'
-  content        Json?     // Flexible content storage
-  status         String    @default("pending") // 'pending', 'sent', 'delivered', 'read', 'failed'
-  waMessageId    String?   // WhatsApp message ID
-  errorCode      String?
-  errorMessage   String?
-  sentAt         DateTime?
-  deliveredAt    DateTime?
-  readAt         DateTime?
-  organisationId String
-  leadId         String?
-  contactId      String?
-  agentId        String?
-  campaignId     String?
+  id                String    @id @default(uuid())
+  conversationId    String
+  phoneNumber       String
+  direction         String // 'incoming' or 'outgoing'
+  messageType       String    @default("text") // 'text', 'image', 'document', 'audio', 'video', 'location', 'template', 'interactive'
+  content           Json? // Flexible content storage
+  status            String    @default("pending") // 'pending', 'sent', 'delivered', 'read', 'failed'
+  waMessageId       String? // WhatsApp message ID
+  errorCode         String?
+  errorMessage      String?
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  readAt            DateTime?
+  organisationId    String
+  leadId            String?
+  contactId         String?
+  agentId           String?
+  campaignId        String?
   whatsappAccountId String?
-  isReadByAgent  Boolean   @default(true)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  isDeleted      Boolean   @default(false)
+  isReadByAgent     Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  isDeleted         Boolean   @default(false)
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  lead           Lead?        @relation(fields: [leadId], references: [id])
-  contact        Contact?     @relation(fields: [contactId], references: [id])
-  agent          User?        @relation("WhatsAppMessageAgent", fields: [agentId], references: [id])
-  campaign       WhatsAppCampaign? @relation(fields: [campaignId], references: [id])
-  whatsappAccount WhatsAppAccount? @relation(fields: [whatsappAccountId], references: [id])
+  organisation    Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  lead            Lead?             @relation(fields: [leadId], references: [id])
+  contact         Contact?          @relation(fields: [contactId], references: [id])
+  agent           User?             @relation("WhatsAppMessageAgent", fields: [agentId], references: [id])
+  campaign        WhatsAppCampaign? @relation(fields: [campaignId], references: [id])
+  whatsappAccount WhatsAppAccount?  @relation(fields: [whatsappAccountId], references: [id])
 
   @@unique([organisationId, waMessageId])
   @@index([conversationId, createdAt])
@@ -1654,27 +1655,27 @@ model WhatsAppMessage {
 }
 
 model WhatsAppAccount {
-  id             String    @id @default(uuid())
+  id             String   @id @default(uuid())
   organisationId String
   phoneNumber    String
   displayName    String?
-  provider       String    @default("meta") // meta | gallabox | wati | doubletick | wabis | happilee
-  phoneNumberId  String?   // Meta phone_number_id (or provider's channel id)
+  provider       String   @default("meta") // meta | gallabox | wati | doubletick | wabis | happilee
+  phoneNumberId  String? // Meta phone_number_id (or provider's channel id)
   wabaId         String?
-  accessToken    String?   // stored encrypted via utils/encryption.ts
-  status         String    @default("active") // active | inactive
-  isDefault      Boolean   @default(false)
+  accessToken    String? // stored encrypted via utils/encryption.ts
+  status         String   @default("active") // active | inactive
+  isDefault      Boolean  @default(false)
   createdById    String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  isDeleted      Boolean   @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isDeleted      Boolean  @default(false)
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("WhatsAppAccountCreator", fields: [createdById], references: [id])
+  organisation    Organisation             @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy       User?                    @relation("WhatsAppAccountCreator", fields: [createdById], references: [id])
   assignmentRules WhatsAppAssignmentRule[]
-  campaigns      WhatsAppCampaign[]
-  messages       WhatsAppMessage[]
-  flows          WhatsAppFlow[]
+  campaigns       WhatsAppCampaign[]
+  messages        WhatsAppMessage[]
+  flows           WhatsAppFlow[]
 
   @@index([organisationId])
 }
@@ -1693,10 +1694,10 @@ model WhatsAppAssignmentRule {
   updatedAt          DateTime @updatedAt
   isDeleted          Boolean  @default(false)
 
-  organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  whatsappAccount WhatsAppAccount  @relation(fields: [whatsappAccountId], references: [id], onDelete: Cascade)
-  targetTeam      Team?            @relation(fields: [targetTeamId], references: [id])
-  createdBy       User?            @relation("WhatsAppRuleCreator", fields: [createdById], references: [id])
+  organisation    Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  whatsappAccount WhatsAppAccount @relation(fields: [whatsappAccountId], references: [id], onDelete: Cascade)
+  targetTeam      Team?           @relation(fields: [targetTeamId], references: [id])
+  createdBy       User?           @relation("WhatsAppRuleCreator", fields: [createdById], references: [id])
 
   @@index([organisationId])
   @@index([whatsappAccountId])
@@ -1718,18 +1719,18 @@ model WhatsAppFlow {
   updatedAt         DateTime @updatedAt
   isDeleted         Boolean  @default(false)
 
-  organisation      Organisation          @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  whatsappAccount   WhatsAppAccount?      @relation(fields: [whatsappAccountId], references: [id])
-  createdBy         User?                 @relation("WhatsAppFlowCreator", fields: [createdById], references: [id])
-  sessions          WhatsAppFlowSession[]
-  campaigns         WhatsAppCampaign[]
+  organisation    Organisation          @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  whatsappAccount WhatsAppAccount?      @relation(fields: [whatsappAccountId], references: [id])
+  createdBy       User?                 @relation("WhatsAppFlowCreator", fields: [createdById], references: [id])
+  sessions        WhatsAppFlowSession[]
+  campaigns       WhatsAppCampaign[]
 
   @@index([organisationId])
   @@index([whatsappAccountId])
 }
 
 model WhatsAppFlowSession {
-  id                String    @id @default(uuid())
+  id                String   @id @default(uuid())
   flowId            String
   organisationId    String
   phoneNumber       String
@@ -1737,11 +1738,11 @@ model WhatsAppFlowSession {
   leadId            String?
   currentNodeId     String?
   variables         Json?
-  status            String    @default("active") // active | completed | handed_off | expired
-  startedAt         DateTime  @default(now())
-  lastInteractionAt DateTime  @default(now())
+  status            String   @default("active") // active | completed | handed_off | expired
+  startedAt         DateTime @default(now())
+  lastInteractionAt DateTime @default(now())
 
-  flow              WhatsAppFlow @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  flow WhatsAppFlow @relation(fields: [flowId], references: [id], onDelete: Cascade)
 
   @@index([organisationId])
   @@index([flowId])
@@ -1749,24 +1750,24 @@ model WhatsAppFlowSession {
 }
 
 model Commission {
-  id             String    @id @default(uuid())
+  id             String   @id @default(uuid())
   userId         String
   amount         Float
-  currency       String    @default("INR")
-  status         String    @default("pending")
+  currency       String   @default("INR")
+  status         String   @default("pending")
   type           String
   description    String?
   dealId         String?
-  date           DateTime  @default(now())
+  date           DateTime @default(now())
   organisationId String
   createdById    String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  isDeleted      Boolean   @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  isDeleted      Boolean  @default(false)
 
-  user           User         @relation("UserCommission", fields: [userId], references: [id])
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("CommissionCreator", fields: [createdById], references: [id])
+  user         User         @relation("UserCommission", fields: [userId], references: [id])
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("CommissionCreator", fields: [createdById], references: [id])
 
   @@index([organisationId])
   @@index([userId])
@@ -1788,8 +1789,8 @@ model LandingPage {
   updatedAt      DateTime  @updatedAt
   isDeleted      Boolean   @default(false)
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  createdBy      User?        @relation("LandingPageCreator", fields: [createdById], references: [id])
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("LandingPageCreator", fields: [createdById], references: [id])
 
   @@index([organisationId])
   @@index([slug])
@@ -1797,18 +1798,18 @@ model LandingPage {
 
 model AuditLog {
   id             String   @id @default(uuid())
-  action         String   // CREATE, UPDATE, DELETE, LOGIN, LOGIN_FAILED, EXPORT
-  entity         String   // Lead, Contact, User, Settings, etc.
+  action         String // CREATE, UPDATE, DELETE, LOGIN, LOGIN_FAILED, EXPORT
+  entity         String // Lead, Contact, User, Settings, etc.
   entityId       String?
-  actorId        String?  // User who performed the action
-  details        Json?    // { old: ..., new: ..., metadata: ... }
+  actorId        String? // User who performed the action
+  details        Json? // { old: ..., new: ..., metadata: ... }
   ipAddress      String?
   userAgent      String?
   organisationId String
   createdAt      DateTime @default(now())
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  actor          User?        @relation("AuditActor", fields: [actorId], references: [id])
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  actor        User?        @relation("AuditActor", fields: [actorId], references: [id])
 
   @@index([organisationId])
   @@index([entity])
@@ -1825,14 +1826,14 @@ model AuditLog {
 // buffer. Read by the super-admin "Helper Logs" panel (Dad-frontend), not
 // exposed to normal org users.
 model HelperActivityLog {
-  id               String   @id @default(uuid())
-  organisationId   String
-  userId           String
-  event            String   // e.g. CALL_DETECTED, CALL_LOG_RECONCILED, BULK_SYNC_SUCCESS, BULK_SYNC_FAILED, BULK_SYNC_RATE_LIMITED, TIER0_MATCH_FOUND, TIER0_NO_MATCH
-  detail           String?
-  level            String   @default("info") // info | warn | error
-  clientTimestamp  DateTime // when the event actually happened on-device, per EngineDebugLog's timestampMillis
-  createdAt        DateTime @default(now()) // when the server received/stored it
+  id              String   @id @default(uuid())
+  organisationId  String
+  userId          String
+  event           String // e.g. CALL_DETECTED, CALL_LOG_RECONCILED, BULK_SYNC_SUCCESS, BULK_SYNC_FAILED, BULK_SYNC_RATE_LIMITED, TIER0_MATCH_FOUND, TIER0_NO_MATCH
+  detail          String?
+  level           String   @default("info") // info | warn | error
+  clientTimestamp DateTime // when the event actually happened on-device, per EngineDebugLog's timestampMillis
+  createdAt       DateTime @default(now()) // when the server received/stored it
 
   organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1843,39 +1844,39 @@ model HelperActivityLog {
 }
 
 model Document {
-  id             String       @id @default(uuid())
-  name           String
-  description    String?
-  fileKey        String       // Original filename or identifier
-  fileUrl        String?      // Optional: for backward compatibility
-  fileData       Bytes?       // Binary file data stored in database
-  fileType       String
-  fileSize       Int
-  category       String?      @default("other")
-  tags           String[]
-  isDeleted      Boolean      @default(false)
-  deletedAt      DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  fileKey     String // Original filename or identifier
+  fileUrl     String? // Optional: for backward compatibility
+  fileData    Bytes? // Binary file data stored in database
+  fileType    String
+  fileSize    Int
+  category    String?   @default("other")
+  tags        String[]
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
   organisationId String
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  
-  createdById    String
-  createdBy      User         @relation("DocumentCreator", fields: [createdById], references: [id])
-  
-  leadId         String?
-  lead           Lead?        @relation(fields: [leadId], references: [id])
-  
-  contactId      String?
-  contact        Contact?     @relation(fields: [contactId], references: [id])
-  
-  accountId      String?
-  account        Account?     @relation(fields: [accountId], references: [id])
-  
-  opportunityId  String?
-  opportunity    Opportunity? @relation(fields: [opportunityId], references: [id])
-  interactions   Interaction[]
+
+  createdById String
+  createdBy   User   @relation("DocumentCreator", fields: [createdById], references: [id])
+
+  leadId String?
+  lead   Lead?   @relation(fields: [leadId], references: [id])
+
+  contactId String?
+  contact   Contact? @relation(fields: [contactId], references: [id])
+
+  accountId String?
+  account   Account? @relation(fields: [accountId], references: [id])
+
+  opportunityId String?
+  opportunity   Opportunity?  @relation(fields: [opportunityId], references: [id])
+  interactions  Interaction[]
 
   @@index([organisationId])
   @@index([leadId])
@@ -1885,24 +1886,24 @@ model Document {
 }
 
 model ProductShare {
-  id                 String       @id @default(uuid())
-  slug               String       @unique
-  views              Int          @default(0)
-  notificationsEnabled Boolean    @default(true)
-  productId          String
-  product            Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdById        String
-  createdBy          User         @relation(fields: [createdById], references: [id])
-  organisationId     String
-  organisation       Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  
+  id                   String       @id @default(uuid())
+  slug                 String       @unique
+  views                Int          @default(0)
+  notificationsEnabled Boolean      @default(true)
+  productId            String
+  product              Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdById          String
+  createdBy            User         @relation(fields: [createdById], references: [id])
+  organisationId       String
+  organisation         Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
   // New Fields for Enhanced Sharing
-  youtubeUrl         String?
-  customTitle        String?
-  customDescription  String?
-  
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  youtubeUrl        String?
+  customTitle       String?
+  customDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([slug])
   @@index([organisationId])
@@ -1910,31 +1911,31 @@ model ProductShare {
 }
 
 model Branch {
-  id             String       @id @default(uuid())
+  id             String    @id @default(uuid())
   name           String
   location       String?
   contactEmail   String?
   contactPhone   String?
   managerId      String?
   organisationId String
-  isDeleted      Boolean      @default(false)
+  isDeleted      Boolean   @default(false)
   deletedAt      DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  manager        User?        @relation("BranchManager", fields: [managerId], references: [id])
-  users          User[]
-  leads          Lead[]
-  contacts       Contact[]
-  opportunities  Opportunity[]
-  accounts       Account[]
-  tasks          Task[]
-  followUps      FollowUp[]
-  interactions   Interaction[]
+  organisation    Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  manager         User?            @relation("BranchManager", fields: [managerId], references: [id])
+  users           User[]
+  leads           Lead[]
+  contacts        Contact[]
+  opportunities   Opportunity[]
+  accounts        Account[]
+  tasks           Task[]
+  followUps       FollowUp[]
+  interactions    Interaction[]
   assignmentRules AssignmentRule[]
   products        Product[]
-  
+
   @@index([organisationId])
 }
 
@@ -1948,16 +1949,16 @@ model SystemSetting {
 }
 
 model Role {
-  id             String       @id @default(uuid())
-  roleKey        String       // internal id like 'sales_rep' or uuid for custom
+  id             String   @id @default(uuid())
+  roleKey        String // internal id like 'sales_rep' or uuid for custom
   name           String
   description    String?
   permissions    String[]
-  isSystemRole   Boolean      @default(false)
+  isSystemRole   Boolean  @default(false)
   organisationId String?
-  updatedAt      DateTime     @updatedAt  @default(now())
-  
-  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   @@unique([roleKey, organisationId])
   @@index([organisationId])
@@ -1966,20 +1967,20 @@ model Role {
 // EMI Payment System Models
 
 model EMISchedule {
-  id                String            @id @default(uuid())
-  opportunityId     String            @unique
-  totalAmount       Float             // Remaining amount at time of EMI creation
-  paidAmount        Float             @default(0)
-  remainingAmount   Float
-  status            EMIStatus         @default(active)
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  organisationId    String
-  
-  opportunity       Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  organisation      Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  installments      EMIInstallment[]
-  
+  id              String    @id @default(uuid())
+  opportunityId   String    @unique
+  totalAmount     Float // Remaining amount at time of EMI creation
+  paidAmount      Float     @default(0)
+  remainingAmount Float
+  status          EMIStatus @default(active)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  organisationId  String
+
+  opportunity  Opportunity      @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  organisation Organisation     @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  installments EMIInstallment[]
+
   @@index([opportunityId])
   @@index([status])
   @@index([organisationId])
@@ -2004,10 +2005,10 @@ model EMIInstallment {
   notes             String?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
-  
-  schedule          EMISchedule       @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  paymentRecords    PaymentRecord[]
-  
+
+  schedule       EMISchedule     @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  paymentRecords PaymentRecord[]
+
   @@index([scheduleId])
   @@index([status])
   @@index([dueDate])
@@ -2022,23 +2023,23 @@ enum InstallmentStatus {
 }
 
 model PaymentRecord {
-  id              String          @id @default(uuid())
-  opportunityId   String
-  amount          Float
-  paymentDate     DateTime        @default(now())
-  paymentMethod   String?         // cash, card, bank_transfer, etc.
-  paymentType     PaymentType     @default(full)
-  installmentId   String?
-  notes           String?
-  createdAt       DateTime        @default(now())
-  createdById     String
-  organisationId  String
-  
-  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
-  installment     EMIInstallment? @relation(fields: [installmentId], references: [id])
-  createdBy       User            @relation("PaymentRecordCreator", fields: [createdById], references: [id])
-  organisation    Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  
+  id             String      @id @default(uuid())
+  opportunityId  String
+  amount         Float
+  paymentDate    DateTime    @default(now())
+  paymentMethod  String? // cash, card, bank_transfer, etc.
+  paymentType    PaymentType @default(full)
+  installmentId  String?
+  notes          String?
+  createdAt      DateTime    @default(now())
+  createdById    String
+  organisationId String
+
+  opportunity  Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  installment  EMIInstallment? @relation(fields: [installmentId], references: [id])
+  createdBy    User            @relation("PaymentRecordCreator", fields: [createdById], references: [id])
+  organisation Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
   @@index([opportunityId])
   @@index([installmentId])
   @@index([organisationId])
@@ -2049,6 +2050,30 @@ enum PaymentType {
   full
   partial
   installment
+}
+
+// Public "Enquire" submissions from the landing page - deliberately NOT an
+// instant self-serve signup (see `authController.registerUser` for that).
+// A super admin reviews each one and, if legitimate, converts it into a real
+// Organisation + admin User via `convertEnquiryToAccount`.
+model Enquiry {
+  id                      String        @id @default(uuid())
+  companyName             String
+  firstName               String
+  lastName                String?
+  email                   String
+  phone                   String?
+  message                 String?
+  status                  String        @default("pending") // pending | converted | rejected
+  convertedOrganisationId String?       @unique
+  convertedOrganisation   Organisation? @relation(fields: [convertedOrganisationId], references: [id])
+  reviewedById            String?
+  reviewedBy              User?         @relation(fields: [reviewedById], references: [id])
+  reviewedAt              DateTime?
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  @@index([status])
 }
 
 model SiteFAQ {
@@ -2065,15 +2090,15 @@ model SiteFAQ {
 // in-app Training page (Dad-frontend's /training). Global/platform content,
 // not tenant-scoped — same pattern as SiteFAQ above.
 model TrainingVideo {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  videoUrl    String
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  videoUrl     String
   thumbnailUrl String?
-  category    String? // free-form label matching a Training page module, e.g. "Lead Management"
-  duration    String? // display string, e.g. "4:32" — not enforced/parsed
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category     String? // free-form label matching a Training page module, e.g. "Lead Management"
+  duration     String? // display string, e.g. "4:32" — not enforced/parsed
+  order        Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

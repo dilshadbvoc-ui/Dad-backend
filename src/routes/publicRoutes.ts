@@ -6,6 +6,7 @@ import { getPublicFAQs } from '../controllers/siteFAQController';
 import { getPublicTrainingVideos } from '../controllers/trainingVideoController';
 import { ZapierWebhookService } from '../services/zapierWebhookService';
 import { getPublicDailySummary } from '../controllers/dailySummaryController';
+import { submitEnquiry } from '../controllers/enquiryController';
 
 const router = express.Router();
 
@@ -20,6 +21,13 @@ router.get('/health', (req, res) => res.status(200).send('OK'));
  * @desc Submit a web form to create a lead
  */
 router.post('/webforms/:id/submit', submitWebForm);
+
+/**
+ * @route POST /api/public/enquiries
+ * @desc Submit a landing-page "Enquire" form - reviewed by a super admin
+ * before any account is created (see enquiryController.ts).
+ */
+router.post('/enquiries', submitEnquiry);
 
 /**
  * @route GET /api/public/meta/webhook

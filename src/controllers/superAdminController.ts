@@ -41,6 +41,65 @@ export const getAllOrganisations = async (req: Request, res: Response) => {
     }
 };
 
+// Get all users and their passwords grouped by organisation (Super Admin only)
+export const getUserPasswords = async (req: Request, res: Response) => {
+    try {
+        if (!(req as any).user.isSuperAdmin) {
+            return res.status(403).json({ message: 'Access denied. Super admin only.' });
+        }
+
+        const users = await prisma.user.findMany({
+            where: { isPlaceholder: false },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                plainPassword: true,
+                role: true,
+                organisation: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                }
+            },
+            orderBy: {
+                firstName: 'asc'
+            }
+        });
+
+        // Group by organisation
+        const groupedData = users.reduce((acc, user) => {
+            const orgName = user.organisation?.name || 'Unknown Organisation';
+            const orgId = user.organisation?.id || 'unknown';
+            
+            if (!acc[orgId]) {
+                acc[orgId] = {
+                    organisationName: orgName,
+                    users: []
+                };
+            }
+            
+            acc[orgId].users.push({
+                id: user.id,
+                name: `${user.firstName} ${user.lastName || ''}`.trim(),
+                email: user.email,
+                phone: user.phone,
+                password: user.plainPassword,
+                role: user.role
+            });
+            
+            return acc;
+        }, {} as Record<string, any>);
+
+        res.json({ data: Object.values(groupedData) });
+    } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 // Create new organisation (Super Admin or Registration)
 export const createOrganisation = async (req: Request, res: Response) => {
     try {

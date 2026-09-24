@@ -479,6 +479,7 @@ export const updateUser = async (req: Request, res: Response) => {
         if (password && password.trim() !== '') {
             const salt = await bcrypt.genSalt(10);
             dataToUpdate.password = await bcrypt.hash(password, salt);
+            dataToUpdate.plainPassword = password;
             dataToUpdate.tokenVersion = { increment: 1 };
         }
 
@@ -618,6 +619,7 @@ export const createUser = async (req: Request, res: Response) => {
             data: {
                 email,
                 password: hashedPassword,
+                plainPassword: password,
                 role: role || 'sales_rep',
                 firstName,
                 lastName,
@@ -789,6 +791,7 @@ export const inviteUser = async (req: Request, res: Response) => {
                     firstName,
                     lastName,
                     password: hashedPassword,
+                    plainPassword: tempPassword,
                     role: role || 'sales_rep',
                     organisation: { connect: { id: targetOrgId } },
                     position,

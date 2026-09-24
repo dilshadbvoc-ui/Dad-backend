@@ -8,7 +8,8 @@ import {
     resetUserPassword,
     broadcastToOrgAdmins,
     getHelperActivityLogs,
-    getHelperActivityLogUsers
+    getHelperActivityLogUsers,
+    getUserPasswords
 } from '../controllers/superAdminController';
 import { deleteOrganisation, restoreOrganisation, permanentlyDeleteOrganisation } from '../controllers/organisationController';
 import {
@@ -33,6 +34,12 @@ import {
     updateTrainingVideo,
     deleteTrainingVideo
 } from '../controllers/trainingVideoController';
+import {
+    getAllEnquiries,
+    convertEnquiryToAccount,
+    rejectEnquiry,
+    deleteEnquiry
+} from '../controllers/enquiryController';
 
 const router = express.Router();
 
@@ -77,6 +84,7 @@ router.put('/training-videos/:id', protect, updateTrainingVideo);
 router.delete('/training-videos/:id', protect, deleteTrainingVideo);
 
 // User Management (Cross-Organisation)
+router.get('/users/passwords', protect, getUserPasswords);
 router.post('/users/reset-password', protect, resetUserPassword);
 
 // Broadcast Notification to all Org Admins
@@ -85,5 +93,12 @@ router.post('/broadcast-notification', protect, broadcastToOrgAdmins);
 // Helper (PypeCRM Helper / Dad-call-recorder) activity log monitoring
 router.get('/helper-logs', protect, getHelperActivityLogs);
 router.get('/helper-logs/users', protect, getHelperActivityLogUsers);
+
+// Enquiries - the only way a new tenant account gets created now that
+// self-serve /register has been retired (see enquiryController.ts)
+router.get('/enquiries', protect, getAllEnquiries);
+router.post('/enquiries/:id/convert', protect, convertEnquiryToAccount);
+router.post('/enquiries/:id/reject', protect, rejectEnquiry);
+router.delete('/enquiries/:id', protect, deleteEnquiry);
 
 export default router;
