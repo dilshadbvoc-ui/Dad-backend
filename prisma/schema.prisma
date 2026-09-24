@@ -75,6 +75,7 @@ model Organisation {
   whatsAppMessages  WhatsAppMessage[]
   whatsAppAccounts  WhatsAppAccount[]
   whatsAppAssignmentRules WhatsAppAssignmentRule[]
+  whatsAppFlows     WhatsAppFlow[]
   commissions       Commission[]
   landingPages      LandingPage[]
   auditLogs         AuditLog[]
@@ -187,6 +188,7 @@ model User {
   whatsAppMessages            WhatsAppMessage[]      @relation("WhatsAppMessageAgent")
   createdWhatsAppAccounts     WhatsAppAccount[]      @relation("WhatsAppAccountCreator")
   createdWhatsAppAssignmentRules WhatsAppAssignmentRule[] @relation("WhatsAppRuleCreator")
+  createdWhatsAppFlows       WhatsAppFlow[]          @relation("WhatsAppFlowCreator")
   commissions                 Commission[]           @relation("UserCommission")
   createdCommissions          Commission[]           @relation("CommissionCreator")
   createdLandingPages         LandingPage[]          @relation("LandingPageCreator")
@@ -1661,6 +1663,7 @@ model WhatsAppAccount {
   assignmentRules WhatsAppAssignmentRule[]
   campaigns      WhatsAppCampaign[]
   messages       WhatsAppMessage[]
+  flows          WhatsAppFlow[]
 
   @@index([organisationId])
 }
@@ -1686,6 +1689,51 @@ model WhatsAppAssignmentRule {
 
   @@index([organisationId])
   @@index([whatsappAccountId])
+}
+
+model WhatsAppFlow {
+  id                String   @id @default(uuid())
+  organisationId    String
+  whatsappAccountId String?
+  name              String
+  description       String?
+  isActive          Boolean  @default(false)
+  triggerType       String   @default("keyword") // keyword | any_message | manual
+  triggerKeywords   String[]
+  nodes             Json
+  edges             Json
+  createdById       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  isDeleted         Boolean  @default(false)
+
+  organisation      Organisation          @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  whatsappAccount   WhatsAppAccount?      @relation(fields: [whatsappAccountId], references: [id])
+  createdBy         User?                 @relation("WhatsAppFlowCreator", fields: [createdById], references: [id])
+  sessions          WhatsAppFlowSession[]
+
+  @@index([organisationId])
+  @@index([whatsappAccountId])
+}
+
+model WhatsAppFlowSession {
+  id                String    @id @default(uuid())
+  flowId            String
+  organisationId    String
+  phoneNumber       String
+  whatsappAccountId String?
+  leadId            String?
+  currentNodeId     String?
+  variables         Json?
+  status            String    @default("active") // active | completed | handed_off | expired
+  startedAt         DateTime  @default(now())
+  lastInteractionAt DateTime  @default(now())
+
+  flow              WhatsAppFlow @relation(fields: [flowId], references: [id], onDelete: Cascade)
+
+  @@index([organisationId])
+  @@index([flowId])
+  @@index([phoneNumber, whatsappAccountId, status])
 }
 
 model Commission {

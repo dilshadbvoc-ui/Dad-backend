@@ -183,6 +183,92 @@ export class WhatsAppService {
     }
 
     /**
+     * Send an interactive "reply button" message (up to 3 buttons - Meta's hard limit).
+     * Used by the Flow builder's `buttons` node.
+     */
+    async sendInteractiveButtonsMessage(to: string, bodyText: string, buttons: { id: string; title: string }[]) {
+        try {
+            const url = `${this.baseUrl}/${this.config.phoneNumberId}/messages`;
+
+            const payload = {
+                messaging_product: 'whatsapp',
+                to,
+                type: 'interactive',
+                interactive: {
+                    type: 'button',
+                    body: { text: bodyText },
+                    action: {
+                        buttons: buttons.slice(0, 3).map(b => ({
+                            type: 'reply',
+                            reply: { id: b.id, title: b.title.slice(0, 20) }
+                        }))
+                    }
+                }
+            };
+
+            const response = await axios.post(url, payload, {
+                headers: {
+                    'Authorization': `Bearer ${this.config.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            return response.data;
+        } catch (error: any) {
+            console.error('WhatsApp Send Interactive Buttons Error:', error.response?.data || error.message);
+            throw new Error(error.response?.data?.error?.message || 'Failed to send WhatsApp interactive message');
+        }
+    }
+
+    /**
+     * Send an interactive "list" message (for more than 3 options - Meta's button limit).
+     * Used by the Flow builder's `list` node.
+     */
+    async sendInteractiveListMessage(
+        to: string,
+        bodyText: string,
+        buttonText: string,
+        sections: { title: string; rows: { id: string; title: string; description?: string }[] }[]
+    ) {
+        try {
+            const url = `${this.baseUrl}/${this.config.phoneNumberId}/messages`;
+
+            const payload = {
+                messaging_product: 'whatsapp',
+                to,
+                type: 'interactive',
+                interactive: {
+                    type: 'list',
+                    body: { text: bodyText },
+                    action: {
+                        button: buttonText.slice(0, 20),
+                        sections: sections.map(s => ({
+                            title: s.title.slice(0, 24),
+                            rows: s.rows.slice(0, 10).map(r => ({
+                                id: r.id,
+                                title: r.title.slice(0, 24),
+                                description: r.description?.slice(0, 72)
+                            }))
+                        }))
+                    }
+                }
+            };
+
+            const response = await axios.post(url, payload, {
+                headers: {
+                    'Authorization': `Bearer ${this.config.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            return response.data;
+        } catch (error: any) {
+            console.error('WhatsApp Send Interactive List Error:', error.response?.data || error.message);
+            throw new Error(error.response?.data?.error?.message || 'Failed to send WhatsApp interactive message');
+        }
+    }
+
+    /**
      * Send a media message (image, document, audio, video)
      */
     async sendMediaMessage(to: string, mediaType: 'image' | 'document' | 'audio' | 'video', mediaId: string, caption?: string, filename?: string) {

@@ -123,12 +123,19 @@ export const WhatsAppIntegrationService = {
 
         const contact = contacts?.find((c: any) => c.wa_id === message.from);
         
+        // Interactive replies (button/list taps) carry no `text.body` - surface the
+        // selected option's id/title so the flow engine can match it against a
+        // node's outgoing edges, and so it still reads sensibly as `body` for the
+        // keyword-automation engine and the inbox UI.
+        const interactiveReply = message.interactive?.button_reply || message.interactive?.list_reply;
+
         const normalizedMessage = {
             from: message.from,
             id: message.id,
             timestamp: parseInt(message.timestamp),
-            type: message.text ? 'text' : (message.image ? 'image' : (message.document ? 'document' : 'unknown')),
-            body: message.text?.body || '',
+            type: message.text ? 'text' : (interactiveReply ? 'interactive' : (message.image ? 'image' : (message.document ? 'document' : 'unknown'))),
+            body: message.text?.body || interactiveReply?.title || '',
+            interactiveReplyId: interactiveReply?.id,
             senderName: contact?.profile?.name || message.from,
             // Meta specific content expansion
             metaImage: message.image,
@@ -335,22 +342,51 @@ export const WhatsAppIntegrationService = {
                 });
             }
 
+            // Flow builder dispatch takes priority over the simpler keyword
+            // automation engine below: a message mid-flow is a reply to that flow,
+            // not an unrelated keyword trigger. Only if no flow session is active
+            // AND no flow's trigger matches does the plain automation hook run -
+            // this keeps today's behavior identical for orgs not using Flows at all.
+            let handledByFlow = false;
+            try {
+                const { WhatsAppFlowEngine } = await import('./whatsAppFlowEngine');
+                const activeSession = await WhatsAppFlowEngine.getActiveSession(message.from, whatsappAccountId, organisationId);
+
+                if (activeSession) {
+                    await WhatsAppFlowEngine.handleReply(activeSession, activeSession.flow, {
+                        buttonId: message.interactiveReplyId,
+                        text: message.body
+                    });
+                    handledByFlow = true;
+                } else {
+                    const matchingFlow = await WhatsAppFlowEngine.findMatchingFlow(whatsappAccountId, organisationId, message.body);
+                    if (matchingFlow) {
+                        await WhatsAppFlowEngine.startFlow(matchingFlow, message.from, whatsappAccountId, organisationId, messageRecord.leadId);
+                        handledByFlow = true;
+                    }
+                }
+            } catch (flowError) {
+                console.error('[WhatsAppWebhook] WhatsAppFlowEngine dispatch failed:', flowError);
+            }
+
             // Fire any WhatsApp automation ("bot") workflows configured for this
             // account/keyword. Additive hook into the existing generic automation
             // engine - failures here must never break message ingestion above.
-            try {
-                const { WorkflowEngine } = await import('./workflowEngine');
-                await WorkflowEngine.evaluate('WhatsAppMessage', 'received', {
-                    id: messageRecord.id,
-                    body: message.body,
-                    phoneNumber: message.from,
-                    whatsappAccountId,
-                    leadId: messageRecord.leadId,
-                    conversationId: messageRecord.conversationId,
-                    organisationId
-                }, organisationId);
-            } catch (workflowError) {
-                console.error('[WhatsAppWebhook] WorkflowEngine trigger failed:', workflowError);
+            if (!handledByFlow) {
+                try {
+                    const { WorkflowEngine } = await import('./workflowEngine');
+                    await WorkflowEngine.evaluate('WhatsAppMessage', 'received', {
+                        id: messageRecord.id,
+                        body: message.body,
+                        phoneNumber: message.from,
+                        whatsappAccountId,
+                        leadId: messageRecord.leadId,
+                        conversationId: messageRecord.conversationId,
+                        organisationId
+                    }, organisationId);
+                } catch (workflowError) {
+                    console.error('[WhatsAppWebhook] WorkflowEngine trigger failed:', workflowError);
+                }
             }
         } catch (error) {
             console.error('[WhatsAppWebhook] Error in saveIncomingMessage:', error);
