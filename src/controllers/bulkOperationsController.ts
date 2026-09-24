@@ -64,6 +64,30 @@ export const bulkLeadOperations = async (req: Request, res: Response) => {
           }
         });
 
+        // Reassign all associated records like single-lead and bulkAssignLeads do
+        await Promise.all([
+            prisma.opportunity.updateMany({
+                where: { leadId: { in: leadIds }, isDeleted: false },
+                data: { ownerId: data.assignedToId }
+            }),
+            prisma.account.updateMany({
+                where: { leadId: { in: leadIds }, isDeleted: false },
+                data: { ownerId: data.assignedToId }
+            }),
+            prisma.contact.updateMany({
+                where: { leadId: { in: leadIds }, isDeleted: false },
+                data: { ownerId: data.assignedToId }
+            }),
+            prisma.followUp.updateMany({
+                where: { leadId: { in: leadIds }, isDeleted: false, status: { notIn: ['completed', 'deferred'] } },
+                data: { assignedToId: data.assignedToId }
+            }),
+            prisma.task.updateMany({
+                where: { leadId: { in: leadIds }, isDeleted: false, status: { notIn: ['completed', 'cancelled'] } },
+                data: { assignedToId: data.assignedToId }
+            })
+        ]);
+
         await logAudit({
           organisationId,
           actorId: userId,
