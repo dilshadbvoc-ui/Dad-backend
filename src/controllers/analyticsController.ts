@@ -143,15 +143,19 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             ]
         } : {};
 
-        // Follow-up Visibility Filter matching followUpController.ts
+        // Follow-up Visibility Filter — must actually match followUpController.ts's
+        // getFollowUps (it previously didn't, despite the comment claiming it did):
+        // a follow-up "belongs to" whoever it's ASSIGNED to, full stop, not whoever
+        // owns the related lead/contact/account/opportunity, and a creator only
+        // keeps seeing their own creation while it's still unassigned (see
+        // followUpController.ts's doc comment — this exact broader filter is what
+        // inflated the dashboard's "Follow-ups" card above the Follow-ups screen's
+        // own overdue+today count, since the two were silently using different
+        // definitions of "your follow-ups").
         const followUpVisibilityFilter = !hasOrgWideVisibility(user) ? {
             OR: [
                 { assignedToId: { in: visibleUserIds } },
-                { createdById: { in: visibleUserIds } },
-                { lead: { assignedToId: { in: visibleUserIds }, isDeleted: false } },
-                { contact: { ownerId: { in: visibleUserIds } } },
-                { account: { ownerId: { in: visibleUserIds } } },
-                { opportunity: { ownerId: { in: visibleUserIds } } }
+                { createdById: { in: visibleUserIds }, assignedToId: null }
             ]
         } : {};
 
